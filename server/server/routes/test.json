@@ -1,0 +1,22 @@
+http://localhost:3000/api/customer-forget-password
+
+curl -X POST --header 'Content-Type: application/json' --header 'Accept: application/json' -d '{
+ "username": "leo", 
+ "newInputPassword": "123456"
+ }' 'http://localhost:3000/api/customer-forget-password'
+
+ curl -X POST --header 'Content-Type: application/json' --header 'Accept: application/json' -d '{ \ 
+    "address": "string", \ 
+    "firstName": "string", \ 
+    "lastName": "string", \ 
+    "phoneNumber": "string", \ 
+    "country": "string", \ 
+    "state": "string", \ 
+    "city": "string", \ 
+    "userType": "person", \ 
+    "username": "test3", \ 
+    "email": "edrop1%40gamil.com", \ 
+    "password": "edropTest123", \ 
+    "confirmPassword": "edropTest123" \ 
+  }' 'http://localhost:3000/api/customers'
+ 

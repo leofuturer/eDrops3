@@ -1,0 +1,26 @@
+.input-content-register{
+    width:700px;
+    height: 100px;
+    margin:0 auto;
+    position: relative;
+    top:20px;
+}
+.register-login-content{
+    width: 1000px;
+    height: 900px;
+    box-shadow: 0 0 6px rgba(0, 0, 0, 0.1);
+    margin: 0 auto;
+    margin-top:30px;
+}
+.messages {
+    width: 200px;
+    margin-top: -3px;
+}
+.extended {
+    width: 800px;
+    vertical-align: center;
+}
+.reminder {
+    padding-top: -20px;
+    padding-bottom: 20px;
+}

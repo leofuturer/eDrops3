@@ -1,0 +1,30 @@
+[
+    {
+        "address": "1400 Midware Ave, 216 Apt",
+        "firstName": "Leo",
+        "lastName": "Chen",
+        "phoneNumber": "3102896978",
+        "country": "America",
+        "state": "California",
+        "city": "Los Angeles",
+        "affiliation": "UCLA CNSI",
+        "username": "workerA",
+        "password": "edropTest123",
+        "email": "testfwA@gmail.com",
+        "emailVerified": true
+    },
+    {
+        "address": "1O090 Haton Ave, 248 Apt",
+        "firstName": "Sarah",
+        "lastName": "Cuill",
+        "phoneNumber": "3102896978",
+        "country": "America",
+        "state": "California",
+        "city": "Los Angeles",
+        "affiliation": "UCLA CNSI",
+        "username": "workerB",
+        "password": "edropTest123",
+        "email": "testfwB@gmail.com",
+        "emailVerified": false
+    }
+]

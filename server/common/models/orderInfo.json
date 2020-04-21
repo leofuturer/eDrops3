@@ -1,0 +1,77 @@
+{
+  "name": "orderInfo",
+  "plural": "orderInfos",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "orderInfoId": {
+      "type": "string",
+      "required": true
+    },
+    "createdAt": {
+      "type": "string",
+      "required": true
+    },
+    "customer": {
+      "type": "string",
+      "required": false
+    },
+    "customerId": {
+      "type": "number",
+      "required": false
+    },
+    "email": {
+      "type": "string",
+      "required": true
+    },
+    "workerId": {
+      "type": "string",
+      "required": false
+    },
+    "workerName": {
+      "type": "string",
+      "required": false,
+      "default": "No foundry assigned"
+    },
+    "status": {
+      "type": "string",
+      "required": false,
+      "default": "Uploaded"
+    },
+    "fileName": {
+      "type": "string",
+      "required": false
+    },
+    "process": {
+      "type": "string",
+      "required": false
+    },
+    "coverPlate": {
+      "type": "string",
+      "required": false
+    },
+    "sampleQuantity": {
+      "type": "number",
+      "required": false
+    },
+    "otherDetails": {
+      "type": "array",
+      "required": false
+    },
+    "orderStatusURL": {
+      "type": "string",
+      "required": false
+    },
+    "orderAddress": {
+      "type": "object",
+      "required": false
+    }
+  },
+  "validations": [],
+  "relations": {},
+  "acls": [],
+  "methods": {}
+}

@@ -1,0 +1,30 @@
+{
+  "name": "fileinfo",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "uploadTime": {
+      "type": "string",
+      "required": false
+    },
+    "filename": {
+      "type": "string",
+      "required": true
+    },
+    "uploader": {
+      "type": "string",
+      "required": true
+    },
+    "fileSize": {
+      "type": "string",
+      "required": false
+    }
+  },
+  "validations": [],
+  "relations": {},
+  "acls": [],
+  "methods": {}
+}

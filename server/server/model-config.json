@@ -1,0 +1,68 @@
+{
+  "_meta": {
+    "sources": [
+      "loopback/common/models",
+      "loopback/server/models",
+      "../common/models",
+      "./models"
+    ],
+    "mixins": [
+      "loopback/common/mixins",
+      "loopback/server/mixins",
+      "../common/mixins",
+      "./mixins"
+    ]
+  },
+  "User": {
+    "dataSource": "mysqlDS",
+    "public": true
+  },
+  "AccessToken": {
+    "dataSource": "mysqlDS",
+    "public": false
+  },
+  "ACL": {
+    "dataSource": "mysqlDS",
+    "public": false
+  },
+  "RoleMapping": {
+    "dataSource": "mysqlDS",
+    "public": false
+  },
+  "Role": {
+    "dataSource": "mysqlDS",
+    "public": false
+  },
+  "Email": {
+    "dataSource": "myEmailDataSource",
+    "public": true
+  },
+  "customer": {
+    "dataSource": "mysqlDS",
+    "public": true
+  },
+  "admin": {
+    "dataSource": "mysqlDS",
+    "public": true
+  },
+  "foundryWorker": {
+    "dataSource": "mysqlDS",
+    "public": true
+  },
+  "container": {
+    "dataSource": "edropFile",
+    "public": true
+  },
+  "customerAddress": {
+    "dataSource": "mysqlDS",
+    "public": true
+  },
+  "fileinfo": {
+    "dataSource": "mysqlDS",
+    "public": true
+  },
+  "orderInfo": {
+    "dataSource": "mysqlDS",
+    "public": true
+  }
+}

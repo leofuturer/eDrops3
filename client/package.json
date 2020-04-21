@@ -1,0 +1,56 @@
+{
+  "name": "e-drop",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app/index.js",
+  "scripts": {
+    "dev": "webpack-dev-server",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack"
+  },
+  "keywords": [
+    "webpack",
+    "react",
+    "e-drop"
+  ],
+  "author": "Qining Wang",
+  "license": "MIT",
+  "devDependencies": {
+    "babel-core": "6.26.0",
+    "babel-loader": "7.1.2",
+    "babel-preset-env": "1.6.1",
+    "babel-preset-react": "6.24.1",
+    "bootstrap-fileinput": "^4.4.7",
+    "css-loader": "0.28.8",
+    "extract-text-webpack-plugin": "3.0.2",
+    "file-loader": "1.1.6",
+    "html-webpack-plugin": "2.30.1",
+    "mdbreact": "^4.8.0",
+    "node-sass": "^4.12.0",
+    "sass-loader": "6.0.6",
+    "style-loader": "0.19.1",
+    "url-loader": "0.6.2",
+    "webpack": "3.10.0",
+    "webpack-dev-server": "2.9.7"
+  },
+  "dependencies": {
+    "apollo-client": "^2.6.3",
+    "axios": "^0.18.1",
+    "bootstrap": "^4.4.1",
+    "bootstrap-modal": "^2.2.4",
+    "bootstrap-notify": "^3.1.3",
+    "bootstrap-validator": "^0.11.9",
+    "file": "^0.2.2",
+    "jquery": "^3.4.1",
+    "js-cookie": "^2.2.0",
+    "prop-types": "15.6.0",
+    "rc-pagination": "1.15.1",
+    "react": "16.2.0",
+    "react-bootstrap": "^1.0.0-beta.16",
+    "react-dom": "16.2.0",
+    "react-router-dom": "4.2.2",
+    "shopify-buy": "^2.6.1",
+    "simditor": "^2.3.6",
+    "validate.js": "^0.12.0"
+  }
+}

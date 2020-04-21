@@ -1,0 +1,73 @@
+.login-bg{
+    margin-top: 20px;
+    height: 260px;
+    background: url("../../../static/img/login-bg.jpg") center center;
+}
+
+.login-bg h2{
+    text-align: center;
+    font-weight: bold;
+    padding-top: 100px;
+}
+.login-bg h4{
+    text-align: center;
+    font-weight: bold;
+}
+
+.login-input{
+    width: 1200px;
+    margin: 0 auto;
+    text-align: center;
+}
+.login-input h3{
+    padding-top:30px;
+    font-weight: bold;
+    color:#e97730;
+}
+.div-login-content{
+    width: 675px;
+    height: 345px;
+    box-shadow: 0 0 6px rgba(0, 0, 0, 0.1);
+    margin: 0 auto;
+    margin-top:30px;
+}
+.input-content{
+    width:500px;
+    height: 100px;
+    margin:0 auto;
+    position: relative;
+    top:80px;
+}
+.check-inline,.password-inline{
+    display: inline-block;
+}
+.check-inline{
+    float: left;
+}
+.password-inline{
+    float: right;
+    color:#e97730;
+    font-size: 16px;
+    font-weight: 500;
+}
+.check-inline .remeber{
+    font-size: 16px;
+}
+.login-btn{
+    clear: both;
+}
+.login-btn .input-btn{
+    margin-top:10px;
+    width:200px;
+    height:50px;
+    color:#fff;
+    border:none;
+    background-color: #e97730;
+    border-radius: 5px;
+    font-size: 18px;
+    font-weight: 500;
+}
+.hr-div-login{
+    border-top:1px solid #cccccc;
+    margin-top:50px;
+}

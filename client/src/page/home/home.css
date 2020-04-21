@@ -1,0 +1,127 @@
+.objectImg{
+    width:100%;
+    margin-top:-5px;
+    min-width: 1200px;
+}
+
+.cadImg{
+    background-image: url('../../../static/img/EWOD-CAD.png');
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-attachment: scroll;
+    background-position: center center;
+    padding-top: 150px;
+    padding-bottom: 150px;
+    margin-top:-15px;
+}
+.foundryImg{
+    background-image: url('../../../static/img/EWOD-chip-compressed.png');
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-attachment: scroll;
+    background-position: center center;
+    padding-top: 150px;
+    padding-bottom: 150px;
+    margin-top:-15px;
+}
+
+.ewodImg{
+    background-image: url('../../../static/img/control-system-compressed.png');
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-attachment: scroll;
+    background-position: center center;
+    padding-top: 150px;
+    padding-bottom: 150px;
+    margin-top:-15px;
+}
+.txt{
+    text-align: center;
+    font-weight: bold;
+    height: 150px;
+}
+.txt h1{
+    color:#fff;
+    font-size: 50px;
+    font-weight: bold;
+}
+.txt-bg{
+    background-color: #e4c272;
+    color: #242847;
+    width: 180px;
+    height: 60px;
+    margin:0 auto;
+    line-height: 60px;
+    font-size: 16px;
+    cursor: pointer;
+}
+.title-div{
+    margin-top:80px;
+    margin-bottom:50px;
+    text-align: center;
+}
+.title-div h1{
+    font-size: 3.75em;
+    letter-spacing: -.05em;
+    color:#242847;
+    font-weight: bold;
+}
+.title-div .hr-line{
+    width:80px;
+    border-bottom: 3px solid #242847;
+    margin:0 auto;
+}
+.container-content{
+    width: 1200px;
+    margin:0 auto;
+}
+.content-icon .icon-div{
+    width:360px;
+    height: 350px;
+    float: left;
+    border-bottom: 1px solid rgba(0,0,0,.13);
+    margin-bottom: 50px;
+}
+
+.content-icon .icon-center{
+    margin:0 60px;
+}
+
+.figure-img{
+    width: 320px;
+    height: 320px;
+    margin: 0 auto;
+}
+
+.figure-img img{
+    max-width: 100%;
+    width: auto;
+    vertical-align: bottom;
+    transition: all 0.6s;/*图片放大过程的时间*/
+}
+.figure-img img:hover{
+    transform: scale(1.1);
+}
+.figure-img h4{
+    text-align: center;
+    margin-top:50px;
+    color:#7086c1;
+    cursor: pointer;
+}
+.bottom-img-content{
+    width: 100%;
+    height: 380px;
+    margin-top: 80px;
+    background-image: url(https://themify.me/demo/themes/ultra-ecommerce/files/2016/10/bg-sale-1400x608-1-1400x608.jpg);
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: center bottom;
+    background-color: #abcfcb;
+}
+@media screen and (max-width: 1200px) {
+    .cadImg,.foundryImg,.ewodImg{
+        float: left;
+        width:400px;
+        height: auto;
+    }
+}
