@@ -21,7 +21,7 @@ import Shop from 'page/shop/shop.jsx';
 
 //Using Shopify js-buy SDK to implement the checkout and payment functionalities
 const shopifyClient = ShopifyClient.buildClient({
-    storefrontAccessToken: process.env.SHOPIFY_TOKEN,
+    storefrontAccessToken: 'c098a4c1f8d45e55b35caf24ca9c97bb',
     domain: 'wqntest.myshopify.com'
   });
 

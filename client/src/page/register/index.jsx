@@ -20,11 +20,13 @@ class Register extends React.Component {
             country: "United States",
             state: "",
             city: "",
+            zipCode: "",
             userType: "person",
             username: "",
             email: "",
             password: "",
             confirmPassword: ""
+            
         }
         this.handleRegister = this.handleRegister.bind(this);
         this.handleChange = this.handleChange.bind(this);
@@ -159,6 +161,7 @@ class Register extends React.Component {
             country: this.state.country,
             state: this.state.state,
             city: this.state.city,
+            zipCode: this.state.zipCode,
             userType: this.state.userType,
             username: this.state.username,
             email: this.state.email,
@@ -300,6 +303,51 @@ class Register extends React.Component {
                                     </div>
                                     {/* <div className="col-md-4 col-sm-4 col-xs-4 messages-unset"></div> */}
                                 </div>
+   
+                                <div className="form-group row">
+                                    <label className="col-md-2 col-sm-2 col-xs-2 control-label">
+                                        <span>Address</span>
+                                    </label>
+                                    <div className="col-md-6 col-sm-6 col-xs-6 text-left">
+                                        <input type="text" className="form-control" placeholder="Address"
+                                               onChange={v => this.handleChange('address', v.target.value)}/>
+                                    </div>
+                                    <div className="col-md-4 col-sm-4 col-xs-4 messages-unset"></div>
+                                </div>
+
+                                <div className="form-group row">
+                                    <label className="col-md-2 col-sm-2 col-xs-2 control-label">
+                                        <span>City</span>
+                                    </label>
+                                    <div className="col-md-6 col-sm-6 col-xs-6 text-left">
+                                        <input type="text" className="form-control" placeholder="City"
+                                               onChange={v => this.handleChange('city', v.target.value)}/>
+                                    </div>
+                                    <div className="col-md-4 col-sm-4 col-xs-4 messages-unset"></div>
+                                </div>
+
+                                <div className="form-group row">
+                                    <label className="col-md-2 col-sm-2 col-xs-2 control-label">
+                                        <span>State or Province</span>
+                                    </label>
+                                    <div className="col-md-6 col-sm-6 col-xs-6 text-left">
+                                        <input type="text" className="form-control" placeholder="State or Province"
+                                               onChange={v => this.handleChange('state', v.target.value)}/>
+                                    </div>
+                                    <div className="col-md-4 col-sm-4 col-xs-4 messages-unset"></div>
+                                </div>
+
+                                <div className="form-group row">
+                                    <label className="col-md-2 col-sm-2 col-xs-2 control-label">
+                                        <span>Zip or Postal Code</span>
+                                    </label>
+                                    <div className="col-md-6 col-sm-6 col-xs-6 text-left">
+                                        <input type="text" className="form-control" placeholder="Zip or Postal Code"
+                                               onChange={v => this.handleChange('zipCode', v.target.value)}/>
+                                    </div>
+                                    <div className="col-md-4 col-sm-4 col-xs-4 messages-unset"></div>
+                                </div>
+
                                 <div className="form-group row">
                                     <label className="col-md-2 col-sm-2 col-xs-2 control-label">
                                         <span>Country</span>
@@ -554,36 +602,7 @@ class Register extends React.Component {
                                     </div>
                                     <div className="col-md-4 col-sm-4 col-xs-4 messages-unset"></div>
                                 </div>
-                                <div className="form-group row">
-                                    <label className="col-md-2 col-sm-2 col-xs-2 control-label">
-                                        <span>State or Province</span>
-                                    </label>
-                                    <div className="col-md-6 col-sm-6 col-xs-6 text-left">
-                                        <input type="text" className="form-control" placeholder="State"
-                                               onChange={v => this.handleChange('state', v.target.value)}/>
-                                    </div>
-                                    <div className="col-md-4 col-sm-4 col-xs-4 messages-unset"></div>
-                                </div>
-                                <div className="form-group row">
-                                    <label className="col-md-2 col-sm-2 col-xs-2 control-label">
-                                        <span>City</span>
-                                    </label>
-                                    <div className="col-md-6 col-sm-6 col-xs-6 text-left">
-                                        <input type="text" className="form-control" placeholder="City"
-                                               onChange={v => this.handleChange('city', v.target.value)}/>
-                                    </div>
-                                    <div className="col-md-4 col-sm-4 col-xs-4 messages-unset"></div>
-                                </div>
-                                <div className="form-group row">
-                                    <label className="col-md-2 col-sm-2 col-xs-2 control-label">
-                                        <span>Address</span>
-                                    </label>
-                                    <div className="col-md-6 col-sm-6 col-xs-6 text-left">
-                                        <input type="text" className="form-control" placeholder="Address"
-                                               onChange={v => this.handleChange('address', v.target.value)}/>
-                                    </div>
-                                    <div className="col-md-4 col-sm-4 col-xs-4 messages-unset"></div>
-                                </div>
+                                
                                 <div className="form-group login-btn">
                                     <input type="button" value="Sign Up" className="input-btn" 
                                            onClick={this.handleFormSubmit}/>
