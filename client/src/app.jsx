@@ -29,7 +29,6 @@ const shopifyClient = ShopifyClient.buildClient({
 class App extends React.Component {
     constructor(props){
         super(props);
-        console.log(shopifyClient);
     }
 
     

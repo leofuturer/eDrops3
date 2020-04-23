@@ -74,7 +74,7 @@ class Profile extends React.Component{
                 });
             }
             else {
-                console.log(res.data);
+                // console.log(res.data);
                 this.setState(
                     {
                         address: res.data.address,

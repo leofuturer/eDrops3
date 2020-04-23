@@ -13,7 +13,7 @@ class Login extends React.Component  {
     constructor(props) {
         super(props);
         this.state = {
-            usernameOrEmail: localStorage.username,
+            usernameOrEmail: localStorage.username || localStorage.email,
             password: localStorage.password,
             usertype: ""
         }
@@ -133,44 +133,35 @@ class Login extends React.Component  {
 
     handleLogin() {
         let _this = this;
-        let data;
+        // 4-23-2020: replace !data.email with a simple boolean
+        let usedEmail = /@/.test(this.state.usernameOrEmail);       
         let validationData = {};
-        if(/@/.test(this.state.usernameOrEmail)) {
-            data = {
-                email: this.state.usernameOrEmail,
-                password: this.state.password
-            }
-        }
-        else {
-            data = {
-                username: this.state.usernameOrEmail,
-                password: this.state.password
-            }
-        }
-        let url;
-        let validationUrl;
+        let url, validationUrl; //URLs for backend requests
+        let validatedUsername, validatedEmail;
         if (this.state.usertype === 'customer') {
             url = customerLogin;
-            if(!data.email) {
+            if(!usedEmail) {
                 validationUrl = `${findCustomerByWhere}?filter={"where": {"username": "${this.state.usernameOrEmail}"}}`;
             } else {
-                validationUrl = `${findCustomerByWhere}?filter={"where": {"email": "${this.state.email}"}}`;
+                //DY 4/23/2020: changed from {"email": "${this.state.email}"} to this.state.usernameOrEmail
+                // otherwise, cannot log in using email
+                validationUrl = `${findCustomerByWhere}?filter={"where": {"email": "${this.state.usernameOrEmail}"}}`;
             }
         }
-        if (this.state.usertype === 'admin') {
+        else if (this.state.usertype === 'admin') {
             url = AdminLogin;
-            if(!data.email) {
+            if(!usedEmail) {
                 validationUrl = `${findAdminByWhere}?filter={"where": {"username": "${this.state.usernameOrEmail}"}}`;
             } else {
-                validationUrl = `${findAdminByWhere}?filter={"where": {"email": "${this.state.email}"}}`;
+                validationUrl = `${findAdminByWhere}?filter={"where": {"email": "${this.state.usernameOrEmail}"}}`;
             }
         }
-        if (this.state.usertype === 'worker') {
+        else if (this.state.usertype === 'worker') {
             url = FoundryWorkerLogin;
-            if(!data.email) {
+            if(!usedEmail) {
                 validationUrl = `${findOneWorkerByWhere}?filter={"where": {"username": "${this.state.usernameOrEmail}"}}`;
             } else {
-                validationUrl = `${findOneWorkerByWhere}?filter={"where": {"email": "${this.state.email}"}}`;
+                validationUrl = `${findOneWorkerByWhere}?filter={"where": {"email": "${this.state.usernameOrEmail}"}}`;
             }
         }
         _this.clearReminder();
@@ -179,6 +170,7 @@ class Login extends React.Component  {
         if (nameEmailResult && radioResult) {
             API.Request(validationUrl, 'GET', validationData, false)
             .then(res => {
+                // console.log(res.data);
                 if (res.data.length === 0) {
                     document.querySelector(".name-field").classList.add("has-error");
                     let block = document.createElement("p");
@@ -186,20 +178,25 @@ class Login extends React.Component  {
                     block.classList.add("error");
                     block.innerHTML = "The username/email has not been registered!";
                     document.querySelector(".registrationError").appendChild(block);
-                }
+                }              
                 else {
+                    // console.log(res.data);
+                    // res.data is an array with only 1 element, so need to do [0]
+                    validatedUsername = res.data[0].username;
+                    validatedEmail = res.data[0].email;
                     API.Request(url, 'POST', data, false)
                     .then(res => {
+                        // 4/23/2020: Always have cookies and local storage
+                        // save both username and email
                         Cookies.set('access_token', res.data.id);
                         Cookies.set('userId', res.data.userId);
                         Cookies.set('userType', _this.state.usertype);
-                        if (!data.email) {
-                            Cookies.set('username', this.state.usernameOrEmail);
-                            localStorage.setItem('usernameOrEmail', this.state.usernameOrEmail);
-                            localStorage.setItem('password', this.state.password);
-                        } else {
-                            Cookies.set('email', this.state.usernameOrEmail);
-                        }
+                        Cookies.set('username', validatedUsername);
+                        // Cookies.set('email', validatedEmail);
+
+                        localStorage.setItem('username', validatedUsername);
+                        localStorage.setItem('email', validatedEmail);
+                        localStorage.setItem('password', this.state.password);
                         _this.props.history.push('/home');
                     })
                     .catch(err => {
