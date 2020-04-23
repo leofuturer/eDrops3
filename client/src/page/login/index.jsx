@@ -13,7 +13,7 @@ class Login extends React.Component  {
     constructor(props) {
         super(props);
         this.state = {
-            usernameOrEmail: localStorage.username || localStorage.email,
+            usernameOrEmail: localStorage.username,
             password: localStorage.password,
             usertype: ""
         }
@@ -187,7 +187,6 @@ class Login extends React.Component  {
                     API.Request(url, 'POST', data, false)
                     .then(res => {
                         // 4/23/2020: Always have cookies and local storage
-                        // save both username and email
                         Cookies.set('access_token', res.data.id);
                         Cookies.set('userId', res.data.userId);
                         Cookies.set('userType', _this.state.usertype);
@@ -195,7 +194,6 @@ class Login extends React.Component  {
                         // Cookies.set('email', validatedEmail);
 
                         localStorage.setItem('username', validatedUsername);
-                        localStorage.setItem('email', validatedEmail);
                         localStorage.setItem('password', this.state.password);
                         _this.props.history.push('/home');
                     })
