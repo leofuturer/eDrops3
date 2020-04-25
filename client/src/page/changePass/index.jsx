@@ -181,7 +181,7 @@ class FormsPage extends React.Component  {
     }
 
     render() {
-        if(Cookies.get('username') ===undefined) {
+        if(Cookies.get('username') ===undefined && Cookies.get('email') === undefined) {
             return <Redirect to='/login'></Redirect>
         }
         return(

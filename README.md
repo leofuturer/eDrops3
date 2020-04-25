@@ -19,19 +19,20 @@ To achieve a functional EWOD cloud manufacturing website by **improving** the mo
 - [ ] Replace the order assignment process with the automatical assignment based on the material customer chooses
 - [ ] Implement the order detail sub window with bootstrap <Modal> or other more delicated component instead of a new page(what we are using right now) 
 - [ ] [code quality improvement] Reorganize all the CSS rules——ensure match each page file with one CSS file and avoid using CSS rules from unmatched CSS files (right now we use CSS rules somewhere from matched files in order to reuse some rules which leads to the coupling of layout features of different web pages)
-- [ ] Upload Mask File link should direct unlogged user to the login page
+- [x] Upload Mask File link should direct unlogged user to the login page
 - [ ] [code quality improvement] Decouple the routing functionalities from the <App> component() —— Maybe use <RouteMap>
 - [ ] [code quality improvement] Optimize React.js code by reducing unnecessary "state"s
 - [ ] Create "under construction" page so that users know a broken link isn't actually broken and that simply we're still adding the feature.
-- [ ] Add cart page (currently the cart icon at the top toolbar doesn't work)
+- [ ] Add cart page? (currently the cart icon at the top toolbar doesn't work)
 
 **Backend**
 - [ ] Optimize the backend project file structure
-- [ ] Enable the email login functionality and make sure the username shows up whatever login information we use. Right now we can only use username to login
+- [x] Enable the email login functionality and make sure the username shows up whatever login information we use. Right now we can only use username to login
 - [ ] Improve data security——apply authorization(supported by Loopback) to prevent unknown user retrieving data via our APIs
 - [ ] Add the specific time to the time stamp and display it in the frontend(right now there's only date showing up)
 - [ ] Integrate the user address information with address information from shopify as well as the billing address in the checkout page
 - [ ] Email activation link to user after registration, the account is available only after the user clicks the activation link
+- [ ] Use Loopback's email login feature, which only lets you login with email if it's validated
 
 **Workflow Improvement**
 - [ ] Create automated testing to be done on every push to the repository.
@@ -92,13 +93,13 @@ To do this in Windows (using Command Prompt):
 `set ENV_VAR_NAME=env_var_value`  
 `set APP_MYSQL_PASSWORD=password123 #sample: set APP_MYSQL_PASSWORD to password123`  
 
-To do so in Linux/MacOS:
+To do so in Linux/MacOS:  
 `export ENV_VAR_NAME=env_var_value`  
 `export APP_MYSQL_PASSWORD=password123 #sample: set APP_MYSQL_PASSWORD to password123`  
 
 Note: Setting it in Windows makes those environment variables only available in that command prompt session. If you wish to have the variables persist and usable across multiple sessions, use the `setx` command instead of `set`. However, `setx` has a 1024 character limit, so be careful.
 
-Note: Setting it in Linux/MacOS makes these environment variables only available in that user session. If you wish to have the variables persist across multiple logins sessions, include it in the appropriate profile file for your *nix distribution (such as `~/.bash_profile`, `~/.bash_login`, etc.).
+Note: Setting it in Linux/MacOS makes these environment variables only available in that user session. If you wish to have the variables persist across multiple logins sessions, include it in the appropriate profile file for your *nix distribution and shell (such as `~/.bash_profile`, `~/.bash_login`, etc.).
 
 Then, initialize the database schema and add seed data. WARNING: This will delete everything previously in the database!  
 `$ node ./db/reset-db.js`  

@@ -12,10 +12,11 @@ class NavTop extends React.Component{
     }
     signout() {
         this.setState({show:false});
-        Cookies.remove('username')
-        Cookies.remove('userId')
-        Cookies.remove('access_token')
-        Cookies.remove('userType')
+        Cookies.remove('username');
+        // Cookies.remove('email');
+        Cookies.remove('userId');
+        Cookies.remove('access_token');
+        Cookies.remove('userType');
         //this.props.history.push('/home') 
         //we dont need this because the NavLink will redirect us to the home page
     }
@@ -24,7 +25,7 @@ class NavTop extends React.Component{
     }
     showDrowpn() {
         if(Cookies.get('userType') != 'customer'){
-            this.setState({drownH:'60px'})
+            this.setState({drownH:'60px'});
         }
         this.setState({show:!this.state.show});
     }
@@ -37,6 +38,10 @@ class NavTop extends React.Component{
         var drwonH = {
             height: drownHeight
         }
+
+        // 4/23/2020: both username and email are set for the cookie
+        // when login is successful, so only need to check one - DY
+        var notLoggedIn = (Cookies.get('username') === undefined);
         return (
             //At this time the className "header-div" has no use
             <header className="header-div">
@@ -54,10 +59,14 @@ class NavTop extends React.Component{
                             <li><NavLink to="#">Community</NavLink></li>
                             <li><NavLink to="#">Support</NavLink></li>
                             <li>
-                                <NavLink to="#">
-                                        <i className="fa fa-shopping-cart"></i>
-                                </NavLink>
+                                { // 4/23/2020: Only provide link to cart if customer is logged in - DY
+                                    notLoggedIn
+                                        ? <NavLink to="/login"><i className="fa fa-shopping-cart"></i></NavLink>
+                                        : <NavLink to="#"><i className="fa fa-shopping-cart"></i></NavLink> //to be implemented                               
+                                }
                             </li>
+
+                            { /* Should we be using NavLink or href? NavLink prevents page reloading */ }
                             <li><a href="#"><i className="fa fa-search"></i></a></li>
                             {
                                 Cookies.get('userType') === 'customer'
@@ -65,8 +74,7 @@ class NavTop extends React.Component{
                                     : null
                             }
                             {
-                                Cookies.get('username') === undefined && Cookies.get('email') === undefined 
-                                    ? null
+                                notLoggedIn ? null
                                     : (Cookies.get('userType') === 'customer'
                                         ? <li><a href="/manage/files"><i className="fa fa-database"></i></a></li>
                                         : (Cookies.get('userType') === 'admin'
@@ -75,12 +83,11 @@ class NavTop extends React.Component{
                                     )
                             }
                             {
-                                Cookies.get('username') === undefined && Cookies.get('email') === undefined
-                                ?
-                                    <li><NavLink to="/login">Login</NavLink></li>
+                                notLoggedIn ? <li><NavLink to="/login">Login</NavLink></li>
                                 :
                                     <li className="li-username">
-                                        <a onClick={()=>this.showDrowpn()}  style={{cursor:'pointer'}}>{Cookies.get('username') || Cookies.get('email')}</a>
+                                        {/* 4/23/2020: Only show username to avoid text that's too long, which will break the CSS */}
+                                        <a onClick={()=>this.showDrowpn()}  style={{cursor:'pointer'}}>{Cookies.get('username')}</a>
                                         <div style={drown} className="div-drownup">
                                             <ul className="list-styled" style={drwonH}>
                                                 <li onClick={()=>this.handleHideDrown()}>
@@ -109,14 +116,16 @@ class NavTop extends React.Component{
                                                 }
                                                 <li onClick={()=>this.signout()}>
                                                     <i className="fa fa-sign-out" style={{paddingRight:'15px'}}></i>
-                                                    <NavLink to="/home">Logout</NavLink>
+                                                    {/* Change from NavLink to href to force page redirect
+                                                    Otherwise user may stay on sensitive pages */}
+                                                    <a href="/home">Logout</a>
                                                 </li>
                                             </ul>
                                         </div>
                                     </li>
                             }
                             {
-                                Cookies.get('username') === undefined
+                                notLoggedIn
                                     ? <li><NavLink to="/register">Sign Up</NavLink></li>
                                     : null
                             }

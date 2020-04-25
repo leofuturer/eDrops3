@@ -13,7 +13,7 @@ class Home extends React.Component{
                         <div className="txt">
                             <h1>EWOD CAD</h1>
                             <div className="txt-bg">
-                                SEEIN ACTION
+                                SEE IN ACTION
                             </div>
                         </div>
                     </div>
