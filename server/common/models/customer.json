@@ -30,6 +30,9 @@
     "city": {
       "type": "string"
     },
+    "zipCode":{
+      "type": "string"
+    },
     "userType": {
       "type": "string",
       "required": true,

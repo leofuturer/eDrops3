@@ -33,8 +33,8 @@ module.exports = {
         secure: true,
         port: 465,
         auth: {
-          user: "qiningwang_bit@163.com",
-          pass: "edropTest123"
+          user: process.env.APP_EMAIL_USERNAME || "qiningwang_bit@163.com",
+          pass: process.env.APP_EMAIL_PASSWORD || "edropTest123"
         }
       }
     ]

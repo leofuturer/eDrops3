@@ -27,17 +27,17 @@ class Login extends React.Component  {
 
     componentDidMount() {
         if (localStorage.chkbx === 'true') {
-            console.log("in the 1");
+            // console.log("in the 1");
             $('.remeber-me').prop('checked', true);
             $('.pass-input').val(localStorage.password);
             $('.name-input').val(localStorage.username);
         } else {
-            console.log("in the 2");
+            // console.log("in the 2");
             $('.remeber-me').prop('checked', false);
             $('.pass-input').val('');
             $('.name-input').val('');
-            console.log('password:' + $('pass-input').val());
-            console.log('username:' + $('.name-input').val());
+            // console.log('password:' + $('pass-input').val());
+            // console.log('username:' + $('.name-input').val());
         }
     }
 

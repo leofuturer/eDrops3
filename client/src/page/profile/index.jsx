@@ -16,6 +16,7 @@ class Profile extends React.Component{
             country: "",
             state: "",
             city: "",
+            zipCode: "",
             userType: "person",
             username: "",
             email: "",
@@ -50,6 +51,7 @@ class Profile extends React.Component{
                         country: "N/A",
                         state: "N/A",
                         city: "N/A",
+                        zipCode: "N/A",
                         userType: "person",
                         username: res.data.username,
                         email: res.data.email
@@ -64,6 +66,7 @@ class Profile extends React.Component{
                     country: res.data.country,
                     state: res.data.state,
                     city: res.data.city,
+                    zipCode: res.data.zipCode,
                     userType: res.data.userType,
                     username: res.data.username,
                     email: res.data.email,
@@ -81,6 +84,7 @@ class Profile extends React.Component{
                         country: res.data.country,
                         state: res.data.state,
                         city: res.data.city,
+                        zipCode: res.data.zipCode,
                         userType: res.data.userType,
                         username: res.data.username,
                         email: res.data.email
@@ -105,6 +109,7 @@ class Profile extends React.Component{
             country: this.state.country,
             state: this.state.state,
             city: this.state.city,
+            zipCode: this.state.zipCode,
             userType: "person",
             username: this.state.username,
             email: this.state.email
@@ -232,6 +237,14 @@ class Profile extends React.Component{
                                         </label>
                                         <div className="col-md-8 col-sm-8 col-xs-8">
                                             <input type="text" className="form-control" value={this.state.state} onChange={v => this.handleChange('state', v.target.value)}/>
+                                        </div>
+                                    </div>
+                                    <div className="form-group">
+                                        <label className="col-md-4 col-sm-4 col-xs-4 control-label">
+                                            <span>Zip or Postal Code</span>
+                                        </label>
+                                        <div className="col-md-8 col-sm-8 col-xs-8">
+                                            <input type="text" className="form-control" value={this.state.zipCode} onChange={v => this.handleChange('zipCode', v.target.value)}/>
                                         </div>
                                     </div>
                                     <div className="form-group">
