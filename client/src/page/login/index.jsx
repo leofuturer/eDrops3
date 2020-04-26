@@ -133,14 +133,25 @@ class Login extends React.Component  {
 
     handleLogin() {
         let _this = this;
-        // 4-23-2020: replace !data.email with a simple boolean
-        let usedEmail = /@/.test(this.state.usernameOrEmail);       
+        let data;
+        if(/@/.test(this.state.usernameOrEmail)) {
+            data = {
+                email: this.state.usernameOrEmail,
+                password: this.state.password
+            }
+        }
+        else {
+            data = {
+                username: this.state.usernameOrEmail,
+                password: this.state.password
+            }
+        }      
         let validationData = {};
         let url, validationUrl; //URLs for backend requests
         let validatedUsername, validatedEmail;
         if (this.state.usertype === 'customer') {
             url = customerLogin;
-            if(!usedEmail) {
+            if(!data.email) {
                 validationUrl = `${findCustomerByWhere}?filter={"where": {"username": "${this.state.usernameOrEmail}"}}`;
             } else {
                 //DY 4/23/2020: changed from {"email": "${this.state.email}"} to this.state.usernameOrEmail
@@ -150,7 +161,7 @@ class Login extends React.Component  {
         }
         else if (this.state.usertype === 'admin') {
             url = AdminLogin;
-            if(!usedEmail) {
+            if(!data.email) {
                 validationUrl = `${findAdminByWhere}?filter={"where": {"username": "${this.state.usernameOrEmail}"}}`;
             } else {
                 validationUrl = `${findAdminByWhere}?filter={"where": {"email": "${this.state.usernameOrEmail}"}}`;
@@ -158,7 +169,7 @@ class Login extends React.Component  {
         }
         else if (this.state.usertype === 'worker') {
             url = FoundryWorkerLogin;
-            if(!usedEmail) {
+            if(!data.email) {
                 validationUrl = `${findOneWorkerByWhere}?filter={"where": {"username": "${this.state.usernameOrEmail}"}}`;
             } else {
                 validationUrl = `${findOneWorkerByWhere}?filter={"where": {"email": "${this.state.usernameOrEmail}"}}`;
@@ -170,7 +181,6 @@ class Login extends React.Component  {
         if (nameEmailResult && radioResult) {
             API.Request(validationUrl, 'GET', validationData, false)
             .then(res => {
-                // console.log(res.data);
                 if (res.data.length === 0) {
                     document.querySelector(".name-field").classList.add("has-error");
                     let block = document.createElement("p");
@@ -191,7 +201,6 @@ class Login extends React.Component  {
                         Cookies.set('userId', res.data.userId);
                         Cookies.set('userType', _this.state.usertype);
                         Cookies.set('username', validatedUsername);
-                        // Cookies.set('email', validatedEmail);
 
                         localStorage.setItem('username', validatedUsername);
                         localStorage.setItem('password', this.state.password);
@@ -204,7 +213,7 @@ class Login extends React.Component  {
                             document.querySelector(".pass-field").classList.add("has-error");
                             block.classList.add("help-block");
                             block.classList.add("error");
-                            block.innerHTML = "The possword is incorrect!";
+                            block.innerHTML = "Incorrect password!";
                             document.querySelector(".passwordError").appendChild(block);
                         }
                     })
