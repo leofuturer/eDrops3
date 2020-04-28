@@ -89,17 +89,32 @@ Then make changes, add them, and commit them, as many times as you want:
 To push your changes onto a new branch on the repository, which can be multiple times whenever you want to publish your changes:  
 `$ git push origin new_feature_name`  
 
-Once you're done with the feature, go on Github and open a pull request to merge into master. Then, wait for someone to approve the pull request.  
+Once you're done with the feature, go on Github and open a pull request to merge into master. If the Github says that you cannot automatically merge the branches, you need to resolve the conflicts manually (see section below). If the branches can be merged automatically, skip this section. Then, wait for someone to approve the pull request.  
+#### -----Resolving merge conflicts-----
+Switch to master branch and get the latest version:  
+`$ git checkout master`  
+`$ git pull origin master`  
 
-Approving the pull request: this will create a merge commit that has two commits as parents (one from master and one from new_feature_name branch). After approving the pull request, delete the branch on Github.  
+Merge it manually (on your local machine):  
+`$ git merge new_feature_name`  
+Git should tell you that there was a merge conflict and prompt you to fix it. Resolve the merge conflict in your text editor, and then save the files you fixed merge conflicts in:  
+`$ git add merge_conflict_file_1 merge_conflict_file_2 etc...`  
+Tell git to continue the merge process. It should resolve at this point and you should be prompted to type in a commit message:  
+`$ git merge --continue`  
 
-Once your chage has been approved, to start work on the next feature, repeat from the top of this set of instructions:  
+Push your changes to your Github branch. However, since we're pushing from master this, the syntax is a bit different. The branch in front of the color is the (remote) branch you are pushing to, while the branch after the colon is the one you are pushing from:  
+`$ git push origin new_feature_name:master`  
+#### -----End section on resolving merge conflicts-----
+
+Once any merge conflicts have been resolved, or if there are none, approving the pull request: this will create a merge commit (or not, if there was a merge conflict) that has two commits as parents (one from master and one from new_feature_name branch). After approving the pull request, delete the branch on Github.  
+
+Once your change has been approved, to start work on the next feature, repeat from the top of this set of instructions:  
 `$ git checkout master`  
 `$ git pull origin master`  
 `$ git checkout -b new_feature_2`  
 ...and so on.  
 
-Optional: on your local machine, if you want to delete the brnach and the associated remote branch (which has already been deleted on Github):  
+Optional: on your local machine, if you want to delete the branch and the associated remote branch (which has already been deleted on Github):  
 `$ git branch -d new_feature_name`  
 `$ git remote prune origin`  
 
@@ -120,6 +135,8 @@ At this point, make sure that you have a mySQL server running and have created a
     APP_MYSQL_PORT  
     APP_MYSQL_USERNAME  
     APP_MYSQL_PASSWORD  
+
+Scroll down for a listing of all the environment variables used in this project.  
 
 To do this in Windows (using Command Prompt):  
 `$ set ENV_VAR_NAME=env_var_value`  
