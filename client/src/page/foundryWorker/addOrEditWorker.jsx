@@ -111,7 +111,7 @@ class AddOrEditWorker extends React.Component{
                         <form action="">
                             <div className="form-group">
                                 <label className="col-md-4 col-sm-4 col-xs-4 control-label">
-                                    <span>address</span>
+                                    <span>Address</span>
                                 </label>
                                 <div className="col-md-8 col-sm-8 col-xs-8">
                                     <input type="text" className="form-control" value={this.state.address} onChange={v => this.handleChange('address', v.target.value)}/>
@@ -119,7 +119,7 @@ class AddOrEditWorker extends React.Component{
                             </div>
                             <div className="form-group">
                                 <label className="col-md-4 col-sm-4 col-xs-4 control-label">
-                                    <span>firstName</span>
+                                    <span>First Name</span>
                                 </label>
                                 <div className="col-md-8 col-sm-8 col-xs-8">
                                     <input type="text" className="form-control" value={this.state.firstName} onChange={v => this.handleChange('firstName', v.target.value)}/>
@@ -127,7 +127,7 @@ class AddOrEditWorker extends React.Component{
                             </div>
                             <div className="form-group">
                                 <label className="col-md-4 col-sm-4 col-xs-4 control-label">
-                                    <span>lastName</span>
+                                    <span>Last Name</span>
                                 </label>
                                 <div className="col-md-8 col-sm-8 col-xs-8">
                                     <input type="text" className="form-control" value={this.state.lastName} onChange={v => this.handleChange('lastName', v.target.value)} />
@@ -135,7 +135,7 @@ class AddOrEditWorker extends React.Component{
                             </div>
                             <div className="form-group">
                                 <label className="col-md-4 col-sm-4 col-xs-4 control-label">
-                                    <span>phoneNumber</span>
+                                    <span>Phone Number</span>
                                 </label>
                                 <div className="col-md-8 col-sm-8 col-xs-8">
                                     <input type="text" className="form-control" value={this.state.phoneNumber} onChange={v => this.handleChange('phoneNumber', v.target.value)}/>
@@ -143,7 +143,7 @@ class AddOrEditWorker extends React.Component{
                             </div>
                             <div className="form-group">
                                 <label className="col-md-4 col-sm-4 col-xs-4 control-label">
-                                    <span>country</span>
+                                    <span>Country</span>
                                 </label>
                                 <div className="col-md-8 col-sm-8 col-xs-8">
                                     <input type="text" className="form-control" value={this.state.country} onChange={v => this.handleChange('country', v.target.value)} />
@@ -151,7 +151,7 @@ class AddOrEditWorker extends React.Component{
                             </div>
                             <div className="form-group">
                                 <label className="col-md-4 col-sm-4 col-xs-4 control-label">
-                                    <span>state</span>
+                                    <span>State</span>
                                 </label>
                                 <div className="col-md-8 col-sm-8 col-xs-8">
                                     <input type="text" className="form-control" value={this.state.state} onChange={v => this.handleChange('state', v.target.value)}/>
@@ -159,7 +159,7 @@ class AddOrEditWorker extends React.Component{
                             </div>
                             <div className="form-group">
                                 <label className="col-md-4 col-sm-4 col-xs-4 control-label">
-                                    <span>city</span>
+                                    <span>City</span>
                                 </label>
                                 <div className="col-md-8 col-sm-8 col-xs-8">
                                     <input type="text" className="form-control" value={this.state.city} onChange={v => this.handleChange('city', v.target.value)}/>
@@ -167,7 +167,7 @@ class AddOrEditWorker extends React.Component{
                             </div>
                             <div className="form-group">
                                 <label className="col-md-4 col-sm-4 col-xs-4 control-label">
-                                    <span>username</span>
+                                    <span>Username</span>
                                 </label>
                                 <div className="col-md-8 col-sm-8 col-xs-8">
                                     <input type="text" className="form-control" value={this.state.username} onChange={v => this.handleChange('username', v.target.value)}/>
@@ -175,7 +175,7 @@ class AddOrEditWorker extends React.Component{
                             </div>
                             <div className="form-group">
                                 <label className="col-md-4 col-sm-4 col-xs-4 control-label">
-                                    <span>email</span>
+                                    <span>Email</span>
                                 </label>
                                 <div className="col-md-8 col-sm-8 col-xs-8">
                                     <input type="text" className="form-control" value={this.state.email} onChange={v => this.handleChange('email', v.target.value)}/>
@@ -183,7 +183,7 @@ class AddOrEditWorker extends React.Component{
                             </div>
                             <div className="form-group">
                                 <label className="col-md-4 col-sm-4 col-xs-4 control-label">
-                                    <span>affiliation</span>
+                                    <span>Affiliation</span>
                                 </label>
                                 <div className="col-md-8 col-sm-8 col-xs-8">
                                     <input type="text" className="form-control" value={this.state.affiliation} onChange={v => this.handleChange('affiliation', v.target.value)}/>
@@ -195,7 +195,7 @@ class AddOrEditWorker extends React.Component{
                                 <div>
                                     <div className="form-group">
                                         <label className="col-md-4 col-sm-4 col-xs-4 control-label">
-                                            <span>password</span>
+                                            <span>Password</span>
                                         </label>
                                         <div className="col-md-8 col-sm-8 col-xs-8">
                                             <input type="text" className="form-control" onChange={v => this.handleChange('password', v.target.value)}/>
@@ -203,7 +203,7 @@ class AddOrEditWorker extends React.Component{
                                     </div>
                                     <div className="form-group">
                                         <label className="col-md-4 col-sm-4 col-xs-4 control-label">
-                                            <span>confirmPassword</span>
+                                            <span>Confirm Password</span>
                                         </label>
                                         <div className="col-md-8 col-sm-8 col-xs-8">
                                             <input type="text" className="form-control" onChange={v => this.handleChange('confirmPassword', v.target.value)}/>
