@@ -53,7 +53,7 @@ class Login extends React.Component  {
     }
 
     handleChange(key, value) {
-        console.log("I am called!");
+        // console.log("I am called!");
         this.setState(
             {
                 [key]: value
@@ -176,7 +176,7 @@ class Login extends React.Component  {
                     let block = document.createElement("p");
                     block.classList.add("help-block");
                     block.classList.add("error");
-                    block.innerHTML = "The username/email has not been registered!";
+                    block.innerHTML = "The username/email has not been registered";
                     document.querySelector(".registrationError").appendChild(block);
                 }              
                 else {
@@ -204,7 +204,7 @@ class Login extends React.Component  {
                             document.querySelector(".pass-field").classList.add("has-error");
                             block.classList.add("help-block");
                             block.classList.add("error");
-                            block.innerHTML = "The possword is incorrect!";
+                            block.innerHTML = "Incorrect password or email verification required";
                             document.querySelector(".passwordError").appendChild(block);
                         }
                     })

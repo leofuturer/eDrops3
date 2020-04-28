@@ -139,5 +139,21 @@ A: Make sure you set the environment variables in the same shell window that you
 Q: Cannot connect to the mySQL database?
 A: Make sure you have it running (on Windows, in the System Tray, right click on the mySQL notifier, and check if the server is running).
 
+### List of Environment Variables
+If things aren't working, check that these are correct for your environment.
+
+| Environment Variable    | Description                                         | Default Value              |
+|-------------------------|-----------------------------------------------------|----------------------------|
+| APP\_MYSQL\_HOST        | Hostname for MySQL database                         | "localhost"                |
+| APP\_MYSQL\_PORT        | Port number for MySQL database                      | 3306                       |
+| APP\_MYSQL\_USERNAME    | Username for MySQL database                         | "root"                     |
+| APP\_MYSQL\_PASSWORD    | Password for MySQL database                         | "123456"                   |
+| APP\_FRONTEND\_HOSTNAME | Hostname for front end server                       | "localhost"                |
+| APP\_FRONTEND\_PORT     | Port number for front end server                    | 8086                       |
+| APP\_EMAIL\_HOST        | Hostname for email server used to send emails       | "smtp\.gmail\.com"         |
+| APP\_EMAIL\_PORT        | Port number for email server used to send emails    | 465                        |
+| APP\_EMAIL\_USERNAME    | Email address for email account used to send emails | "qiningwang\_bit@163\.com" |
+| APP\_EMAIL\_PASSWORD    | Password for email account used to send emails      | "edropTest123"             |
+
 ## ISSUES
 - [ ] Assign file functions are all useless, need to be deleted and make sure no other functionalities are affected

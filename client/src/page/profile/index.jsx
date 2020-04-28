@@ -47,7 +47,7 @@ class Profile extends React.Component{
                         address: "N/A",
                         firstName: "N/A",
                         lastName: "N/A",
-                        phoneNumber: "N/A",
+                        phoneNumber: res.data.phoneNumber,
                         country: "N/A",
                         state: "N/A",
                         city: "N/A",
@@ -170,27 +170,36 @@ class Profile extends React.Component{
                     <h2>{profileContent}</h2>
                     <div className="form-div">
                         <form action="">
-                            {
+                            {/* <div> */}
+                                <div className="form-group">
+                                    <label className="col-md-4 col-sm-4 col-xs-4 control-label">
+                                        <span>Username</span>
+                                    </label>
+                                    <div className="col-md-8 col-sm-8 col-xs-8">
+                                        <input type="text" className="form-control" readOnly value={this.state.username} onChange={v => this.handleChange('username', v.target.value)}/>
+                                    </div>
+                                </div>
+                                <div className="form-group">
+                                    <label className="col-md-4 col-sm-4 col-xs-4 control-label">
+                                        <span>Email</span>
+                                    </label>
+                                    <div className="col-md-8 col-sm-8 col-xs-8">
+                                        <input type="text" className="form-control" readOnly value={this.state.email} onChange={v => this.handleChange('email', v.target.value)}/>
+                                    </div>
+                                </div>
+                                <div className="form-group">
+                                    <label className="col-md-4 col-sm-4 col-xs-4 control-label">
+                                        <span>Phone Number</span>
+                                    </label>
+                                    <div className="col-md-8 col-sm-8 col-xs-8">
+                                        <input type="text" className="form-control" value={this.state.phoneNumber} onChange={v => this.handleChange('phoneNumber', v.target.value)}/>
+                                    </div>
+                                </div>
+                            {/* </div> */}
+                                {
                                 Cookies.get("userType") === "admin"
                                 ? null
-                                :
-                                <div>
-                                    <div className="form-group">
-                                        <label className="col-md-4 col-sm-4 col-xs-4 control-label">
-                                            <span>Username</span>
-                                        </label>
-                                        <div className="col-md-8 col-sm-8 col-xs-8">
-                                            <input type="text" className="form-control" value={this.state.username} onChange={v => this.handleChange('username', v.target.value)}/>
-                                        </div>
-                                    </div>
-                                    <div className="form-group">
-                                        <label className="col-md-4 col-sm-4 col-xs-4 control-label">
-                                            <span>Email</span>
-                                        </label>
-                                        <div className="col-md-8 col-sm-8 col-xs-8">
-                                            <input type="text" className="form-control" value={this.state.email} onChange={v => this.handleChange('email', v.target.value)}/>
-                                        </div>
-                                    </div>       
+                                : <div>
                                     <div className="form-group">
                                         <label className="col-md-4 col-sm-4 col-xs-4 control-label">
                                             <span>First Name</span>
@@ -207,14 +216,7 @@ class Profile extends React.Component{
                                             <input type="text" className="form-control" value={this.state.lastName} onChange={v => this.handleChange('lastName', v.target.value)} />
                                         </div>
                                     </div>
-                                    <div className="form-group">
-                                        <label className="col-md-4 col-sm-4 col-xs-4 control-label">
-                                            <span>Phone Number</span>
-                                        </label>
-                                        <div className="col-md-8 col-sm-8 col-xs-8">
-                                            <input type="text" className="form-control" value={this.state.phoneNumber} onChange={v => this.handleChange('phoneNumber', v.target.value)}/>
-                                        </div>
-                                    </div>
+                                    
                                     <div className="form-group">
                                         <label className="col-md-4 col-sm-4 col-xs-4 control-label">
                                             <span>Address</span>

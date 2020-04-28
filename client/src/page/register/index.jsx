@@ -41,8 +41,6 @@ class Register extends React.Component {
         this.setState(
             {
                 [key]: value
-            }, () => {
-                console.log(this.state.country);
             }
         );
      }
@@ -170,7 +168,8 @@ class Register extends React.Component {
         // console.log(data); 
         API.Request(customerSignUp, 'POST', data, false)
         .then(res => {
-            alert("Your have successfully signed up, please log in using your new account!");
+            console.log(res);
+            alert("Your have successfully signed up, please verify your email to log in using your new account!");
             this.props.history.push('/login');
         })
         .catch(error => {
