@@ -29,9 +29,9 @@ module.exports = {
     transports: [
       {
         type: "SMTP",
-        host: "smtp.163.com",
+        host: process.env.APP_EMAIL_HOST || "smtp.gmail.com",
         secure: true,
-        port: 465,
+        port: process.env.APP_EMAIL_PORT || 465,
         auth: {
           user: process.env.APP_EMAIL_USERNAME || "qiningwang_bit@163.com",
           pass: process.env.APP_EMAIL_PASSWORD || "edropTest123"

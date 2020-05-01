@@ -71,6 +71,38 @@ Some code to initiate the database automatially (build schemas and import seed d
 * /server  
 Common file structure of Loopback
 
+## Using Git
+To copy this repository:  
+`$ git clone https://github.com/leofuturer/Edrop-v2.0.0.git`  
+
+To start work on a feature, switch to your local master branch:  
+`$ git checkout master`  
+Sync with the repository to get the latest version:  
+`$ git pull origin master`  
+Create a branch for your new feature:  
+`$ git checkout -b new_feature_name`  
+
+Then make changes, add them, and commit them, as many times as you want:  
+`$ git add file_1 file_2 etc...`  
+`$ git commit`  
+
+To push your changes onto a new branch on the repository, which can be multiple times whenever you want to publish your changes:  
+`$ git push origin new_feature_name`  
+
+Once you're done with the feature, go on Github and open a pull request to merge into master. Then, wait for someone to approve the pull request.  
+
+Approving the pull request: this will create a merge commit that has two commits as parents (one from master and one from new_feature_name branch). After approving the pull request, delete the branch on Github.  
+
+Once your chage has been approved, to start work on the next feature, repeat from the top of this set of instructions:  
+`$ git checkout master`  
+`$ git pull origin master`  
+`$ git checkout -b new_feature_2`  
+...and so on.  
+
+Optional: on your local machine, if you want to delete the brnach and the associated remote branch (which has already been deleted on Github):  
+`$ git branch -d new_feature_name`  
+`$ git remote prune origin`  
+
 ## SETUP
 ### Steps to run the code on localhost
 To get it running:  
@@ -90,8 +122,8 @@ At this point, make sure that you have a mySQL server running and have created a
     APP_MYSQL_PASSWORD  
 
 To do this in Windows (using Command Prompt):  
-`set ENV_VAR_NAME=env_var_value`  
-`set APP_MYSQL_PASSWORD=password123 #sample: set APP_MYSQL_PASSWORD to password123`  
+`$ set ENV_VAR_NAME=env_var_value`  
+`$ set APP_MYSQL_PASSWORD=password123 #sample: set APP_MYSQL_PASSWORD to password123`  
 
 To do so in Linux/MacOS:  
 `export ENV_VAR_NAME=env_var_value`  
@@ -138,6 +170,22 @@ A: Make sure you set the environment variables in the same shell window that you
 
 Q: Cannot connect to the mySQL database?
 A: Make sure you have it running (on Windows, in the System Tray, right click on the mySQL notifier, and check if the server is running).
+
+### List of Environment Variables
+If things aren't working, check that these are correct for your environment.
+
+| Environment Variable    | Description                                         | Default Value              |
+|-------------------------|-----------------------------------------------------|----------------------------|
+| APP\_MYSQL\_HOST        | Hostname for MySQL database                         | "localhost"                |
+| APP\_MYSQL\_PORT        | Port number for MySQL database                      | 3306                       |
+| APP\_MYSQL\_USERNAME    | Username for MySQL database                         | "root"                     |
+| APP\_MYSQL\_PASSWORD    | Password for MySQL database                         | "123456"                   |
+| APP\_FRONTEND\_HOSTNAME | Hostname for front end server                       | "localhost"                |
+| APP\_FRONTEND\_PORT     | Port number for front end server                    | 8086                       |
+| APP\_EMAIL\_HOST        | Hostname for email server used to send emails       | "smtp\.gmail\.com"         |
+| APP\_EMAIL\_PORT        | Port number for email server used to send emails    | 465                        |
+| APP\_EMAIL\_USERNAME    | Email address for email account used to send emails | "qiningwang\_bit@163\.com" |
+| APP\_EMAIL\_PASSWORD    | Password for email account used to send emails      | "edropTest123"             |
 
 ## ISSUES
 - [ ] Assign file functions are all useless, need to be deleted and make sure no other functionalities are affected
