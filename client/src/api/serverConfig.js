@@ -1,4 +1,5 @@
 const ApiRootUrl ='/api';
+
 //Customer
 export const customerSignUp = ApiRootUrl+'/customers';
 export const customerLogin = ApiRootUrl+'/customers/login';

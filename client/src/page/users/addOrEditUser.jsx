@@ -8,13 +8,13 @@ class AddOrEditUser extends React.Component {
     constructor(props){
         super(props)
         this.state = {
-            address: "",
+            // address: "",
             firstName: "",
             lastName: "",
             phoneNumber: "",
-            country: "",
-            state: "",
-            city: "",
+            // country: "",
+            // state: "",
+            // city: "",
             userType: "person",
             username: "",
             email: ""
@@ -28,13 +28,13 @@ class AddOrEditUser extends React.Component {
         if(this.props.match.path === "/manage/users/edituser" ) {
             let customerInfo = this.props.location.state.customerInfo;
             this.setState({
-                address: customerInfo.address,
+                // address: customerInfo.address,
                 firstName: customerInfo.firstName,
                 lastName: customerInfo.lastName,
                 phoneNumber: customerInfo.phoneNumber,
-                country: customerInfo.country,
-                state: customerInfo.state,
-                city: customerInfo.city,
+                // country: customerInfo.country,
+                // state: customerInfo.state,
+                // city: customerInfo.city,
                 userType: customerInfo.userType,
                 username: customerInfo.username,
                 email: customerInfo.email
@@ -45,13 +45,13 @@ class AddOrEditUser extends React.Component {
     handleSave() {
         let _this = this
         let userMes = {
-            address: this.state.address,
+            // address: this.state.address,
             firstName: this.state.firstName,
             lastName: this.state.lastName,
             phoneNumber: this.state.phoneNumber,
-            country: this.state.country,
-            state: this.state.state,
-            city: this.state.city,
+            // country: this.state.country,
+            // state: this.state.state,
+            // city: this.state.city,
             userType: "person",
             username: this.state.username,
             email: this.state.email,
@@ -100,17 +100,17 @@ class AddOrEditUser extends React.Component {
                     <h2>{profileContent}</h2>
                     <div className="form-div">
                         <form action="">
-                            <div className="form-group">
+                            {/* <div className="form-group">
                                 <label className="col-md-4 col-sm-4 col-xs-4 control-label">
-                                    <span>address</span>
+                                    <span>Address</span>
                                 </label>
                                 <div className="col-md-8 col-sm-8 col-xs-8">
                                     <input type="text" value={this.state.address} className="form-control" onChange={v => this.handleChange('address', v.target.value)}/>
                                 </div>
-                            </div>
+                            </div> */}
                             <div className="form-group">
                                 <label className="col-md-4 col-sm-4 col-xs-4 control-label">
-                                    <span>firstName</span>
+                                    <span>First Name</span>
                                 </label>
                                 <div className="col-md-8 col-sm-8 col-xs-8">
                                     <input type="text" value={this.state.firstName} className="form-control" onChange={v => this.handleChange('firstName', v.target.value)}/>
@@ -118,7 +118,7 @@ class AddOrEditUser extends React.Component {
                             </div>
                             <div className="form-group">
                                 <label className="col-md-4 col-sm-4 col-xs-4 control-label">
-                                    <span>lastName</span>
+                                    <span>Last Name</span>
                                 </label>
                                 <div className="col-md-8 col-sm-8 col-xs-8">
                                     <input type="text" value={this.state.lastName} className="form-control" onChange={v => this.handleChange('lastName', v.target.value)} />
@@ -126,15 +126,15 @@ class AddOrEditUser extends React.Component {
                             </div>
                             <div className="form-group">
                                 <label className="col-md-4 col-sm-4 col-xs-4 control-label">
-                                    <span>phoneNumber</span>
+                                    <span>Phone Number</span>
                                 </label>
                                 <div className="col-md-8 col-sm-8 col-xs-8">
                                     <input type="text" value={this.state.phoneNumber} className="form-control" onChange={v => this.handleChange('phoneNumber', v.target.value)}/>
                                 </div>
                             </div>
-                            <div className="form-group">
+                            {/* <div className="form-group">
                                 <label className="col-md-4 col-sm-4 col-xs-4 control-label">
-                                    <span>country</span>
+                                    <span>Country</span>
                                 </label>
                                 <div className="col-md-8 col-sm-8 col-xs-8">
                                     <input type="text" value={this.state.country} className="form-control" onChange={v => this.handleChange('country', v.target.value)} />
@@ -142,7 +142,7 @@ class AddOrEditUser extends React.Component {
                             </div>
                             <div className="form-group">
                                 <label className="col-md-4 col-sm-4 col-xs-4 control-label">
-                                    <span>state</span>
+                                    <span>State</span>
                                 </label>
                                 <div className="col-md-8 col-sm-8 col-xs-8">
                                     <input type="text" value={this.state.state} className="form-control" onChange={v => this.handleChange('state', v.target.value)}/>
@@ -150,15 +150,15 @@ class AddOrEditUser extends React.Component {
                             </div>
                             <div className="form-group">
                                 <label className="col-md-4 col-sm-4 col-xs-4 control-label">
-                                    <span>city</span>
+                                    <span>City</span>
                                 </label>
                                 <div className="col-md-8 col-sm-8 col-xs-8">
                                     <input type="text" value={this.state.city} className="form-control" onChange={v => this.handleChange('city', v.target.value)}/>
                                 </div>
-                            </div>
+                            </div> */}
                             <div className="form-group">
                                 <label className="col-md-4 col-sm-4 col-xs-4 control-label">
-                                    <span>username</span>
+                                    <span>Username</span>
                                 </label>
                                 <div className="col-md-8 col-sm-8 col-xs-8">
                                     <input type="text" value={this.state.username} className="form-control" onChange={v => this.handleChange('username', v.target.value)}/>
@@ -166,19 +166,19 @@ class AddOrEditUser extends React.Component {
                             </div>
                             <div className="form-group">
                                 <label className="col-md-4 col-sm-4 col-xs-4 control-label">
-                                    <span>email</span>
+                                    <span>Email</span>
                                 </label>
                                 <div className="col-md-8 col-sm-8 col-xs-8">
                                     <input type="text" value={this.state.email} className="form-control" onChange={v => this.handleChange('email', v.target.value)}/>
                                 </div>
                             </div>
                             {
-                                this.props.match.path === "/manage/users/addNewUsers"
+                                this.props.match.path === "/manage/users/addNewUser"
                                 ? 
                                 <div>
                                     <div className="form-group">
                                         <label className="col-md-4 col-sm-4 col-xs-4 control-label">
-                                            <span>password</span>
+                                            <span>Password</span>
                                         </label>
                                         <div className="col-md-8 col-sm-8 col-xs-8">
                                             <input type="text" className="form-control" onChange={v => this.handleChange('password', v.target.value)}/>
@@ -186,7 +186,7 @@ class AddOrEditUser extends React.Component {
                                     </div>
                                     <div className="form-group">
                                         <label className="col-md-4 col-sm-4 col-xs-4 control-label">
-                                            <span>confirmPassword</span>
+                                            <span>Confirm Password</span>
                                         </label>
                                         <div className="col-md-8 col-sm-8 col-xs-8">
                                             <input type="text" className="form-control" onChange={v => this.handleChange('confirmPassword', v.target.value)}/>

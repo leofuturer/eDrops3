@@ -50,11 +50,11 @@ class UpdateAddress extends React.Component {
         url += `/${addressId}`;
         API.Request(url, 'PUT', addressMes, true)
         .then(res => {
-            _this.props.history.push('/manage/address')
+            _this.props.history.push('/manage/address');
         })
         .catch(error => {
-            console.error(error)
-        })
+            console.error(error);
+        });
     }
 
     render() {

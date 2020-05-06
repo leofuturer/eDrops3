@@ -24,6 +24,10 @@
     "zipCode": {
       "type": "string",
       "required": true
+    },
+    "isDefault": {
+      "type": "Boolean",
+      "required": true
     }
   },
   "validations": [],
