@@ -31,20 +31,19 @@ To achieve a functional EWOD cloud manufacturing website by **improving** the mo
 - [ ] Improve data security——apply authorization(supported by Loopback) to prevent unknown user retrieving data via our APIs
 - [ ] Add the specific time to the time stamp and display it in the frontend(right now there's only date showing up)
 - [ ] Integrate the user address information with address information from shopify as well as the billing address in the checkout page
-- [ ] Email activation link to user after registration, the account is available only after the user clicks the activation link
-- [ ] Use Loopback's email login feature, which only lets you login with email if it's validated
+- [x] Email activation link to user after registration, the account is available only after the user clicks the activation link
 
 **Workflow Improvement**
 - [ ] Create automated testing to be done on every push to the repository.
 - [ ] Set up environment variables to replace some credentials in the code, e.g. datasource.json, shopify keys in the app.jsx, etc.
-- [ ] Research on best practice for github collabration & establish an optimal workflow (record in the doc)
+- [x] Research on best practice for github collabration & establish an optimal workflow (record in the doc)
 
 ### Project architecture
 A picture to discribe the whole project architecture
 <img src="" >
 
 **Frontend**  
-(1) dependency management  webpack (pack up the file and output the static files, we can understand it as a tool to convert all our js file to html, css, js file like those for a conventional static website)  
+(1) dependency management webpack (pack up the file and output the static files, we can understand it as a tool to convert all our js file to html, css, js file like those for a conventional static website)  
 
 (2) source code (in the /src directory)  
 * /api  
@@ -55,7 +54,7 @@ Some components shared by different pages, like: navigation bar, footer, layout(
 pages as well as corresponding .CSS files
 * /router  
 routing: React-router  
-The entry of whole routing system is defined in the App.js right now which needs to be improved(see a pdf called "Router system" in the ucla box)  
+The entry of whole routing system is defined in the App.js right now which needs to be improved (see a pdf called "Router system" in the ucla box)  
 
 (3) Integration with Shopify  
 In the App.js we use Shopify js-buy SDK to implement the checkout and payment functionalities  
@@ -70,6 +69,53 @@ Most of data operation is implemented here using **Loopback hooks & remote metho
 Some code to initiate the database automatially (build schemas and import seed data in MySQL database)
 * /server  
 Common file structure of Loopback
+
+## Using Git
+To copy this repository:  
+`$ git clone https://github.com/leofuturer/Edrop-v2.0.0.git`  
+
+To start work on a feature, switch to your local master branch:  
+`$ git checkout master`  
+Sync with the repository to get the latest version:  
+`$ git pull origin master`  
+Create a branch for your new feature:  
+`$ git checkout -b new_feature_name`  
+
+Then make changes, add them, and commit them, as many times as you want:  
+`$ git add file_1 file_2 etc...`  
+`$ git commit`  
+
+To push your changes onto a new branch on the repository, which can be multiple times whenever you want to publish your changes:  
+`$ git push origin new_feature_name`  
+
+Once you're done with the feature, go on Github and open a pull request to merge into master. If the Github says that you cannot automatically merge the branches, you need to resolve the conflicts manually (see section below). If the branches can be merged automatically, skip this section. Then, wait for someone to approve the pull request.  
+#### -----Resolving merge conflicts-----
+Switch to master branch and get the latest version:  
+`$ git checkout master`  
+`$ git pull origin master`  
+
+Merge it manually (on your local machine):  
+`$ git merge new_feature_name`  
+Git should tell you that there was a merge conflict and prompt you to fix it. Resolve the merge conflict in your text editor, and then save the files you fixed merge conflicts in:  
+`$ git add merge_conflict_file_1 merge_conflict_file_2 etc...`  
+Tell git to continue the merge process. It should resolve at this point and you should be prompted to type in a commit message:  
+`$ git merge --continue`  
+
+Push your changes to your Github branch. However, since we're pushing from master this, the syntax is a bit different. The branch in front of the color is the (remote) branch you are pushing to, while the branch after the colon is the one you are pushing from:  
+`$ git push origin new_feature_name:master`  
+#### -----End section on resolving merge conflicts-----
+
+Once any merge conflicts have been resolved, or if there are none, approving the pull request: this will create a merge commit (or not, if there was a merge conflict) that has two commits as parents (one from master and one from new_feature_name branch). After approving the pull request, delete the branch on Github.  
+
+Once your change has been approved, to start work on the next feature, repeat from the top of this set of instructions:  
+`$ git checkout master`  
+`$ git pull origin master`  
+`$ git checkout -b new_feature_2`  
+...and so on.  
+
+Optional: on your local machine, if you want to delete the branch and the associated remote branch (which has already been deleted on Github):  
+`$ git branch -d new_feature_name`  
+`$ git remote prune origin`  
 
 ## SETUP
 ### Steps to run the code on localhost
@@ -89,9 +135,11 @@ At this point, make sure that you have a mySQL server running and have created a
     APP_MYSQL_USERNAME  
     APP_MYSQL_PASSWORD  
 
+Scroll down for a listing of all the environment variables used in this project.  
+
 To do this in Windows (using Command Prompt):  
-`set ENV_VAR_NAME=env_var_value`  
-`set APP_MYSQL_PASSWORD=password123 #sample: set APP_MYSQL_PASSWORD to password123`  
+`$ set ENV_VAR_NAME=env_var_value`  
+`$ set APP_MYSQL_PASSWORD=password123 #sample: set APP_MYSQL_PASSWORD to password123`  
 
 To do so in Linux/MacOS:  
 `export ENV_VAR_NAME=env_var_value`  
@@ -129,8 +177,12 @@ Then, run the client (in development mode):
 Navigate to localhost:8086/home to get to the home page of the Edrop application. (Note: the server should also be running at this point)  
 
 ### Steps to import seed data for development & testing
-From the top level directory, initialize the database schema and add seed data. To add seed data, change the json objects in `server/deb/seed-data/`. WARNING: This will delete everything previously in the database!  
+From the top level directory, initialize the database schema and add seed data. To add or modify seed data, change the json objects in `server/deb/seed-data/`. WARNING: This will delete everything previously in the database!  
 `$ node ./server/db/reset-db.js`  
+
+### Steps to change database models
+If you change the models in server/common/models and want to update the database without deleting preexisting data, run the following command. If you are adding a new column to a table, think about what the value will be for preexisting rows in that table.  
+`$ node ./server/db/migrate-db.js`  
 
 ### FAQ/Common Issues
 Q: Set the environment variables for connecting to the database but it doesn't work (permission denied error):
@@ -138,6 +190,22 @@ A: Make sure you set the environment variables in the same shell window that you
 
 Q: Cannot connect to the mySQL database?
 A: Make sure you have it running (on Windows, in the System Tray, right click on the mySQL notifier, and check if the server is running).
+
+### List of Environment Variables
+If things aren't working, check that these are correct for your environment.
+
+| Environment Variable    | Description                                         | Default Value              |
+|-------------------------|-----------------------------------------------------|----------------------------|
+| APP\_MYSQL\_HOST        | Hostname for MySQL database                         | "localhost"                |
+| APP\_MYSQL\_PORT        | Port number for MySQL database                      | 3306                       |
+| APP\_MYSQL\_USERNAME    | Username for MySQL database                         | "root"                     |
+| APP\_MYSQL\_PASSWORD    | Password for MySQL database                         | "123456"                   |
+| APP\_FRONTEND\_HOSTNAME | Hostname for front end server                       | "localhost"                |
+| APP\_FRONTEND\_PORT     | Port number for front end server                    | 8086                       |
+| APP\_EMAIL\_HOST        | Hostname for email server used to send emails       | "smtp\.gmail\.com"         |
+| APP\_EMAIL\_PORT        | Port number for email server used to send emails    | 465                        |
+| APP\_EMAIL\_USERNAME    | Email address for email account used to send emails | "edropwebsite@163\.com"    |
+| APP\_EMAIL\_PASSWORD    | Password for email account used to send emails      | "cjmemsEdrop"              |
 
 ## ISSUES
 - [ ] Assign file functions are all useless, need to be deleted and make sure no other functionalities are affected

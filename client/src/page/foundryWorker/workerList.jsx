@@ -7,7 +7,7 @@ export class WorkerList extends React.Component {
     }
     render() {
         return (
-            this.props.workerArray.map(singleWorker => <Worker worker={singleWorker}/>)
+            this.props.workerArray.map((singleWorker, index) => <Worker worker={singleWorker} key={index}/>)
         );
     }
 }

@@ -82,18 +82,23 @@ class AddressTemplate extends React.Component {
                             <div className="card-view">
                                 <div className="row">
                                     <div className="col-md-7 col-sm-7 col-xs-7">
-                                        <h3>{'Address' + address.id}</h3>
+                                        <h3>Address {this.props.addressNum}</h3>
                                     </div>
-                                    <div className="col-md-5 col-sm-5 col-xs-5">
-                                        <div>
-                                            <span className="txt-span">Default Shipping</span>
-                                            <i className="fa fa-cube fa-inline"></i>
+                                    { address.isDefault
+                                        ? 
+                                        <div className="col-md-5 col-sm-5 col-xs-5">
+                                            <div>
+                                                <span className="txt-span">Default Shipping</span>
+                                                <i className="fa fa-cube fa-inline"></i>
+                                            </div>
+                                            <div>
+                                                <span className="txt-span">Default Billing</span>
+                                                <i className="fa fa-credit-card fa-inline"></i>
+                                            </div>
                                         </div>
-                                        <div>
-                                            <span className="txt-span">Default Billing</span>
-                                            <i className="fa fa-credit-card fa-inline"></i>
-                                        </div>
-                                    </div>
+                                        : null
+                                    }
+                                    
                                 </div>
                                 <div className="row">
                                     <div className="row-txt-padding">{address.street}</div>
@@ -107,10 +112,15 @@ class AddressTemplate extends React.Component {
                                         <i className="fa fa-cog"></i>
                                         <span className="btn-txt-padding" onClick={this.handleUpdateAddress}>Update</span>
                                     </button>
-                                    <button className="btn btn-danger btn-padding" >
+                                    { address.isDefault
+                                        ? null
+                                        :
+                                        <button className="btn btn-danger btn-padding" >
                                         <i className="fa fa-trash-o"></i>
                                         <span className="btn-txt-padding" onClick={this.handleDeleteAddress}>Delete</span>
-                                    </button>
+                                        </button>
+                                    }
+                                    
                                 </div>
                             </div>
                 </div>

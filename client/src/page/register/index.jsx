@@ -1,7 +1,7 @@
 import React from 'react';
 import {withRouter} from 'react-router-dom';
 import API from '../../api/api'
-import { customerSignUp, findCustomerByWhere } from '../../api/serverConfig';
+import { customerSignUp, findCustomerByWhere, customerAddresses } from '../../api/serverConfig';
 import {constraints} from './formConstraints';
 import './register.css';
 import _ from 'lodash';
@@ -41,8 +41,6 @@ class Register extends React.Component {
         this.setState(
             {
                 [key]: value
-            }, () => {
-                console.log(this.state.country);
             }
         );
      }
@@ -122,6 +120,8 @@ class Register extends React.Component {
             return API.Request(url, 'GET', {}, false); //GET, so no need to pass in anything
         })
         .then(res => {
+            // Improvement : this could probably all be done using server side 
+            // remote methods: https://loopback.io/doc/en/lb3/Validating-model-data.html
             if (res.data.length !== 0) {            
                 errors.username = ["Account already exists with this username"];
                 let input1 = document.querySelector("#inputUsername");
@@ -147,30 +147,31 @@ class Register extends React.Component {
             console.log("Displaying errors");
             _.each(form.querySelectorAll("input.needValidation"), function(input) {
                 //what's the purpose of this line?
-                _this.showErrorsOrSuccessForInput(input, errors && errors[input.name]);
+                this.showErrorsOrSuccessForInput(input, errors && errors[input.name]);
             });
         });
     }
 
     handleRegister(e) {
-        let data = {
-            address: this.state.address,
+        let customerData = {           
             firstName: this.state.firstName,
             lastName: this.state.lastName,
-            phoneNumber: this.state.phoneNumber,
+            phoneNumber: this.state.phoneNumber,           
+            userType: this.state.userType,
+            username: this.state.username,
+            email: this.state.email,
+            password: this.state.password,
+            address: this.state.address,
             country: this.state.country,
             state: this.state.state,
             city: this.state.city,
             zipCode: this.state.zipCode,
-            userType: this.state.userType,
-            username: this.state.username,
-            email: this.state.email,
-            password: this.state.password
-        }
-        // console.log(data); 
-        API.Request(customerSignUp, 'POST', data, false)
+            isDefault: true
+        };
+        API.Request(customerSignUp, 'POST', customerData, false)
         .then(res => {
-            alert("Your have successfully signed up, please log in using your new account!");
+            console.log(res.data);
+            alert("Your have successfully signed up, please verify your email to log in using your new account!");
             this.props.history.push('/login');
         })
         .catch(error => {

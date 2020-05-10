@@ -1,7 +1,14 @@
 import React from 'react';
 import {Redirect, withRouter} from 'react-router-dom'
 import './profile.css';
-import {customerGetProfile, adminGetProfile, foundryWorkerGetProfile, updateCustomerProfile, updateWorkerProfile, updateAdminProfile} from "../../api/serverConfig";
+import {
+    customerGetProfile, 
+    customerAddresses,
+    adminGetProfile, 
+    foundryWorkerGetProfile, 
+    updateCustomerProfile, 
+    updateWorkerProfile, 
+    updateAdminProfile} from "../../api/serverConfig";
 import API from "../../api/api";
 import Cookies from 'js-cookie'
 
@@ -23,6 +30,7 @@ class Profile extends React.Component{
             affiliation: ""
         }
         this.handleSave = this.handleSave.bind(this);
+        this.defaultAddressId = -1;
     }
 
     componentDidMount() {
@@ -38,26 +46,20 @@ class Profile extends React.Component{
             InitUrl = foundryWorkerGetProfile;
         }
         let url = InitUrl.replace('id', Cookies.get('userId'));
-        let data = {};
-        API.Request(url, 'GET', data, true)
+        var data = {};
+        API.Request(url, 'GET', {}, true)
         .then(res => {
             if (userType === 'admin') {
                 this.setState(
                     {
-                        address: "N/A",
-                        firstName: "N/A",
-                        lastName: "N/A",
-                        phoneNumber: "N/A",
-                        country: "N/A",
-                        state: "N/A",
-                        city: "N/A",
-                        zipCode: "N/A",
+                        phoneNumber: res.data.phoneNumber,
                         userType: "person",
                         username: res.data.username,
                         email: res.data.email
                     }
                 );
             } else if (userType === "worker") {
+                console.log(res.data);
                 this.setState({
                     address: res.data.address,
                     firstName: res.data.firstName,
@@ -74,24 +76,46 @@ class Profile extends React.Component{
                 });
             }
             else {
-                // console.log(res.data);
-                this.setState(
-                    {
-                        address: res.data.address,
-                        firstName: res.data.firstName,
-                        lastName: res.data.lastName,
-                        phoneNumber: res.data.phoneNumber,
-                        country: res.data.country,
-                        state: res.data.state,
-                        city: res.data.city,
-                        zipCode: res.data.zipCode,
-                        userType: res.data.userType,
-                        username: res.data.username,
-                        email: res.data.email
-                    }
-                );
-            }
-            console.log(this.state.country);
+                // More modern syntax, but not supported by Edge so we won't use it for now
+                // data = {...data, ...newData}
+
+                Object.assign(data, {
+                    firstName: res.data.firstName,
+                    lastName: res.data.lastName,
+                    phoneNumber: res.data.phoneNumber,
+                    userType: res.data.userType,
+                    username: res.data.username,
+                    email: res.data.email
+                });
+                let url2 = customerAddresses.replace('id', Cookies.get('userId'));
+                url2 = `${url2}?filter={"where":{"isDefault":true}}`;   
+                API.Request(url2, 'GET', {}, true)
+                .then(res => {
+                    // console.log(res.data);
+                    Object.assign(data, {
+                        address: res.data[0].street,
+                        country: res.data[0].country,
+                        state: res.data[0].state,
+                        city: res.data[0].city,
+                        zipCode: res.data[0].zipCode,
+                    });
+                    this.defaultAddressId = res.data[0].id; //for later use with saving
+                    // console.log(data);
+                    this.setState({
+                        address: data.address,
+                        firstName: data.firstName,
+                        lastName: data.lastName,
+                        phoneNumber: data.phoneNumber,
+                        country: data.country,
+                        state: data.state,
+                        city: data.city,
+                        zipCode: data.zipCode,
+                        userType: data.userType,
+                        username: data.username,
+                        email: data.email
+                    });
+                })
+            }                       
         })
         .catch(err => {
             console.error(err);
@@ -102,6 +126,8 @@ class Profile extends React.Component{
         let _this = this
         let userType = Cookies.get('userType');
         let userMes = {
+            // we keep address info in here for the foundry workers
+            // sending this data to customer will automatically discard it
             address: this.state.address,
             firstName: this.state.firstName,
             lastName: this.state.lastName,
@@ -114,22 +140,49 @@ class Profile extends React.Component{
             username: this.state.username,
             email: this.state.email
         }
+        let addressData = {
+            // in case customer accidentally leaves it blank
+            street: this.state.address || "N/A",
+            country: this.state.country || "N/A",
+            state: this.state.state || "N/A",
+            city: this.state.city || "N/A",
+            zipCode: this.state.zipCode || "N/A",
+        }
         if(userType === 'customer') {
             var InitUrl = updateCustomerProfile;
         } 
         else if(userType === 'admin') {
             var InitUrl = updateAdminProfile;
+
         } else {
             var InitUrl = updateWorkerProfile;
         }
         let url = InitUrl.replace('id', Cookies.get('userId'));
-        //let url = (this.props.match.path === '/manage/profile' ? ('../'+ InitUrl) : InitUrl)
-        API.Request(url, 'PATCH', userMes, true).then(res => {
-            console.log(res);
+
+        API.Request(url, 'PATCH', userMes, true)
+        .then(res => {
+            // console.log(res);
             //_this.props.history.push('/manage/profile')
-            alert('Profile saved successfully!');
-            document.location.reload(true);
-        }).catch(error=>{
+            if(userType === 'customer'){
+                //need to update address separately
+                let addressUrl = customerAddresses.replace('id', Cookies.get('userId'));
+                addressUrl += `/${this.defaultAddressId}`;
+                API.Request(addressUrl, 'PUT', addressData, true)
+                .then(res => {
+                    console.log("Updated address");
+                    alert('Profile saved successfully!');
+                    document.location.reload(true);
+                })
+                .catch(error => {
+                    console.error(error);
+                });
+            }
+            else{
+                alert('Profile saved successfully!');
+                document.location.reload(true);
+            }           
+        })
+        .catch(error => {
             console.error(error)
         });
     }
@@ -170,27 +223,36 @@ class Profile extends React.Component{
                     <h2>{profileContent}</h2>
                     <div className="form-div">
                         <form action="">
-                            {
+                            {/* <div> */}
+                                <div className="form-group">
+                                    <label className="col-md-4 col-sm-4 col-xs-4 control-label">
+                                        <span>Username</span>
+                                    </label>
+                                    <div className="col-md-8 col-sm-8 col-xs-8">
+                                        <input type="text" className="form-control" readOnly value={this.state.username} onChange={v => this.handleChange('username', v.target.value)}/>
+                                    </div>
+                                </div>
+                                <div className="form-group">
+                                    <label className="col-md-4 col-sm-4 col-xs-4 control-label">
+                                        <span>Email</span>
+                                    </label>
+                                    <div className="col-md-8 col-sm-8 col-xs-8">
+                                        <input type="text" className="form-control" readOnly value={this.state.email} onChange={v => this.handleChange('email', v.target.value)}/>
+                                    </div>
+                                </div>
+                                <div className="form-group">
+                                    <label className="col-md-4 col-sm-4 col-xs-4 control-label">
+                                        <span>Phone Number</span>
+                                    </label>
+                                    <div className="col-md-8 col-sm-8 col-xs-8">
+                                        <input type="text" className="form-control" value={this.state.phoneNumber} onChange={v => this.handleChange('phoneNumber', v.target.value)}/>
+                                    </div>
+                                </div>
+                            {/* </div> */}
+                                {
                                 Cookies.get("userType") === "admin"
                                 ? null
-                                :
-                                <div>
-                                    <div className="form-group">
-                                        <label className="col-md-4 col-sm-4 col-xs-4 control-label">
-                                            <span>Username</span>
-                                        </label>
-                                        <div className="col-md-8 col-sm-8 col-xs-8">
-                                            <input type="text" className="form-control" value={this.state.username} onChange={v => this.handleChange('username', v.target.value)}/>
-                                        </div>
-                                    </div>
-                                    <div className="form-group">
-                                        <label className="col-md-4 col-sm-4 col-xs-4 control-label">
-                                            <span>Email</span>
-                                        </label>
-                                        <div className="col-md-8 col-sm-8 col-xs-8">
-                                            <input type="text" className="form-control" value={this.state.email} onChange={v => this.handleChange('email', v.target.value)}/>
-                                        </div>
-                                    </div>       
+                                : <div>
                                     <div className="form-group">
                                         <label className="col-md-4 col-sm-4 col-xs-4 control-label">
                                             <span>First Name</span>
@@ -207,14 +269,7 @@ class Profile extends React.Component{
                                             <input type="text" className="form-control" value={this.state.lastName} onChange={v => this.handleChange('lastName', v.target.value)} />
                                         </div>
                                     </div>
-                                    <div className="form-group">
-                                        <label className="col-md-4 col-sm-4 col-xs-4 control-label">
-                                            <span>Phone Number</span>
-                                        </label>
-                                        <div className="col-md-8 col-sm-8 col-xs-8">
-                                            <input type="text" className="form-control" value={this.state.phoneNumber} onChange={v => this.handleChange('phoneNumber', v.target.value)}/>
-                                        </div>
-                                    </div>
+                                    
                                     <div className="form-group">
                                         <label className="col-md-4 col-sm-4 col-xs-4 control-label">
                                             <span>Address</span>

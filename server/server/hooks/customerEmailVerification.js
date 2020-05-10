@@ -1,37 +1,36 @@
 const path = require('path');
-const { ADMIN_EMAIL } = require('../constants/emailconstants');
+const { FRONTEND_HOSTNAME, FRONTEND_PORT, SENDER_EMAIL_USERNAME } = require('../constants/emailconstants');
 
 'use strict';
 
-module.exports = async (ctx, customerInstance, next) => {
-
+module.exports = (ctx, customerInstance, next) => {
     const { customer } = ctx.req.app.models;
     const { email } = ctx.req.body;
-    const senderAddress = ADMIN_EMAIL;
-    await customerInstance.updateAttribute('emailVerified', 1);
-    /*
+    
+    // uncomment line below to bypass email verification
+    // customerInstance.updateAttribute('emailVerified', 1);
+
+    // console.log(ctx.req);
     var options = {
         type: 'email',
         to: email,
-        from: senderAddress,
-        subject: 'Email Verification from Edrop',
-        text: `Hello ${customerInstance.username}!\n Thanks a lot for your registeration! \n Please verify your email by clicking it:`,
+        from: SENDER_EMAIL_USERNAME,
+        subject: '[Edrop] Email Verification',
+        text: `Hello ${customerInstance.username}! Thanks for registering to use Edrop. Please verify your email by clicking on the following link:`,
         template: path.resolve(__dirname, '../views/verify.ejs'),
-        redirect: '/verified'
-      };
-      
-      customerInstance.verify(options, function(err, res) {
+        host: FRONTEND_HOSTNAME,
+        port: FRONTEND_PORT,
+        redirect: '/home'
+    };
+
+    customerInstance.verify(options, function(err, res) {
         if (err) {
-          customer.deleteById(customerInstance.id);
-          return next(err);
+            // email sending failed, so don't create customer
+            customer.deleteById(customerInstance.id);
+            return next(err);
         }
-        ctx.res.render('response', {
-          title: 'Signed up successfully',
-          content: 'Please check your email and click on the verification link ' +
-              'before logging in.',
-          redirectTo: '/home',
-          redirectToLinkText: 'Log in'
-        });
+        ctx.res.send({message: "Signup successful!"});
+        // can change this in the future with some other send* method:
+        // https://expressjs.com/en/api.html#res.send
     });
-    */
 };

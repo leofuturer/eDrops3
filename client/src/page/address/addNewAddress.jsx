@@ -32,16 +32,24 @@ class AddNewAddress extends React.Component {
             city: this.state.city,
             state: this.state.state,
             country: this.state.country,
-            zipCode: this.state.zipcode
+            zipCode: this.state.zipcode,
+            isDefault: false
         }
-        let url = customerAddresses.replace('id', Cookies.get('userId'));
-        API.Request(url, 'POST', addressMes, true)
-        .then(res => {
-            _this.props.history.push('/manage/address')
-        })
-        .catch(error => {
-            console.error(error)
-        })
+        if(!addressMes.street || !addressMes.city || !addressMes.state || 
+            !addressMes.country || !addressMes.zipCode){
+                alert("Error: All fields must be filled");
+        }
+        else{
+            let url = customerAddresses.replace('id', Cookies.get('userId'));
+            API.Request(url, 'POST', addressMes, true)
+            .then(res => {
+                // console.log(res);
+                _this.props.history.push('/manage/address');
+            })
+            .catch(error => {
+                console.error(error);
+            });
+        }
     }
 
     render() {
@@ -70,7 +78,7 @@ class AddNewAddress extends React.Component {
                         </div>
                         <div className="form-group">
                             <label className="col-md-4 col-sm-4 col-xs-4 control-label">
-                                <span>State</span>
+                                <span>State or Province</span>
                             </label>
                             <div className="col-md-8 col-sm-8 col-xs-8">
                                 <input type="text" className="form-control" onChange={v => this.handleChange('state', v.target.value)}/>
@@ -78,7 +86,7 @@ class AddNewAddress extends React.Component {
                         </div>
                         <div className="form-group">
                             <label className="col-md-4 col-sm-4 col-xs-4 control-label">
-                                <span>Zip Code</span>
+                                <span>Zip or Postal Code</span>
                             </label>
                             <div className="col-md-8 col-sm-8 col-xs-8">
                                 <input type="text" className="form-control" onChange={v => this.handleChange('zipcode', v.target.value)}/>
@@ -105,5 +113,6 @@ class AddNewAddress extends React.Component {
         )
     }
 }
+
 AddNewAddress = withRouter(AddNewAddress)
 export default AddNewAddress;
