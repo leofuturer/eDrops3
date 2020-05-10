@@ -24,6 +24,7 @@ To achieve a functional EWOD cloud manufacturing website by **improving** the mo
 - [ ] [code quality improvement] Optimize React.js code by reducing unnecessary "state"s
 - [ ] Create "under construction" page so that users know a broken link isn't actually broken and that simply we're still adding the feature.
 - [ ] Add cart page? (currently the cart icon at the top toolbar doesn't work)
+- [ ] For the file & order list pages, when there's no file or order, a message should show up to remind user that they have not uploaded/placed any files/order yet, instead of just showing an empty table 
 
 **Backend**
 - [ ] Optimize the backend project file structure
