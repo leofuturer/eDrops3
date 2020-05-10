@@ -7,9 +7,6 @@
     "emailVerificationRequired": true
   },
   "properties": {
-    "address": {
-      "type": "string"
-    },
     "firstName": {
       "type": "string",
       "required": true
@@ -19,18 +16,6 @@
       "required": true
     },
     "phoneNumber": {
-      "type": "string"
-    },
-    "country": {
-      "type": "string"
-    },
-    "state": {
-      "type": "string"
-    },
-    "city": {
-      "type": "string"
-    },
-    "zipCode":{
       "type": "string"
     },
     "userType": {

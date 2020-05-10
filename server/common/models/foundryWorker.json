@@ -10,10 +10,13 @@
       "type": "string"
     },
     "firstName": {
-      "type": "string"
+      "type": "string",
+      "required": true
     },
     "lastName": {
-      "type": "string"
+      "type": "string",
+      "required": true
+      
     },
     "phoneNumber": {
       "type": "string",
@@ -26,6 +29,9 @@
       "type": "string"
     },
     "city": {
+      "type": "string"
+    },
+    "zipCode": {
       "type": "string"
     },
     "affiliation": {

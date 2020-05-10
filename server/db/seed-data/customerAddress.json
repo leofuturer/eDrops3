@@ -5,6 +5,7 @@
         "state": "california",
         "country": "United States",
         "zipCode": "90024",
+        "isDefault": true,
         "customerId": 1
     },
     {
@@ -13,14 +14,25 @@
         "state": "california",
         "country": "United States",
         "zipCode": "90034",
+        "isDefault": true,
         "customerId": 2
     },
     {
-        "street": "456 Cilas AVe",
+        "street": "1234 Cilas Ave",
         "city": "Los Angeles",
         "state": "california",
         "country": "United States",
         "zipCode": "90067",
-        "customerId": 3
-    }
+        "isDefault": false,
+        "customerId": 1
+    },
+    {
+        "street": "456 Cilas Ave",
+        "city": "Los Angeles",
+        "state": "california",
+        "country": "United States",
+        "zipCode": "90067",
+        "isDefault": false,
+        "customerId": 2
+    }   
 ]

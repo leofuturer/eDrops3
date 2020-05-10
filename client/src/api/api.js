@@ -34,11 +34,24 @@ class API {
     * */
     async Request(url, method, params, useToken, headers = {'content-type':'application/json; charset=utf-8'}){
         try{
-            let options={
+            let requestUrl = "";
+            if(useToken){
+                if(url.indexOf('?') > -1){
+                    requestUrl = url + `&access_token=${Cookies.get('access_token')}`;
+                }
+                else{
+                    requestUrl = url + `?access_token=${Cookies.get('access_token')}`;
+                }
+            }
+            else{
+                requestUrl = url;
+            }
+            
+            let options = {
                 method:method,
                 headers:headers,
                 data:JSON.stringify(params),
-                url: useToken ? url + `?access_token=${Cookies.get('access_token')}` : url
+                url: requestUrl
             }
             let res = await axios(options)
             //console.log(res)

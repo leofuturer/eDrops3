@@ -31,20 +31,19 @@ To achieve a functional EWOD cloud manufacturing website by **improving** the mo
 - [ ] Improve data security——apply authorization(supported by Loopback) to prevent unknown user retrieving data via our APIs
 - [ ] Add the specific time to the time stamp and display it in the frontend(right now there's only date showing up)
 - [ ] Integrate the user address information with address information from shopify as well as the billing address in the checkout page
-- [ ] Email activation link to user after registration, the account is available only after the user clicks the activation link
-- [ ] Use Loopback's email login feature, which only lets you login with email if it's validated
+- [x] Email activation link to user after registration, the account is available only after the user clicks the activation link
 
 **Workflow Improvement**
 - [ ] Create automated testing to be done on every push to the repository.
 - [ ] Set up environment variables to replace some credentials in the code, e.g. datasource.json, shopify keys in the app.jsx, etc.
-- [ ] Research on best practice for github collabration & establish an optimal workflow (record in the doc)
+- [x] Research on best practice for github collabration & establish an optimal workflow (record in the doc)
 
 ### Project architecture
 A picture to discribe the whole project architecture
 <img src="" >
 
 **Frontend**  
-(1) dependency management  webpack (pack up the file and output the static files, we can understand it as a tool to convert all our js file to html, css, js file like those for a conventional static website)  
+(1) dependency management webpack (pack up the file and output the static files, we can understand it as a tool to convert all our js file to html, css, js file like those for a conventional static website)  
 
 (2) source code (in the /src directory)  
 * /api  
@@ -55,7 +54,7 @@ Some components shared by different pages, like: navigation bar, footer, layout(
 pages as well as corresponding .CSS files
 * /router  
 routing: React-router  
-The entry of whole routing system is defined in the App.js right now which needs to be improved(see a pdf called "Router system" in the ucla box)  
+The entry of whole routing system is defined in the App.js right now which needs to be improved (see a pdf called "Router system" in the ucla box)  
 
 (3) Integration with Shopify  
 In the App.js we use Shopify js-buy SDK to implement the checkout and payment functionalities  
@@ -178,8 +177,12 @@ Then, run the client (in development mode):
 Navigate to localhost:8086/home to get to the home page of the Edrop application. (Note: the server should also be running at this point)  
 
 ### Steps to import seed data for development & testing
-From the top level directory, initialize the database schema and add seed data. To add seed data, change the json objects in `server/deb/seed-data/`. WARNING: This will delete everything previously in the database!  
+From the top level directory, initialize the database schema and add seed data. To add or modify seed data, change the json objects in `server/deb/seed-data/`. WARNING: This will delete everything previously in the database!  
 `$ node ./server/db/reset-db.js`  
+
+### Steps to change database models
+If you change the models in server/common/models and want to update the database without deleting preexisting data, run the following command. If you are adding a new column to a table, think about what the value will be for preexisting rows in that table.  
+`$ node ./server/db/migrate-db.js`  
 
 ### FAQ/Common Issues
 Q: Set the environment variables for connecting to the database but it doesn't work (permission denied error):
@@ -201,8 +204,8 @@ If things aren't working, check that these are correct for your environment.
 | APP\_FRONTEND\_PORT     | Port number for front end server                    | 8086                       |
 | APP\_EMAIL\_HOST        | Hostname for email server used to send emails       | "smtp\.gmail\.com"         |
 | APP\_EMAIL\_PORT        | Port number for email server used to send emails    | 465                        |
-| APP\_EMAIL\_USERNAME    | Email address for email account used to send emails | "qiningwang\_bit@163\.com" |
-| APP\_EMAIL\_PASSWORD    | Password for email account used to send emails      | "edropTest123"             |
+| APP\_EMAIL\_USERNAME    | Email address for email account used to send emails | "edropwebsite@163\.com"    |
+| APP\_EMAIL\_PASSWORD    | Password for email account used to send emails      | "cjmemsEdrop"              |
 
 ## ISSUES
 - [ ] Assign file functions are all useless, need to be deleted and make sure no other functionalities are affected

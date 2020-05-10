@@ -37,7 +37,7 @@ class Users extends React.Component{
                 </div>
                 <div className="content-show-table row">
                     <div>
-                        <button className="btn btn-primary" onClick={this.handleAddUsers}>Add new Users</button>
+                        <button className="btn btn-primary" onClick={this.handleAddUsers}>Add New User</button>
                     </div>
                     <div className="table-background">
                         <table className="table">

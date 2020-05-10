@@ -1,13 +1,8 @@
 [
     {
-        "address": "10188 Ashton Ave",
         "firstName": "Ryan",
         "lastName": "Liu",
         "phoneNumber": "3102896978",
-        "country": "America",
-        "state": "California",
-        "city": "Los Angeles",
-        "zipCode": "90024",
         "userType": "person",
         "username": "customerA",
         "password": "edropTest123",
@@ -15,14 +10,9 @@
         "emailVerified": true
     },
     {
-        "address": "Hollywood Blvd Ave",
         "firstName": "John",
         "lastName": "Wang",
         "phoneNumber": "3102896978",
-        "country": "America",
-        "state": "California",
-        "city": "Los Angeles",
-        "zipCode": "90024",
         "userType": "person",
         "username": "customerB",
         "password": "edropTest123",
