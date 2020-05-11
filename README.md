@@ -205,7 +205,7 @@ If things aren't working, check that these are correct for your environment.
 | APP\_FRONTEND\_PORT     | Port number for front end server                    | 8086                       |
 | APP\_EMAIL\_HOST        | Hostname for email server used to send emails       | "smtp\.gmail\.com"         |
 | APP\_EMAIL\_PORT        | Port number for email server used to send emails    | 465                        |
-| APP\_EMAIL\_USERNAME    | Email address for email account used to send emails | "edropwebsite@163\.com"    |
+| APP\_EMAIL\_USERNAME    | Email address for email account used to send emails | "edropwebsite@gmail\.com"  |
 | APP\_EMAIL\_PASSWORD    | Password for email account used to send emails      | "cjmemsEdrop"              |
 
 ## ISSUES

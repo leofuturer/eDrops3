@@ -170,9 +170,9 @@ class Register extends React.Component {
         };
         API.Request(customerSignUp, 'POST', customerData, false)
         .then(res => {
-            console.log(res.data);
-            alert("Your have successfully signed up, please verify your email to log in using your new account!");
-            this.props.history.push('/login');
+            // console.log(res.data);
+            // alert("Your have successfully signed up, please verify your email to log in using your new account!");
+            this.props.history.push('/checkEmail');
         })
         .catch(error => {
             console.error(error)

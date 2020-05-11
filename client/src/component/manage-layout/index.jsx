@@ -4,6 +4,8 @@ import { BrowserRouter as Router, Switch, Redirect, Route, Link } from 'react-ro
 
 import NavLeft from 'component/nav-left/index.jsx';
 
+// This componetn is currently unused, page/manage/index.jsx directly uses 
+// nav-left instead
 class ManageLayout extends React.Component{
     constructor(props){
         super(props);

@@ -20,7 +20,7 @@ module.exports = (ctx, customerInstance, next) => {
         template: path.resolve(__dirname, '../views/verify.ejs'),
         host: FRONTEND_HOSTNAME,
         port: FRONTEND_PORT,
-        redirect: '/home'
+        redirect: '/emailVerified'
     };
 
     customerInstance.verify(options, function(err, res) {
@@ -30,7 +30,7 @@ module.exports = (ctx, customerInstance, next) => {
             return next(err);
         }
         ctx.res.send({message: "Signup successful!"});
-        // can change this in the future with some other send* method:
+        // can change this in the future with some other send method:
         // https://expressjs.com/en/api.html#res.send
     });
 };
