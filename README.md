@@ -102,8 +102,8 @@ Git should tell you that there was a merge conflict and prompt you to fix it. Re
 Tell git to continue the merge process. It should resolve at this point and you should be prompted to type in a commit message:  
 `$ git merge --continue`  
 
-Push your changes to your Github branch. However, since we're pushing from master this, the syntax is a bit different. The branch in front of the color is the (remote) branch you are pushing to, while the branch after the colon is the one you are pushing from:  
-`$ git push origin new_feature_name:master`  
+Push your changes to your Github branch. However, since we're pushing from master this, the syntax is a bit different. The branch in front of the color is the local branch you are pushing from, while the branch after the colon is the one you are pushing to (the remote one):  
+`$ git push origin master:new_feature_name`  
 #### -----End section on resolving merge conflicts-----
 
 Once any merge conflicts have been resolved, or if there are none, approving the pull request: this will create a merge commit (or not, if there was a merge conflict) that has two commits as parents (one from master and one from new_feature_name branch). After approving the pull request, delete the branch on Github.  
