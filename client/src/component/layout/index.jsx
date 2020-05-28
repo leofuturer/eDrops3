@@ -11,9 +11,12 @@ class Layout extends React.Component{
     }
     render(){
         return(
-            <div id="wrapper">
-                <NavTop/>
-                    {this.props.children}
+            <div className = "content">
+                <div className="wrapper">
+                    <NavTop/>
+                        {this.props.children}
+                    
+                </div>
                 <Footer/>
             </div>
         )

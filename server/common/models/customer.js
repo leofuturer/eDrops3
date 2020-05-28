@@ -1,6 +1,9 @@
 const customerEmailVerification = require("../../server/hooks/customerEmailVerification");
 const passwordValidation = require("../../server/hooks/passwordValidation");
 const app = require("../../server/server.js");
+const { FRONTEND_HOSTNAME, FRONTEND_PORT, SENDER_EMAIL_USERNAME } = require('../../server/constants/emailconstants');
+const path = require('path');
+
 module.exports = function(Customer) {
 
     //validate security of password(at least 8 digits, include at least one uppercase
@@ -9,7 +12,7 @@ module.exports = function(Customer) {
 
     // create default address for user
     Customer.afterRemote('create', function(ctx, customerInstance, next){
-        //for the future: can probably move this functino to its own js file
+        //for the future: can probably move this function to its own js file
 
         //copy over the address data
         //if possible, we should only pass in the customer data to the creation
@@ -39,6 +42,56 @@ module.exports = function(Customer) {
     //send verification email after registration and address creation
     Customer.afterRemote('create', customerEmailVerification);
     
+    // // Logic for resending verification emails
+    // Customer.beforeRemote('prototype.verify', function(context, user, next){
+    //     console.log(context.req.remotingContext.instance);  
+    //     const customerInstance = context.req.remotingContext.instance
+    //     const options = {
+    //         type: 'email',
+    //         from: SENDER_EMAIL_USERNAME,
+    //         subject: '[Edrop] Resent Email Verification',
+    //         text: `Hello ${customerInstance.firstName} ${customerInstance.lastName}! Here another email verification link.`,
+    //         template: path.resolve(__dirname, '../../server/views/verify.ejs'),
+    //         host: FRONTEND_HOSTNAME,
+    //         port: FRONTEND_PORT,
+    //         redirect: '/emailVerified'
+    //     };
+    //     customerInstance.verify(options);
+    //     next();
+    // })
+
+    // override the default getVerifyOptions function
+    Customer.getVerifyOptions = function(){
+        // we do not provide "to" field here because loopback will fill
+        // it in correctly automatically
+        const base = Customer.base.getVerifyOptions();
+        console.log(this);
+        // // console.log('------------------------------');
+        // console.log(Customer);
+        return Object.assign({}, base, {
+            type: 'email',
+            from: SENDER_EMAIL_USERNAME,
+            subject: '[Edrop] Resent Email Verification',
+            // text: `Hello ${Customer.firstName} ${Customer.lastName}! Heres another email verification link.`,
+            text: `Hello! Heres another email verification link.`,
+            template: path.resolve(__dirname, '../../server/views/verify.ejs'),
+            host: FRONTEND_HOSTNAME,
+            port: FRONTEND_PORT,
+            redirect: '/emailVerified'
+        });
+        // var options = {
+        //     type: 'email',
+        //     from: SENDER_EMAIL_USERNAME,
+        //     subject: '[Edrop] Resent Email Verification',
+        //     text: `Hello user! Heres another email verification link.`,
+        //     template: path.resolve(__dirname, '../../server/views/verify.ejs'),
+        //     host: FRONTEND_HOSTNAME,
+        //     port: FRONTEND_PORT,
+        //     redirect: '/emailVerified'
+        // };
+        // return options;
+    }
+
     //Remote methods
 
     //Customer instance creates an address belongsTo himself 
