@@ -3,9 +3,10 @@ const passwordValidation = require("../../server/hooks/passwordValidation");
 const app = require("../../server/server.js");
 const { FRONTEND_HOSTNAME, FRONTEND_PORT, SENDER_EMAIL_USERNAME } = require('../../server/constants/emailconstants');
 const path = require('path');
+const errors = require('../../server/toolbox/errors');
+const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/;
 
 module.exports = function(Customer) {
-
     //validate security of password(at least 8 digits, include at least one uppercase
     //one lowercase, one number)
     Customer.beforeRemote('create', passwordValidation);
@@ -41,58 +42,57 @@ module.exports = function(Customer) {
 
     //send verification email after registration and address creation
     Customer.afterRemote('create', customerEmailVerification);
-    
-    // // Logic for resending verification emails
-    // Customer.beforeRemote('prototype.verify', function(context, user, next){
-    //     console.log(context.req.remotingContext.instance);  
-    //     const customerInstance = context.req.remotingContext.instance
-    //     const options = {
-    //         type: 'email',
-    //         from: SENDER_EMAIL_USERNAME,
-    //         subject: '[Edrop] Resent Email Verification',
-    //         text: `Hello ${customerInstance.firstName} ${customerInstance.lastName}! Here another email verification link.`,
-    //         template: path.resolve(__dirname, '../../server/views/verify.ejs'),
-    //         host: FRONTEND_HOSTNAME,
-    //         port: FRONTEND_PORT,
-    //         redirect: '/emailVerified'
-    //     };
-    //     customerInstance.verify(options);
-    //     next();
-    // })
 
-    // override the default getVerifyOptions function
-    Customer.getVerifyOptions = function(){
-        // we do not provide "to" field here because loopback will fill
-        // it in correctly automatically
-        const base = Customer.base.getVerifyOptions();
-        console.log(this);
-        // // console.log('------------------------------');
-        // console.log(Customer);
-        return Object.assign({}, base, {
+    Customer.prototype.resendVerifyEmail = function(options, cb){
+        //we use .prototype because this is an instance method
+        // console.log(options);
+        // console.log(this);
+        const user = this;
+        var emailOptions = {
             type: 'email',
             from: SENDER_EMAIL_USERNAME,
             subject: '[Edrop] Resent Email Verification',
-            // text: `Hello ${Customer.firstName} ${Customer.lastName}! Heres another email verification link.`,
-            text: `Hello! Heres another email verification link.`,
+            text: `Hello ${user.firstName} ${user.lastName}! Here's another email verification link that you requested.`,
             template: path.resolve(__dirname, '../../server/views/verify.ejs'),
             host: FRONTEND_HOSTNAME,
             port: FRONTEND_PORT,
             redirect: '/emailVerified'
-        });
-        // var options = {
-        //     type: 'email',
-        //     from: SENDER_EMAIL_USERNAME,
-        //     subject: '[Edrop] Resent Email Verification',
-        //     text: `Hello user! Heres another email verification link.`,
-        //     template: path.resolve(__dirname, '../../server/views/verify.ejs'),
-        //     host: FRONTEND_HOSTNAME,
-        //     port: FRONTEND_PORT,
-        //     redirect: '/emailVerified'
-        // };
-        // return options;
+        };
+        
+        user.verify(emailOptions);
+        cb(null);
     }
 
-    //Remote methods
+    Customer.beforeRemote('setPassword', function(ctx, customerInstance, next){
+        // this is called before password is reset with /customers/reset-password
+        if(!passwordRegex.test(ctx.req.body.newPassword)){
+            next(errors.validationError('Password does not meet security requirements'));
+        }
+        else{
+            next();
+        }
+    })
+
+    Customer.on('resetPasswordRequest', function(info){
+        // from https://loopback.io/doc/en/lb3/Logging-in-users.html
+        var url = `http://${FRONTEND_HOSTNAME}:${FRONTEND_PORT}/resetPassword`;
+        var html = `Hello ${info.user.firstName} ${info.user.lastName},<br><br>` + 
+                    `You've requested a password reset. Please click <a href="${url}?access_token=` + 
+                    `${info.accessToken.id}">here</a> to reset your password. ` + 
+                    `This link will expire in 15 minutes.<br><br>` + 
+                    `Sincerely,<br>` + 
+                    `Edrop<br><br>` + 
+                    `Need help? Contact us at abc@def.com<br>`;
+        Customer.app.models.Email.send({
+            to: info.email,
+            from: SENDER_EMAIL_USERNAME,
+            subject: '[Edrop] Password Reset Request',
+            html: html
+        }, function(err) {
+            if (err) return console.log('> Error sending password reset email');
+            console.log('> Sending password reset email to:', info.email);
+        });
+    })
 
     //Customer instance creates an address belongsTo himself 
     //Actually we do not need this, we should use the exposed API below for model relation instead.
@@ -119,11 +119,25 @@ module.exports = function(Customer) {
         });
     }
 
+    //Remote methods
+    // Customer resends verification email
+    // Using: POST /customers/{id}/resendEmail
+    Customer.remoteMethod('prototype.resendVerifyEmail',
+        {
+            description: 'CUSTOM remote method: resend verification email, use this instead of /verify',
+            accepts: [
+                {arg: 'options', type: 'object', http: 'optionsFromRequest'},
+            ],
+            http: {verb: 'post'},
+        }
+    )
+
     Customer.remoteMethod('createAddress', {
         discription: 'Customer adds another address',
         accepts: [
             {arg: 'ctx', type: 'object', http: {source: 'context'}},
-            {arg: 'body', type: 'object', http: {source: 'body'}}
+            {arg: 'body', type: 'object', http: {source: 'body'}},
+            
         ],
         http: {path: '/createAddress', verb: 'post'},
         returns: {arg: 'addressInstance', type: 'object', root: true}

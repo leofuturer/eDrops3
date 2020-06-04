@@ -16,7 +16,8 @@ import Shop from '../page/shop/shop.jsx';
 import CheckEmail from '../page/checkEmail/index.jsx';
 import EmailVerified from '../page/EmailVerified/index.jsx';
 import EmailVerifyInvalid from '../page/emailVerifyInvalid/index.jsx';
-//This component is of no use right now!!
+import ResetPassword from '../page/resetPassword/index.jsx';
+
 export class MainRouter extends React.Component {
     render() {
         return (
@@ -34,6 +35,7 @@ export class MainRouter extends React.Component {
                     <Route  path="/checkEmail" component={CheckEmail}/>
                     <Route  path ="/emailVerified" component={EmailVerified}/>
                     <Route  path="/emailVerifyInvalid" component={EmailVerifyInvalid}/>
+                    <Route  path="/resetPassword" component={ResetPassword}/>
                 </Switch>
             </Layout>
         );

@@ -212,7 +212,7 @@ class Register extends React.Component {
                                                onChange={v => this.handleChange('username', v.target.value)} onBlur={this.handleValidateInput} />
                                     </div>
                                     <div className="col-md-4 col-sm-4 col-xs-4 messages">
-                                        <small className="text-muted">Username can only contain a-z, A-Z, 0-9 and _, 8-16 characters</small>
+                                        <small className="text-muted">Username can only contain a-z, A-Z, 0-9 and _, at least 8 characters</small>
                                     </div>
                                 </div>
                                 <div className="form-group row">
@@ -224,7 +224,8 @@ class Register extends React.Component {
                                                onChange={v => this.handleChange('password', v.target.value)} onBlur={this.handleValidateInput}/>
                                     </div>
                                     <div className="col-md-4 col-sm-4 col-xs-4 messages">
-                                        <small className="text-muted">Password should contain at least a number, capital letter and lowercase letter, and 8-20 characters</small>
+                                        <small className="text-muted">Password should contain at least a number, capital 
+                                                                        letter and lowercase letter, and at least 8 characters</small>
                                     </div>
                                 </div>
                                 <div className="form-group row">

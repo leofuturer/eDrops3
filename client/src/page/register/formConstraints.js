@@ -21,8 +21,8 @@ export const constraints = {
             maximun: 20
         },
         format: {
-            pattern: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[^]{8,16}$/,
-            message: "should at least contain a capital letter, a lowercase letter and a number"
+            pattern: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[^]{8,20}$/,
+            message: "should at least contain a capital letter, a lowercase letter, a number, and be at least 8 characters long"
         }
     },
     confirmPassword: {
