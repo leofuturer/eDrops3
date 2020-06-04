@@ -8,7 +8,7 @@ module.exports = (ctx, unset, next) => {
     const { confirmPassword } = ctx.req.body;
 
     if(!passwordRegex.test(String(password))){
-        return next(errors.validationError('Password is not secured'));
+        return next(errors.validationError('Password does not meet security requirements'));
     }
 
     return next();

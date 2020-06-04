@@ -10,6 +10,7 @@ module.exports = function(server) {
   router.get(apiRoot, server.loopback.status());
   
   // install a `POST /forget-password` route
+  // keep this route for resetting admin and foundry worker emails
   router.post(`${restApiRoot}/customer-forget-password`, customerForgetPassword);
   
   //install the route for redirecting when a customer registers successfully

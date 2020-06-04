@@ -9,7 +9,7 @@ import $ from 'jquery';
 class AddressTemplate extends React.Component {
     constructor(props) {
         super(props);
-        this.handleDeleteAddress = this.handleDeleteAddress.bind(this);
+        // this.handleDeleteAddress = this.handleDeleteAddress.bind(this);
         this.handleUpdateAddress = this.handleUpdateAddress.bind(this);
     }
     handleUpdateAddress() {
@@ -21,61 +21,11 @@ class AddressTemplate extends React.Component {
             addressId: address.id
         });
     }
-    handleDeleteAddress() {
-        let _this = this;
-        let address = _this.props.addressTem;
-        let addressId = address.id;
-        let url = customerAddresses.replace('id', Cookies.get('userId'));
-        url += `/${addressId}`;
 
-        // Use axios to send request
-        /*
-        let data = {};
-        let classSelector = '.card' + address.id;
-        API.Request(url, 'DELETE', data, true)
-        .then((res) => {
-            //console.log(res);
-            $(classSelector).remove();
-            console.log('Address deleted');
-            console.log(url);
-        })
-        .catch((err) => {
-            console.log(err);
-        })
-        */
-        
-        // Use ajax to send request --- works well
-        
-        url += `?access_token=${Cookies.get('access_token')}`;
-        let xhr = new XMLHttpRequest();
-        let classSelector = '.card' + address.id;
-        xhr.onreadystatechange = function() {
-           if (this.readyState === 4 && this.status === 204) {
-               //console.log('111');
-               $(classSelector).remove();
-               //console.log(this.responseText);
-           }
-        }
-        xhr.open("DELETE", url, true);
-        xhr.send();
-        
-
-        // Use jquery ajax to send request
-        /*
-        let address = _this.props.addressTem;
-        url += '?access_token=' + Cookies.get('access_token');
-        let classSelector = '.card' + address.id;
-        $.ajax({
-           url: url,
-           success: function() {
-               $(classSelector).remove();
-           }
-        });
-        */
-    }
 
     render(){
         let address = this.props.addressTem;
+        // console.log(address);
         return (
             <div className={"card" + address.id}>
                 <div className="col-lg-6 col-md-6 col-sm-6 col-xs-6">
@@ -115,9 +65,10 @@ class AddressTemplate extends React.Component {
                                     { address.isDefault
                                         ? null
                                         :
-                                        <button className="btn btn-danger btn-padding" >
+                                        <button className="btn btn-danger btn-padding">
                                         <i className="fa fa-trash-o"></i>
-                                        <span className="btn-txt-padding" onClick={this.handleDeleteAddress}>Delete</span>
+                                        <span className="btn-txt-padding" onClick={this.props.onDeletion}>Delete</span>
+                                        {/* <span className="btn-txt-padding" onClick={this.props.onDelete}>Delete</span> */}
                                         </button>
                                     }
                                     

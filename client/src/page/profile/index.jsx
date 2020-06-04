@@ -137,8 +137,15 @@ class Profile extends React.Component{
             city: this.state.city,
             zipCode: this.state.zipCode,
             userType: "person",
-            username: this.state.username,
-            email: this.state.email
+            // username: this.state.username,
+            // email: this.state.email
+        }
+        if(Cookies.get('userType') === 'admin'){
+            // only admin can change username or email
+            Object.assign(userMes, {
+                username: this.state.username,
+                email: this.state.email
+            })
         }
         let addressData = {
             // in case customer accidentally leaves it blank
@@ -169,7 +176,7 @@ class Profile extends React.Component{
                 addressUrl += `/${this.defaultAddressId}`;
                 API.Request(addressUrl, 'PUT', addressData, true)
                 .then(res => {
-                    console.log("Updated address");
+                    // console.log("Updated address");
                     alert('Profile saved successfully!');
                     document.location.reload(true);
                 })

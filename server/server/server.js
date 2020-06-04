@@ -38,3 +38,26 @@ boot(app, __dirname, function(err) {
   if (require.main === module)
     app.start();
 });
+
+app.get('remoting').errorHandler = {
+  handler: function(err, req, res, defaultHandler) {
+    // err = app.buildError(err); //if we want custom error msgs/codes
+    if(err.code === "INVALID_TOKEN"){
+      console.log(err);
+      res.redirect('/emailVerifyInvalid');
+    }
+    else{
+      defaultHandler(err);
+    }
+  }
+};
+
+// app.buildError = function(err) {
+//   err.message = '123 Custom message: ' + err.message;
+//   err.status = 408; // override the status
+
+//   // remove the statusCode property
+//   delete err.statusCode;
+// console.log(err);
+//   return err;
+// };

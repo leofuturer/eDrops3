@@ -56,7 +56,7 @@ class AddNewAddress extends React.Component {
         return (
             <div className="right-route-content">
                 <div className="profile-content">
-                    <h2>Add an address</h2>
+                    <h2>Add a new address</h2>
                 </div>
                 <div className="form-div">
                     <form action="">
