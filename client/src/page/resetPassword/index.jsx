@@ -38,7 +38,8 @@ class ResetPassword extends React.Component{
             this.state.newPassword !== this.state.confNewPassword || 
             !constraints.password.format.pattern.test(this.state.newPassword)){
             this.setState({
-                errorDetected: true
+                errorDetected: true,
+                passwordChange: false
             });
         }
         else {
@@ -49,13 +50,15 @@ class ResetPassword extends React.Component{
             API.Request(url, 'POST', options, false)
             .then(res => {
                 this.setState({
-                    passwordChanged: true
+                    passwordChanged: true,
+                    errorDetected: false
                 });
             })
             .catch(err =>{
                 console.log(err);
                 this.setState({
-                    errorDetected: true
+                    errorDetected: true,
+                    passwordChange: false
                 });
             });
         }

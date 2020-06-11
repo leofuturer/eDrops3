@@ -234,6 +234,12 @@ class Login extends React.Component  {
                         <div className="border-h3"></div>
                         <form action="">
                             <div className="input-contenth">
+                                <div className="form-group">
+                                    <div>
+                                        <span>Don't have an account? </span>
+                                        <NavLink to="/register">Register now</NavLink>
+                                    </div>
+                                </div>
                                 <div className="form-group name-field">
                                     <div className="whitespace"></div>
                                     <input type="text" name="usernameOrEmail" className="form-control name-input need-validation" placeholder="Username or Email" 
@@ -267,25 +273,20 @@ class Login extends React.Component  {
                                         <input type="checkbox" className="remeber-me" onClick={this.handleRemeberMe} /> <span className="remeber">Remember me</span>
                                     </div>
                                     <div className="forget-pass col-sm-3">
-                                        <a onClick={()=>{this.props.history.push('/forgetPass')}}>Forgot Password?</a>
+                                        <NavLink to="/forgetPass">Forgot Password?</NavLink>
                                     </div>
                                 </div>
                                 <div className="form-group login-btn">
                                     <input type="button" value="Login" className="input-btn" onClick={this.handleLogin}/>
                                 </div>
-                                <div className="form-group">
-                                    <div>
-                                        <span style={{paddingRight:'10px'}}>Don't have an account?</span>
-                                        <NavLink to="/register">Register now</NavLink>
-                                    </div>
-                                </div>
-                                <div className="form-group">
+                                
+                                {/* <div className="form-group">
                                     <div style={{marginTop:'20px'}}>
                                         <span className="spanLine"></span>
                                         <span className="spanTxt">or</span>
                                         <span className="spanLine"></span>
                                     </div>
-                                </div>
+                                </div> */}
                                 <div className="form-group">
                                     <div className="border-div-goole">
                                         <i className="fa fa-google"></i>
@@ -297,7 +298,8 @@ class Login extends React.Component  {
                                     </div>
                                 </div>
                                 <div className="form-group">
-                                    <span>if you have trouble logging in to your account, contact us</span>
+                                    <span>If you have trouble logging in to your account, </span>
+                                    <a href="mailto:abc@def.com">contact us.</a>
                                 </div>
                             </div>
                         </form>

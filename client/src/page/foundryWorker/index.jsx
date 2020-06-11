@@ -35,19 +35,19 @@ class FoundryWorker extends React.Component{
         return (
             <div className="right-route-content">
                 <div className="profile-content">
-                    <h2>Foundry Workers</h2>
+                    <h2>All Foundry Workers</h2>
                 </div>
                 <div className="content-show-table row">
                     <div>
-                        <button className="btn btn-primary" onClick={this.handleAdd}>Add new Foundry worker</button>
+                        <button className="btn btn-primary" onClick={this.handleAdd}>Add New Foundry Worker</button>
                     </div>
                     <div className="table-background">
                         <table className="table">
                             <thead>
                                 <tr>
-                                    <th>Full name</th>
-                                    <th>Login username</th>
-                                    <th>E-mail</th>
+                                    <th>Full Name</th>
+                                    <th>Login Username</th>
+                                    <th>Email</th>
                                     <th>Phone</th>
                                     <th>Affiliation</th>
                                     <th>Files</th>

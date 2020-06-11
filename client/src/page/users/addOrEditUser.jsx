@@ -90,9 +90,9 @@ class AddOrEditUser extends React.Component {
             return <Redirect to='/login'></Redirect>
         }
         if(this.props.match.path === "/manage/users/edituser") {
-            var profileContent = "Edit the Customer";
+            var profileContent = "Edit Customer";
         } else {
-            var profileContent = "Add a New User";
+            var profileContent = "Add New User";
         }
         return(
             <div className="right-route-content">
