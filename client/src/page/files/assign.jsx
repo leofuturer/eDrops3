@@ -23,7 +23,7 @@ class AssignFile extends React.Component {
             this.setState({
                 workerList: res.data
             });
-            console.log(res.data);
+            // console.log(res.data);
         })
         .catch(err => {
             console.log(err);
@@ -101,7 +101,7 @@ class AssignFile extends React.Component {
                                             <td>{item.affiliation}</td>
                                             <td onClick={this.handleAssign}>
                                                 <NavLink to="#">
-                                                    Assign to Him/Her   
+                                                    Assign to Worker  
                                                 </NavLink>
                                             </td>
                                         </tr>

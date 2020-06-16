@@ -70,7 +70,9 @@ class UpdateAddress extends React.Component {
                                 <span>Street</span>
                             </label>
                             <div className="col-md-8 col-sm-8 col-xs-8">
-                                <input type="text" value={this.state.street} className="form-control" onChange={v => this.handleChange('street', v.target.value)}/>
+                                <input type="text" value={this.state.street} 
+                                    className="form-control" 
+                                    onChange={v => this.handleChange('street', v.target.value)}/>
                             </div>
                         </div>
                         <div className="form-group">
@@ -78,7 +80,9 @@ class UpdateAddress extends React.Component {
                                 <span>City</span>
                             </label>
                             <div className="col-md-8 col-sm-8 col-xs-8">
-                                <input type="text" value={this.state.city} className="form-control" onChange={v => this.handleChange('city', v.target.value)}/>
+                                <input type="text" value={this.state.city} 
+                                    className="form-control" 
+                                    onChange={v => this.handleChange('city', v.target.value)}/>
                             </div>
                         </div>
                         <div className="form-group">
@@ -86,7 +90,9 @@ class UpdateAddress extends React.Component {
                                 <span>State</span>
                             </label>
                             <div className="col-md-8 col-sm-8 col-xs-8">
-                                <input type="text" value={this.state.state} className="form-control" onChange={v => this.handleChange('state', v.target.value)}/>
+                                <input type="text" value={this.state.state} 
+                                    className="form-control" 
+                                    onChange={v => this.handleChange('state', v.target.value)}/>
                             </div>
                         </div>
                         <div className="form-group">
@@ -94,7 +100,9 @@ class UpdateAddress extends React.Component {
                                 <span>Zip Code</span>
                             </label>
                             <div className="col-md-8 col-sm-8 col-xs-8">
-                                <input type="text" value={this.state.zipCode} className="form-control" onChange={v => this.handleChange('zipCode', v.target.value)}/>
+                                <input type="text" value={this.state.zipCode} 
+                                    className="form-control" 
+                                    onChange={v => this.handleChange('zipCode', v.target.value)}/>
                             </div>
                         </div>
                         <div className="form-group">
@@ -102,10 +110,11 @@ class UpdateAddress extends React.Component {
                                 <span>Country</span>
                             </label>
                             <div className="col-md-8 col-sm-8 col-xs-8">
-                                <input type="text" value={this.state.country} className="form-control" onChange={v => this.handleChange('country', v.target.value)}/>
+                                <input type="text" value={this.state.country} 
+                                    className="form-control" 
+                                    onChange={v => this.handleChange('country', v.target.value)}/>
                             </div>
-                        </div>
-                        
+                        </div>                        
                         <div className="form-group">
                             <div className="col-md-10 col-sd-10 col-xs-10"></div>
                             <div className="btn-group col-md-2 col-sd-2 col-xs-2 text-right" role="group" aria-label="...">

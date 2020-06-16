@@ -13,8 +13,9 @@ class CheckEmail extends React.Component  {
                 <h3>Thanks for signing up!</h3>
                 <div className="border-h3"></div>
                 <div className = "help-text">
-                    A verification email has been sent to the email address provided during registration.
-                    Please check your email for further instructions.
+                    A verification email has been sent to the email address 
+                    provided during registration. Please check your email for 
+                    further instructions.
                 </div>  
                 <div className="link">
                     <NavLink to="/home">Home Page</NavLink>
@@ -23,10 +24,8 @@ class CheckEmail extends React.Component  {
                     <NavLink to="/forgetPass">Resend Verification Email</NavLink>
                 </div>
             </div>
-            
         );
     }
 };
-
 
 export default CheckEmail;

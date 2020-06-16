@@ -13,6 +13,7 @@ import './fileinput/css/fileinput.css';
 import './fileinput/css/fileinput-rtl.css';
 
 import '../order/animate.css';
+
 class Upload extends React.Component{
     constructor(props) {
         super(props)

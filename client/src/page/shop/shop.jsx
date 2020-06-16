@@ -168,17 +168,6 @@ class Shop extends React.Component {
                 }
                 <div className="shop-main-content">
                     <div className="shop-left-content">
-                        {/* Most likely take out these buttons b/c pdf viewer will take care of it.
-                        <div className="operation-icon">
-                            <i className="fa fa-cloud-download"></i>
-                            <i className="fa fa-link"></i>
-                            <i className="fa fa-plus-circle"></i>
-                            <i className="fa fa-minus-circle"></i>
-                        </div>
-                        <div className="div-img">
-                            <img src="../../../static/img/EWOD-chip-compressed-small.png" alt=""/>
-                        </div> */}
-
                         {/* DY - replace temporary image above with a preview of the uploaded PDF */}
                         <div className="div-img">
                             <object id="pdfdoc" data={url} type="application/pdf" />
@@ -194,13 +183,18 @@ class Shop extends React.Component {
                             <div className="col-sm-9 col-md-9 col-lg-9">
                                 <div className="tab-content">
                                     <div className={this.state.cIndex === 0 ? 'tab-pane fade in active':'tab-pane fade in'}>
-                                        ITO glass is good substrate choice for optical applications. The ITO layer has thickness of 200nm. The glass is soda-lime glass with thickness of 0.7nm. The whole substrate is 4" in diameter.
+                                        ITO glass is good substrate choice for optical applications. The ITO layer has 
+                                        thickness of 200nm. The glass is soda-lime glass with thickness of 0.7nm. The 
+                                        whole substrate is 4" in diameter.
                                     </div>
                                     <div className={this.state.cIndex === 1 ? 'tab-pane fade in active':'tab-pane fade in'}>
-                                        Paper is good substrate choice for optical applicatiosn. The ITO layer has thickness of 200nm. The glass is soda-lime glass with thickness of 0.7nm. The whole substrate is 4" in diameter.
+                                        Paper is good substrate choice for optical applications. The ITO layer has a 
+                                        thickness of 200nm. The glass is soda-lime glass with thickness of 0.7nm. The 
+                                        whole substrate is 4" in diameter.
                                     </div>
                                     <div className={this.state.cIndex === 2 ? 'tab-pane fade in active':'tab-pane fade in'}>
-                                        PCB has thickness of 200 nm, which enables multiple layers of patterns. The whole substrate is 4" in diameter.
+                                        PCB has thickness of 200 nm, which enables multiple layers of patterns. The 
+                                        whole substrate is 4" in diameter.
                                     </div>
                                 </div>
                             </div>

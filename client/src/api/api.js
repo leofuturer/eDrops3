@@ -5,33 +5,13 @@ import Cookies from 'js-cookie'
 
 class API {    
     /**
-     * custermer forget password
-     *
-     *
+     * Custom function used to send request to backend APIs
+     * @param {string} url - backend API url
+     * @param {string} method - GET, POST, PATCH, DELETE, etc.
+     * @param {object} params - JSON data to accompany request
+     * @param {boolean} useToken - Use login token or not
+     * @param {object} [headers] - optional, headers to accompany request
      */
-    async forgetPass(params){
-        try{
-            let options = {
-                method:'POST',
-                headers: {'content-type':'application/json; charset=utf-8'},
-                data:JSON.stringify(params),
-                url: serverConfig.customerForgetPass
-            }
-            let res = await axios(options)
-            return res
-        } catch (error) {
-            console.error(error)
-            throw error;
-        }
-    }
-
-    /*
-    * A function used to send request to backend APIs
-    * url
-    * method: GET POST PATCH or others
-    * useToken: false or true
-    * headers: you can use it or not
-    * */
     async Request(url, method, params, useToken, headers = {'content-type':'application/json; charset=utf-8'}){
         try{
             let requestUrl = "";

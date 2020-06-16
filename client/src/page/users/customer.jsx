@@ -4,21 +4,30 @@ import { customerDeleteById } from '../../api/serverConfig';
 import $ from 'jquery';
 import API from '../../api/api';
 import './user.css';
-
 class Customer extends React.Component {
     constructor(props) {
         super(props);
         this.handleEdit = this.handleEdit.bind(this);
         this.handleDelete = this.handleDelete.bind(this);
         this.handleRetrieveFiles = this.handleRetrieveFiles.bind(this);
+        this.handleRetrieveOrders = this.handleRetrieveOrders.bind(this);
     }
     
     handleRetrieveFiles() {
         let customerId = this.props.customer.id;
         this.props.history.push('/manage/admin-retrieve-user-files', {
             userId: customerId,
-            isCustomer: true
+            isCustomer: true,
+            username: this.props.customer.username
         });
+    }
+
+    handleRetrieveOrders(){
+        let customerId = this.props.customer.id;
+        // TODO 6-16-2020: allow admin to view orders specific to
+        // a particular customer
+        // orders are not equal to files!
+        alert("Feature not yet implemented")
     }
 
     handleDelete() {
@@ -48,15 +57,17 @@ class Customer extends React.Component {
         let customer = this.props.customer;
         return (
             <tr id={`customer${customer.id}`}>
+                <td>{customer.id}</td>
                 <td>{customer.firstName + ' ' + customer.lastName}</td>
                 <td>{customer.username}</td>
                 <td>{customer.email}</td>
                 <td>{customer.phoneNumber}</td>
                 <td><i className="fa fa-database" onClick={this.handleRetrieveFiles}></i></td>
+                <td><i className="fa fa-money" onClick={this.handleRetrieveOrders}></i></td>
                 <td><i className="fa fa-edit" onClick={this.handleEdit}></i></td>
                 <td><i className="fa fa-trash" onClick={this.handleDelete}></i></td>
             </tr>
-            );
+        );
     }
 }
 

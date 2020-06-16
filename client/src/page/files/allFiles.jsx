@@ -70,45 +70,46 @@ class AllFiles extends React.Component {
 
     render() {
         return (
-                <div className="right-route-content">
-                    <div className="profile-content">
-                        <h2>All Uploaded Files</h2>             
-                    </div>
-                    <div className="content-show-table row">
-                        <div className="table-background">
-                            <table className="table">
-                                <thead>
-                                    <tr>
-                                        <th>Upload Time</th>
-                                        <th>File Name</th>
-                                        <th>Uploader</th>
-                                        <th>File Size</th>
-                                        <th>Download</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    { this.state.fileList.length !== 0
-                                    ?
-                                    this.state.fileList.map((item, index) => {
-                                        return (<tr key={index} id={index}>
-                                                    <td>{item.uploadTime}</td>
-                                                    <td>{item.filename}</td>
-                                                    <td>{item.uploader}</td>
-                                                    <td>{item.fileSize}</td>
-                                                    <td>         
-                                                        <i className="fa fa-download" onClick={this.handleDownload}></i>   
-                                                    </td>
-                                                </tr>)
-                                    })
-                                    : <tr>
-                                        <td>No files have been uploaded.</td>
-                                    </tr>
-                                }
-                                </tbody>
-                            </table>
-                        </div>
+            <div className="right-route-content">
+                <div className="profile-content">
+                    <h2>All Uploaded Files</h2>             
+                </div>
+                <div className="content-show-table row">
+                    <div className="table-background">
+                        <table className="table">
+                            <thead>
+                                <tr>
+                                    <th>Upload Time</th>
+                                    <th>File Name</th>
+                                    <th>Uploader</th>
+                                    <th>File Size</th>
+                                    <th>Download</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                { this.state.fileList.length !== 0
+                                ?
+                                this.state.fileList.map((item, index) => {
+                                    return (<tr key={index} id={index}>
+                                                <td>{item.uploadTime}</td>
+                                                <td>{item.filename}</td>
+                                                <td>{item.uploader}</td>
+                                                <td>{item.fileSize}</td>
+                                                <td>         
+                                                    <i className="fa fa-download" 
+                                                        onClick={this.handleDownload}></i>
+                                                </td>
+                                            </tr>)
+                                })
+                                : <tr>
+                                    <td>No files have been uploaded.</td>
+                                </tr>
+                            }
+                            </tbody>
+                        </table>
                     </div>
                 </div>
+            </div>
         )
     }
 }
