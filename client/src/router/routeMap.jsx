@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-dom';
 
 import Layout from '../component/layout/index.jsx';
 //Pages
@@ -23,19 +23,22 @@ export class MainRouter extends React.Component {
         return (
             <Layout>
                 <Switch>
-                    <Route  path="/home" component={Home}/>
-                    <Route  path="/upload" component={Upload}/>
-                    <Route  path="/shop" render={({location, history}) => <Shop location={location} history={history} shopifyClient={this.props.shopifyClient}/>}/>
+                    <Route exact path="/">
+                        <Redirect to="/home"/>
+                    </Route>
+                    <Route path="/home" component={Home}/>
+                    <Route path="/upload" component={Upload}/>
+                    <Route path="/shop" render={({location, history}) => <Shop location={location} history={history} shopifyClient={this.props.shopifyClient}/>}/>
                     {/* The project page is currently unused */}
-                    <Route  path="/project" component={Project}/>
-                    <Route  path="/manage" component={Manage}/>
-                    <Route  path="/login"  component={Login}/>
-                    <Route  path="/register" component={Register}/>
-                    <Route  path="/forgetPass" component={ForgetPass}/>
-                    <Route  path="/checkEmail" component={CheckEmail}/>
-                    <Route  path ="/emailVerified" component={EmailVerified}/>
-                    <Route  path="/emailVerifyInvalid" component={EmailVerifyInvalid}/>
-                    <Route  path="/resetPassword" component={ResetPassword}/>
+                    <Route path="/project" component={Project}/>
+                    <Route path="/manage" component={Manage}/>
+                    <Route path="/login"  component={Login}/>
+                    <Route path="/register" component={Register}/>
+                    <Route path="/forgetPass" component={ForgetPass}/>
+                    <Route path="/checkEmail" component={CheckEmail}/>
+                    <Route path ="/emailVerified" component={EmailVerified}/>
+                    <Route path="/emailVerifyInvalid" component={EmailVerifyInvalid}/>
+                    <Route path="/resetPassword" component={ResetPassword}/>
                 </Switch>
             </Layout>
         );

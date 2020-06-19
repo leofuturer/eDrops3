@@ -10,11 +10,16 @@
 
 }
 
+.check-email .help-text{
+    width: 500px;
+    text-align: center;
+}
+
 .check-email h3{
     font-weight: bold;
     color:#e97730;
 }
 
-.check-email .home-page{
+.check-email .link{
     margin-top: 10px;
 }

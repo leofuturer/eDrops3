@@ -139,7 +139,7 @@ class Orders extends React.Component{
                                     <tr>
                                         {
                                             Cookies.get('userType') === 'customer' 
-                                            ? <th>Order Id</th> 
+                                            ? <th>Order ID</th> 
                                             : Cookies.get('userType') === 'worker'
                                               ? <th>Uploader</th>
                                               : null
@@ -168,70 +168,77 @@ class Orders extends React.Component{
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {
-                                        this.state.orderList.map((item, index) => {
-                                            return (
-                                                <tr key={index} id={item.id}>
-                                                    {
-                                                        Cookies.get('userType') === "customer"
-                                                        ? <td>{item.orderInfoId}</td>
-                                                        : Cookies.get('userType') === "worker"
-                                                          ? <td>{item.customer}</td>
-                                                          : null
-                                                    }
-                                                    <td>{item.createdAt.substring(0, item.createdAt.indexOf('T'))}</td>
-                                                    {
-                                                        Cookies.get('userType') === "customer"
-                                                        ? <td>{item.workerName}</td>
-                                                        : null
-                                                    }
-                                                    {
-                                                        Cookies.get('userType') === "customer"
-                                                        ? <td>{item.status}</td>
-                                                        : <td className="icon-center">
-                                                                <form className="edit-order-status-form" onSubmit={this.handleSubmit}>{/*method='post' action={editOrderStatus}*/} 
-                                                                    <select className="order-status" name="status" defaultValue={item.status} >
-                                                                        <option value="Unassigned to Foundry">Unassigned to Foundry</option>
-                                                                        <option value="Assigned to Foundry">Assigned to Foundry</option>
-                                                                        <option value="Project Started">Project Started</option>
-                                                                        <option value="Project Completed">Project Completed</option>
-                                                                    </select>
-                                                                    <input type="hidden" name="orderId" value={item.id}></input>
-                                                                    <input type="submit" value="Submit"></input>
-                                                                </form>
-                                                          </td> 
-                                                    }
-                                                    <td className="icon-center">
-                                                        <i className="fa" onClick={this.handleDownload} id={`download${index}`}>
-                                                            {item.fileName}
-                                                        </i>
-                                                    </td>
-                                                    { // For test orderStatusURL
-                                                    /*
-                                                        Cookies.get('userType') !== "customer"
-                                                        ?   null 
-                                                        :   item.orderStatusURL !== null
-                                                            ? <td className="icon-center">
-                                                                <a href={item.orderStatusURL}>
-                                                                <i className="fa fa-commenting icon-center"></i>
-                                                                </a>   
-                                                              </td>                                                       
+                                    {this.state.orderList.length !== 0
+                                        ? 
+                                        
+                                            this.state.orderList.map((item, index) => {
+                                                return (
+                                                    <tr key={index} id={item.id}>
+                                                        {
+                                                            Cookies.get('userType') === "customer"
+                                                            ? <td>{item.orderInfoId}</td>
+                                                            : Cookies.get('userType') === "worker"
+                                                              ? <td>{item.customer}</td>
+                                                              : null
+                                                        }
+                                                        <td>{item.createdAt.substring(0, item.createdAt.indexOf('T'))}</td>
+                                                        {
+                                                            Cookies.get('userType') === "customer"
+                                                            ? <td>{item.workerName}</td>
+                                                            : null
+                                                        }
+                                                        {
+                                                            Cookies.get('userType') === "customer"
+                                                            ? <td>{item.status}</td>
                                                             : <td className="icon-center">
-                                                                    <i className="fa fa-commenting icon-center"></i>                                                       
+                                                                    <form className="edit-order-status-form" onSubmit={this.handleSubmit}>{/*method='post' action={editOrderStatus}*/} 
+                                                                        <select className="order-status" name="status" defaultValue={item.status} >
+                                                                            <option value="Unassigned to Foundry">Unassigned to Foundry</option>
+                                                                            <option value="Assigned to Foundry">Assigned to Foundry</option>
+                                                                            <option value="Project Started">Project Started</option>
+                                                                            <option value="Project Completed">Project Completed</option>
+                                                                        </select>
+                                                                        <input type="hidden" name="orderId" value={item.id}></input>
+                                                                        <input type="submit" value="Submit"></input>
+                                                                    </form>
+                                                              </td> 
+                                                        }
+                                                        <td className="icon-center">
+                                                            <i className="fa" onClick={this.handleDownload} id={`download${index}`}>
+                                                                {item.fileName}
+                                                            </i>
+                                                        </td>
+                                                        { // For test orderStatusURL
+                                                        /*
+                                                            Cookies.get('userType') !== "customer"
+                                                            ?   null 
+                                                            :   item.orderStatusURL !== null
+                                                                ? <td className="icon-center">
+                                                                    <a href={item.orderStatusURL}>
+                                                                    <i className="fa fa-commenting icon-center"></i>
+                                                                    </a>   
+                                                                  </td>                                                       
+                                                                : <td className="icon-center">
+                                                                        <i className="fa fa-commenting icon-center"></i>                                                       
+                                                                  </td>
+                                                        */
+                                                        }
+                                                        {
+                                                            Cookies.get('userType') === "worker" || Cookies.get('userType') === "customer"
+                                                            ? <td className="icon-center">
+                                                                    <i className="fa fa-commenting" id={`worker-order${item.id}`} onClick={this.handleDetail}></i>                                           
                                                               </td>
-                                                    */
-                                                    }
-                                                    {
-                                                        Cookies.get('userType') === "worker" || Cookies.get('userType') === "customer"
-                                                        ? <td className="icon-center">
-                                                                <i className="fa fa-commenting" id={`worker-order${item.id}`} onClick={this.handleDetail}></i>                                           
-                                                          </td>
-                                                        : null
-                                                    }
-                                                </tr>
-                                            )
-                                        })
+                                                            : null
+                                                        }
+                                                    </tr>
+                                                )
+                                            })
+                                        
+                                        : <tr>
+                                            <td>No orders have been placed.</td>
+                                        </tr>
                                     }
+                                    
                                 </tbody>
                             </table>
                         </div>

@@ -6,25 +6,25 @@ The 2nd generation of Edrop web application
 To achieve a functional EWOD cloud manufacturing website by **improving** the modules below to allow for basic foundry service workflow   
 (1) User account management  
 (2) Mask file management(file upload, download, assign, organized storage)  
-(3) Secure order system(secure checkout gateway with Shopify API, order system integration with Shopify order system)
+(3) Secure order system (secure checkout gateway with Shopify API, order system integration with Shopify order system)
 
 ### Details to be improved
 **Frontend**
 - [x] PDF preview in the shopping page of uploaded document.
 - [x] Notification of "username or email exists/already taken" in the account sign up page
-- [ ] Error handling——provide error reporting pages for all the errors(right now we just ignore them as long as the page doesn't collapse which means errors only show up in the system log console) or some other way to handle them (requires more investigation)
-- [ ] Foundry work edits order status - apply bootstrap dropdown module to replace the current native HTML <form> component
+- [ ] Error handling——provide error reporting pages for all the errors (right now we just ignore them as long as the page doesn't collapse which means errors only show up in the system log console) or some other way to handle them (requires more investigation)
+- [ ] Foundry work edits order status - apply bootstrap dropdown module to replace the current native HTML form component
 - [ ] Just display part of the username (top right corner) & time stamp (in the order list page) if they are too long in case the layout of the page is messed up
 - [ ] Fix the page refreshing issue of the order detail window (because right now we are using window._variable which becomes undefined whe we refresh the page)
 - [ ] Replace the order assignment process with the automatical assignment based on the material customer chooses
-- [ ] Implement the order detail sub window with bootstrap <Modal> or other more delicated component instead of a new page(what we are using right now) 
+- [ ] Implement the order detail sub window with bootstrap Modal or other more delicated component instead of a new page(what we are using right now) 
 - [ ] [code quality improvement] Reorganize all the CSS rules——ensure match each page file with one CSS file and avoid using CSS rules from unmatched CSS files (right now we use CSS rules somewhere from matched files in order to reuse some rules which leads to the coupling of layout features of different web pages)
 - [x] Upload Mask File link should direct unlogged user to the login page
-- [ ] [code quality improvement] Decouple the routing functionalities from the <App> component() —— Maybe use <RouteMap>
+- [x] [code quality improvement] Decouple the routing functionalities from the App component() —— Maybe use RouteMap
 - [ ] [code quality improvement] Optimize React.js code by reducing unnecessary "state"s
 - [ ] Create "under construction" page so that users know a broken link isn't actually broken and that simply we're still adding the feature.
 - [ ] Add cart page? (currently the cart icon at the top toolbar doesn't work)
-- [ ] For the file & order list pages, when there's no file or order, a message should show up to remind user that they have not uploaded/placed any files/order yet, instead of just showing an empty table 
+- [x] For the file & order list pages, when there's no file or order, a message should show up to remind user that they have not uploaded/placed any files/order yet, instead of just showing an empty table 
 
 **Backend**
 - [ ] Optimize the backend project file structure
@@ -124,7 +124,7 @@ To get it running:
 `$ git clone https://github.com/leofuturer/Edrop-v2.0.0.git`  
 `$ cd Edrop-v2.0.0`  
 
-To get the server running:  
+**To get the server running:**  
 `$ cd server`  
 `$ npm install`  
 
@@ -136,7 +136,7 @@ At this point, make sure that you have a mySQL server running and have created a
     APP_MYSQL_USERNAME  
     APP_MYSQL_PASSWORD  
 
-Scroll down for a listing of all the environment variables used in this project.  
+Scroll down to the bottom of this document for a listing of all the environment variables used in this project.  
 
 To do this in Windows (using Command Prompt):  
 `$ set ENV_VAR_NAME=env_var_value`  
@@ -159,7 +159,7 @@ Then, start the server:
 Navigate to localhost:3000 and you should see a status message.  
 Navigate to localhost:3000/explorer and you should see API entry points.
 
-To get the client running:  
+**To get the client running:**  
 Open up a new command window. Navigate back to the home/top level directory. Then:  
     `$ cd client`  
     `$ npm install`  
@@ -178,7 +178,7 @@ Then, run the client (in development mode):
 Navigate to localhost:8086/home to get to the home page of the Edrop application. (Note: the server should also be running at this point)  
 
 ### Steps to import seed data for development & testing
-From the top level directory, initialize the database schema and add seed data. To add or modify seed data, change the json objects in `server/deb/seed-data/`. WARNING: This will delete everything previously in the database!  
+From the top level directory, initialize the database schema and add seed data. To add or modify seed data, change the json objects in `server/db/seed-data/`. WARNING: This will delete everything previously in the database!  
 `$ node ./server/db/reset-db.js`  
 
 ### Steps to change database models

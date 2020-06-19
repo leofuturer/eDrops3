@@ -25,7 +25,8 @@ class Register extends React.Component {
             username: "",
             email: "",
             password: "",
-            confirmPassword: ""
+            confirmPassword: "",
+            requestInProgress: false
             
         }
         this.handleRegister = this.handleRegister.bind(this);
@@ -113,6 +114,9 @@ class Register extends React.Component {
         let form = document.querySelector(".vertical-form");
         let noDupsFound = true; //not the cleanest way to do it but it'll work
         let errors = {};
+        this.setState({
+            requestInProgress: true
+        });
         validate.async(form, constraints, {cleanAttributes: false})
         .then(success => {
             let customerName = document.getElementById("inputUsername").value;
@@ -127,6 +131,9 @@ class Register extends React.Component {
                 let input1 = document.querySelector("#inputUsername");
                 this.showErrorsOrSuccessForInput(input1, errors.username);
                 noDupsFound = false;
+                this.setState({
+                    requestInProgress: false
+                });
             }
 
             let customerEmail = document.getElementById("inputEmail").value;          
@@ -138,6 +145,9 @@ class Register extends React.Component {
                 errors.email = ["Account already exists with this email"];
                 let emailInput = document.getElementById("inputEmail");
                 this.showErrorsOrSuccessForInput(emailInput, errors.email);
+                this.setState({
+                    requestInProgress: false
+                });
             }
             else if(noDupsFound){ //passed no dup email and no dup username
                 this.handleRegister(e);
@@ -145,9 +155,15 @@ class Register extends React.Component {
         })      
         .catch(errors => {
             console.log("Displaying errors");
-            _.each(form.querySelectorAll("input.needValidation"), function(input) {
-                //what's the purpose of this line?
-                this.showErrorsOrSuccessForInput(input, errors && errors[input.name]);
+                _.each(form.querySelectorAll("input.needValidation"), function(input) {
+                    //what's the purpose of this line?
+                    if(this){
+                        this.showErrorsOrSuccessForInput(input, errors && errors[input.name]);
+                    }
+                    
+                });         
+            this.setState({
+                requestInProgress: false
             });
         });
     }
@@ -606,9 +622,15 @@ class Register extends React.Component {
                                 </div>
                                 
                                 <div className="form-group login-btn">
-                                    <input type="button" value="Sign Up" className="input-btn" 
-                                           onClick={this.handleFormSubmit}/>
+                                    {
+                                        this.state.requestInProgress
+                                        ? <img src="../../../static/img/loading80px.gif" alt=""/>
+                                        : <input type="button" value="Sign Up" className="input-btn" 
+                                        onClick={this.handleFormSubmit}/>
+                                    }
+                                    
                                 </div>
+                                
                             </div>
                         </form>
                     </div>

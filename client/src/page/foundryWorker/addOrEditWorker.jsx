@@ -49,6 +49,10 @@ class AddOrEditWorker extends React.Component{
     }
 
     handleSave() {
+        if(this.state.password !== this.state.confirmPassword){
+            alert("Error: Password and Confirm Password fields do not match");
+            return;
+        }
         let _this = this
         let data = {
             address: this.state.address,
@@ -63,8 +67,14 @@ class AddOrEditWorker extends React.Component{
             username: this.state.username,
             email: this.state.email,
             affiliation:this.state.affiliation,
-            password: this.state.password,
-            confirmPassword: this.state.confirmPassword
+            
+        }
+
+        if(this.state.password !== ""){
+            Object.assign(data, {
+                password: this.state.password,
+                confirmPassword: this.state.confirmPassword
+            })
         }
         
         if (this.props.match.path === '/manage/foundryworkers/addfoundryworker') {
@@ -82,7 +92,7 @@ class AddOrEditWorker extends React.Component{
             let url = editFoundryWorker.replace('id', workerId) 
             API.Request(url, 'PATCH', data, true)
             .then((res) => {
-                console.log(res);
+                // console.log(res);
                 this.props.history.push('/manage/foundryworkers');
             })
             .catch((err) => {
@@ -90,6 +100,7 @@ class AddOrEditWorker extends React.Component{
             })
         }
     }
+
     handleChange(key, value) {
         this.setState(
             {
@@ -212,7 +223,7 @@ class AddOrEditWorker extends React.Component{
                                             <span>Password</span>
                                         </label>
                                         <div className="col-md-8 col-sm-8 col-xs-8">
-                                            <input type="text" className="form-control" onChange={v => this.handleChange('password', v.target.value)}/>
+                                            <input type="password" className="form-control" onChange={v => this.handleChange('password', v.target.value)}/>
                                         </div>
                                     </div>
                                     <div className="form-group">
@@ -220,7 +231,7 @@ class AddOrEditWorker extends React.Component{
                                             <span>Confirm Password</span>
                                         </label>
                                         <div className="col-md-8 col-sm-8 col-xs-8">
-                                            <input type="text" className="form-control" onChange={v => this.handleChange('confirmPassword', v.target.value)}/>
+                                            <input type="password" className="form-control" onChange={v => this.handleChange('confirmPassword', v.target.value)}/>
                                         </div>
                                     </div>  
                                 </div>                              

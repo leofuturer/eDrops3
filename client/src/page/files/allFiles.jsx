@@ -72,7 +72,7 @@ class AllFiles extends React.Component {
         return (
                 <div className="right-route-content">
                     <div className="profile-content">
-                        <h2>Files</h2>             
+                        <h2>All Uploaded Files</h2>             
                     </div>
                     <div className="content-show-table row">
                         <div className="table-background">
@@ -87,7 +87,9 @@ class AllFiles extends React.Component {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {this.state.fileList.map((item, index) => {
+                                    { this.state.fileList.length !== 0
+                                    ?
+                                    this.state.fileList.map((item, index) => {
                                         return (<tr key={index} id={index}>
                                                     <td>{item.uploadTime}</td>
                                                     <td>{item.filename}</td>
@@ -97,7 +99,11 @@ class AllFiles extends React.Component {
                                                         <i className="fa fa-download" onClick={this.handleDownload}></i>   
                                                     </td>
                                                 </tr>)
-                                    })}
+                                    })
+                                    : <tr>
+                                        <td>No files have been uploaded.</td>
+                                    </tr>
+                                }
                                 </tbody>
                             </table>
                         </div>

@@ -82,17 +82,20 @@ class AllOrders extends React.Component {
                         <table className="table">
                             <thead>
                                 <tr>
-                                    <th>Order Id</th>
+                                    <th>Order ID</th>
                                     <th>Uploader</th>
                                     <th>Worker</th>
                                     <th>Status</th>
                                     <th className="icon-center">Mask File</th>
                                     <th className="icon-center">Details</th>
-                                    <th className="icon-center">Assigne Order</th>
+                                    <th className="icon-center">Assign Order</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {this.state.orderList.map((item, index) => {
+                                { this.state.orderList.length !== 0 
+                                ?
+                                
+                                this.state.orderList.map((item, index) => {
                                     return(
                                         <tr key={index} id={item.id}>
                                             <td>{item.orderInfoId}</td>
@@ -108,7 +111,12 @@ class AllOrders extends React.Component {
                                             </td>
                                         </tr>
                                     )
-                                })}
+                                })
+                                :
+                                <tr>
+                                    <td>No orders have been submitted yet.</td>
+                                </tr>
+                            }
                             </tbody>
                         </table>
                     </div>
