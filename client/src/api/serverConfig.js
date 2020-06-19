@@ -1,15 +1,20 @@
+/**
+ * Backend API entry points
+ */
 const ApiRootUrl ='/api';
 
 //Customer
 export const customerSignUp = ApiRootUrl+'/customers';
 export const customerLogin = ApiRootUrl+'/customers/login';
-export const customerForgetPass = ApiRootUrl+'/customer-forget-password';
+export const customerForgetPass = ApiRootUrl+'/customers/reset';
 export const customerChangePass = ApiRootUrl +'/customers/change-password';
+export const customerResetPass = ApiRootUrl +'/customers/reset-password';
 export const customerAddresses = ApiRootUrl + '/customers/id/customerAddresses';
 export const customerGetProfile = ApiRootUrl + '/customers/id';
 export const customerDeleteById = ApiRootUrl + '/customers/id';
 export const updateCustomerProfile = ApiRootUrl + '/customers/id';
 export const findCustomerByWhere = ApiRootUrl + '/customers';
+export const customerResendVerifyEmail = ApiRootUrl + '/customers/id/resendVerifyEmail';
 
 //Admin
 export const AdminLogin = ApiRootUrl + '/admins/login';

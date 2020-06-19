@@ -18,7 +18,6 @@ class NavTop extends React.Component{
         Cookies.remove('access_token');
         Cookies.remove('userType');
         this.props.history.push('/home') 
-        //we dont need this because the NavLink will redirect us to the home page
     }
     handleHideDrown() {
         this.setState({show:false});

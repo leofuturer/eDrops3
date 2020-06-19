@@ -33,7 +33,7 @@ class Users extends React.Component{
         return (
             <div className="right-route-content">
                 <div className="profile-content">
-                    <h2>Users</h2>
+                    <h2>All Users</h2>
                 </div>
                 <div className="content-show-table row">
                     <div>
@@ -43,10 +43,12 @@ class Users extends React.Component{
                         <table className="table">
                             <thead>
                             <tr>
+                                <th>ID</th>
                                 <th>Full name</th>
                                 <th>Login username</th>
                                 <th>E-mail</th>
                                 <th>Phone</th>
+                                <th>Files</th>
                                 <th>Orders</th>
                                 <th>Edit</th>
                                 <th>Delete</th>

@@ -1,7 +1,6 @@
 import React from 'react';
 import {Redirect,withRouter} from "react-router-dom";
 import './changePass.css';
-
 import {customerChangePass} from "../../api/serverConfig";
 import API from "../../api/api";
 import Cookies from 'js-cookie';
@@ -144,11 +143,10 @@ class FormsPage extends React.Component  {
             newPassword: {
                 presence: true,
                 length: {
-                    minimum: 6,
-                    maximun: 20
+                    minimum: 8
                 },
                 format: {
-                    pattern: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[^]{8,16}$/,
+                    pattern: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[^]{8,}$/,
                     message: "should at least contain a capital letter, a lowercase letter and a number"
                 }
             },
@@ -181,7 +179,7 @@ class FormsPage extends React.Component  {
     }
 
     render() {
-        if(Cookies.get('username') ===undefined && Cookies.get('email') === undefined) {
+        if(Cookies.get('username') === undefined) {
             return <Redirect to='/login'></Redirect>
         }
         return(
@@ -192,24 +190,35 @@ class FormsPage extends React.Component  {
                         <form action="">
                             <div className="form-group">
                                 <label>Old Password</label>
-                                <input type="password"  name="oldPassword" className="form-control needValidation" placeholder="Old Password" 
-                                onChange={v => this.handleChange('oldPassword', v.target.value)} onBlur={this.handleValidate}/>
+                                <input type="password"  name="oldPassword" 
+                                    className="form-control needValidation" 
+                                    placeholder="Old Password" 
+                                    onChange={v => this.handleChange('oldPassword', v.target.value)} 
+                                    onBlur={this.handleValidate}/>
                                 <div className="messages-wide"></div>
                             </div>
                             <div className="form-group">
                                 <label>New Password</label>
-                                <input type="password" name="newPassword" className="form-control needValidation" placeholder="New Password" 
-                                onChange={v => this.handleChange('newPassword', v.target.value)} onBlur={this.handleValidate}/>
+                                <input type="password" name="newPassword" 
+                                    className="form-control needValidation" 
+                                    placeholder="New Password" 
+                                    onChange={v => this.handleChange('newPassword', v.target.value)} 
+                                    onBlur={this.handleValidate}/>
                                 <div className="messages-wide"></div>
                             </div>
                             <div className="form-group">
                                 <label>Confirm Password</label>
-                                <input type="password" name="confirmPassword" className="form-control needValidation" placeholder="Confirm Password"
-                                onChange={v => this.handleChange('confirmPassword', v.target.value)} onBlur={this.handleValidate}/>
+                                <input type="password" name="confirmPassword" 
+                                    className="form-control needValidation" 
+                                    placeholder="Confirm Password"
+                                    onChange={v => this.handleChange('confirmPassword', v.target.value)} 
+                                    onBlur={this.handleValidate}/>
                                 <div className="messages-wide"></div>
                             </div>
                             <div className="form-group text-right" style={{marginTop:'30px'}}>
-                                <input type="button" value="Save" className="btn btn-success" onClick={this.handleChangePass}/>
+                                <input type="button" value="Save" 
+                                    className="btn btn-success" 
+                                    onClick={this.handleChangePass}/>
                             </div>
                         </form>
                     </div>

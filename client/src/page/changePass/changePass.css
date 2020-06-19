@@ -33,10 +33,10 @@
 }
 .input-content{
     width:500px;
-    height: 100px;
+    /* height: 100px; */
     margin:0 auto;
-    position: relative;
-    top:20px;
+    /* position: relative; */
+    margin-top: 20px;
 }
 .check-inline,.password-inline{
     display: inline-block;

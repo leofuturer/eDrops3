@@ -148,7 +148,7 @@ class Manage extends React.Component{
             return <Redirect to='/login'></Redirect>
         }
         return(
-            <div style={{width:'1200px',margin:'0 auto'}}>
+            <div className="manage">
                 <div className="left-nav">
                     <NavLeft/>
                 </div>
