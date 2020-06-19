@@ -2,7 +2,6 @@
     text-align: center;
     padding-top: 10px;
     padding-bottom: 10px;
-
     width: 1000px;
     box-shadow: 0 0 6px rgba(0, 0, 0, 0.1);
     margin: 0 auto;
@@ -13,6 +12,10 @@
 .email-verified h3{
     font-weight: bold;
     color:#e97730;
+}
+
+.email-verified .help-text{
+    text-align: center;
 }
 
 .email-verified .link{

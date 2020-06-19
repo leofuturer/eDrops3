@@ -1,3 +1,6 @@
+/**
+ * Backend API entry points
+ */
 const ApiRootUrl ='/api';
 
 //Customer

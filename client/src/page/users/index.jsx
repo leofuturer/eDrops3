@@ -43,10 +43,12 @@ class Users extends React.Component{
                         <table className="table">
                             <thead>
                             <tr>
+                                <th>ID</th>
                                 <th>Full name</th>
                                 <th>Login username</th>
                                 <th>E-mail</th>
                                 <th>Phone</th>
+                                <th>Files</th>
                                 <th>Orders</th>
                                 <th>Edit</th>
                                 <th>Delete</th>

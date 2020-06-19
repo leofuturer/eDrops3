@@ -12,8 +12,9 @@ class EmailVerified extends React.Component  {
             <div className = "email-verified">
                 <h3>Email Verified!</h3>
                 <div className="border-h3"></div>
-                <div>
-                    Thanks for verifying your email! Your account has been activated and is ready for use.
+                <div className = "help-text-centered">
+                    Thanks for verifying your email! Your account has been 
+                    activated.
                 </div>  
                 <div className="link">
                     <NavLink to="/login">Log In</NavLink>
@@ -21,11 +22,9 @@ class EmailVerified extends React.Component  {
                 <div className="link">
                     <NavLink to="/home">Home Page</NavLink>
                 </div>
-            </div>
-            
+            </div>   
         );
     }
 };
-
 
 export default EmailVerified;
