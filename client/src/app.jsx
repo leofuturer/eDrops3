@@ -22,11 +22,12 @@ class App extends React.Component {
     }
 
     render() {
+
         return(
             <Router>
                 <Switch>
                     <Route path="/subpage" component={SubRouter}/>
-                    <Route path="/" component={MainRouter}/>
+                    <Route path="/" render={() => <MainRouter shopifyClient={shopifyClient}/>} />
                 </Switch>
             </Router>
         )
