@@ -1,6 +1,6 @@
 ## Using Git
 To copy this repository:  
-`$ git clone https://github.com/leofuturer/Edrop-v2.0.0.git`  
+`$ git clone https://github.com/danningyu/Edrop-v2.0.0.git`  
 
 To start work on a feature, switch to your local master branch:  
 `$ git checkout master`  
