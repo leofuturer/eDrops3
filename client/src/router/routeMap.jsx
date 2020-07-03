@@ -20,6 +20,7 @@ import ResetPassword from '../page/resetPassword/index.jsx';
 
 export class MainRouter extends React.Component {
     render() {
+        
         return (
             <Layout>
                 <Switch>

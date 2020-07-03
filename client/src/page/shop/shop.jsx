@@ -30,7 +30,7 @@ class Shop extends React.Component {
         //this.handleCart = this.handleCart.bind(this);
     }
 
-    componentDidMount() {
+    componentDidMount() {      
         this.props.shopifyClient.checkout.create().then((res) => {
             this.setState({
               checkout: res,
