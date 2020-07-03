@@ -1,3 +1,25 @@
+# Github and Git Workflow
+The purpose of this document is to describe our workflow for the Edrop website. We use git for version control and Github for hosting the remote version of our respository.
+
+## Workflow and Guidelines
+Before starting to code, plan out what you are going to do. It may be tempting to immediately start coding, but for more involved tasks, the amount of required changes can quickly grow to an unmanageable amount. It is better to write down: (1) what you hope to achieve; (2) how you will achieve this from a high level view; and then (3) what changes at the individual file level will be required. See issue #2 for an example.  
+
+However, if you can't fully describe what file level changes you'll need to make because you're not sure yet, that's fine! The point is to get you to think and make a plan before jumping into coding.  
+
+Open an issue ("Issues" tab at the top -> "New Issue") describing what you plan to fix or what feature you plan to add. In the description, include your plan. Add an assignee (usually yourself) and give it the appropriate label.  
+
+On your local machine, check out master branch, pull the remote master branch so that you have the latest version, and then create a specific branch on your local development environment just for this issue. See git instructions below for how to create a new branch (and use git in general).  
+
+For this project, we use the branch naming convention `issue-<xx>-short_description`. For example, issue #22, time formatting issue on file upload times, would have its branch named as `issue-22-time_formatting`  
+
+The aim of one branch per issue is to keep pull requests (PRs) small so that they can easily be compared against the code from master branch.  
+
+Once you've finished coding, create a commit. The title should be short (less than 72 characters) and descriptive, and start with `Fix issue #<xx>: <title_here>`. Then, start the body text of the commit with `This fixes #<xx>`.  
+
+The phrase "fixes #xx" will automatically link the created PR for this branch to the open issue #xx so that when the PR is approved, it will automatically close the issue. Then, use the body of the text to describe what you did and the use the body of the text to describe what you did. Manually wrap each line of the body text so that no line exceeds 72 characters.  
+
+Push your commit(s) to Github and then open a pull request to merge this branch into master. Add Danning and/or Qining as reviewers, and add yourself as an assignee. The reviewers will confirm that the changes work as expected to resolve the issue and then merge it into master.
+
 ## Using Git
 To copy this repository:  
 `$ git clone https://github.com/danningyu/Edrop-v2.0.0.git`  
