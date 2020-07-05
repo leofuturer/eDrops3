@@ -1,6 +1,19 @@
+/* 
+    Some basic concepts here:
+    product: a type of product created in the Shopify development store
+
+    product variant: a product can have multiple product variant, the "EWOD chip manufacturing service" 
+    is a product variant set in the Shopify development store
+
+    checkout: a "checkout" can be treated as bundled information used to create an order in the Shopify development store,
+    it contains multiple lineItems
+
+    lineItem: when a product variant is added to the cart (essentially added to the shopifyClient.checkout.lineItems),
+    it becomes a lineItem in that "checkout"
+*/
+
 import React from 'react';
 import { withRouter } from 'react-router-dom';
-
 import $ from 'jquery';
 import './shop.css';
 import Cookies from "js-cookie";
@@ -27,7 +40,6 @@ class Shop extends React.Component {
         this.handleCartClose = this.handleCartClose.bind(this);
         this.updateQuantityInCart = this.updateQuantityInCart.bind(this);
         this.removeLineItemInCart = this.removeLineItemInCart.bind(this);
-        //this.handleCart = this.handleCart.bind(this);
     }
 
     componentDidMount() {      
@@ -37,6 +49,7 @@ class Shop extends React.Component {
             });
         });
 
+        //Currently the retrieved "shop" information is not used
         this.props.shopifyClient.shop.fetchInfo().then((res) => {
             this.setState({
               shop: res,
@@ -52,12 +65,29 @@ class Shop extends React.Component {
         )
     }
 
+    /*
+        This function realize the functionality of adding the manufacture service to the cart
+
+        We create a virtual product called "EWOD Chip Manufacturing Service" in Shopify development store
+        and here we are actually add this product with some customized options 
+        set in the Shopify development store by the "customAttribute" (a feature provided by Shopify -> Product) 
+        to the "shopifyClient.checkout.lineItems", an API provided by js-buy-sdk. 
+        
+        Then later in the cart.jsx, when "shopifyClient.checkout.webUrl" is opened by a new "window" Object,
+        all the items added to the "shopifyClient.checkout.lineItems" will be added to the created order(taken care of by js-buy-sdk) 
+        automatically when customers checkout in that page.
+
+        @variantId: The variantId here is the variantId of the product set by the development
+                    we hard code it in the "render()" function below and pass the value in
+        @quantity: The quantity seleted by customer, put in from frontend page
+    */
     addVariantToCart(variantId, quantity){
         this.setState({
             isCartOpen: true
         });
 
         const wcpbVal = this.state.wcpb.toString();
+
         const lineItemsToAdd = [{variantId, 
                                 quantity: parseInt(quantity, 10), 
                                 customAttributes: [
@@ -171,7 +201,6 @@ class Shop extends React.Component {
                         {/* DY - replace temporary image above with a preview of the uploaded PDF */}
                         <div className="div-img">
                             <object id="pdfdoc" data={url} type="application/pdf" />
-
                         </div>
                         <div className="shop-material">
                             <h2>Process</h2>
