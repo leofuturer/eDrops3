@@ -9,7 +9,11 @@ import "bootstrap";
 // Router components
 import {MainRouter, SubRouter} from 'router/routeMap.jsx';
 
-//Using Shopify js-buy SDK to implement the checkout and payment functionalities
+/*  Using Shopify js-buy SDK to implement the checkout and payment functionalities
+    With the "ShopifyClient" Object passed down to the shop.jsx page, we can use 
+    js-buy-sdk APIs to retrieve "product" data & create "order" in that Shopify development store
+    specified by the domain and authenticated by the storefrontAccessToken
+*/
 const shopifyClient = ShopifyClient.buildClient({
     storefrontAccessToken: 'c098a4c1f8d45e55b35caf24ca9c97bb',
     domain: 'wqntest.myshopify.com'
