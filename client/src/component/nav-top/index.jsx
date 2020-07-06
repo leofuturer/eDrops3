@@ -1,6 +1,7 @@
 import React from 'react';
 import {NavLink} from  'react-router-dom';
 import Cookies from 'js-cookie';
+import Cart from '../../page/shop/cart.jsx'
 
 class NavTop extends React.Component{
     constructor(props){
@@ -131,6 +132,7 @@ class NavTop extends React.Component{
                         </ul>
                     </div>
                 </nav>
+        
             </header>
         );
     }
