@@ -26,8 +26,8 @@ class Shop extends React.Component {
         
         this.state = {
             cIndex: 0,
-            material: ['ITO glass','paper','PCB'],
-            materialVal: 'ITO glass',
+            material: ['ITO Glass', 'Paper', 'PCB'],
+            materialVal: 'ITO Glass',
             quantity: 1,
             wcpb: false,
             fileName: this.props.location.state.fileName,
@@ -113,6 +113,7 @@ class Shop extends React.Component {
           this.setState({
             checkout: res
           });
+          console.log(res);
         })
         .catch(err => {
             console.log(err);
@@ -200,7 +201,13 @@ class Shop extends React.Component {
                     <div className="shop-left-content">
                         {/* DY - replace temporary image above with a preview of the uploaded PDF */}
                         <div className="div-img">
+<<<<<<< HEAD
                             <object id="pdfdoc" data={url} type="application/pdf" />
+=======
+                            <img src="../../../static/img/DXFComingSoon.PNG" style={{width : "600px"}}/>
+                            {/* <object id="pdfdoc" data={url} type="application/pdf" /> */}
+
+>>>>>>> issue-22-time_format
                         </div>
                         <div className="shop-material">
                             <h2>Process</h2>
@@ -213,37 +220,43 @@ class Shop extends React.Component {
                                 <div className="tab-content">
                                     <div className={this.state.cIndex === 0 ? 'tab-pane fade in active':'tab-pane fade in'}>
                                         ITO glass is good substrate choice for optical applications. The ITO layer has 
-                                        thickness of 200nm. The glass is soda-lime glass with thickness of 0.7nm. The 
-                                        whole substrate is 4" in diameter.
+                                        thickness of 200 nm. The glass is soda-lime glass with thickness of 0.7 nm. The 
+                                        whole substrate is 4 inches in diameter.
                                     </div>
                                     <div className={this.state.cIndex === 1 ? 'tab-pane fade in active':'tab-pane fade in'}>
                                         Paper is good substrate choice for optical applications. The ITO layer has a 
-                                        thickness of 200nm. The glass is soda-lime glass with thickness of 0.7nm. The 
-                                        whole substrate is 4" in diameter.
+                                        thickness of 200 nm. The glass is soda-lime glass with thickness of 0.7 nm. The 
+                                        whole substrate is 4 inches in diameter.
                                     </div>
                                     <div className={this.state.cIndex === 2 ? 'tab-pane fade in active':'tab-pane fade in'}>
                                         PCB has thickness of 200 nm, which enables multiple layers of patterns. The 
-                                        whole substrate is 4" in diameter.
+                                        whole substrate is 4 inches in diameter.
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div className="shop-right-content">
-                        <div className="div-filename">{'File to be fabricated: '}<b>{this.state.fileName}</b></div>
+                        <div className="div-filename">{'File to be fabricated: '}
+                            <b>{this.state.fileName}</b></div>
                         <div className="div-quantity">
-                            <label>Quantity:</label>
-                            <input type="text" className="input-quantity" value={this.state.quantity} onChange={v => this.handleChange('quantity', v.target.value)}/> X $1000 = <span>${this.state.quantity * 1000}</span>
-                            <p className="tax-info">Excludes sales taxes</p>
+                            <label>Quantity:&nbsp;</label>
+                            <input type="text" className="input-quantity" 
+                                value={this.state.quantity} 
+                                onChange={v => this.handleChange('quantity', v.target.value)}/> X $1000 = 
+                                <span> ${this.state.quantity * 1000}</span>                      
                             <p className="cart-btn">
-                                <input type="button" className="btn btn-primary btn-lg btn-block" value="Add to cart" onClick={e => this.addVariantToCart(variantId, this.state.quantity)}/>
+                                <input type="button" className="btn btn-primary btn-lg btn-block" 
+                                    value="Add to Cart" 
+                                    onClick={e => this.addVariantToCart(variantId, this.state.quantity)}/>
                             </p>
+                            <p className="tax-info">Note: Price excludes sales tax</p>
                         </div>
                         <div className="shop-config">
-                            <h2>EWOD chip configuration</h2>
+                            <h2>Chip Configuration Options</h2>
                             <p className="config-items">
                                 <input type="checkbox" onChange={v => this.handleChange('wcpb', v.target.value)}/>
-                                <span style={{paddingLeft:'10px'}}>With Cover plate assembled</span>
+                                <span style={{paddingLeft:'10px'}}>With Cover Plate Assembled</span>
                             </p>
                         </div>
                     </div>

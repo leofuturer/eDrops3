@@ -123,8 +123,6 @@ class Orders extends React.Component{
     }
 
     render() {
-        //let userInfo = this.state.userInfo;
-        console.log(this.state.orderList);
         return (
             <div>
                 <div className="right-route-content">
@@ -169,8 +167,7 @@ class Orders extends React.Component{
                                 </thead>
                                 <tbody>
                                     {this.state.orderList.length !== 0
-                                        ? 
-                                        
+                                        ?  
                                             this.state.orderList.map((item, index) => {
                                                 return (
                                                     <tr key={index} id={item.id}>
@@ -191,7 +188,8 @@ class Orders extends React.Component{
                                                             Cookies.get('userType') === "customer"
                                                             ? <td>{item.status}</td>
                                                             : <td className="icon-center">
-                                                                    <form className="edit-order-status-form" onSubmit={this.handleSubmit}>{/*method='post' action={editOrderStatus}*/} 
+                                                                    <form className="edit-order-status-form" 
+                                                                            onSubmit={this.handleSubmit}>{/*method='post' action={editOrderStatus}*/} 
                                                                         <select className="order-status" name="status" defaultValue={item.status} >
                                                                             <option value="Unassigned to Foundry">Unassigned to Foundry</option>
                                                                             <option value="Assigned to Foundry">Assigned to Foundry</option>
@@ -231,14 +229,17 @@ class Orders extends React.Component{
                                                             : null
                                                         }
                                                     </tr>
-                                                )
+                                                );
                                             })
-                                        
                                         : <tr>
-                                            <td>No orders have been placed.</td>
+                                            <td>
+                                                {Cookies.get('userType') === "worker"
+                                                ? "No orders have been assigned to you yet."
+                                                : "No orders have been placed."
+                                                }
+                                            </td>
                                         </tr>
                                     }
-                                    
                                 </tbody>
                             </table>
                         </div>
@@ -247,7 +248,6 @@ class Orders extends React.Component{
             </div>
         );   
     }
-
 }
 
 export default Orders;

@@ -50,23 +50,23 @@ class NavLeft extends React.Component{
                             : null
                     }
                     {
-                        Cookies.get('userType') == 'customer'
-                            ?
-                            <li className="disabled">
-                                <NavLink to="/manage/dashboard" activeStyle={{width:'117px',borderLeft:'3px solid #428bca',color:'#428bca'}}>
-                                    <span className="icon-nav"><i className="fa fa-dashboard"></i></span>
-                                    <span className="icon-txt">Dashboard</span>
-                                </NavLink>
-                            </li>
-                            : null
+                        // Cookies.get('userType') == 'customer'
+                        //     ?
+                        //     <li className="disabled">
+                        //         <NavLink to="/manage/dashboard" activeStyle={{width:'117px',borderLeft:'3px solid #428bca',color:'#428bca'}}>
+                        //             <span className="icon-nav"><i className="fa fa-dashboard"></i></span>
+                        //             <span className="icon-txt">Dashboard</span>
+                        //         </NavLink>
+                        //     </li>
+                        //     : null
                     }
 
-                    <li>
+                    {/* <li>
                         <NavLink to="#" activeStyle={{width:'117px',borderLeft:'3px solid #428bca',color:'#428bca'}}>
                             <span className="icon-nav"><i className="fa fa-calendar"></i></span>
                             <span className="icon-txt">Event Center</span>
                         </NavLink>
-                    </li>
+                    </li> */}
 
 
                     {
@@ -105,43 +105,43 @@ class NavLeft extends React.Component{
                         </NavLink>
                     </li>
                     {
-                        Cookies.get('userType') == 'customer'
-                            ?
-                            <li>
-                                <NavLink to="/manage/preferences" activeStyle={{width:'117px',borderLeft:'3px solid #428bca',color:'#428bca'}}>
-                                    <span className="icon-nav"><i className="fa fa-send"></i></span>
-                                    <span className="icon-txt">Preferences</span>
-                                </NavLink>
-                            </li>
-                            : null
+                        // Cookies.get('userType') == 'customer'
+                        //     ?
+                        //     <li>
+                        //         <NavLink to="/manage/preferences" activeStyle={{width:'117px',borderLeft:'3px solid #428bca',color:'#428bca'}}>
+                        //             <span className="icon-nav"><i className="fa fa-send"></i></span>
+                        //             <span className="icon-txt">Preferences</span>
+                        //         </NavLink>
+                        //     </li>
+                        //     : null
                     }
-                    <li>
+                    {/* <li>
                         <NavLink to="#" activeStyle={{width:'117px',borderLeft:'3px solid #428bca',color:'#428bca'}}>
                             <span className="icon-nav"><i className="fa fa-bell"></i></span>
                             <span className="icon-txt">Notifications</span>
                         </NavLink>
-                    </li>
+                    </li> */}
                     {
-                        Cookies.get('userType') == 'customer'
-                            ?
-                            <li>
-                                <NavLink to="/manage/discounts" activeStyle={{width:'117px',borderLeft:'3px solid #428bca',color:'#428bca'}}>
-                                    <span className="icon-nav"><i className="fa fa-tag"></i></span>
-                                    <span className="icon-txt">Discounts</span>
-                                </NavLink>
-                            </li>
-                            : null
+                        // Cookies.get('userType') == 'customer'
+                        //     ?
+                        //     <li>
+                        //         <NavLink to="/manage/discounts" activeStyle={{width:'117px',borderLeft:'3px solid #428bca',color:'#428bca'}}>
+                        //             <span className="icon-nav"><i className="fa fa-tag"></i></span>
+                        //             <span className="icon-txt">Discounts</span>
+                        //         </NavLink>
+                        //     </li>
+                        //     : null
                     }
                     {
-                        Cookies.get('userType') == 'customer'
-                            ?
-                            <li>
-                                <NavLink to="/manage/support" activeStyle={{width:'117px',borderLeft:'3px solid #428bca',color:'#428bca'}}>
-                                    <span className="icon-nav"><i className="fa fa-rocket"></i></span>
-                                    <span className="icon-txt">Support</span>
-                                </NavLink>
-                            </li>
-                            : null
+                        // Cookies.get('userType') == 'customer'
+                        //     ?
+                        //     <li>
+                        //         <NavLink to="/manage/support" activeStyle={{width:'117px',borderLeft:'3px solid #428bca',color:'#428bca'}}>
+                        //             <span className="icon-nav"><i className="fa fa-rocket"></i></span>
+                        //             <span className="icon-txt">Support</span>
+                        //         </NavLink>
+                        //     </li>
+                        //     : null
                     }
                     {
                         Cookies.get('userType') == 'customer'
@@ -168,12 +168,12 @@ class NavLeft extends React.Component{
                                     </li> 
                 }
 
-                    <li>
+                    {/* <li>
                         <NavLink to="#" activeStyle={{width:'117px',borderLeft:'3px solid #428bca',color:'#428bca'}}>
                             <span className="icon-nav"><i className="fa fa-building"></i></span>
                             <span className="icon-txt">Quotes</span>
                         </NavLink>
-                    </li>
+                    </li> */}
                 {
                     Cookies.get('userType') === 'customer' || Cookies.get('userType') === 'admin'
                         ?                     
