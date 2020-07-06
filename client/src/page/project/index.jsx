@@ -9,22 +9,22 @@ class Project extends React.Component{
                 <ul id="myTab" className="nav nav-tabs">
                     <li className="active">
                         <a href="#uploads" data-toggle="tab">
-                            My Uploads(2)
+                            My Uploads
                         </a>
                     </li>
                     <li>
                         <a href="#designer" data-toggle="tab">
-                            My Public Designer(1)
+                            My Public Designer
                         </a>
                     </li>
                     <li>
                         <a href="#favorites" data-toggle="tab">
-                            Favorites(1)
+                            Favorites
                         </a>
                     </li>
                     <li>
                         <a href="#ordered" data-toggle="tab">
-                            Ordered(0)
+                            Ordered
                         </a>
                     </li>
                 </ul>
@@ -62,7 +62,7 @@ class Project extends React.Component{
                             <div className="icon-div">
                                 <figure className="figure-img">
                                     <a href="">
-                                        <img src="../../../static/img/IMG_2943.jpg" alt=""/>
+                                        <img src="../../../static/img/IMG_2941.jpg" alt=""/>
                                     </a>
                                     <h4>EWOD Control System</h4>
                                 </figure>
@@ -70,7 +70,7 @@ class Project extends React.Component{
                             <div className="icon-div icon-center">
                                 <figure className="figure-img">
                                     <a href="">
-                                        <img src="../../../static/img/IMG_2941.jpg" alt=""/>
+                                        <img src="../../../static/img/IMG_2943.jpg" alt=""/>
                                     </a>
                                     <h4>EWOD Chip v1</h4>
                                 </figure>
@@ -90,7 +90,7 @@ class Project extends React.Component{
                             <div className="icon-div">
                                 <figure className="figure-img">
                                     <a href="">
-                                        <img src="../../../static/img/IMG_2943.jpg" alt=""/>
+                                        <img src="../../../static/img/IMG_2941.jpg" alt=""/>
                                     </a>
                                     <h4>EWOD Control System</h4>
                                 </figure>
@@ -98,7 +98,7 @@ class Project extends React.Component{
                             <div className="icon-div icon-center">
                                 <figure className="figure-img">
                                     <a href="">
-                                        <img src="../../../static/img/IMG_2941.jpg" alt=""/>
+                                        <img src="../../../static/img/IMG_2943.jpg" alt=""/>
                                     </a>
                                     <h4>EWOD Chip v1</h4>
                                 </figure>

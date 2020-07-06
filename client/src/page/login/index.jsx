@@ -242,27 +242,44 @@ class Login extends React.Component  {
                                 </div>
                                 <div className="form-group name-field">
                                     <div className="whitespace"></div>
-                                    <input type="text" name="usernameOrEmail" className="form-control name-input need-validation" placeholder="Username or Email" 
-                                    onChange={v => this.handleChange('usernameOrEmail', v.target.value)} />
+                                    <input type="text" name="usernameOrEmail" 
+                                            className="form-control name-input need-validation" 
+                                            placeholder="Username or Email" 
+                                            onChange={v => this.handleChange('usernameOrEmail', v.target.value)} />
                                     <div className="registrationError messages"></div>
                                 </div>
                                 <div className="form-group pass-field">
                                     <div className="whitespace"></div>
-                                    <input type="password" name="password" className="form-control pass-input need-validation" placeholder="Password" 
-                                    onChange={v => this.handleChange('password', v.target.value)} />
+                                    <input type="password" name="password" 
+                                            className="form-control pass-input need-validation" 
+                                            placeholder="Password" 
+                                            onChange={v => this.handleChange('password', v.target.value)} />
                                     <div className="passwordError messages"></div>
                                 </div>
                                 <div className="form-group row radio-group">
                                     <div className="col-md-3 col-sm-3 col-xs-3"></div>
                                     <div className="col-md-6 col-sm-6 col-xs-6 text-left">
                                         <label className="radio-inline">
-                                            <input type="radio" className="radioToValidate" name="userType" value="customer" onChange={v => this.handleChange('usertype', v.target.value)}/> <span className="txt-radio">Customer</span>
+                                            <input type="radio" 
+                                                    className="radioToValidate" 
+                                                    name="userType" value="customer" 
+                                                    onChange={v => this.handleChange('usertype', v.target.value)}/>
+                                                <span className="txt-radio">Customer</span>
                                         </label>
                                         <label className="radio-inline" style={{marginLeft:'50px'}}>
-                                            <input type="radio" className="radioToValidate" name="userType" value="admin" onChange={v => this.handleChange('usertype', v.target.value)}/> <span className="txt-radio">Admin</span>
+                                            <input type="radio" 
+                                                    className="radioToValidate" 
+                                                    name="userType" value="admin" 
+                                                    onChange={v => this.handleChange('usertype', v.target.value)}/>
+                                                <span className="txt-radio">Admin</span>
                                         </label>
                                         <label className="radio-inline" style={{marginLeft:'50px'}}>
-                                            <input type="radio" className="radioToValidate" name="userType" value="worker" onChange={v => this.handleChange('usertype', v.target.value)}/><span className="txt-radio">Foundry</span>
+                                            <input type="radio" 
+                                                    className="radioToValidate" 
+                                                    name="userType" 
+                                                    value="worker" 
+                                                    onChange={v => this.handleChange('usertype', v.target.value)}/>
+                                                <span className="txt-radio">Foundry Worker</span>
                                         </label>
                                     </div>
                                     <div className="messages-radio col-md-3 col-sm-3 col-xs-3"></div>
@@ -270,14 +287,17 @@ class Login extends React.Component  {
                                 <div className="form-group row">
                                     <div className="whitespace col-sm-3"></div>
                                     <div className="check-inline col-sm-3">
-                                        <input type="checkbox" className="remeber-me" onClick={this.handleRemeberMe} /> <span className="remeber">Remember me</span>
+                                        <input type="checkbox" className="remeber-me" 
+                                                onClick={this.handleRemeberMe} /> 
+                                            <span className="remeber"> Remember me</span>
                                     </div>
                                     <div className="forget-pass col-sm-3">
                                         <NavLink to="/forgetPass">Forgot Password?</NavLink>
                                     </div>
                                 </div>
                                 <div className="form-group login-btn">
-                                    <input type="button" value="Login" className="input-btn" onClick={this.handleLogin}/>
+                                    <input type="button" value="Login" 
+                                            className="input-btn" onClick={this.handleLogin}/>
                                 </div>
                                 
                                 {/* <div className="form-group">
