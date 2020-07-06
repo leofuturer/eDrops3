@@ -201,13 +201,9 @@ class Shop extends React.Component {
                     <div className="shop-left-content">
                         {/* DY - replace temporary image above with a preview of the uploaded PDF */}
                         <div className="div-img">
-<<<<<<< HEAD
-                            <object id="pdfdoc" data={url} type="application/pdf" />
-=======
                             <img src="../../../static/img/DXFComingSoon.PNG" style={{width : "600px"}}/>
                             {/* <object id="pdfdoc" data={url} type="application/pdf" /> */}
 
->>>>>>> issue-22-time_format
                         </div>
                         <div className="shop-material">
                             <h2>Process</h2>
