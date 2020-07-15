@@ -29,22 +29,22 @@
     "customerAddresses": {
       "type": "hasMany",
       "model": "customerAddress",
-      "foreignKey": "",
-      "options": {
-        "nestRemoting": true
-      }
-    },
-    "customerHasOrderInfos": {
-      "type": "hasMany",
-      "model": "orderInfo",
       "foreignKey": "customerId",
       "options": {
         "nestRemoting": true
       }
     },
-    "customerHasFiles": {
+    "customerFiles": {
       "type": "hasMany",
-      "model": "fileinfo",
+      "model": "fileInfo",
+      "foreignKey": "customerId",
+      "options": {
+        "nestRemoting": true
+      }
+    },
+    "customerOrders": {
+      "type": "hasMany",
+      "model": "orderInfo",
       "foreignKey": "customerId",
       "options": {
         "nestRemoting": true
@@ -169,7 +169,7 @@
       "principalType": "ROLE",
       "principalId": "$authenticated",
       "permission": "ALLOW",
-      "porperty": "__get__fileinfo"
+      "porperty": "__get__fileInfo"
     }
   ],
   "methods": {}

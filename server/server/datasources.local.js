@@ -14,7 +14,7 @@ module.exports = {
     host: process.env.APP_MYSQL_HOST || 'localhost',
     port: process.env.APP_MYSQL_PORT || 3306,
     username: process.env.APP_MYSQL_USERNAME || 'root',
-    password: process.env.APP_MYSQL_PASSWORD || '123456',
+    password: process.env.APP_MYSQL_PASSWORD || '12345678',
   },
   edropFile: {
     name: "edropFile",

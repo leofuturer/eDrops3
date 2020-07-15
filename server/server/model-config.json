@@ -15,7 +15,7 @@
   },
   "User": {
     "dataSource": "mysqlDS",
-    "public": true
+    "public": false
   },
   "AccessToken": {
     "dataSource": "mysqlDS",
@@ -35,6 +35,10 @@
   },
   "Email": {
     "dataSource": "myEmailDataSource",
+    "public": true
+  },
+  "orderItemBase": {
+    "dataSource": "mysqlDS",
     "public": true
   },
   "customer": {
@@ -57,11 +61,19 @@
     "dataSource": "mysqlDS",
     "public": true
   },
-  "fileinfo": {
+  "fileInfo": {
     "dataSource": "mysqlDS",
     "public": true
   },
   "orderInfo": {
+    "dataSource": "mysqlDS",
+    "public": true
+  },
+  "orderChip": {
+    "dataSource": "mysqlDS",
+    "public": true
+  },
+  "orderProduct": {
     "dataSource": "mysqlDS",
     "public": true
   }

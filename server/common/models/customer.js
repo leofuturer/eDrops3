@@ -5,6 +5,7 @@ const { FRONTEND_HOSTNAME, FRONTEND_PORT, SENDER_EMAIL_USERNAME } = require('../
 const path = require('path');
 const errors = require('../../server/toolbox/errors');
 const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/;
+const log = require('../../db/toolbox/log');
 
 module.exports = function(Customer) {
     //validate security of password(at least 8 digits, include at least one uppercase
@@ -14,7 +15,7 @@ module.exports = function(Customer) {
     // create default address for user
     Customer.afterRemote('create', function(ctx, customerInstance, next){
         //for the future: can probably move this function to its own js file
-
+        console.log(customerInstance);
         //copy over the address data
         //if possible, we should only pass in the customer data to the creation
         //of the customer model too
@@ -27,6 +28,7 @@ module.exports = function(Customer) {
             country: ctx.result.country || "Not provided during signup",
             isDefault: true //only occurs when a new customer is created
         }
+        log.info("Customer instance created, now associating address with it");
         customerInstance.customerAddresses.create(addressData, (err, addressInstance) =>{
             if(err){
                 //roll back the customer creation
@@ -82,7 +84,7 @@ module.exports = function(Customer) {
                     `This link will expire in 15 minutes.<br><br>` + 
                     `Sincerely,<br>` + 
                     `Edrop<br><br>` + 
-                    `Need help? Contact us at abc@def.com<br>`;
+                    `Need help? Contact us at ${SENDER_EMAIL_USERNAME}<br>`;
         Customer.app.models.Email.send({
             to: info.email,
             from: SENDER_EMAIL_USERNAME,
@@ -119,7 +121,7 @@ module.exports = function(Customer) {
         });
     }
 
-    //Remote methods
+    // Remote methods
     // Customer resends verification email
     // Using: POST /customers/{id}/resendEmail
     Customer.remoteMethod('prototype.resendVerifyEmail',
@@ -142,16 +144,4 @@ module.exports = function(Customer) {
         http: {path: '/createAddress', verb: 'post'},
         returns: {arg: 'addressInstance', type: 'object', root: true}
     });
-
-    //Customer instance retrieves his orders
-    //Using:    GET /customers/{id}/CustomerHasOrderInfos (Filters can also be used at the same time)
-    //Frontend needs to pass customer id to backend
-
-    //Customer instance retireves his files
-    //Using: GET /customers/{id}/customerHasFiles
-    //Frontend needs to pass customer id to backend
-    
-    //Customer delete his files
-    //Using DELETE /customers/{id}/customerHasFiles/{fk}
-    //Frontend needs to pass customer id & file id
 }

@@ -2,7 +2,7 @@
     {
         "street": "10988 Ashton Ave",
         "city": "Los Angeles",
-        "state": "california",
+        "state": "California",
         "country": "United States",
         "zipCode": "90024",
         "isDefault": true,
@@ -11,7 +11,7 @@
     {
         "street": "1432 Haton Ave",
         "city": "Los Angeles",
-        "state": "california",
+        "state": "California",
         "country": "United States",
         "zipCode": "90034",
         "isDefault": true,
@@ -20,7 +20,7 @@
     {
         "street": "1234 Cilas Ave",
         "city": "Los Angeles",
-        "state": "california",
+        "state": "California",
         "country": "United States",
         "zipCode": "90067",
         "isDefault": false,
@@ -29,7 +29,7 @@
     {
         "street": "456 Cilas Ave",
         "city": "Los Angeles",
-        "state": "california",
+        "state": "California",
         "country": "United States",
         "zipCode": "90067",
         "isDefault": false,

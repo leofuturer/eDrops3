@@ -292,7 +292,7 @@ class Login extends React.Component  {
                                             <span className="remeber"> Remember me</span>
                                     </div>
                                     <div className="forget-pass col-sm-3">
-                                        <NavLink to="/forgetPass">Forgot Password?</NavLink>
+                                        <NavLink to="/forgetPass">Trouble Logging In?</NavLink>
                                     </div>
                                 </div>
                                 <div className="form-group login-btn">
@@ -319,7 +319,7 @@ class Login extends React.Component  {
                                 </div>
                                 <div className="form-group">
                                     <span>If you have trouble logging in to your account, </span>
-                                    <a href="mailto:abc@def.com">contact us.</a>
+                                    <a href="mailto:edropwebsite@gmail.com">contact us.</a>
                                 </div>
                             </div>
                         </form>
