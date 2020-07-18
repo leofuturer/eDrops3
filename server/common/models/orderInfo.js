@@ -15,19 +15,18 @@ module.exports = function(OrderInfo) {
             console.log(body);
             let data = {};
             data.orderInfoId = OrderInfoId;
-            data.email = body.email;
-            data.createdAt = body.created_at;
-            data.process = body.line_items[0].properties[0].value;
-            data.coverPlate = body.line_items[0].properties[1].value === "true" ? "Yes" : "No";;
-            data.fileName = body.line_items[0].properties[2].value;
-            data.orderStatusURL = body.order_status_url;
-            data.orderAddress = body.customer.default_address;
-            data.sampleQuantity = body.line_items[0].quantity;
+            // data.email = body.email;
+            // data.createdAt = body.created_at;
+            // data.process = body.line_items[0].properties[0].value;
+            // data.coverPlate = body.line_items[0].properties[1].value === "true" ? "Yes" : "No";;
+            // data.fileName = body.line_items[0].properties[2].value;
+            // data.orderStatusURL = body.order_status_url;
+            // data.orderAddress = body.customer.default_address;
+            // data.sampleQuantity = body.line_items[0].quantity;
 
             let Customer = OrderInfo.app.models.customer;
             let customerInstance = await Customer.findOne({where: {email: body.email}});
             data.customerId = customerInstance.id;
-            data.customer = customerInstance.username;
             await OrderInfo.create(data);
         } else {
             console.log('OrderInfo already exists!');

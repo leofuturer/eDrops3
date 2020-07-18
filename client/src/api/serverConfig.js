@@ -39,22 +39,22 @@ export const updateWorkerProfile = ApiRootUrl + '/foundryWorkers/id';
 export const findOneWorkerByWhere = ApiRootUrl + '/foundryWorkers';
 
 //File management
-export const customerFileRetrieve = ApiRootUrl + '/customers/id/customerHasFiles';
-export const customerDeleteFile = ApiRootUrl + '/customers/id/customerHasFiles/fk';
-//export const workerFileRetrieve = ApiRootUrl + '/fileinfos/returnworkerfileinfo';
+export const customerFileRetrieve = ApiRootUrl + '/customers/id/customerFiles';
+export const customerDeleteFile = ApiRootUrl + '/customers/id/customerFiles/fk';
+//export const workerFileRetrieve = ApiRootUrl + '/fileInfos/returnworkerfileInfo';
 export const downloadFileById = ApiRootUrl + '/containers/container1/download/filename';
 export const uploadFile = ApiRootUrl + '/containers/container1/upload';
-export const getAllFileInfos = ApiRootUrl + '/fileinfos';
-export const adminRetrieveUserFiles = ApiRootUrl + '/customers/id/customerHasFiles'
-export const assignFile = ApiRootUrl + '/fileinfos/assignfile';
-export const editFileStatus = ApiRootUrl + '/fileinfos/worker-edit-status';
+export const getAllFileInfos = ApiRootUrl + '/fileInfos';
+export const adminRetrieveUserFiles = ApiRootUrl + '/customers/id/customerFiles'
+export const assignFile = ApiRootUrl + '/fileInfos/assignfile';
+export const editFileStatus = ApiRootUrl + '/fileInfos/worker-edit-status';
 
 //Order management
 export const getAllOrderInfos = ApiRootUrl + '/orderInfos';
 export const getOrderInfoById = ApiRootUrl + '/orderInfos/id'
 
-export const customerOrderRetrieve = ApiRootUrl + '/customers/id/customerHasOrderInfos';
-export const workerOrderRetrieve = ApiRootUrl + '/foundryWorkers/id/workerHasOrderInfos';
+export const customerOrderRetrieve = ApiRootUrl + '/customers/id/customerOrders';
+export const workerOrderRetrieve = ApiRootUrl + '/foundryWorkers/id/workerOrders';
 
 export const editOrderStatus = ApiRootUrl + '/orderInfos/edit-order-status';
 export const assignOrders = ApiRootUrl + '/orderInfos/assign-order-info';

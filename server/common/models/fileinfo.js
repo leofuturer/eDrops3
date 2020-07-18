@@ -29,8 +29,8 @@ module.exports = function(Fileinfo) {
     Fileinfo.remoteMethod('returnFileInfo', {
         description: "Retrieve all information of logged-in customer's files.",
         accepts: {arg: 'ctx', type: 'object', http: {source: 'context' } },
-        returns: {arg: 'fileinfoInstances', type: 'array', root: true},
-        http: {path: '/returnfileinfo', verb: 'get'},
+        returns: {arg: 'fileInfoInstances', type: 'array', root: true},
+        http: {path: '/returnfileInfo', verb: 'get'},
     });
     */
 
@@ -56,7 +56,7 @@ module.exports = function(Fileinfo) {
         description: "Retrieve all information of files belongs to the logged-in foundry worker.",
         accepts: {arg: 'ctx', type: 'object', http: {source: 'context'}},
         returns: {arg: 'fileInstances', type: 'array', root: true},
-        http: {path: '/returnworkerfileinfo', verb: 'get'},
+        http: {path: '/returnworkerfileInfo', verb: 'get'},
     });
     */
 

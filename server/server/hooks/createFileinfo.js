@@ -23,7 +23,7 @@ module.exports = (ctx, containerInstance, next) => {
             data.uploader = customerName;
             data.uploadTime = time;
             data.fileSize = formatedSize;
-            customerInstance.customerHasFiles.create(data, (err, fileInstance) => {
+            customerInstance.customerFiles.create(data, (err, fileInstance) => {
                 if (err) {
                     console.log(err);
                 } else {
@@ -31,10 +31,10 @@ module.exports = (ctx, containerInstance, next) => {
                 }
             })
             /*
-            Fileinfo.create(data, (err, fileinfoInstance) => {
+            Fileinfo.create(data, (err, fileInfoInstance) => {
             if(err) console.log(err);
             else
-            console.log(fileinfoInstance);
+            console.log(fileInfoInstance);
             });
             */
             next();
@@ -62,12 +62,12 @@ module.exports = (ctx, containerInstance, next) => {
         data.status = "Unassigned to Foundry";
         next() //According to the documentation, it has to be called at some point!!
         return new Promise((resolve, reject) => {
-            Fileinfo.create(data, (err, fileinfoInstance) => {
+            fileInfo.create(data, (err, fileInfoInstance) => {
                 if(err)
                 return reject(err);
                 else {
-                    //console.log(fileinfoInstance);
-                    return resolve(fileinfoInstance);
+                    //console.log(fileInfoInstance);
+                    return resolve(fileInfoInstance);
                     }
                 });
             });

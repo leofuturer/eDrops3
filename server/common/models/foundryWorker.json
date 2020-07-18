@@ -15,8 +15,7 @@
     },
     "lastName": {
       "type": "string",
-      "required": true
-      
+      "required": true   
     },
     "phoneNumber": {
       "type": "string",
@@ -41,9 +40,9 @@
   },
   "validations": [],
   "relations": {
-    "workerHasOrderInfos": {
+    "workerOrders": {
       "type": "hasMany",
-      "model": "orderInfo",
+      "model": "orderChip",
       "foreignKey": "workerId",
       "options": {
         "nestRemoting": true

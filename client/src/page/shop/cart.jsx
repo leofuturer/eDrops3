@@ -9,6 +9,7 @@ class Cart extends Component {
     }
 
     openCheckout() {
+        
         window.open(this.props.checkout.webUrl);
         console.log(this.props);
         this.props.history.push('/upload');

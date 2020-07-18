@@ -153,7 +153,7 @@ If things aren't working, check that these are correct for your environment.
 | APP\_MYSQL\_HOST        | Hostname for MySQL database                         | "localhost"                |
 | APP\_MYSQL\_PORT        | Port number for MySQL database                      | 3306                       |
 | APP\_MYSQL\_USERNAME    | Username for MySQL database                         | "root"                     |
-| APP\_MYSQL\_PASSWORD    | Password for MySQL database                         | "123456"                   |
+| APP\_MYSQL\_PASSWORD    | Password for MySQL database                         | "12345678"                 |
 | APP\_FRONTEND\_HOSTNAME | Hostname for front end server                       | "localhost"                |
 | APP\_FRONTEND\_PORT     | Port number for front end server                    | 8086                       |
 | APP\_EMAIL\_HOST        | Hostname for email server used to send emails       | "smtp\.gmail\.com"         |
