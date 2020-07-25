@@ -39,7 +39,7 @@
   },
   "orderItemBase": {
     "dataSource": "mysqlDS",
-    "public": true
+    "public": false
   },
   "customer": {
     "dataSource": "mysqlDS",
