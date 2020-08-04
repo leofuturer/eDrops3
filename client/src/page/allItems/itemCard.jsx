@@ -29,7 +29,10 @@ class ItemCard extends React.Component {
                 </NavLink>
 
                 <div className="product-text">
-                    {this.props.product.description}
+                    { this.props.product.description.length > 150
+                    ? <div>{this.props.product.description.slice(0, 150)}...</div>
+                    : this.props.product.description              
+                    }
                 </div>
 
                 <div className="product-price">
@@ -46,13 +49,3 @@ class ItemCard extends React.Component {
 
 ItemCard = withRouter(ItemCard);
 export default ItemCard;
-
-            // for(let i = 0; i<products.length; i++){
-            //     let product = products[i];
-            //     console.log(product.id);
-            //     console.log(product.description);
-            //     console.log(product.title);
-            //     console.log(product.variants[0].image.src);
-            //     console.log(product.variants[0].price);
-            //     console.log(product.variants[0].id);
-            // }

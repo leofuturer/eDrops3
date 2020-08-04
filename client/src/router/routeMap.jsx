@@ -47,11 +47,9 @@ export class MainRouter extends React.Component {
                     <Route path="/allItems" render = { () =>
                         <AllItems shopifyClient = {this.props.shopifyClient}/>
                     }/>
-                    
-                    {/* // component={AllItems}
-                    //         shopifyClient={this.props.shopifyClient} /> */}
-                    <Route path="/product" component={Product} 
-                            shopifyClient={this.props.shopifyClient}/>
+                    <Route path="/product" render = { () =>
+                        <Product shopifyClient = {this.props.shopifyClient}/>
+                    }/>
                 </Switch>
             </Layout>
         );

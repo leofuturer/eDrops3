@@ -60,7 +60,8 @@ The entry of whole routing system is defined in the App.js right now which needs
 (3) Integration with Shopify  
 In the App.js we use Shopify js-buy SDK to implement the checkout and payment functionalities  
 In the /src/pages/shop/cart.js we make use of the checkout URL provided by js-buy SDK for the checkout process and order creation  
-In the Shopify development store, we make use of the webhook to send order data to our server and store the data in our server to generate order information(the orderInfo model in /common/models/orderInfos.js) for order management in the Edrop website
+In the Shopify development store, we make use of the webhook to send order data to our server and store the data in our server to generate order information(the orderInfo model in /common/models/orderInfos.js) for order management in the Edrop website  
+Shopify Website: https://wqntest.myshopify.com/admin  
 
 **Backend**
 * /common  
@@ -74,7 +75,7 @@ Common file structure of Loopback
 ## SETUP
 ### Steps to run the code on localhost
 To get it running:  
-`$ git clone https://github.com/leofuturer/Edrop-v2.0.0.git`  
+`$ git clone https://github.com/danningyu/Edrop-v2.0.0.git`  
 `$ cd Edrop-v2.0.0`  
 
 **To get the server running:**  

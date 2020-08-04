@@ -14,7 +14,6 @@ class NavTop extends React.Component{
     signout() {
         this.setState({show:false});
         Cookies.remove('username');
-        // Cookies.remove('email');
         Cookies.remove('userId');
         Cookies.remove('access_token');
         Cookies.remove('userType');
@@ -47,9 +46,7 @@ class NavTop extends React.Component{
             <header className="header-div">
                 <nav className="container-nav">
                     <div className="header-brand">
-                        <a href="/home">
-                            EDrop
-                        </a>
+                        <a href="/home">EDrop</a>
                     </div>
                     <div className="">
                         <ul className="ul-nav">
@@ -131,8 +128,7 @@ class NavTop extends React.Component{
                             }
                         </ul>
                     </div>
-                </nav>
-        
+                </nav>       
             </header>
         );
     }

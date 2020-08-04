@@ -1,0 +1,81 @@
+.order-container {
+    width: 1000px;
+    margin: 40px auto;
+}
+
+.shop-main-content {
+    overflow: hidden;
+}
+
+.shop-left-content {
+    float: left;
+    width: 485px;
+}
+
+.shop-right-content{
+    float: right;
+    width: 485px;
+}
+
+.order-container .shop-left-content img{
+    box-shadow: 0 0 6px rgba(0, 0, 0, 0.1);
+    max-height: 100%;
+    max-width: 100%;
+    margin: 0 auto;
+    text-align: center;
+    line-height: 260px;
+}
+
+.div-filename {
+    font-size: 18px;
+    margin-top: 10px;
+}
+
+.div-price-quantity{
+    display: flex;
+    justify-content: space-between;
+}
+.div-product-price{
+    margin-top: 13px;
+    font-size: 18px;
+    font-weight: bold;
+    vertical-align: middle;
+}
+
+.div-product-quantity{
+    margin-top: 10px;
+    font-size: 18px;
+    font-weight: bold;
+    vertical-align: middle;
+}
+
+.input-quantity{
+    text-indent: 5px;
+}
+
+.tax-info{
+    margin-top: 10px;
+    color: #c0c0c0;
+}
+.cart-btn{
+    margin-top:10px;
+}
+
+.chip-config{
+    margin-top: 10px;
+}
+
+.config-items {
+    margin-top: 10px;
+    margin-bottom: 20px;
+    font-size: 18px;
+}
+
+.option-detail{
+    padding-left: 10px;
+}
+
+.config-process{
+    font-size: 18px;
+    margin-top: 10px;
+}

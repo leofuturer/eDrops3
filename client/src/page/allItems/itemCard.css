@@ -19,6 +19,7 @@ the same height. */
 .product-title {
     display: table;
     height: 50px;
+    width: 200px;
     margin: 0 auto;
 }
 
