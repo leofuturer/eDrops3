@@ -12,7 +12,7 @@ class API {
      * @param {boolean} useToken - Use login token or not
      * @param {object} [headers] - optional, headers to accompany request
      */
-    async Request(url, method, params, useToken, headers = {'content-type':'application/json; charset=utf-8'}){
+    async Request(url, method, data, useToken, headers = {'content-type':'application/json; charset=utf-8'}){
         try{
             let requestUrl = "";
             if(useToken){
@@ -30,7 +30,7 @@ class API {
             let options = {
                 method:method,
                 headers:headers,
-                data:JSON.stringify(params),
+                data:JSON.stringify(data),
                 url: requestUrl
             }
             let res = await axios(options)

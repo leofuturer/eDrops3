@@ -52,6 +52,8 @@ export const editFileStatus = ApiRootUrl + '/fileInfos/worker-edit-status';
 //Order management
 export const getAllOrderInfos = ApiRootUrl + '/orderInfos';
 export const getOrderInfoById = ApiRootUrl + '/orderInfos/id'
+export const getCustomerCart = ApiRootUrl + '/customers/id/getCustomerCart'
+export const manipulateCustomerOrders = ApiRootUrl + '/customers/id/customerOrders'
 
 export const customerOrderRetrieve = ApiRootUrl + '/customers/id/customerOrders';
 export const workerOrderRetrieve = ApiRootUrl + '/foundryWorkers/id/workerOrders';

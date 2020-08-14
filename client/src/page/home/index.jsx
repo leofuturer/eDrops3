@@ -22,7 +22,7 @@ class Home extends React.Component{
                             <h1>Foundry service</h1>
                             <div className="txt-bg">
                                 {
-                                    Cookies.get('userType') == 'customer'
+                                    Cookies.get('userType') === 'customer'
                                         ? <Link to="/upload">UPLOAD MASK FILE</Link>
                                         : <Link to="/login">UPLOAD MASK FILE</Link>
                                 }

@@ -1,8 +1,11 @@
 import React from 'react';
-import { withRouter } from 'react-router-dom';
+import { withRouter, Link } from 'react-router-dom';
 import './product.css'
 import { chipFabId } from "../../productId";
-import Cookie from 'js-cookie';
+import Cookies from 'js-cookie';
+import {getCustomerCart, 
+        manipulateCustomerOrders} from "../../api/serverConfig";
+import API from "../../api/api";
 
 class Product extends React.Component{
     constructor(props){
@@ -10,7 +13,10 @@ class Product extends React.Component{
         this.state = {
             fetchedProduct: false,
             product: undefined,
-        }
+            orderInfoId: undefined,
+            checkoutId: undefined,
+        };
+        this.handleAddToCart = this.handleAddToCart.bind(this);
     }
 
     componentDidMount(){
@@ -23,7 +29,7 @@ class Product extends React.Component{
         let productId = this.props.location.search.slice(4); // ?id=<id>
         this.props.shopifyClient.product.fetch(productId)
         .then((product) => {
-            console.log(product);
+            // console.log(product);
             _this.setState({
                 product: product,
                 fetchedProduct: true,
@@ -38,12 +44,66 @@ class Product extends React.Component{
         });
     }
 
-    render(){
-        if(this.state.fetchedProduct){
-            var description = this.state.product.descriptionHtml;
+    handleAddToCart(){
+        console.log("Attempting add to cart");
+        if(Cookies.get('access_token')===undefined){
+            alert("Login required to add item to cart");
+            return;
         }
+        else{
+            console.log(this.props);
+            let shopifyClient = this.props.shopifyClient;
+            let url = getCustomerCart.replace('id', Cookies.get('userId'));
+            API.Request(url, 'GET', {}, true)
+            .then(res => {
+                if(res.data.orderInfoId){
+                    console.log(`Have cart already with ID ${res.data.orderInfoId}`);
+                }
+                else{ //no cart, need to create one
+                    shopifyClient.checkout.create()
+                    .then(res => {
+                        console.log(res);
+                        this.setState({
+                            checkoutId: res.id
+                        });
+                        let data = {
+                            "checkoutIdClient": res.id,
+                            "checkoutIdServer": "Awaiting checkout creation webhook",
+                            "createdAt": res.createdAt,
+                            "lastModifiedAt": res.updatedAt,
+                            "orderComplete": false,
+                            "totalCost": 0,
+                            "status": "Order in progress",
+                            "customerId": Cookies.get('userId'),
+                            "shippingAddressId": 0, //0 to indicate no address selected yet (pk cannot be 0)
+                            "billingAddressId": 0
+                        };
+                        url = manipulateCustomerOrders.replace('id', Cookies.get('userId'));
+                        API.Request(url, 'POST', data, true)
+                        .then(res => {
+                            console.log(res);
+                        })
+                        .catch(err => {
+                            console.log(err);
+                        });
+                    })
+                    .catch(err => {
+                        console.error(err);
+                    });
+                }
+            })
+            .catch(err => {
+                console.error(err);
+            });
+        }
+    }
+
+    render(){
+        // if(this.state.fetchedProduct){
+        //     var description = this.state.product.descriptionHtml;
+        // }
         const product = this.state.product;
-        const desiredProductId = this.props.location.search.slice(4);
+        const desiredProductId = this.props.location.search.slice(4); //get id after id?=
         return (
             <div className="order-container">
                 <div className="shop-main-content">
@@ -91,8 +151,11 @@ class Product extends React.Component{
                             { desiredProductId === chipFabId
                                 ? <div className="chip-config">
                                     <h3>Item Options</h3>
-                                    <div className="div-filename">{'File to be fabricated: '}
-                                    file.txt
+                                    <div className="div-filename">File to be fabricated:&nbsp;
+                                    { this.state.fileName !== undefined
+                                    ? this.state.fileName
+                                    : <input type="button" value="Choose Fabrication File" className="btn btn-primary btn-med"></input>
+                                    }
                                     </div>
                                     <div className="config-process">
                                         Process: hello
@@ -115,7 +178,10 @@ class Product extends React.Component{
                                 </div> 
                             </div>
                             <div className="cart-btn">
-                                    <input type="button" value="Add to Cart" className="btn btn-primary btn-lg btn-block"></input>
+                                <input type="button" value="Add to Cart" 
+                                    className="btn btn-primary btn-lg btn-block"
+                                    onClick={e => this.handleAddToCart()}>            
+                                </input>
                             </div>
                             <div className="tax-info">Note: Price excludes sales tax</div>                           
 
