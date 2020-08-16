@@ -1,10 +1,11 @@
 import React from 'react';
-import { withRouter, Link } from 'react-router-dom';
+import { withRouter, NavLink } from 'react-router-dom';
 import './product.css'
 import { chipFabId } from "../../productId";
 import Cookies from 'js-cookie';
 import {getCustomerCart, 
-        manipulateCustomerOrders} from "../../api/serverConfig";
+        manipulateCustomerOrders,
+        addOrderProductToCart} from "../../api/serverConfig";
 import API from "../../api/api";
 
 class Product extends React.Component{
@@ -14,9 +15,11 @@ class Product extends React.Component{
             fetchedProduct: false,
             product: undefined,
             orderInfoId: undefined,
-            checkoutId: undefined,
+            shopifyClientCheckoutId: undefined,
+            quantity: 0,
         };
-        this.handleAddToCart = this.handleAddToCart.bind(this);
+        this.handleGetCart = this.handleGetCart.bind(this);
+        this.addItemToCart = this.addItemToCart.bind(this);
     }
 
     componentDidMount(){
@@ -33,6 +36,7 @@ class Product extends React.Component{
             _this.setState({
                 product: product,
                 fetchedProduct: true,
+                addedToCart: true,
                 fileName: undefined,
                 fileId: undefined
             });
@@ -44,27 +48,60 @@ class Product extends React.Component{
         });
     }
 
-    handleAddToCart(){
-        console.log("Attempting add to cart");
+    handleChange(key, value) {
+        this.setState(
+            {
+                [key]: value
+            }
+        )
+    }
+
+    handleGetCart(){
+        /**
+         * Do not allow if not logged in or nonpositive quantity to add.
+         * 
+         * Retrieve customer's cart, or create one if not already present
+         * Then, create Shopify checkout 
+         * Then, call addItemToCart() with orderInfo ID (our own cart id) and
+         *      Shopify checkout ID
+         */
+        let _this = this;
         if(Cookies.get('access_token')===undefined){
             alert("Login required to add item to cart");
             return;
         }
+        if(parseInt(this.state.quantity) <= 0){
+            alert("Error: Quantity must be a positive number");
+            return;
+        }
         else{
-            console.log(this.props);
-            let shopifyClient = this.props.shopifyClient;
+            _this.setState({
+                addedToCart: false,
+            });
+            // console.log(_this.props);
+            let shopifyClient = _this.props.shopifyClient;
             let url = getCustomerCart.replace('id', Cookies.get('userId'));
             API.Request(url, 'GET', {}, true)
             .then(res => {
-                if(res.data.orderInfoId){
-                    console.log(`Have cart already with ID ${res.data.orderInfoId}`);
+                if(res.data.id){
+                    console.log(`Have cart already with ID ${res.data.id}`);
+                    _this.setState({
+                        orderInfoId: res.data.id,
+                        shopifyClientCheckoutId: res.data.checkoutIdClient,
+                    });
+                    _this.addItemToCart(res.data.id, 
+                        res.data.checkoutIdClient, 
+                        parseInt(this.state.quantity)
+                    );
                 }
                 else{ //no cart, need to create one
+                    // create Shopify cart
+                    console.log(`No cart currently exists, so need to create one`);
                     shopifyClient.checkout.create()
                     .then(res => {
-                        console.log(res);
-                        this.setState({
-                            checkoutId: res.id
+                        // console.log(res);
+                        _this.setState({
+                            shopifyClientCheckoutId: res.id
                         });
                         let data = {
                             "checkoutIdClient": res.id,
@@ -72,30 +109,94 @@ class Product extends React.Component{
                             "createdAt": res.createdAt,
                             "lastModifiedAt": res.updatedAt,
                             "orderComplete": false,
-                            "totalCost": 0,
                             "status": "Order in progress",
-                            "customerId": Cookies.get('userId'),
+                            // "customerId": Cookies.get('userId'),
                             "shippingAddressId": 0, //0 to indicate no address selected yet (pk cannot be 0)
                             "billingAddressId": 0
                         };
+                        // and then create orderInfo in our backend
                         url = manipulateCustomerOrders.replace('id', Cookies.get('userId'));
                         API.Request(url, 'POST', data, true)
                         .then(res => {
-                            console.log(res);
+                            // console.log(res);
+                            _this.setState({
+                                orderInfoId: res.data.id,
+                            });
+                            _this.addItemToCart(res.data.id, 
+                                                res.data.checkoutIdClient, 
+                                                parseInt(this.state.quantity)
+                            );
                         })
                         .catch(err => {
-                            console.log(err);
+                            _this.setState({
+                                addedToCart: true,
+                            });
+                            console.error(err);
                         });
                     })
                     .catch(err => {
+                        _this.setState({
+                            addedToCart: true,
+                        });
                         console.error(err);
                     });
                 }
             })
             .catch(err => {
+                _this.setState({
+                    addedToCart: true,
+                });
                 console.error(err);
             });
         }
+    }
+
+    /**
+     * Function to update Shopify and our own cart
+     * @param {number} orderInfoId - id of orderInfo model in our DB
+     * @param {string} shopifyClientCheckoutId - id of Shopify client checkout
+     * @param {number} quantity - number of items to add
+     */
+    addItemToCart(orderInfoId, shopifyClientCheckoutId, quantity) {
+        // add to shopify cart, and then add to our own cart       
+        let _this = this;
+        const lineItemsToAdd = [{
+            variantId: _this.state.product.variants[0].id,
+            quantity: quantity,
+        }];
+        _this.props.shopifyClient.checkout.addLineItems(shopifyClientCheckoutId, lineItemsToAdd)
+        .then(res => {
+            // console.log(res);
+            let data = {
+                "orderInfoId": orderInfoId,
+                "productIdShopify": _this.state.product.id,
+                "variantIdShopify": _this.state.product.variants[0].id,
+                "description": _this.state.product.description,
+                "quantity": quantity,
+                "price": parseFloat(_this.state.product.variants[0].price),
+                "otherDetails": "",
+            };
+            let url = addOrderProductToCart.replace('id', orderInfoId);
+            API.Request(url, 'POST', data, true)
+            .then(res => {
+                // console.log(res);
+                _this.setState({
+                    addedToCart: true,
+                });
+            })
+            .catch(err =>{
+                console.error(err);
+                _this.setState({
+                    addedToCart: true,
+                });
+            });
+        })
+        .catch(err => {
+            console.error(err);
+            _this.setState({
+                addedToCart: true,
+            });
+        });
     }
 
     render(){
@@ -144,6 +245,7 @@ class Product extends React.Component{
                             } 
                         </div>
                         <div className="shop-right-content">
+                            <NavLink to="/allItems">{'<< Return to all products'}</NavLink>
                             <div><h2>{product.title}</h2></div>
                             <div className="product-description" 
                                 dangerouslySetInnerHTML={{__html: product.descriptionHtml}}>
@@ -174,15 +276,22 @@ class Product extends React.Component{
                                 </div>
                                 <div className="div-product-quantity">
                                     Quantity:&nbsp; 
-                                    <input type="number" className="input-quantity"/>
+                                    <input type="number" className="input-quantity"
+                                    value = {this.state.quantity}
+                                    onChange = {v => this.handleChange('quantity', v.target.value)}/>
                                 </div> 
                             </div>
-                            <div className="cart-btn">
+                            { this.state.addedToCart
+                            ? <div className="cart-btn">
                                 <input type="button" value="Add to Cart" 
                                     className="btn btn-primary btn-lg btn-block"
-                                    onClick={e => this.handleAddToCart()}>            
+                                    onClick={e => this.handleGetCart()}>            
                                 </input>
                             </div>
+                            : <img className="loading-GIF" src="../../../static/img/loading80px.gif" alt=""/>
+                                
+                            }
+                            
                             <div className="tax-info">Note: Price excludes sales tax</div>                           
 
                         </div>

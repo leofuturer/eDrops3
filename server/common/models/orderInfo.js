@@ -1,5 +1,7 @@
 'use strict';
 
+
+
 module.exports = function(OrderInfo) {
     //Remote Methods
     // Create new OrderInfo by shopify web hook
@@ -76,24 +78,73 @@ module.exports = function(OrderInfo) {
     //      If so, update quantity; if not, create item (orderChip or orderProduct) 
     //      and then add to cart
     // (3) Returns success/failure
-    OrderInfo.addItemToCart = (body) => {
-        console.log(body);
-
+    OrderInfo.prototype.addOrderProductToCart = (body, cb) => {
+        // console.log(body);
+        // Find the specified orderInfo (top level)
+        OrderInfo.findById(body.orderInfoId, (err, orderInfo) => {
+            if(err){
+                console.error(err);
+                cb(err);
+            }
+            else {
+                // console.log(orderInfo);
+                // Then see if product order already created, if we need to create one
+                orderInfo.orderProducts({"where": {"variantIdShopify": body.variantIdShopify}}, function(err, orderProducts){
+                    // variant ID should uniquely identify it
+                    // console.log(orderProducts);
+                    if(err || orderProducts.length > 1){
+                        console.error(`Error occurred or more than one entry for product ${description}`);
+                        console.error(err);
+                        cb(err);
+                    }
+                    // not present, need to create a new one
+                    else if(orderProducts.length === 0){
+                        orderInfo.orderProducts.create(body, (err, orderProduct) => {
+                            // console.log(orderProduct);
+                            if(err){
+                                console.error(err);
+                                cb(err);
+                            }
+                            else{
+                                console.log(`Created orderProduct with product order id ${orderProduct.id}, product ${orderProduct.description}`);
+                                cb(null);
+                            }
+                        });
+                    }
+                    else if(orderProducts.length === 1){ //already exists
+                        let newQtyData = {
+                            "quantity": orderProducts[0].quantity + body.quantity
+                        };
+                        orderProducts[0].updateAttributes(newQtyData, (err, orderProduct) => {
+                            // console.log(orderProduct);
+                            if(err){
+                                console.error(err);
+                                cb(err);
+                            }
+                            else{
+                                console.log(`Updated quantity to ${orderProduct.quantity} for product order ID: ${orderProduct.id}, product ${orderProduct.description}`);
+                                cb(null);
+                            }
+                        });
+                    }
+                });
+            }
+        });
     }
 
-    OrderInfo.remoteMethod('addItemToCart', {
-        description: 'CUSTOM METHOD: Add or update item in cart',
+    OrderInfo.remoteMethod('prototype.addOrderProductToCart', {
+        description: 'CUSTOM METHOD: Add to cart (increase quantity)',
         accepts: [
             {arg: 'body', type: 'object', http: {source: 'body'}}
         ],
-        http: {path: '/addItemToCart', verb: 'post'},
-        returns: {arg: 'msg', type: 'string'}
+        http: {path: '/addOrderProductToCart', verb: 'post'},
+        returns: [],
     });
 
     OrderInfo.remoteMethod('newOrderInfoCreated', {
         description: 'An OrderInfo was created by Shopfify',
         accepts: [
-            {arg: 'body', type: 'object', http: {source: 'body'}}
+            {arg: 'body', type: 'object', http: {source: 'body'}},
         ],
         http: {path: '/newOrderInfoCreated', verb: 'post'},
         returns: {arg: 'msg', type: 'string'}

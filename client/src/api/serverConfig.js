@@ -45,15 +45,17 @@ export const customerDeleteFile = ApiRootUrl + '/customers/id/customerFiles/fk';
 export const downloadFileById = ApiRootUrl + '/containers/container1/download/filename';
 export const uploadFile = ApiRootUrl + '/containers/container1/upload';
 export const getAllFileInfos = ApiRootUrl + '/fileInfos';
-export const adminRetrieveUserFiles = ApiRootUrl + '/customers/id/customerFiles'
+export const adminRetrieveUserFiles = ApiRootUrl + '/customers/id/customerFiles';
 export const assignFile = ApiRootUrl + '/fileInfos/assignfile';
 export const editFileStatus = ApiRootUrl + '/fileInfos/worker-edit-status';
 
 //Order management
 export const getAllOrderInfos = ApiRootUrl + '/orderInfos';
-export const getOrderInfoById = ApiRootUrl + '/orderInfos/id'
-export const getCustomerCart = ApiRootUrl + '/customers/id/getCustomerCart'
-export const manipulateCustomerOrders = ApiRootUrl + '/customers/id/customerOrders'
+export const getOrderInfoById = ApiRootUrl + '/orderInfos/id';
+export const getCustomerCart = ApiRootUrl + '/customers/id/getCustomerCart';
+export const manipulateCustomerOrders = ApiRootUrl + '/customers/id/customerOrders';
+export const addOrderProductToCart = ApiRootUrl + '/orderInfos/id/addOrderProductToCart';
+
 
 export const customerOrderRetrieve = ApiRootUrl + '/customers/id/customerOrders';
 export const workerOrderRetrieve = ApiRootUrl + '/foundryWorkers/id/workerOrders';

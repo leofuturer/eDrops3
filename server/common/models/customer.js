@@ -99,7 +99,7 @@ module.exports = function(Customer) {
     //Customer instance creates an address belongsTo himself 
     //Actually we do not need this, we should use the exposed API below for model relation instead.
     //Using: POST /customers/{id}/orders
-    Customer.createAddress = ( ctx, body) => {
+    Customer.createAddress = (ctx, body) => {
         const data = {};
         data.street = ctx.req.body.street;
         data.city = ctx.req.body.city;
@@ -123,7 +123,7 @@ module.exports = function(Customer) {
 
     Customer.prototype.getCustomerCart = function(cb) {
         const customer = this;
-        customer.customerOrders({where: {orderComplete: false}}, function(err, orders) {
+        customer.customerOrders({"where": {"orderComplete": false}}, function(err, orders) {
             if(err || orders.length > 1){
                 console.log(`Error getting customer cart or there's more than one active cart: ${err}`);
                 var error = new Error(`Error while querying for customer cart`);
@@ -134,8 +134,8 @@ module.exports = function(Customer) {
                 cb(null, 0); //return id = 0 for "false"
             }
             else{
-                console.log(`Cart is order info model with id ${orders[0].id}`);
-                cb(null, orders[0].id);
+                console.log(`Cart already exists, is order info model with id ${orders[0].id}`);
+                cb(null, orders[0].id, orders[0].checkoutIdClient);
             }
         });
     }
@@ -145,7 +145,10 @@ module.exports = function(Customer) {
         description: 'CUSTOM METHOD: Get ID of orderInfo that represents customers cart; if not present, returns 0',
         accepts: [],
         http: {path: '/getCustomerCart', verb: 'get'},
-        returns: {arg: 'orderInfoId', type: 'number'}
+        returns: [
+            {arg: 'id', type: 'number'},
+            {arg: 'checkoutIdClient', type: 'string'}
+        ]
     });
 
     // Customer resends verification email

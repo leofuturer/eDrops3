@@ -41,10 +41,6 @@
       "required": true,
       "description": "If false, represents current cart of customer"
     },
-    "totalCost": {
-      "type": "number",
-      "required": true
-    },
     "status": {
       "type": "string",
       "required": true,
