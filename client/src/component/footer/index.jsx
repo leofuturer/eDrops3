@@ -4,6 +4,7 @@ class FooterPage extends React.Component {
     render(){
         return(
             <footer className="footer-top-level">
+                <div className="hr-div-login"></div>
                 <div>
                     <div className="top-title">
                         <h3 className="edrop-txt">EDrop</h3>

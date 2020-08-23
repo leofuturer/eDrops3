@@ -47,9 +47,9 @@ module.exports = function(Customer) {
 
     Customer.prototype.resendVerifyEmail = function(options, cb){
         //we use .prototype because this is an instance method
-        // console.log(options);
-        // console.log(this);
+        console.log(options);
         const user = this;
+        console.log(user.id);
         var emailOptions = {
             type: 'email',
             from: SENDER_EMAIL_USERNAME,
@@ -99,7 +99,7 @@ module.exports = function(Customer) {
     //Customer instance creates an address belongsTo himself 
     //Actually we do not need this, we should use the exposed API below for model relation instead.
     //Using: POST /customers/{id}/orders
-    Customer.createAddress = ( ctx, body) => {
+    Customer.createAddress = (ctx, body) => {
         const data = {};
         data.street = ctx.req.body.street;
         data.city = ctx.req.body.city;
@@ -121,18 +121,45 @@ module.exports = function(Customer) {
         });
     }
 
+    Customer.prototype.getCustomerCart = function(cb) {
+        const customer = this;
+        customer.customerOrders({"where": {"orderComplete": false}}, function(err, orders) {
+            if(err || orders.length > 1){
+                console.log(`Error getting customer cart or there's more than one active cart: ${err}`);
+                var error = new Error(`Error while querying for customer cart`);
+                cb(error);
+            }
+            else if(orders.length === 0){
+                console.log(`No cart found for customer id=${customer.id}, need to create one`);
+                cb(null, 0); //return id = 0 for "false"
+            }
+            else{
+                console.log(`Cart already exists, is order info model with id ${orders[0].id}`);
+                cb(null, orders[0].id, orders[0].checkoutIdClient);
+            }
+        });
+    }
+
     // Remote methods
+    Customer.remoteMethod('prototype.getCustomerCart', {
+        description: 'CUSTOM METHOD: Get ID of orderInfo that represents customers cart; if not present, returns 0',
+        accepts: [],
+        http: {path: '/getCustomerCart', verb: 'get'},
+        returns: [
+            {arg: 'id', type: 'number'},
+            {arg: 'checkoutIdClient', type: 'string'}
+        ]
+    });
+
     // Customer resends verification email
     // Using: POST /customers/{id}/resendEmail
-    Customer.remoteMethod('prototype.resendVerifyEmail',
-        {
-            description: 'CUSTOM remote method: resend verification email, use this instead of /verify',
-            accepts: [
-                {arg: 'options', type: 'object', http: 'optionsFromRequest'},
-            ],
-            http: {verb: 'post'},
-        }
-    )
+    Customer.remoteMethod('prototype.resendVerifyEmail',{
+        description: 'CUSTOM METHOD: resend verification email, use this instead of /verify',
+        accepts: [
+            {arg: 'options', type: 'object', http: 'optionsFromRequest'},
+        ],
+        http: {verb: 'post'},
+    });
 
     Customer.remoteMethod('createAddress', {
         discription: 'Customer adds another address',

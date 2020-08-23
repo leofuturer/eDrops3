@@ -22,7 +22,7 @@ class Home extends React.Component{
                             <h1>Foundry service</h1>
                             <div className="txt-bg">
                                 {
-                                    Cookies.get('userType') == 'customer'
+                                    Cookies.get('userType') === 'customer'
                                         ? <Link to="/upload">UPLOAD MASK FILE</Link>
                                         : <Link to="/login">UPLOAD MASK FILE</Link>
                                 }
@@ -41,7 +41,7 @@ class Home extends React.Component{
 
                 <div className="container-content">
                     <div className="title-div">
-                        <h1>Featured Products</h1>
+                        <Link to="/allItems"><h1>Products</h1></Link>
                         <div className="hr-line"></div>
                     </div>
                     <div className="content-icon clearfix">
@@ -71,7 +71,7 @@ class Home extends React.Component{
                         </div>
                     </div>
                 </div>
-                <div className="bottom-img-content"></div>
+                {/* <div className="bottom-img-content"></div> */}
             </div>
         );
     }

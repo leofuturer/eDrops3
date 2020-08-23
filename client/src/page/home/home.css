@@ -63,11 +63,10 @@
 .title-div h1{
     font-size: 3.75em;
     letter-spacing: -.05em;
-    color:#242847;
     font-weight: bold;
 }
 .title-div .hr-line{
-    width:80px;
+    width:400px;
     border-bottom: 3px solid #242847;
     margin:0 auto;
 }

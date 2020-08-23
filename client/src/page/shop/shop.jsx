@@ -140,31 +140,31 @@ class Shop extends React.Component {
             }
           ]
         }];
-        console.log(this.state.checkout.id);
-        const shippingAddress = {
-            address1: 'Chestnut Street 92',
-            address2: 'Apartment 2',
-            city: 'Louisville',
-            company: null,
-            country: 'United States',
-            firstName: 'Bob',
-            lastName: 'Norman',
-            phone: '555-625-1199',
-            province: 'Kentucky',
-            zip: '40202'
-        };
-        this.props.shopifyClient.checkout.updateShippingAddress(checkoutId, shippingAddress).then(checkout => {
-        });
-        this.props.shopifyClient.checkout.updateEmail(checkoutId, 'hello@world.com').then(checkout => {
-            console.log(checkout);
-        })
-        // this.props.shopifyClient.product.fetchAll().then((products) => {
-        //     console.log(products);
+        // console.log(this.state.checkout.id);
+        // const shippingAddress = {
+        //     address1: 'Chestnut Street 92',
+        //     address2: 'Apartment 2',
+        //     city: 'Louisville',
+        //     company: null,
+        //     country: 'United States',
+        //     firstName: 'Bob',
+        //     lastName: 'Norman',
+        //     phone: '555-625-1199',
+        //     province: 'Kentucky',
+        //     zip: '40202'
+        // };
+        // this.props.shopifyClient.checkout.updateShippingAddress(checkoutId, shippingAddress).then(checkout => {
+        // });
+        // this.props.shopifyClient.checkout.updateEmail(checkoutId, 'hello@world.com').then(checkout => {
+        //     console.log(checkout);
         // })
-        const productId = 'Z2lkOi8vc2hvcGlmeS9Qcm9kdWN0LzM3NjY5NjA3MTc4NTg='
-        this.props.shopifyClient.product.fetch(productId).then((product) => {
-            console.log(product);
-        })
+        // // this.props.shopifyClient.product.fetchAll().then((products) => {
+        // //     console.log(products);
+        // // })
+        // const productId = 'Z2lkOi8vc2hvcGlmeS9Qcm9kdWN0LzM3NjY5NjA3MTc4NTg='
+        // this.props.shopifyClient.product.fetch(productId).then((product) => {
+        //     console.log(product);
+        // })
         return this.props.shopifyClient.checkout.updateLineItems(checkoutId, lineItemsToUpdate).then(res => {
           this.setState({
             checkout: res,

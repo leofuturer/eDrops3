@@ -1,51 +1,8 @@
-.order-container {
-    width: 1200px;
-    margin: 40px auto;
-    margin-bottom: 0;
-    height: 500px;
-}
-
-.shop-main-content {
-    overflow: hidden;
-    padding-left: 50px;
-}
-
-.shop-left-content {
-    float: left;
-    width: 600px;
-}
-
 .operation-icon i{
     padding-right:20px;
     cursor: pointer;
     font-size:26px;
     color:#5acde2;
-}
-
-.order-container .shop-left-content .div-img{
-    box-shadow: 0 0 6px rgba(0, 0, 0, 0.1);
-    height: 260px;
-    margin: 0 auto;
-    text-align: center;
-    line-height: 260px;
-}
-
-/* .order-container .left-pic .left-nav1 .div-img img{
-    max-width: 100%;
-    height: auto;
-    margin-top:5px;
-    display: inline-block;
-    vertical-align: middle;
-} */
-
-#pdfdoc {
-    width: 600px; /* same as .shop-left-content */
-    height: inherit; /* inherit from .div-img */
-
-    /* remaining properties copied from .div-img img above */
-    margin-top:5px; 
-    display: inline-block;
-    vertical-align: middle;
 }
 
 .shop-material {
@@ -54,55 +11,8 @@
     margin-top: 30px;
 }
 
-.shop-right-content{
-    margin-left: 5px;
-    float: left;
-    width: 500px;
-    text-align: center;
-}
-
-.div-quantity{
-    display: inline-block;
-    font-size: 18px;
-    font-weight: bold;
-    margin-top:10px;
-    text-align: center;
-    width: 310px;
-}
-
-.div-filename {
-    display: inline-block;
-    font-size: 18px;
-    margin-top: 30px;
-    margin-bottom: 10px;
-    text-align: center;
-    width: 310px;
-}
-
-.shop-config{
-    margin-top: 50px;
-}
-.input-quantity{
-    width:70px;
-    text-indent: 5px;
-}
-.tax-info{
-    margin-top: 15px;
-    color: #c0c0c0;
-}
-.cart-btn{
-    margin-top:20px;
-}
-
 td i{
     cursor: pointer;
-}
-
-.config-items {
-    margin-top: 20px;
-    text-indent: 85px;
-    text-align: left;
-    font-size: 18px;
 }
 
 #shop-left-align {
