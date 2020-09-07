@@ -1,7 +1,5 @@
 'use strict';
 
-
-
 module.exports = function(OrderInfo) {
     //Remote Methods
     // Create new OrderInfo by shopify web hook
@@ -71,12 +69,65 @@ module.exports = function(OrderInfo) {
    
     }
 
+    OrderInfo.prototype.addOrderChipToCart = (body, cb) => {
+        // console.log(body);
+        // Find the specified orderInfo (top level)
+        OrderInfo.findById(body.orderInfoId, (err, orderInfo) => {
+            if(err){
+                console.error(err);
+                cb(err);
+            }
+            else {
+                // console.log(orderInfo);
+                // Then see if product order already created, if we need to create one
+                orderInfo.orderChips({"where": {"variantIdShopify": body.variantIdShopify, "otherDetails": body.otherDetails}}, function(err, orderChips){
+                    // variant ID should uniquely identify it
+                    // console.log(orderProducts);
+                    if(err || orderChips.length > 1){
+                        console.error(`Error occurred or more than one entry for product`);
+                        console.error(err);
+                        cb(err);
+                    }
+                    // not present, need to create a new one
+                    else if(orderChips.length === 0){
+                        orderInfo.orderChips.create(body, (err, orderChip) => {
+                            // console.log(orderProduct);
+                            if(err){
+                                console.error(err);
+                                cb(err);
+                            }
+                            else{
+                                console.log(`Created orderChips with product order id ${orderChip.id}, product ${orderChip.description}`);
+                                cb(null);
+                            }
+                        });
+                    }
+                    else if(orderChips.length === 1){ //already exists
+                        let newQtyData = {
+                            "quantity": orderChips[0].quantity + body.quantity
+                        };
+                        orderChips[0].updateAttributes(newQtyData, (err, orderChip) => {
+                            // console.log(orderProduct);
+                            if(err){
+                                console.error(err);
+                                cb(err);
+                            }
+                            else{
+                                console.log(`Updated quantity to ${orderChip.quantity} for product order ID: ${orderChip.id}, product ${orderChip.description}`);
+                                cb(null);
+                            }
+                        });
+                    }
+                });
+            }
+        });
+    }
+
 
     // This function:
     // (1) Updates the specified order with given ID (represents customer's cart)
     // (2) Searches if the appropriate item is already in the customer's cart
-    //      If so, update quantity; if not, create item (orderChip or orderProduct) 
-    //      and then add to cart
+    //      If so, update quantity; if not, create item and then add to cart
     // (3) Returns success/failure
     OrderInfo.prototype.addOrderProductToCart = (body, cb) => {
         // console.log(body);
@@ -89,11 +140,11 @@ module.exports = function(OrderInfo) {
             else {
                 // console.log(orderInfo);
                 // Then see if product order already created, if we need to create one
-                orderInfo.orderProducts({"where": {"variantIdShopify": body.variantIdShopify}}, function(err, orderProducts){
+                orderInfo.orderProducts({"where": {"variantIdShopify": body.variantIdShopify, "otherDetails": body.otherDetails}}, function(err, orderProducts){
                     // variant ID should uniquely identify it
                     // console.log(orderProducts);
                     if(err || orderProducts.length > 1){
-                        console.error(`Error occurred or more than one entry for product ${description}`);
+                        console.error(`Error occurred or more than one entry for product`);
                         console.error(err);
                         cb(err);
                     }
@@ -133,7 +184,7 @@ module.exports = function(OrderInfo) {
     }
 
     OrderInfo.remoteMethod('prototype.addOrderProductToCart', {
-        description: 'CUSTOM METHOD: Add to cart (increase quantity)',
+        description: 'CUSTOM METHOD: Add product order to cart (increase quantity)',
         accepts: [
             {arg: 'body', type: 'object', http: {source: 'body'}}
         ],
@@ -141,8 +192,17 @@ module.exports = function(OrderInfo) {
         returns: [],
     });
 
+    OrderInfo.remoteMethod('prototype.addOrderChipToCart', {
+        description: 'CUSTOM METHOD: Add chip order to cart (increase quantity)',
+        accepts: [
+            {arg: 'body', type: 'object', http: {source: 'body'}}
+        ],
+        http: {path: '/addOrderChipToCart', verb: 'post'},
+        returns: [],
+    });
+
     OrderInfo.remoteMethod('newOrderInfoCreated', {
-        description: 'An OrderInfo was created by Shopfify',
+        description: 'An OrderInfo was created by Shopify',
         accepts: [
             {arg: 'body', type: 'object', http: {source: 'body'}},
         ],

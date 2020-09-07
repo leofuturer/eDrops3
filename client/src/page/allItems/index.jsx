@@ -3,7 +3,7 @@ import {NavLink} from  'react-router-dom';
 import { withRouter } from 'react-router';
 import './allItems.css';
 import ItemCard from "./itemCard.jsx";
-import {productIds} from "../../productId";
+import {productIds} from "../../constants";
 
 class AllItems extends React.Component{
     constructor(props){

@@ -53,12 +53,16 @@
     text-indent: 5px;
 }
 
+.div-shop-quantity{
+    font-size: 14px;
+}
+
 .tax-info{
     margin-top: 10px;
     color: #808080;
 }
 .cart-btn{
-    margin-top:10px;
+    margin-top: 10px;
 }
 
 .chip-config{

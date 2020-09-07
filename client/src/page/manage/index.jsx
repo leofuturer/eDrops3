@@ -24,6 +24,10 @@ import Orders from 'page/order/index.jsx';
 import AllOrders from 'page/order/allOrders.jsx';
 import AssignOrders from 'page/order/assignOrders.jsx';
 
+//Cart
+import Cart from 'page/cart/index.jsx';
+
+
 import Cookies from "js-cookie";
 import { getAllOrderInfos } from '../../api/serverConfig';
 
@@ -121,6 +125,10 @@ const routes = [
         path: "/manage/customer-orders",
         component: Orders
     },
+    {
+        path: "/manage/cart",
+        component: Cart
+    },
 
     //Pages for foundry workers
     //Worker view(manage) their profiles
@@ -189,5 +197,6 @@ class Manage extends React.Component{
         )
     }
 };
+
 Manage = withRouter(Manage);
 export default Manage;

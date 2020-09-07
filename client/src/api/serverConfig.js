@@ -54,8 +54,14 @@ export const getAllOrderInfos = ApiRootUrl + '/orderInfos';
 export const getOrderInfoById = ApiRootUrl + '/orderInfos/id';
 export const getCustomerCart = ApiRootUrl + '/customers/id/getCustomerCart';
 export const manipulateCustomerOrders = ApiRootUrl + '/customers/id/customerOrders';
-export const addOrderProductToCart = ApiRootUrl + '/orderInfos/id/addOrderProductToCart';
 
+export const addOrderProductToCart = ApiRootUrl + '/orderInfos/id/addOrderProductToCart';
+export const addOrderChipToCart = ApiRootUrl + '/orderInfos/id/addOrderChipToCart';
+
+export const getProductOrders = ApiRootUrl + '/orderInfos/id/orderProducts';
+export const getChipOrders = ApiRootUrl + '/orderInfos/id/orderChips';
+export const modifyProductOrders = ApiRootUrl + '/orderProducts/id';
+export const modifyChipOrders = ApiRootUrl + '/orderChips/id';
 
 export const customerOrderRetrieve = ApiRootUrl + '/customers/id/customerOrders';
 export const workerOrderRetrieve = ApiRootUrl + '/foundryWorkers/id/workerOrders';
