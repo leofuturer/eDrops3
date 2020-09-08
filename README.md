@@ -111,7 +111,9 @@ Then, start the server:
 `$ node .`  
 
 Navigate to localhost:3000 and you should see a status message.  
-Navigate to localhost:3000/explorer and you should see API entry points.
+Navigate to localhost:3000/explorer and you should see API entry points.  
+
+If you run into authentication issues connecting to MySQL, refer to the `mysql_troubleshooting.md` file for potential solutions.  
 
 **To get the client running:**  
 Open up a new command window. Navigate back to the home/top level directory. Then:  
