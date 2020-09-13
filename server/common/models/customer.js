@@ -112,7 +112,7 @@ module.exports = function(Customer) {
         Customer.findById(currentCustomerId, (err, customerInstance) => {
             customerInstance.customerAddresses.create(data, (err, addressInstance) => {
                 if(err){
-                    console.log(err);
+                    console.error(err);
                 }
                 else{
                     return addressInstance;
@@ -135,7 +135,7 @@ module.exports = function(Customer) {
             }
             else{
                 console.log(`Cart already exists, is order info model with id ${orders[0].id}`);
-                cb(null, orders[0].id, orders[0].checkoutIdClient);
+                cb(null, orders[0].id, orders[0].checkoutIdClient, orders[0].checkoutLink);
             }
         });
     }
@@ -147,7 +147,8 @@ module.exports = function(Customer) {
         http: {path: '/getCustomerCart', verb: 'get'},
         returns: [
             {arg: 'id', type: 'number'},
-            {arg: 'checkoutIdClient', type: 'string'}
+            {arg: 'checkoutIdClient', type: 'string'},
+            {arg: 'checkoutLink', type: 'string'},
         ]
     });
 

@@ -2,39 +2,70 @@
 
 module.exports = function(OrderInfo) {
     //Remote Methods
-    // Create new OrderInfo by shopify web hook
+
+    // Caller: Shopify web hook, when an order is created
+    OrderInfo.newOrderCreated = (body, cb) => {
+        console.log(body);
+        if(body.checkout_token !== null){
+            OrderInfo.findOne({where: {checkoutToken: body.checkout_token}}, (err, orderInfoInstance) => {
+                if(err){
+                    cb(err);
+                }
+                else{
+                    // console.log(orderInfoInstance);
+                    var date = new Date();
+                    orderInfoInstance.updateAttributes({
+                        orderInfoId: body.id,
+                        orderComplete: true,
+                        orderStatusURL: body.order_status_url,
+                        status: "Payment made",
+                        lastModifiedAt: date.toISOString(),
+                    });
+                    cb(null);
+                } 
+            });
+        }
+        else{
+            cb(null);
+        }    
+    }
 
     //Without the "next" parameter
     OrderInfo.newOrderInfoCreated = async (body) => {
+        // For whena  new checkout is created
+        // Currently does nothing
     // Query the database to find whether the OrderInfo exists
     const OrderInfoId = body.id;
-    try {
-        let OrderInfoInstance = await OrderInfo.findById(OrderInfoId);
-        if (!OrderInfoInstance) {
-            //console.log(body.line_items[0].properties);
-            console.log(body);
-            let data = {};
-            data.orderInfoId = OrderInfoId;
-            // data.email = body.email;
-            // data.createdAt = body.created_at;
-            // data.process = body.line_items[0].properties[0].value;
-            // data.coverPlate = body.line_items[0].properties[1].value === "true" ? "Yes" : "No";;
-            // data.fileName = body.line_items[0].properties[2].value;
-            // data.orderStatusURL = body.order_status_url;
-            // data.orderAddress = body.customer.default_address;
-            // data.sampleQuantity = body.line_items[0].quantity;
+    console.log("Shopfiy web hook");
+    console.log(body);
+    
+    // try {
+    //     let OrderInfoInstance = await OrderInfo.findById(OrderInfoId);
+    //     if (!OrderInfoInstance) {
+    //         //console.log(body.line_items[0].properties);
+    //         console.log(body);
+    //         let data = {};
+    //         data.orderInfoId = OrderInfoId;
+    //         // data.email = body.email;
+    //         // data.createdAt = body.created_at;
+    //         // data.process = body.line_items[0].properties[0].value;
+    //         // data.coverPlate = body.line_items[0].properties[1].value === "true" ? "Yes" : "No";;
+    //         // data.fileName = body.line_items[0].properties[2].value;
+    //         // data.orderStatusURL = body.order_status_url;
+    //         // data.orderAddress = body.customer.default_address;
+    //         // data.sampleQuantity = body.line_items[0].quantity;
 
-            let Customer = OrderInfo.app.models.customer;
-            let customerInstance = await Customer.findOne({where: {email: body.email}});
-            data.customerId = customerInstance.id;
-            await OrderInfo.create(data);
-        } else {
-            console.log('OrderInfo already exists!');
-        }
-    }
-    catch(err) {
-        console.log(err);
-    }
+    //         let Customer = OrderInfo.app.models.customer;
+    //         let customerInstance = await Customer.findOne({where: {email: body.email}});
+    //         data.customerId = customerInstance.id;
+    //         await OrderInfo.create(data);
+    //     } else {
+    //         console.log('OrderInfo already exists!');
+    //     }
+    // }
+    // catch(err) {
+    //     console.log(err);
+    // }
 
     /* Old version using callback
     OrderInfo.findOne({where: {OrderInfoId: OrderInfoId}}, (err, OrderInfoInstance) => {
@@ -123,7 +154,6 @@ module.exports = function(OrderInfo) {
         });
     }
 
-
     // This function:
     // (1) Updates the specified order with given ID (represents customer's cart)
     // (2) Searches if the appropriate item is already in the customer's cart
@@ -207,6 +237,15 @@ module.exports = function(OrderInfo) {
             {arg: 'body', type: 'object', http: {source: 'body'}},
         ],
         http: {path: '/newOrderInfoCreated', verb: 'post'},
+        returns: {arg: 'msg', type: 'string'}
+    });
+
+    OrderInfo.remoteMethod('newOrderCreated', {
+        description: 'An Order (customer has paid) was created by Shopify',
+        accepts: [
+            {arg: 'body', type: 'object', http: {source: 'body'}},
+        ],
+        http: {path: '/newOrderCreated', verb: 'post'},
         returns: {arg: 'msg', type: 'string'}
     });
 

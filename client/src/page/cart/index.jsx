@@ -34,6 +34,7 @@ class Cart extends React.Component{
         this.handleQtyChange = this.handleQtyChange.bind(this);
         this.handleSave = this.handleSave.bind(this);
         this.handleDelete = this.handleDelete.bind(this);
+        this.handleCheckout = this.handleCheckout.bind(this);
     }
 
     componentDidMount() {
@@ -42,11 +43,13 @@ class Cart extends React.Component{
         API.Request(url, 'GET', {}, true)
         .then(res => {
             if(res.data.id){
+                console.log(res);
                 let orderInfoId = res.data.id;
                 _this.setState({
                     cartExists: true,
                     cartId: res.data.id,
                     shopifyCheckoutId: res.data.checkoutIdClient,
+                    shopifyCheckoutLink: res.data.checkoutLink,
                 });
 
                 url = getProductOrders.replace('id', orderInfoId);
@@ -211,6 +214,14 @@ class Cart extends React.Component{
         _this.handleSaveForOrders(_this.state.chipOrders, 'chip')
     }
 
+    handleCheckout(){
+        this.props.history.push('/beforeCheckout', {
+            shopifyCheckoutLink: this.state.shopifyCheckoutLink,
+            cartId: this.state.cartId,
+            shopifyCheckoutId: this.state.shopifyCheckoutId,
+        });
+    }
+
     render() {
         let totalPrice = 0;
         this.state.productOrders.forEach(product => {
@@ -232,16 +243,24 @@ class Cart extends React.Component{
                                 Use the "save" button to save any 
                                 changes to quantities. Deletions are saved immediately.
                             </div>
-                            { this.state.saveInProgress
-                            ? <img className="cart-loading-GIF" src="../../../static/img/loading80px.gif" alt=""/>
-                            : <div className="cart-save-btn">
-                                <input type="button" value="Save" 
-                                    className="btn btn-success"
-                                    onClick = {() => this.handleSave()}
-                                    >            
-                                </input>
+                            <div>
+                                { this.state.saveInProgress
+                                ? <img className="cart-loading-GIF" src="../../../static/img/loading80px.gif" alt=""/>
+                                : <span className="cart-save-btn">
+                                    <input type="button" value="Save" 
+                                        className="btn btn-success"
+                                        onClick = {() => this.handleSave()}>            
+                                    </input>
+                                </span>
+                                }
+                                <span className="btn-txt-padding">
+                                    <input type="button" value="Checkout" 
+                                        className="btn btn-primary btn-padding"
+                                        onClick = {() => this.handleCheckout()}>            
+                                    </input>
+                                </span>     
                             </div>
-                            }                               
+                                                 
                         </div>
                         {
                             this.state.productOrders.map((oneProduct, index) => 
@@ -264,7 +283,8 @@ class Cart extends React.Component{
                         </div>
                         <div className="cart-total-price-info">
                             Excludes tax and shipping and handling
-                        </div>  
+                        </div>
+                        
                     </div>
                     : <div>
                         { this.state.cartLoading
