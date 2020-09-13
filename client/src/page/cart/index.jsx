@@ -16,7 +16,6 @@ const shopifyClient = ShopifyClient.buildClient({
     domain: 'wqntest.myshopify.com'
 });
 
-
 //The order list page for both customer and worker
 class Cart extends React.Component{
     constructor(props) {
@@ -259,8 +258,7 @@ class Cart extends React.Component{
                                         onClick = {() => this.handleCheckout()}>            
                                     </input>
                                 </span>     
-                            </div>
-                                                 
+                            </div>                                
                         </div>
                         {
                             this.state.productOrders.map((oneProduct, index) => 
@@ -283,8 +281,7 @@ class Cart extends React.Component{
                         </div>
                         <div className="cart-total-price-info">
                             Excludes tax and shipping and handling
-                        </div>
-                        
+                        </div>             
                     </div>
                     : <div>
                         { this.state.cartLoading
@@ -296,7 +293,6 @@ class Cart extends React.Component{
                         </div>
                     }
                     </div>
-
                     } 
                 </div>
             </div>

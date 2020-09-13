@@ -31,8 +31,7 @@ class SingleAddress extends React.Component {
                                     </div>
                                 </div>
                                 : null
-                            }
-                            
+                            }   
                         </div>
                         <div className="row">
                             <div className="row-txt-padding">{address.street}</div>
@@ -40,8 +39,7 @@ class SingleAddress extends React.Component {
                             <div className="row-txt-padding">{address.state}</div>
                             <div className="row-txt-padding">{address.country}</div>
                             <div className="row-txt-padding">{address.zipCode}</div>
-                        </div>
-                        
+                        </div>       
                     </div>
                 </div>
             </div>

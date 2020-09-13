@@ -4,8 +4,9 @@ module.exports = function(OrderInfo) {
     //Remote Methods
 
     // Caller: Shopify web hook, when an order is created
+    // This hook is called when the order is paid for
     OrderInfo.newOrderCreated = (body, cb) => {
-        console.log(body);
+        // console.log(body);
         if(body.checkout_token !== null){
             OrderInfo.findOne({where: {checkoutToken: body.checkout_token}}, (err, orderInfoInstance) => {
                 if(err){
@@ -32,13 +33,13 @@ module.exports = function(OrderInfo) {
 
     //Without the "next" parameter
     OrderInfo.newOrderInfoCreated = async (body) => {
-        // For whena  new checkout is created
+        // For when a new checkout is created
         // Currently does nothing
-    // Query the database to find whether the OrderInfo exists
-    const OrderInfoId = body.id;
-    console.log("Shopfiy web hook");
-    console.log(body);
-    
+        // Query the database to find whether the OrderInfo exists
+        const OrderInfoId = body.id;
+        console.log("Shopfiy web hook");
+        console.log(body);
+        
     // try {
     //     let OrderInfoInstance = await OrderInfo.findById(OrderInfoId);
     //     if (!OrderInfoInstance) {

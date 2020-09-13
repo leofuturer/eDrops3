@@ -1,7 +1,6 @@
 .before-checkout-background { 
     padding-top: 10px;
-    padding-bottom: 10px;
-    
+    padding-bottom: 10px; 
     width: 1000px;
     box-shadow: 0 0 6px rgba(0, 0, 0, 0.1);
     margin: 0 auto;
@@ -22,7 +21,6 @@
 .checkout-button{
     text-align: center;
 }
-
 
 .selected-address{
     border-style: solid;

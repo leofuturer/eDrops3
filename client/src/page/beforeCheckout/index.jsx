@@ -35,7 +35,7 @@ class BeforeCheckout extends React.Component  {
         }
         else if(_this.props.location.state.shopifyCheckoutLink === undefined
                 || _this.props.location.state.cartId === undefined){
-                    _this.props.history.push('/manage/cart');
+            _this.props.history.push('/manage/cart');
             return;
         }
         else{
@@ -127,7 +127,8 @@ class BeforeCheckout extends React.Component  {
                                 selected={index===this.state.selectedAddrIndex ? "selected-address" : ""}
                                 addressTem={oneAddress} 
                                 addressNum={index+1} 
-                                onClick={() => this.handleSelectAddress(index)}/>
+                                onClick={() => this.handleSelectAddress(index)}
+                            />
                         )
                     }
                     </div>
@@ -137,11 +138,8 @@ class BeforeCheckout extends React.Component  {
                         </input>
                         <input type="button" className="btn btn-primary btn-padding"
                             value="Proceed to Payment" onClick={() => this.handlePayment()}>
-                        </input>
-                        
-                    </div>
-                    
-                    
+                        </input>     
+                    </div> 
                 </div>
                 <div className="hr-div-login"></div>
             </div>
