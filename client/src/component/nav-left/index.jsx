@@ -105,6 +105,17 @@ class NavLeft extends React.Component{
                         </NavLink>
                     </li>
                     {
+                    Cookies.get('userType') == 'customer'
+                        ?
+                        <li>
+                            <NavLink to="/manage/cart" activeStyle={{width:'117px',borderLeft:'3px solid #428bca',color:'#428bca'}}>
+                                <span className="icon-nav"><i className="fa fa-shopping-cart"></i></span>
+                                <span className="icon-txt">Cart</span>
+                            </NavLink>
+                        </li>
+                        : null
+                    }
+                    {
                         // Cookies.get('userType') == 'customer'
                         //     ?
                         //     <li>

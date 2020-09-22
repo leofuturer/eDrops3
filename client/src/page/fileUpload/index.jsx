@@ -52,11 +52,10 @@ class Upload extends React.Component{
 
         $("#file1").fileinput({
             uploadUrl: uploadFile + '?access_token=' + access_token, // you must set a valid URL here, or you will get an error
-            allowedFileExtensions : ['dxf', 'pdf'],
+            allowedFileExtensions : ['dxf'],
             overwriteInitial: false,
             maxFileSize: 5000,
-            maxFilesNum: 10,
-            //allowedFileTypes: ['image', 'video', 'flash'],
+            maxFilesNum: 1,
             slugCallback: function(filename) {
                 return filename.replace('(', '_').replace(']', '_');
             }
@@ -64,6 +63,7 @@ class Upload extends React.Component{
             _this.setState({
                 fileData: data
             });
+            console.log(data);
             /*
             $.notify({
             // options
@@ -89,7 +89,9 @@ class Upload extends React.Component{
     handleShopping() {
         $('#exampleModal').modal('hide');
         let data = this.state.fileData;
-        this.props.history.push('/shop', {fileName: data.response.result.files['attach-document'][0].name});
+        this.props.history.push('/shop', {
+            fileName: data.response.result.files['attach-document'][0].name,
+        });
     }
 
     handleLibrary() {

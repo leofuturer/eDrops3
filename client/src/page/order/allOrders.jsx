@@ -1,3 +1,4 @@
+// Admin only page, for customer page see order/index.jsx
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 import Cookies from 'js-cookie';

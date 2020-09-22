@@ -27,7 +27,12 @@ td i{
     margin-top: 20px;
 }
 
-/* ======= Cart ======= */
+.div-quantity{
+    font-size: 18px;
+    font-weight: bold;
+}
+
+/* ======= Cart =======
 .shop-cart-wrapper {
     float: right;
 }
@@ -126,5 +131,5 @@ td i{
 
 .Cart-info-last {
     margin-bottom: 20px;
-}
+} */
 

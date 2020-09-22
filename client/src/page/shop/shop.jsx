@@ -13,12 +13,14 @@
 */
 
 import React from 'react';
-import { withRouter } from 'react-router-dom';
-import $ from 'jquery';
 import './shop.css';
 import Cookies from "js-cookie";
-import { downloadFileById } from '../../api/serverConfig'; //for previewing PDF file
-import Cart from "./cart.jsx";
+import {downloadFileById, getCustomerCart, 
+    manipulateCustomerOrders,
+    addOrderChipToCart} from "../../api/serverConfig";
+import API from "../../api/api";
+import { ewodFabServiceId, 
+    ewodFabServiceVariantId } from "../../constants";
 
 class Shop extends React.Component {
     constructor(props) {
@@ -30,32 +32,97 @@ class Shop extends React.Component {
             materialVal: 'ITO Glass',
             quantity: 1,
             wcpb: false,
-            fileName: this.props.location.state.fileName,
-            isCartOpen: false,
-            checkout: {lineItems: []}
+            fileName: undefined,
         }
         
         this.setCurrentIndex = this.setCurrentIndex.bind(this);
         this.addVariantToCart = this.addVariantToCart.bind(this);
-        this.handleCartClose = this.handleCartClose.bind(this);
-        this.updateQuantityInCart = this.updateQuantityInCart.bind(this);
-        this.removeLineItemInCart = this.removeLineItemInCart.bind(this);
     }
 
-    componentDidMount() {      
-        this.props.shopifyClient.checkout.create().then((res) => {
-            this.setState({
-              checkout: res,
+    componentDidMount() {
+        // console.log(this.props);  
+        if(Cookies.get('access_token') === undefined){
+            alert("Login required for this page");
+            this.props.history.push('/login');
+            return;
+        }
+        else if(this.props.location.state === undefined){
+            alert("Please pick a file for fabrication");
+            this.props.history.push('/manage/files');
+            return;
+        }
+        else{
+            
+            let _this = this;
+            let url = getCustomerCart.replace('id', Cookies.get('userId'));
+            let shopifyClient = _this.props.shopifyClient;
+            _this.setState({
+                fileName: this.props.location.state.fileName,
             });
-        });
+            shopifyClient.product.fetch(ewodFabServiceId)
+            .then((product) => {
+                // console.log(product);
+                _this.setState({
+                    product: product,
+                });
+            })
+            .catch((err) => {
+                console.error(err);
+                //redirect to all items page if product ID is invalid
+                this.props.history.push('/allItems'); 
+            });
+            API.Request(url, 'GET', {}, true)
+            .then(res => {
+                if(res.data.id){
+                    // console.log(`Have cart already with ID ${res.data.id}`);
+                    _this.setState({
+                        orderInfoId: res.data.id,
+                        shopifyClientCheckoutId: res.data.checkoutIdClient,
+                    });
+                }
+                else{ //no cart, need to create one
+                    // create Shopify cart
+                    // console.log(`No cart currently exists, so need to create one`);
+                    shopifyClient.checkout.create()
+                    .then(res => {
+                        // console.log(res);
+                        _this.setState({
+                            shopifyClientCheckoutId: res.id
+                        });
+                        let data = {
+                            "checkoutIdClient": res.id,
+                            "checkoutIdServer": "Awaiting checkout creation webhook",
+                            "createdAt": res.createdAt,
+                            "lastModifiedAt": res.updatedAt,
+                            "orderComplete": false,
+                            "status": "Order in progress",
+                            // "customerId": Cookies.get('userId'),
+                            "shippingAddressId": 0, //0 to indicate no address selected yet (pk cannot be 0)
+                            "billingAddressId": 0
+                        };
+                        // and then create orderInfo in our backend
+                        url = manipulateCustomerOrders.replace('id', Cookies.get('userId'));
+                        API.Request(url, 'POST', data, true)
+                        .then(res => {
+                            // console.log(res);
+                            _this.setState({
+                                orderInfoId: res.data.id,
+                            });
+                        })
+                        .catch(err => {
+                            console.error(err);
+                        });
+                    })
+                    .catch(err => {
+                        console.error(err);
+                    });
+                }
+            })
+            .catch(err => {
+                console.error(err);
+            });
+        }
         
-
-        //Currently the retrieved "shop" information is not used
-        this.props.shopifyClient.shop.fetchInfo().then((res) => {
-            this.setState({
-              shop: res,
-            });
-        });
     }
     
     handleChange(key, value) {
@@ -83,108 +150,75 @@ class Shop extends React.Component {
         @quantity: The quantity seleted by customer, put in from frontend page
     */
     addVariantToCart(variantId, quantity){
-        this.setState({
-            isCartOpen: true
-        });
-
-        const wcpbVal = this.state.wcpb.toString();
-
-        const lineItemsToAdd = [{variantId, 
-                                quantity: parseInt(quantity, 10), 
-                                customAttributes: [
-                                  {
-                                    key: "material",
-                                    value: this.state.materialVal
-                                  },
-                                  {
-                                    key: "withCoverPlateAssembled",
-                                    value: wcpbVal
-                                  },
-                                  {
-                                    key: "fileName",
-                                    value: this.state.fileName
-                                  }
-                                ] 
-                               }];
-    
-        const checkoutId = this.state.checkout.id;
-    
-        return this.props.shopifyClient.checkout.addLineItems(checkoutId, lineItemsToAdd)
-        .then(res => {
-          this.setState({
-            checkout: res
-          });
-          console.log(res);
-        })
-        .catch(err => {
-            console.log(err);
-        });
-    }
-
-    updateQuantityInCart(lineItemId, quantity) {
-        const checkoutId = this.state.checkout.id
-        const lineItemsToUpdate = [{
-          id: lineItemId, 
-          quantity: parseInt(quantity, 10),                             
-          customAttributes: [{
-                key: "material",
-                value: this.state.materialVal
-            },
-            {
-                key: "withCoverPlateAssembled",
-                value: this.state.wcpb.toString()
-            },
-            {
-                key: "fileName",
-                value: this.state.fileName
-            }
-          ]
-        }];
-        // console.log(this.state.checkout.id);
-        // const shippingAddress = {
-        //     address1: 'Chestnut Street 92',
-        //     address2: 'Apartment 2',
-        //     city: 'Louisville',
-        //     company: null,
-        //     country: 'United States',
-        //     firstName: 'Bob',
-        //     lastName: 'Norman',
-        //     phone: '555-625-1199',
-        //     province: 'Kentucky',
-        //     zip: '40202'
-        // };
-        // this.props.shopifyClient.checkout.updateShippingAddress(checkoutId, shippingAddress).then(checkout => {
-        // });
-        // this.props.shopifyClient.checkout.updateEmail(checkoutId, 'hello@world.com').then(checkout => {
-        //     console.log(checkout);
-        // })
-        // // this.props.shopifyClient.product.fetchAll().then((products) => {
-        // //     console.log(products);
-        // // })
-        // const productId = 'Z2lkOi8vc2hvcGlmeS9Qcm9kdWN0LzM3NjY5NjA3MTc4NTg='
-        // this.props.shopifyClient.product.fetch(productId).then((product) => {
-        //     console.log(product);
-        // })
-        return this.props.shopifyClient.checkout.updateLineItems(checkoutId, lineItemsToUpdate).then(res => {
-          this.setState({
-            checkout: res,
-          });
-        });
-      }
-    
-    removeLineItemInCart(lineItemId) {
-        const checkoutId = this.state.checkout.id
-        return this.props.shopifyClient.checkout.removeLineItems(checkoutId, [lineItemId]).then(res => {
-          this.setState({
-            checkout: res,
-          });
-        });
-    }
-
-    handleCartClose() {
-        this.setState({
-          isCartOpen: false,
-        });
+        if(quantity < 1){
+            alert("Quantity must be at least 1");
+            return;
+        }
+        else{
+            let _this = this;
+            const wcpbVal = _this.state.wcpb.toString();
+            const lineItemsToAdd = [{variantId, 
+                                    quantity: parseInt(quantity, 10), 
+                                    customAttributes: [
+                                    {
+                                        key: "material",
+                                        value: _this.state.materialVal
+                                    },
+                                    {
+                                        key: "withCoverPlateAssembled",
+                                        value: wcpbVal
+                                    },
+                                    {
+                                        key: "fileName",
+                                        value: _this.state.fileName
+                                    }
+                                    ] 
+                                }];
+            let customServerOrderAttributes = "";
+            customServerOrderAttributes += `material: ${_this.state.materialVal}\n`;
+            customServerOrderAttributes += `withCoverPlateAssembled: ${wcpbVal}\n`;
+            customServerOrderAttributes += `fileName: ${_this.state.fileName}\n`;
+            const checkoutId = _this.state.shopifyClientCheckoutId;
+            _this.props.shopifyClient.checkout.addLineItems(checkoutId, lineItemsToAdd)
+            .then(res => {
+                let lineItemId;
+                for(let i = 0; i<res.lineItems.length; i++){
+                    if(res.lineItems[i].variant.id === variantId){
+                        lineItemId = res.lineItems[i].id;
+                        break;
+                    }
+                }
+                // create our own chip order here...
+                let data = {
+                    "orderInfoId": _this.state.orderInfoId,
+                    "productIdShopify": ewodFabServiceId,
+                    "variantIdShopify": variantId,
+                    "lineItemIdShopify": lineItemId,
+                    "name": _this.state.product.title,
+                    "description": _this.state.product.description,
+                    "quantity": quantity,
+                    "price": parseFloat(_this.state.product.variants[0].price),
+                    "otherDetails": customServerOrderAttributes,
+                    "process": this.state.materialVal,
+                    "coverPlate": wcpbVal,
+                    "lastUpdated": Date.now(),
+                    "fileName": this.state.fileName,
+                    "workerId": 0,
+                }
+                // console.log(res);
+                let url = addOrderChipToCart.replace('id', _this.state.orderInfoId);
+                API.Request(url, 'POST', data, true)
+                .then(res => {
+                    // console.log(res);
+                })
+                .catch(err =>{
+                    console.error(err);
+                });
+            })
+            .catch(err => {
+                console.error(err);
+            });
+        }   
     }
 
     setCurrentIndex(event) {
@@ -196,7 +230,7 @@ class Shop extends React.Component {
 
     render() {
         let tabShow = []
-        let variantId = "Z2lkOi8vc2hvcGlmeS9Qcm9kdWN0VmFyaWFudC8yOTE4MDQxMzQ3Njg5OA==";
+        let variantId = ewodFabServiceVariantId;
         for(let i = 0; i < this.state.material.length; i++) {
             tabShow.push(
                 <li key={i} 
@@ -213,15 +247,10 @@ class Shop extends React.Component {
         // console.log(this.state.fileName);
 
         // Download the referenced file via the backend API
-        let url = downloadFileById.replace('filename', this.state.fileName);
+        // let url = downloadFileById.replace('filename', this.state.fileName);
         
         return(
             <div className="order-container">
-                {!this.state.isCartOpen &&
-                    <div className="shop-cart-wrapper">
-                        <button className="shop-cart" onClick={()=> this.setState({isCartOpen: true})}>Cart</button>
-                    </div>
-                }
                 <div className="shop-main-content">
                     <div className="shop-left-content">
                         {/* DY - replace temporary image above with a preview of the uploaded PDF */}
@@ -258,11 +287,18 @@ class Shop extends React.Component {
                         </div>
                     </div>
                     <div className="shop-right-content">
-                        <div className="div-filename">{'File to be fabricated: '}
-                            <b>{this.state.fileName}</b></div>
-                        <div className="div-quantity">
+                        <div className="div-filename">{'File to be fabricated: '}</div>
+                        <div>{this.state.fileName}</div>
+                        <div className="shop-config">
+                            <h2>Chip Configuration Options</h2>
+                            <p className="config-items">
+                                <input type="checkbox" onChange={v => this.handleChange('wcpb', v.target.checked)}/>
+                                <span style={{paddingLeft:'10px'}}>With Cover Plate Assembled</span>
+                            </p>
+                        </div>
+                        <div className="div-shop-quantity">
                             <label>Quantity:&nbsp;</label>
-                            <input type="text" className="input-quantity" 
+                            <input type="number" className="input-quantity" 
                                 value={this.state.quantity} 
                                 onChange={v => this.handleChange('quantity', v.target.value)}/> X $1000 = 
                                 <span> ${this.state.quantity * 1000}</span>                      
@@ -271,25 +307,12 @@ class Shop extends React.Component {
                                     value="Add to Cart" 
                                     onClick={e => this.addVariantToCart(variantId, this.state.quantity)}/>
                             </p>
-                            <p className="tax-info">Note: Price excludes sales tax</p>
+                            
                         </div>
-                        <div className="shop-config">
-                            <h2>Chip Configuration Options</h2>
-                            <p className="config-items">
-                                <input type="checkbox" onChange={v => this.handleChange('wcpb', v.target.value)}/>
-                                <span style={{paddingLeft:'10px'}}>With Cover Plate Assembled</span>
-                            </p>
-                        </div>
+                        <div className="tax-info">Note: Price excludes sales tax</div>
+                        
                     </div>
                 </div>
-
-                <Cart history={this.props.history} 
-                    checkout={this.state.checkout}
-                    isCartOpen={this.state.isCartOpen}
-                    handleCartClose={this.handleCartClose}
-                    updateQuantityInCart={this.updateQuantityInCart}
-                    removeLineItemInCart={this.removeLineItemInCart}
-                />
                 <div className="hr-div-login"></div>
             </div>
         )

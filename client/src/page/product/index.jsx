@@ -1,7 +1,9 @@
 import React from 'react';
 import { withRouter, NavLink } from 'react-router-dom';
 import './product.css'
-import { chipFabId } from "../../productId";
+import { univEwodChipId, 
+    univEwodChipWithCoverPlate, 
+    univEwodChipWithoutCoverPlate } from "../../constants";
 import Cookies from 'js-cookie';
 import {getCustomerCart, 
         manipulateCustomerOrders,
@@ -16,20 +18,30 @@ class Product extends React.Component{
             product: undefined,
             orderInfoId: undefined,
             shopifyClientCheckoutId: undefined,
-            quantity: 0,
+            quantity: 1,
+            otherDetails: {},
         };
         this.handleGetCart = this.handleGetCart.bind(this);
         this.addItemToCart = this.addItemToCart.bind(this);
+        this.handleOptionsChange = this.handleOptionsChange.bind(this);
     }
 
     componentDidMount(){
-        console.log(chipFabId);
+        // console.log(univEwodChipId);
         if(this.props.location.search === ""){
             this.props.history.push('/allItems'); //redirect if no ID provided
             return;
         }
+        
         let _this = this;
         let productId = this.props.location.search.slice(4); // ?id=<id>
+        if(productId === univEwodChipId){
+            this.setState({
+                otherDetails: {
+                    withCoverPlateAssembled: false,
+                },
+            });
+        }
         this.props.shopifyClient.product.fetch(productId)
         .then((product) => {
             // console.log(product);
@@ -37,12 +49,10 @@ class Product extends React.Component{
                 product: product,
                 fetchedProduct: true,
                 addedToCart: true,
-                fileName: undefined,
-                fileId: undefined
             });
         })
         .catch((err) => {
-            console.log(err);
+            console.error(err);
             //redirect to all items page if product ID is invalid
             this.props.history.push('/allItems'); 
         });
@@ -56,6 +66,15 @@ class Product extends React.Component{
         )
     }
 
+    handleOptionsChange(key, value){
+        let newData = {
+            [key]: value
+        };
+        this.setState({
+            otherDetails: Object.assign({}, this.state.otherDetails, newData),
+        });
+    }
+
     handleGetCart(){
         /**
          * Do not allow if not logged in or nonpositive quantity to add.
@@ -66,7 +85,7 @@ class Product extends React.Component{
          *      Shopify checkout ID
          */
         let _this = this;
-        if(Cookies.get('access_token')===undefined){
+        if(Cookies.get('access_token') === undefined){
             alert("Login required to add item to cart");
             return;
         }
@@ -84,7 +103,7 @@ class Product extends React.Component{
             API.Request(url, 'GET', {}, true)
             .then(res => {
                 if(res.data.id){
-                    console.log(`Have cart already with ID ${res.data.id}`);
+                    // console.log(`Have cart already with ID ${res.data.id}`);
                     _this.setState({
                         orderInfoId: res.data.id,
                         shopifyClientCheckoutId: res.data.checkoutIdClient,
@@ -96,7 +115,7 @@ class Product extends React.Component{
                 }
                 else{ //no cart, need to create one
                     // create Shopify cart
-                    console.log(`No cart currently exists, so need to create one`);
+                    // console.log(`No cart currently exists, so need to create one`);
                     shopifyClient.checkout.create()
                     .then(res => {
                         // console.log(res);
@@ -152,7 +171,7 @@ class Product extends React.Component{
     }
 
     /**
-     * Function to update Shopify and our own cart
+     * Function to update Shopify checkout and our own cart
      * @param {number} orderInfoId - id of orderInfo model in our DB
      * @param {string} shopifyClientCheckoutId - id of Shopify client checkout
      * @param {number} quantity - number of items to add
@@ -160,22 +179,47 @@ class Product extends React.Component{
     addItemToCart(orderInfoId, shopifyClientCheckoutId, quantity) {
         // add to shopify cart, and then add to our own cart       
         let _this = this;
+        let customShopifyAttributes = [];
+        let customServerOrderAttributes = "";
+        for (let [k, v] of Object.entries(_this.state.otherDetails).sort((a, b) => a[0].localeCompare(b[0]))) {
+            if(v !== undefined){
+                customShopifyAttributes.push({key: k, value: v});
+                customServerOrderAttributes += `${k}: ${v}\n`;
+            }           
+        }
+        let variantId = _this.state.product.id !== univEwodChipId 
+            ? _this.state.product.variants[0].id
+            : _this.state.otherDetails.withCoverPlateAssembled 
+                ? univEwodChipWithCoverPlate
+                : univEwodChipWithoutCoverPlate;
+        // console.log(variantId);
         const lineItemsToAdd = [{
-            variantId: _this.state.product.variants[0].id,
+            variantId: variantId,
             quantity: quantity,
         }];
         _this.props.shopifyClient.checkout.addLineItems(shopifyClientCheckoutId, lineItemsToAdd)
         .then(res => {
+            let lineItemId;
             // console.log(res);
+            for(let i = 0; i<res.lineItems.length; i++){
+                if(res.lineItems[i].variant.id === variantId){
+                    lineItemId = res.lineItems[i].id;
+                    // console.log(lineItemId);
+                    break;
+                }
+            }
             let data = {
                 "orderInfoId": orderInfoId,
                 "productIdShopify": _this.state.product.id,
-                "variantIdShopify": _this.state.product.variants[0].id,
+                "variantIdShopify": variantId,
+                "lineItemIdShopify": lineItemId,
                 "description": _this.state.product.description,
                 "quantity": quantity,
                 "price": parseFloat(_this.state.product.variants[0].price),
-                "otherDetails": "",
+                "name": _this.state.product.title,
+                "otherDetails": customServerOrderAttributes,
             };
+            // console.log(data);
             let url = addOrderProductToCart.replace('id', orderInfoId);
             API.Request(url, 'POST', data, true)
             .then(res => {
@@ -214,35 +258,6 @@ class Product extends React.Component{
                             <div className="div-img">
                                 <img src={this.state.product.variants[0].image.src}/>
                             </div>
-                            { desiredProductId === chipFabId
-                                ? <div className="shop-material">
-                                    <h2>Process</h2>
-                                    <div className="col-sm-3 col-md-3 col-lg-3" id="shop-left-align">
-                                        <ul id="myTab" className="nav nav-pills nav-stacked">
-                                            abcdefg
-                                        </ul>
-                                    </div>
-                                    <div className="col-sm-9 col-md-9 col-lg-9">
-                                        <div className="tab-content">
-                                            <div>
-                                                ITO glass is good substrate choice for optical applications. The ITO layer has 
-                                                thickness of 200 nm. The glass is soda-lime glass with thickness of 0.7 nm. The 
-                                                whole substrate is 4 inches in diameter.
-                                            </div>
-                                            <div >
-                                                Paper is good substrate choice for optical applications. The ITO layer has a 
-                                                thickness of 200 nm. The glass is soda-lime glass with thickness of 0.7 nm. The 
-                                                whole substrate is 4 inches in diameter.
-                                            </div>
-                                            <div>
-                                                PCB has thickness of 200 nm, which enables multiple layers of patterns. The 
-                                                whole substrate is 4 inches in diameter.
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                : null
-                            } 
                         </div>
                         <div className="shop-right-content">
                             <NavLink to="/allItems">{'<< Return to all products'}</NavLink>
@@ -250,20 +265,11 @@ class Product extends React.Component{
                             <div className="product-description" 
                                 dangerouslySetInnerHTML={{__html: product.descriptionHtml}}>
                             </div>                       
-                            { desiredProductId === chipFabId
+                            { desiredProductId === univEwodChipId
                                 ? <div className="chip-config">
                                     <h3>Item Options</h3>
-                                    <div className="div-filename">File to be fabricated:&nbsp;
-                                    { this.state.fileName !== undefined
-                                    ? this.state.fileName
-                                    : <input type="button" value="Choose Fabrication File" className="btn btn-primary btn-med"></input>
-                                    }
-                                    </div>
-                                    <div className="config-process">
-                                        Process: hello
-                                    </div>
                                     <div className="config-items">
-                                        <input type="checkbox" />
+                                        <input type="checkbox" onChange = {v => this.handleOptionsChange('withCoverPlateAssembled', v.target.checked)}/>
                                         <span className="option-detail">With Cover Plate Assembled</span>
                                     </div>
                                 </div>

@@ -1,7 +1,6 @@
 import React from 'react';
 import {NavLink} from  'react-router-dom';
 import Cookies from 'js-cookie';
-import Cart from '../../page/shop/cart.jsx'
 
 class NavTop extends React.Component{
     constructor(props){
@@ -59,7 +58,7 @@ class NavTop extends React.Component{
                                 { // 4/23/2020: Only provide link to cart if customer is logged in - DY
                                     notLoggedIn
                                         ? <NavLink to="/login"><i className="fa fa-shopping-cart"></i></NavLink>
-                                        : <NavLink to="#"><i className="fa fa-shopping-cart"></i></NavLink> //to be implemented                               
+                                        : <NavLink to="/manage/cart"><i className="fa fa-shopping-cart"></i></NavLink> //to be implemented                               
                                 }
                             </li>
 
