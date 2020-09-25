@@ -30,19 +30,19 @@ class Orders extends React.Component{
         if (this.props.match.path === '/manage/worker-orders') {
             var url = workerOrderRetrieve.replace('id', Cookies.get('userId'));
         } else if (this.props.match.path === '/manage/customer-orders') {
-            var url = customerOrderRetrieve.replace('id', Cookies.get('userId'));
+            var url = customerOrderRetrieve.replace('id', Cookies.get('userId')) + '?filter={"where": {"orderComplete": true}}';
         } else {
-            console.log('Wierd things just happened!')
+            console.error('Unexpected error');
         }
 
         API.Request(url, method, data, true)
         .then(res => {
             this.setState({
                 orderList: res.data
-            })
+            });
         })
         .catch(err => {
-            console.log(err);
+            console.error(err);
         });
     }
     
@@ -117,7 +117,7 @@ class Orders extends React.Component{
         let originalOrderId = e.target.id;
         let orderId = Number(originalOrderId.replace(/[^0-9]/ig, ''));
         let redirectUrl = "/subpage/order-detail";
-        let strWindowFeatures = "width=1200px, height=530px";
+        let strWindowFeatures = "width=1200px, height=900px";
         let WindowForOrderDetail = window.open(redirectUrl, "_blank", strWindowFeatures);
         WindowForOrderDetail._orderItemId = orderId;
     }
@@ -169,7 +169,9 @@ class Orders extends React.Component{
                                     {this.state.orderList.length !== 0
                                         ?  
                                             this.state.orderList.map((item, index) => {
-                                                return (
+                                                
+                                                return ( 
+                                                    
                                                     <tr key={index} id={item.id}>
                                                         {
                                                             Cookies.get('userType') === "customer"

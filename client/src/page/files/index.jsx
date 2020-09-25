@@ -252,7 +252,7 @@ class Files extends React.Component {
                                     return (
                                         <tr key={item.id} id={`fileInfoRow${item.id}`}>
                                             <td>{padZeroes(item.uploadTime)}</td>
-                                            <td>{item.filename}</td>
+                                            <td>{item.fileName}</td>
                                             {
                                                 Cookies.get('userType') === "customer"
                                                 ? null

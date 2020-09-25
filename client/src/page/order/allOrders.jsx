@@ -44,7 +44,7 @@ class AllOrders extends React.Component {
         //and display the page based on the passed in redirectUrl
         let orderId = e.target.parentNode.parentNode.id;
         let redirectUrl = "/subpage/order-detail";
-        let strWindowFeatures = "width=1200px, height=530px";
+        let strWindowFeatures = "width=1200px, height=900px";
         let WindowForOrderDetail = window.open(redirectUrl, "_blank", strWindowFeatures);
         WindowForOrderDetail._orderItemId = orderId;
     }

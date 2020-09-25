@@ -51,6 +51,68 @@
       "required": true,
       "default": "Order in progress"
     },
+    "fees_and_taxes": {
+      "type": "number",
+      "required": false
+    },
+    "sa_name": {
+      "type": "string",
+      "required": false
+    },
+    "sa_address1": {
+      "type": "string",
+      "required": false,
+      "description": "sa = shipping address"
+    },
+    "sa_address2": {
+      "type": "string",
+      "required": false
+    },
+    "sa_city": {
+      "type": "string",
+      "required": false
+    },
+    "sa_province": {
+      "type": "string",
+      "required": false
+    },
+    "sa_zip": {
+      "type": "string",
+      "required": false
+    },
+    "sa_country": {
+      "type": "string",
+      "required": false
+    },
+    "ba_name": {
+      "type": "string",
+      "required": false
+    },
+    "ba_address1": {
+      "type": "string",
+      "required": false,
+      "description": "ba = billing address"
+    },
+    "ba_address2": {
+      "type": "string",
+      "required": false
+    },
+    "ba_city": {
+      "type": "string",
+      "required": false
+    },
+    "ba_province": {
+      "type": "string",
+      "required": false
+    },
+    "ba_zip": {
+      "type": "string",
+      "required": false
+    },
+    "ba_country": {
+      "type": "string",
+      "required": false
+    },
     "otherDetails": {
       "type": "string",
       "required": false
@@ -62,22 +124,6 @@
       "type": "belongsTo",
       "model": "customer",
       "foreignKey": "customerId",
-      "options": {
-        "nestRemoting": true
-      }
-    },
-    "shippingAddress": {
-      "type": "belongsTo",
-      "model": "customerAddress",
-      "foreignKey": "shippingAddressId",
-      "options": {
-        "nestRemoting": true
-      }
-    },
-    "billingAddress": {
-      "type": "belongsTo",
-      "model": "customerAddress",
-      "foreignKey": "billingAddressId",
       "options": {
         "nestRemoting": true
       }

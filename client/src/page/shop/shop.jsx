@@ -57,7 +57,7 @@ class Shop extends React.Component {
             let url = getCustomerCart.replace('id', Cookies.get('userId'));
             let shopifyClient = _this.props.shopifyClient;
             _this.setState({
-                fileName: this.props.location.state.fileName,
+                fileName: this.props.location.state.fileInfo.fileName,
             });
             shopifyClient.product.fetch(ewodFabServiceId)
             .then((product) => {
@@ -89,14 +89,17 @@ class Shop extends React.Component {
                         _this.setState({
                             shopifyClientCheckoutId: res.id
                         });
+                        let lastSlash = res.webUrl.lastIndexOf('/');
+                        let lastQuestionMark = res.webUrl.lastIndexOf('?');
+                        let shopifyCheckoutToken = res.webUrl.slice(lastSlash + 1, lastQuestionMark);
                         let data = {
                             "checkoutIdClient": res.id,
-                            "checkoutIdServer": "Awaiting checkout creation webhook",
+                            "checkoutToken": shopifyCheckoutToken,
+                            "checkoutLink": res.webUrl,
                             "createdAt": res.createdAt,
                             "lastModifiedAt": res.updatedAt,
                             "orderComplete": false,
                             "status": "Order in progress",
-                            // "customerId": Cookies.get('userId'),
                             "shippingAddressId": 0, //0 to indicate no address selected yet (pk cannot be 0)
                             "billingAddressId": 0
                         };
@@ -202,7 +205,7 @@ class Shop extends React.Component {
                     "process": this.state.materialVal,
                     "coverPlate": wcpbVal,
                     "lastUpdated": Date.now(),
-                    "fileName": this.state.fileName,
+                    "fileId": this.state.fileName,
                     "workerId": 0,
                 }
                 // console.log(res);
@@ -243,11 +246,6 @@ class Shop extends React.Component {
                 </li>
             );
         }
-
-        // console.log(this.state.fileName);
-
-        // Download the referenced file via the backend API
-        // let url = downloadFileById.replace('filename', this.state.fileName);
         
         return(
             <div className="order-container">
@@ -298,10 +296,18 @@ class Shop extends React.Component {
                         </div>
                         <div className="div-shop-quantity">
                             <label>Quantity:&nbsp;</label>
-                            <input type="number" className="input-quantity" 
-                                value={this.state.quantity} 
-                                onChange={v => this.handleChange('quantity', v.target.value)}/> X $1000 = 
-                                <span> ${this.state.quantity * 1000}</span>                      
+                            { this.state.product !== undefined 
+                            ?
+                            <div> 
+                                <input type="number" className="input-quantity" 
+                                    value={this.state.quantity} 
+                                    onChange={v => this.handleChange('quantity', v.target.value)}/> X ${this.state.product.variants[0].price} = 
+                                <span> ${this.state.quantity * this.state.product.variants[0].price}</span>   
+                            </div>
+                            : null
+
+                            }
+                                               
                             <p className="cart-btn">
                                 <input type="button" className="btn btn-primary btn-lg btn-block" 
                                     value="Add to Cart" 

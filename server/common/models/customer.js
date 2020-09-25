@@ -6,6 +6,7 @@ const path = require('path');
 const errors = require('../../server/toolbox/errors');
 const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/;
 const log = require('../../db/toolbox/log');
+const {formatBytes, currentTime} = require('../../server/toolbox/calculate') ;
 
 module.exports = function(Customer) {
     //validate security of password(at least 8 digits, include at least one uppercase
@@ -140,7 +141,74 @@ module.exports = function(Customer) {
         });
     }
 
+    Customer.prototype.uploadFile = function(ctx, options, cb){
+        const user = this;
+        if(!options) options = {};
+        // console.log(ctx.req);
+        ctx.req.params.container = 'test_container'; // we may want to use username for this
+        Customer.app.models.container.upload(ctx.req, ctx.result, options, function (err, fileObj) {
+            if(err){
+                cb(err);
+            }
+            else {          
+                console.log(fileObj);
+                var uploadedFile = fileObj.files['attach-document'][0];
+                console.log(uploadedFile);
+                const FileInfoModel = app.models.fileInfo;
+                FileInfoModel.create({
+                    uploadTime: currentTime(),
+                    fileName: uploadedFile.originalFilename,
+                    containerFileName: uploadedFile.name,
+                    container: uploadedFile.container,
+                    uploader: user.username,
+                    customerId: user.id,
+                    fileSize: formatBytes(uploadedFile.size, 1),
+                }, function (err, obj){
+                    if(err){
+                        cb(err);
+                    }
+                    else{
+                        cb(null, obj);
+                    }
+                });
+            }
+        });
+    }
+
     // Remote methods
+    Customer.remoteMethod('prototype.uploadFile', {
+        // see https://stackoverflow.com/questions/28885282/how-to-store-files-with-meta-data-in-loopback
+        // and https://github.com/strongloop/loopback-component-storage/blob/a3c8509adf09fb6161f893c65277eb0f79762013/lib/storage-handler.js
+        description: "CUSTOM METHOD: Upload a file",
+        accepts: [
+            { arg: 'ctx', type: 'object', http: { source:'context' } },
+            { arg: 'options', type: 'object', http: { source: 'query'} },
+        ],
+        http: {path: '/uploadFile', verb: 'post'},
+        returns: {arg: 'fileInfo', type: 'object'},
+        // returns: [],
+    });
+
+    Customer.remoteMethod('prototype.downloadFile', {
+        description: 'CUSTOM METHOD: Download a file',
+        accepts: [
+            {arg: 'body', type: 'object', http: {source: 'body'}}
+        ],
+        http: {path: '/downloadFile', verb: 'post'},
+        returns: [],
+    });
+
+    Customer.remoteMethod('prototype.deleteFile', {
+        description: 'CUSTOM METHOD: Delete a file',
+        accepts: [
+            {arg: 'body', type: 'object', http: {source: 'body'}}
+        ],
+        http: {path: '/deleteFile', verb: 'post'},
+        returns: [],
+    });
+
+
+
     Customer.remoteMethod('prototype.getCustomerCart', {
         description: 'CUSTOM METHOD: Get ID of orderInfo that represents customers cart; if not present, returns 0',
         accepts: [],

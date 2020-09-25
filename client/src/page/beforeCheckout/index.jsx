@@ -141,7 +141,6 @@ class BeforeCheckout extends React.Component  {
                         </input>     
                     </div> 
                 </div>
-                <div className="hr-div-login"></div>
             </div>
         );
     }

@@ -26,3 +26,7 @@
     border-style: solid;
     border-color: blue;
 }
+
+#address-list {
+    overflow: hidden;
+}

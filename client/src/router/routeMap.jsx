@@ -61,11 +61,9 @@ export class MainRouter extends React.Component {
 export class SubRouter extends React.Component {
     render() {
         return (
-            <Layout>
             <Switch>
                 <Route path="/subpage/order-detail" component={OrderDetail}/>
             </Switch>
-            </Layout>
         );
     }
 }

@@ -6,7 +6,7 @@ module.exports = function(OrderInfo) {
     // Caller: Shopify web hook, when an order is created
     // This hook is called when the order is paid for
     OrderInfo.newOrderCreated = (body, cb) => {
-        // console.log(body);
+        console.log(body);
         if(body.checkout_token !== null){
             OrderInfo.findOne({where: {checkoutToken: body.checkout_token}}, (err, orderInfoInstance) => {
                 if(err){
@@ -16,11 +16,29 @@ module.exports = function(OrderInfo) {
                     // console.log(orderInfoInstance);
                     var date = new Date();
                     orderInfoInstance.updateAttributes({
-                        orderInfoId: body.id,
-                        orderComplete: true,
+                        orderInfoId:    body.id,
                         orderStatusURL: body.order_status_url,
+                        orderComplete: true, 
                         status: "Payment made",
                         lastModifiedAt: date.toISOString(),
+                        
+                        fees_and_taxes: parseFloat(body.total_price) - parseFloat(body.total_line_items_price),
+
+                        sa_name:     body.shipping_address.first_name + body.shipping_address.last_name,
+                        sa_address1: body.shipping_address.address1,
+                        sa_address2: body.shipping_address.address2,
+                        sa_city:     body.shipping_address.city,
+                        sa_province: body.shipping_address.province,
+                        sa_zip:      body.shipping_address.zip,
+                        sa_country:  body.shipping_address.country,
+                        
+                        ba_name:     body.billing_address.first_name + body.billing_address.last_name,
+                        ba_address1: body.billing_address.address1,
+                        ba_address2: body.billing_address.address2,
+                        ba_city:     body.billing_address.city,
+                        ba_province: body.billing_address.province,
+                        ba_zip:      body.billing_address.zip,
+                        ba_country:  body.billing_address.country,
                     });
                     cb(null);
                 } 
@@ -32,13 +50,13 @@ module.exports = function(OrderInfo) {
     }
 
     //Without the "next" parameter
-    OrderInfo.newOrderInfoCreated = async (body) => {
+    OrderInfo.orderProcessStarted = async (body) => {
         // For when a new checkout is created
         // Currently does nothing
         // Query the database to find whether the OrderInfo exists
         const OrderInfoId = body.id;
-        console.log("Shopfiy web hook");
-        console.log(body);
+        console.log("Customer just went to Shopify");
+        // console.log(body);
         
     // try {
     //     let OrderInfoInstance = await OrderInfo.findById(OrderInfoId);
@@ -232,14 +250,14 @@ module.exports = function(OrderInfo) {
         returns: [],
     });
 
-    OrderInfo.remoteMethod('newOrderInfoCreated', {
-        description: 'An OrderInfo was created by Shopify',
-        accepts: [
-            {arg: 'body', type: 'object', http: {source: 'body'}},
-        ],
-        http: {path: '/newOrderInfoCreated', verb: 'post'},
-        returns: {arg: 'msg', type: 'string'}
-    });
+    // OrderInfo.remoteMethod('orderProcessStarted', {
+    //     description: 'Customer went to Shopify checkout',
+    //     accepts: [
+    //         {arg: 'body', type: 'object', http: {source: 'body'}},
+    //     ],
+    //     http: {path: '/orderProcessStarted', verb: 'post'},
+    //     returns: {arg: 'msg', type: 'string'}
+    // });
 
     OrderInfo.remoteMethod('newOrderCreated', {
         description: 'An Order (customer has paid) was created by Shopify',

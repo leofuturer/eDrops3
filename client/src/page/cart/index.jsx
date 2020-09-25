@@ -42,7 +42,7 @@ class Cart extends React.Component{
         API.Request(url, 'GET', {}, true)
         .then(res => {
             if(res.data.id){
-                console.log(res);
+                // console.log(res);
                 let orderInfoId = res.data.id;
                 _this.setState({
                     cartExists: true,

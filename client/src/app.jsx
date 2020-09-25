@@ -4,7 +4,6 @@ import ReactDOM from 'react-dom';
 import { BrowserRouter as Router, Switch, Redirect, Route, Link } from 'react-router-dom'
 import ShopifyClient from 'shopify-buy';
 import "bootstrap";
-//import "bootstrap-modal";
 
 // Router components
 import {MainRouter, SubRouter} from 'router/routeMap.jsx';
@@ -26,17 +25,6 @@ class App extends React.Component {
     }
 
     render() {
-        // shopifyClient.product.fetchAll(21).then((products) => {
-        //     // Do something with the products
-        //     console.log(products);
-        // });
-        // shopifyClient.product.fetch("Z2lkOi8vc2hvcGlmeS9Qcm9kdWN0LzQ1NjU1MzcwOTU3MTQ=").then((product) => {
-        //     console.log(product);
-        //     console.log(product.variants[0].price);
-        // });
-        // shopifyClient.product.fetch("Z2lkOi8vc2hvcGlmeS9Qcm9kdWN0LzM3NTY3NjE2MTIzMjI=").then((product) => {
-        //     console.log(product.variants[1].price);
-        // });
         return(
             <Router>
                 <Switch>

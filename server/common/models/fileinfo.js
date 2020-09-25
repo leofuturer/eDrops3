@@ -8,6 +8,8 @@ module.exports = function(Fileinfo) {
     */
     Fileinfo.afterRemote('editStatus', redirectAfterEdittingStatus);
 
+    
+
     /* 
     * remotemethod: returnFileInfo
     * Description: Logged-in customers use this api to retrieve all their files uploaded
