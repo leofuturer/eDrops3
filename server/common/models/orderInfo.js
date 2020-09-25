@@ -22,7 +22,7 @@ module.exports = function(OrderInfo) {
                         status: "Payment made",
                         lastModifiedAt: date.toISOString(),
                         
-                        fees_and_taxes: (parseFloat(body.total_price) - parseFloat(body.total_line_items_price)).toFixed(2),
+                        fees_and_taxes: (parseFloat(body.total_price) - parseFloat(body.total_line_items_price)).toString(),
 
                         sa_name:     body.shipping_address.first_name + body.shipping_address.last_name,
                         sa_address1: body.shipping_address.address1,

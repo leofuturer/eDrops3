@@ -52,7 +52,7 @@
       "default": "Order in progress"
     },
     "fees_and_taxes": {
-      "type": "number",
+      "type": "string",
       "required": false
     },
     "sa_name": {
