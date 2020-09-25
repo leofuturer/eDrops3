@@ -7,9 +7,6 @@ module.exports = function(Fileinfo) {
     * otherwise the api will present in the address bar of explorer
     */
     Fileinfo.afterRemote('editStatus', redirectAfterEdittingStatus);
-
-    
-
     /* 
     * remotemethod: returnFileInfo
     * Description: Logged-in customers use this api to retrieve all their files uploaded

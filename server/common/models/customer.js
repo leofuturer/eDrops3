@@ -284,8 +284,6 @@ module.exports = function(Customer) {
         returns: [],
     });
 
-
-
     Customer.remoteMethod('prototype.getCustomerCart', {
         description: 'CUSTOM METHOD: Get ID of orderInfo that represents customers cart; if not present, returns 0',
         accepts: [],
