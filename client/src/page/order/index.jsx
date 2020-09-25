@@ -104,11 +104,11 @@ class Orders extends React.Component{
     }
     
     handleDownload(e) {
-        let downloadId = e.target.id;
-        let fileIndex = Number(downloadId.replace(/[^0-9]/ig, ''));
-        let realFileName = this.state.orderList[fileIndex].fileName;
-        let url = downloadFileById.replace('filename', realFileName);
-        window.location = url;
+        // let downloadId = e.target.id;
+        // let fileIndex = Number(downloadId.replace(/[^0-9]/ig, ''));
+        // let realFileName = this.state.orderList[fileIndex].fileName;
+        // let url = downloadFileById.replace('filename', realFileName);
+        // window.location = url;
     }
 
     handleDetail(e) {

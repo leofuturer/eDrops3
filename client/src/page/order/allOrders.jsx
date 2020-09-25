@@ -31,12 +31,12 @@ class AllOrders extends React.Component {
     }
 
     handleDownload(e) {
-        console.log(e.target.parentNode.parentNode);
-        let rowToDownload = e.target.parentNode.parentNode;
-        let fileIndex = rowToDownload.id;
-        let realFilename = this.state.orderList[fileIndex].fileName;
-        let url = downloadFileById.replace('filename', realFilename)
-        window.location = url;
+        // console.log(e.target.parentNode.parentNode);
+        // let rowToDownload = e.target.parentNode.parentNode;
+        // let fileIndex = rowToDownload.id;
+        // let realFilename = this.state.orderList[fileIndex].fileName;
+        // let url = downloadFileById.replace('filename', realFilename)
+        // window.location = url;
     }
 
     handleDetail(e) {

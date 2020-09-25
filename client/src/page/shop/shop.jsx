@@ -15,9 +15,7 @@
 import React from 'react';
 import './shop.css';
 import Cookies from "js-cookie";
-import {downloadFileById, getCustomerCart, 
-    manipulateCustomerOrders,
-    addOrderChipToCart} from "../../api/serverConfig";
+import {getCustomerCart, manipulateCustomerOrders, addOrderChipToCart} from "../../api/serverConfig";
 import API from "../../api/api";
 import { ewodFabServiceId, 
     ewodFabServiceVariantId } from "../../constants";

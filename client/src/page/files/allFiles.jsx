@@ -18,11 +18,13 @@ class AllFiles extends React.Component {
     }
 
     handleDownload(e) {
-        let rowToDownload = e.target.parentNode.parentNode;
-        let fileIndex = rowToDownload.id;
-        let realFilename = this.state.fileList[fileIndex].filename;
-        let url = downloadFileById.replace('filename', realFilename)
-        window.location = url;
+        // TODO: fix this
+        // let rowToDownload = e.target.parentNode.parentNode;
+        // let fileIndex = rowToDownload.id;
+        // let realFilename = this.state.fileList[fileIndex].filename;
+        // let url = downloadFileById.replace('filename', realFilename)
+        
+        // window.location = url;
     }
 
     handleAssign(e) {
