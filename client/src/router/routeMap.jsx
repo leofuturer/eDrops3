@@ -19,6 +19,7 @@ import EmailVerifyInvalid from '../page/emailVerifyInvalid/index.jsx';
 import ResetPassword from '../page/resetPassword/index.jsx';
 import Product from '../page/product/index.jsx';
 import AllItems from '../page/allItems/index.jsx';
+import FeatureComing from '../page/featureComing/index.jsx';
 
 export class MainRouter extends React.Component {
     render() {
@@ -50,6 +51,7 @@ export class MainRouter extends React.Component {
                     <Route path="/product" render = { () =>
                         <Product shopifyClient = {this.props.shopifyClient}/>
                     }/>
+                    <Route path="/featureComing" component={FeatureComing}/>
                 </Switch>
             </Layout>
         );
