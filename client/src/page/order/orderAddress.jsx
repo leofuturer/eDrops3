@@ -17,6 +17,7 @@ class OrderAddress extends React.Component {
                         </div>
                     </div>
                     <div className="row">
+                        <div className="row-txt-padding">{address.name}</div>
                         <div className="row-txt-padding">{address.street}</div>
                         <div className="row-txt-padding">{address.street2}</div>
                         <div className="row-txt-padding">{address.city}</div>
@@ -25,6 +26,7 @@ class OrderAddress extends React.Component {
                         <div className="row-txt-padding">{address.zipCode}</div>
                     </div>       
                 </div>
+                
             </div>
         );
     }

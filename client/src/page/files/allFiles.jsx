@@ -69,7 +69,7 @@ class AllFiles extends React.Component {
                                                     <i className="fa fa-download" 
                                                         onClick={this.handleDownload}></i>
                                                 </td>
-                                                <td>{ item.isDeleted ? "No" : "Yes"}</td>
+                                                <td>{ item.isDeleted ? "Yes" : "No"}</td>
                                             </tr>)
                                 })
                                 : <tr>

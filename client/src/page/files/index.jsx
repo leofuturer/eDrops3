@@ -100,8 +100,16 @@ class Files extends React.Component {
     }
 
     handleShop(e) {
-        let _fileName = e.target.parentNode.parentNode.childNodes[1].innerHTML;
-        this.props.history.push('/shop', {fileName: _fileName});
+        let fileId = Number(e.target.parentNode.parentNode.id.replace(/[^0-9]/ig, ''));
+        console.log(fileId);
+        console.log(this.state.fileList);
+        let i, file;
+        for(i = 0; i < this.state.fileList.length; i++){
+            if(fileId === this.state.fileList[i].id){
+                file = this.state.fileList[i].id;
+                this.props.history.push('/shop', {fileInfo: this.state.fileList[i]});
+            }
+        }
     }
 
     handleDelete(e) {
