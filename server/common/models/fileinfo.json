@@ -26,6 +26,11 @@
       "type": "string",
       "required": true
     },
+    "isDeleted" : {
+      "type": "Boolean",
+      "required": true,
+      "description": "Soft delete for files"
+    },
     "container": {
       "type": "string",
       "required": true

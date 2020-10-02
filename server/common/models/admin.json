@@ -20,6 +20,12 @@
       "permission": "DENY"
     },
     {
+      "principalType": "ROLE",
+      "principalId": "$authenticated",
+      "permission": "ALLOW",
+      "property": "downloadFile"
+    },
+    {
       "accessType": "WRITE",
       "principalType": "ROLE",
       "principalId": "$authenticated",

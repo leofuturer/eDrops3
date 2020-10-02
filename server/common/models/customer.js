@@ -162,6 +162,7 @@ module.exports = function(Customer) {
                     container: uploadedFile.container,
                     uploader: user.username,
                     customerId: user.id,
+                    isDeleted: false,
                     fileSize: formatBytes(uploadedFile.size, 1),
                 }, function (err, obj){
                     if(err){
@@ -233,20 +234,28 @@ module.exports = function(Customer) {
                     error.status = 403;
                     cb(error);
                 } else {
-                    Customer.app.models.fileInfo.destroyById(fileId, function(err){
-                        if(err){
-                            console.error(`Error deleting file: ${err}`);
-                            cb(err);
-                        } else {
-                            Customer.app.models.container.removeFile('test_container', containerFileName, function(err){
-                                if(err){
-                                    cb(err);
-                                } else {
-                                    cb(null);
-                                }
-                            });
-                        }
-                    }); 
+                    // Do a soft delete
+                    file.updateAttributes({
+                        isDeleted: true,
+                    });
+                    cb(null);
+
+                    // Hard delete code that destroys the fileInfo instance and 
+                    // also deletes from container
+                    // Customer.app.models.fileInfo.destroyById(fileId, function(err){
+                    //     if(err){
+                    //         console.error(`Error deleting file: ${err}`);
+                    //         cb(err);
+                    //     } else {
+                    //         Customer.app.models.container.removeFile('test_container', containerFileName, function(err){
+                    //             if(err){
+                    //                 cb(err);
+                    //             } else {
+                    //                 cb(null);
+                    //             }
+                    //         });
+                    //     }
+                    // }); 
                 }
             });
         }

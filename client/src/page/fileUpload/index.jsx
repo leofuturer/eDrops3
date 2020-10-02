@@ -24,7 +24,6 @@ class Upload extends React.Component{
             utype: ['mm','cm','in'],
             public: 'public',
             unit: 'mm',
-            fileData: {}
         }
         this.setCurrentIndex = this.setCurrentIndex.bind(this);
         this.setCurrentIndex1 = this.setCurrentIndex1.bind(this);

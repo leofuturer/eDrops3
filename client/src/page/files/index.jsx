@@ -70,6 +70,7 @@ class Files extends React.Component {
             // if customer, can see their files
             // foundry workers might use this API path too (not sure)
             url = customerFileRetrieve.replace('id', Cookies.get('userId'));
+            url += `?filter={"where":{"isDeleted":false}}`;
         }
         // Admin retrieves files for particular customer
         else if(this.props.match.path === '/manage/admin-retrieve-user-files'

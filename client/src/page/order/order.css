@@ -160,7 +160,13 @@ td i{
 }
 
 .order-thank-you {
-    margin-top: 10px;
-    margin-bottom: 10px;
+    margin-top: 20px;
+    padding-bottom: 10px;
     text-align: center;
+}
+
+#order-addresses {
+    overflow: hidden;
+    width: 730px;
+    margin: 0 auto;
 }

@@ -84,12 +84,13 @@ class AllOrders extends React.Component {
                             <thead>
                                 <tr>
                                     <th>Order ID</th>
-                                    <th>Uploader</th>
-                                    <th>Worker</th>
+                                    <th>Customer ID</th>
+                                    {/* <th>Uploader</th> */}
+                                    {/* <th>Worker</th> */}
                                     <th>Status</th>
-                                    <th className="icon-center">Mask File</th>
+                                    {/* <th className="icon-center">Mask File</th> */}
                                     <th className="icon-center">Details</th>
-                                    <th className="icon-center">Assign Order</th>
+                                    {/* <th className="icon-center">Assign Order</th> */}
                                 </tr>
                             </thead>
                             <tbody>
@@ -99,17 +100,18 @@ class AllOrders extends React.Component {
                                 this.state.orderList.map((item, index) => {
                                     return(
                                         <tr key={index} id={item.id}>
-                                            <td>{item.orderInfoId}</td>
-                                            <td>{item.customer}</td>
-                                            <td>{item.workerName}</td>
+                                            <td>{item.orderComplete ? item.orderInfoId : "Customer cart"}</td>
+                                            <td>{item.customerId}</td>
+                                            {/* <td>{item.customer}</td> */}
+                                            {/* <td>{item.workerName}</td> */}
                                             <td>{item.status}</td>
-                                            <td className="icon-center"><i className="fa fa-download" onClick={this.handleDownload}></i></td>
+                                            {/* <td className="icon-center"><i className="fa fa-download" onClick={this.handleDownload}></i></td> */}
                                             <td className="icon-center">
                                                 <i className="fa fa-commenting" onClick={this.handleDetail}></i>
                                             </td>
-                                            <td className="icon-center">
+                                            {/* <td className="icon-center">
                                                 <i className="fa fa-users" id={`allOrder${item.id}`} onClick={this.handleAssign}></i>
-                                            </td>
+                                            </td> */}
                                         </tr>
                                     )
                                 })

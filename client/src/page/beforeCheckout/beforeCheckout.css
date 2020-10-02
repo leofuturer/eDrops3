@@ -30,3 +30,10 @@
 #address-list {
     overflow: hidden;
 }
+
+.loading-GIF-checkout-button {
+    height: 20px;
+    width: 20px;
+    margin: 0 auto;
+    display: block;
+}

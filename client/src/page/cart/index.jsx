@@ -16,7 +16,6 @@ const shopifyClient = ShopifyClient.buildClient({
     domain: 'wqntest.myshopify.com'
 });
 
-//The order list page for both customer and worker
 class Cart extends React.Component{
     constructor(props) {
         super(props);
@@ -230,8 +229,9 @@ class Cart extends React.Component{
             totalPrice += (product.quantity * product.price);
         });
         return (
-            <div>
-                <div className="right-route-content"> 
+            <div> 
+                { Cookies.get('userType') === 'customer'
+                ? <div className="right-route-content"> 
                     <div className="profile-content">
                         <h2>Cart</h2>
                     </div>
@@ -295,6 +295,10 @@ class Cart extends React.Component{
                     </div>
                     } 
                 </div>
+                : null
+
+                }
+                
             </div>
         );   
     }

@@ -21,7 +21,8 @@ class BeforeCheckout extends React.Component  {
             shopifyCheckoutId: undefined,
             addressList: [],
             selectedAddrIndex: 0,
-        }
+            doneLoading: false,
+        };
         this.handleReturnToCart = this.handleReturnToCart.bind(this);
         this.handleSelectAddress = this.handleSelectAddress.bind(this);
         this.handlePayment = this.handlePayment.bind(this);
@@ -58,14 +59,21 @@ class BeforeCheckout extends React.Component  {
                     _this.setState({
                         addressList: res.data,
                         selectedAddrIndex: 0,
+                        doneLoading: true,
                     });
                 })
                 .catch((err) => {
                     console.error(err);
+                    _this.setState({
+                        doneLoading: true,
+                    });
                 });
             })
             .catch((err) => {
                 console.error(err);
+                _this.setState({
+                    doneLoading: true,
+                });
             });
         }
     }
@@ -82,6 +90,9 @@ class BeforeCheckout extends React.Component  {
 
     handlePayment(){
         let _this = this;
+        _this.setState({
+            preparingForCheckout: true,
+        });
         shopifyClient.checkout.updateEmail(this.state.shopifyCheckoutId, this.state.customer.email)
         .then((res) => {
             let address = _this.state.addressList[_this.state.selectedAddrIndex];
@@ -99,13 +110,20 @@ class BeforeCheckout extends React.Component  {
             shopifyClient.checkout.updateShippingAddress(this.state.shopifyCheckoutId, shippingAddr)
             .then((res) => {
                 // console.log(res);
+                
                 window.location.replace(`${this.state.shopifyCheckoutLink}`);
             })
             .catch((err) =>{
+                _this.setState({
+                    preparingForCheckout: false,
+                });
                 console.error(err);
-            })
+            });
         })
         .catch((err) => {
+            _this.setState({
+                preparingForCheckout: false,
+            });
             console.error(err);
         });
     }
@@ -120,26 +138,35 @@ class BeforeCheckout extends React.Component  {
                     <div className="help-text">
                         {/* Please select the shipping address to ship your order to. */}
                     </div>
-                    <div id="address-list">
-                    {
-                        this.state.addressList !== undefined && this.state.addressList.map((oneAddress, index) => 
-                            <SingleAddress key={index} 
-                                selected={index===this.state.selectedAddrIndex ? "selected-address" : ""}
-                                addressTem={oneAddress} 
-                                addressNum={index+1} 
-                                onClick={() => this.handleSelectAddress(index)}
-                            />
-                        )
-                    }
+                    { this.state.doneLoading
+                    ? <div>
+                        <div id="address-list">
+                        {
+                            this.state.addressList !== undefined && this.state.addressList.map((oneAddress, index) => 
+                                <SingleAddress key={index} 
+                                    selected={index===this.state.selectedAddrIndex ? "selected-address" : ""}
+                                    addressTem={oneAddress} 
+                                    addressNum={index+1} 
+                                    onClick={() => this.handleSelectAddress(index)}
+                                />
+                            )
+                        }
+                        </div>
+                        { this.state.preparingForCheckout
+                        ? <img className="loading-GIF-checkout-button" src="../../../static/img/loading-sm.gif" alt=""/>
+                        : <div className="checkout-button">
+                            <input type="button" className="btn btn-primary btn-padding"
+                                value="Return to Cart" onClick={() => this.handleReturnToCart()}>
+                            </input>
+
+                            <input type="button" className="btn btn-primary btn-padding"
+                                value="Proceed to Payment" onClick={() => this.handlePayment()}>
+                            </input>                  
+                        </div>   
+                        }
                     </div>
-                    <div className="checkout-button">
-                        <input type="button" className="btn btn-primary btn-padding"
-                            value="Return to Cart" onClick={() => this.handleReturnToCart()}>
-                        </input>
-                        <input type="button" className="btn btn-primary btn-padding"
-                            value="Proceed to Payment" onClick={() => this.handlePayment()}>
-                        </input>     
-                    </div> 
+                    : <img className="loading-GIF" src="../../../static/img/loading80px.gif" alt=""/>
+                    }    
                 </div>
             </div>
         );
