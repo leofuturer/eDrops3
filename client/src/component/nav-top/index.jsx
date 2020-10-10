@@ -50,10 +50,11 @@ class NavTop extends React.Component{
                     <div className="">
                         <ul className="ul-nav">
                             <li><NavLink to="/home" activeClassName="active">Home</NavLink></li>
-                            <li><NavLink to="#" activeClassName="active">EWOD CAD</NavLink></li>
-                            <li><NavLink to="/project" activeClassName="active">EWOD Control System</NavLink></li>
-                            <li><NavLink to="#">Community</NavLink></li>
-                            <li><NavLink to="#">Support</NavLink></li>
+                            <li><NavLink to="/home" activeClassName="active">EWOD CAD</NavLink></li>
+                            <li><NavLink to="/upload" activeClassName="active">EWOD Chip Fabrication</NavLink></li>
+                            <li><NavLink to="/allItems" activeClassName="active">Products</NavLink></li>
+                            <li><NavLink to="/featureComing" activeClassName="active">Community</NavLink></li>
+                            <li><NavLink to="/featureComing" activeClassName="active">Support</NavLink></li>
                             <li>
                                 { Cookies.get('userType') === 'customer'
                                     ?
@@ -63,7 +64,8 @@ class NavTop extends React.Component{
                                     : null                               
                                 }
                             </li>
-                            <li><a href="#"><i className="fa fa-search"></i></a></li>
+                            { /* Should we be using NavLink or href? NavLink prevents page reloading */ }
+                            <li><a href="/featureComing"><i className="fa fa-search"></i></a></li>
                             {
                                 Cookies.get('userType') === 'customer'
                                     ? <li><a href="/upload"><i className="fa fa-upload"></i></a></li>
