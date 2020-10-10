@@ -1,10 +1,8 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-
-import { getAllFileInfos, downloadFileById } from '../../api/serverConfig';
+import Cookies from 'js-cookie';
+import { getAllFileInfos, adminDownloadFile } from '../../api/serverConfig';
 import API from '../../api/api';
-import $ from 'jquery';
-import parse from 'url-parse';
 
 class AllFiles extends React.Component {
     constructor(props) {
@@ -14,44 +12,15 @@ class AllFiles extends React.Component {
         };
         this.componentDidMount = this.componentDidMount.bind(this);
         this.handleDownload = this.handleDownload.bind(this);
-        this.handleAssign = this.handleAssign.bind(this);
     }
 
     handleDownload(e) {
-        let rowToDownload = e.target.parentNode.parentNode;
-        let fileIndex = rowToDownload.id;
-        let realFilename = this.state.fileList[fileIndex].filename;
-        let url = downloadFileById.replace('filename', realFilename)
+        let file = this.state.fileList[e.target.parentNode.parentNode.id];
+        let fileId = file.id
+        let url = adminDownloadFile;
+        url += `?access_token=${Cookies.get('access_token')}&fileId=${fileId}`;
+        console.log(url);
         window.location = url;
-    }
-
-    handleAssign(e) {
-        /*
-        //Using window.location + query parameters to send data
-        let originalFileId = e.target.id;
-        let fileId = Number(originalFileId.replace(/[^0-9]/ig, ''));
-        let redirectUrl = `/manage/assign?fileId=${fileId}`;
-        window.location = redirectUrl;
-        */
-
-        /*
-        //Using the window.open() method to open a new window and display the page based on the passed in redirectUrl
-        let originalFileId = e.target.id;
-        let fileId = Number(originalFileId.replace(/[^0-9]/ig, ''));
-        let redirectUrl = "/manage/assign";
-        let newWindow = window.open(redirectUrl, "_blank", "width=300px, height=300px, top=300px, left=300px", false);
-        newWindow._theFileId = fileId;
-        */
-
-        //The fourth way to send data as well as to redirect to the '/manage/assign' page
-        
-        let originalFileId = e.target.id;
-        let fileId = Number(originalFileId.replace(/[^0-9]/ig, ''));
-        let redirectUrl = "/manage/assign";
-        this.props.history.push(redirectUrl, {
-            fileId: fileId
-        });
-        
     }
 
     componentDidMount() {
@@ -84,6 +53,7 @@ class AllFiles extends React.Component {
                                     <th>Uploader</th>
                                     <th>File Size</th>
                                     <th>Download</th>
+                                    <th>Deleted</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -92,13 +62,14 @@ class AllFiles extends React.Component {
                                 this.state.fileList.map((item, index) => {
                                     return (<tr key={index} id={index}>
                                                 <td>{item.uploadTime}</td>
-                                                <td>{item.filename}</td>
+                                                <td>{item.fileName}</td>
                                                 <td>{item.uploader}</td>
                                                 <td>{item.fileSize}</td>
                                                 <td>         
                                                     <i className="fa fa-download" 
                                                         onClick={this.handleDownload}></i>
                                                 </td>
+                                                <td>{ item.isDeleted ? "Yes" : "No"}</td>
                                             </tr>)
                                 })
                                 : <tr>

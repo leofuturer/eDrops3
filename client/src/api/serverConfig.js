@@ -22,6 +22,7 @@ export const AdminForgetPassword = ApiRootUrl + '/admin-forget-password';
 export const AdminChangePass = ApiRootUrl + '/admins/change-password';
 export const adminGetProfile = ApiRootUrl + '/admins/id';
 export const updateAdminProfile = ApiRootUrl + '/admins/id';
+export const adminDownloadFile = ApiRootUrl + '/admins/downloadFile';
 export const addFoundryWorker = ApiRootUrl + '/foundryWorkers';
 export const addCustomer = ApiRootUrl + '/customers';
 export const getAllCustomers = ApiRootUrl+'/customers';
@@ -40,10 +41,10 @@ export const findOneWorkerByWhere = ApiRootUrl + '/foundryWorkers';
 
 //File management
 export const customerFileRetrieve = ApiRootUrl + '/customers/id/customerFiles';
-export const customerDeleteFile = ApiRootUrl + '/customers/id/customerFiles/fk';
+export const customerDeleteFile = ApiRootUrl + '/customers/id/deleteFile';
 //export const workerFileRetrieve = ApiRootUrl + '/fileInfos/returnworkerfileInfo';
-export const downloadFileById = ApiRootUrl + '/containers/container1/download/filename';
-export const uploadFile = ApiRootUrl + '/containers/container1/upload';
+export const downloadFileById = ApiRootUrl + '/customers/id/downloadFile';
+export const uploadFile = ApiRootUrl + '/customers/id/uploadFile';
 export const getAllFileInfos = ApiRootUrl + '/fileInfos';
 export const adminRetrieveUserFiles = ApiRootUrl + '/customers/id/customerFiles';
 export const assignFile = ApiRootUrl + '/fileInfos/assignfile';

@@ -19,7 +19,11 @@ import EmailVerifyInvalid from '../page/emailVerifyInvalid/index.jsx';
 import ResetPassword from '../page/resetPassword/index.jsx';
 import Product from '../page/product/index.jsx';
 import AllItems from '../page/allItems/index.jsx';
+
+import BeforeCheckout from '../page/beforeCheckout/index.jsx';
+
 import FeatureComing from '../page/featureComing/index.jsx';
+
 
 export class MainRouter extends React.Component {
     render() {
@@ -45,6 +49,7 @@ export class MainRouter extends React.Component {
                     <Route path ="/emailVerified" component={EmailVerified}/>
                     <Route path="/emailVerifyInvalid" component={EmailVerifyInvalid}/>
                     <Route path="/resetPassword" component={ResetPassword}/>
+                    <Route path="/beforeCheckout" component={BeforeCheckout}/>
                     <Route path="/allItems" render = { () =>
                         <AllItems shopifyClient = {this.props.shopifyClient}/>
                     }/>
@@ -61,11 +66,9 @@ export class MainRouter extends React.Component {
 export class SubRouter extends React.Component {
     render() {
         return (
-            <Layout>
             <Switch>
                 <Route path="/subpage/order-detail" component={OrderDetail}/>
             </Switch>
-            </Layout>
         );
     }
 }

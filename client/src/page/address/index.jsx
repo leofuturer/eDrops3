@@ -2,7 +2,6 @@ import React from 'react';
 import './address.css';
 import API from '../../api/api';
 import { customerAddresses } from '../../api/serverConfig';
-import { AddressList } from './addressList.jsx';
 import AddressTemplate from './addressTemplate.jsx';
 import Cookies from 'js-cookie';
 import $ from 'jquery';

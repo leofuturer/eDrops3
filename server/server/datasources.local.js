@@ -21,7 +21,8 @@ module.exports = {
     connector: "loopback-component-storage",
     provider: "filesystem",
     root: "./storage",
-    maxFileSize: "10485760"
+    maxFileSize: "10485760",
+    nameConflict: "makeUnique",
   },
   myEmailDataSource: {
     name: "myEmailDataSource",

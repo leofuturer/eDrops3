@@ -8,9 +8,13 @@
   "properties": {
     "uploadTime": {
       "type": "string",
-      "required": false
+      "required": true
     },
-    "filename": {
+    "fileName": {
+      "type": "string",
+      "required": true
+    },
+    "containerFileName": {
       "type": "string",
       "required": true
     },
@@ -20,7 +24,16 @@
     },
     "fileSize": {
       "type": "string",
-      "required": false
+      "required": true
+    },
+    "isDeleted" : {
+      "type": "Boolean",
+      "required": true,
+      "description": "Soft delete for files"
+    },
+    "container": {
+      "type": "string",
+      "required": true
     }
   },
   "validations": [],

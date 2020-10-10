@@ -17,6 +17,7 @@ module.exports = (ctx, containerInstance, next) => {
         if (err)
             console.log(err);
         else {
+            let fileId;
             const customerName = customerInstance.username;
             const data = {};
             data.filename = name;
@@ -27,6 +28,7 @@ module.exports = (ctx, containerInstance, next) => {
                 if (err) {
                     console.log(err);
                 } else {
+                    fileId = fileInstance.id;
                     console.log(fileInstance);
                 }
             })
@@ -37,7 +39,7 @@ module.exports = (ctx, containerInstance, next) => {
             console.log(fileInfoInstance);
             });
             */
-            next();
+            next(fileId);
         }
     });
     

@@ -5,7 +5,7 @@ import { univEwodChipId,
     univEwodChipWithCoverPlate, 
     univEwodChipWithoutCoverPlate } from "../../constants";
 import Cookies from 'js-cookie';
-import {getCustomerCart, 
+import {getCustomerCart, customerGetProfile,
         manipulateCustomerOrders,
         addOrderProductToCart} from "../../api/serverConfig";
 import API from "../../api/api";
@@ -122,9 +122,15 @@ class Product extends React.Component{
                         _this.setState({
                             shopifyClientCheckoutId: res.id
                         });
+                        let lastSlash = res.webUrl.lastIndexOf('/');
+                        let lastQuestionMark = res.webUrl.lastIndexOf('?');
+
+                        let shopifyCheckoutToken = res.webUrl.slice(lastSlash + 1, lastQuestionMark);
+                        // console.log(shopifyCheckoutToken);
                         let data = {
                             "checkoutIdClient": res.id,
-                            "checkoutIdServer": "Awaiting checkout creation webhook",
+                            "checkoutToken": shopifyCheckoutToken,
+                            "checkoutLink": res.webUrl,
                             "createdAt": res.createdAt,
                             "lastModifiedAt": res.updatedAt,
                             "orderComplete": false,

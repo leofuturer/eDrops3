@@ -2,7 +2,6 @@ import React from 'react';
 import { NavLink, withRouter } from 'react-router-dom';
 import Cookies from 'js-cookie';
 import $ from 'jquery';
-import notify from 'bootstrap-notify';
 
 import API from '../../api/api';
 import {    customerFileRetrieve, 
@@ -71,6 +70,7 @@ class Files extends React.Component {
             // if customer, can see their files
             // foundry workers might use this API path too (not sure)
             url = customerFileRetrieve.replace('id', Cookies.get('userId'));
+            url += `?filter={"where":{"isDeleted":false}}`;
         }
         // Admin retrieves files for particular customer
         else if(this.props.match.path === '/manage/admin-retrieve-user-files'
@@ -92,47 +92,31 @@ class Files extends React.Component {
     }
 
     handleDownload(e) {
-        /* Method One ---- open another window and then redirect back to the current page
-        let downloadId = e.target.id;
-        let fileIndex = Number(downloadId.replace(/[^0-9]/ig, ''));
-        let realFileName = this.state.fileList[fileIndex].filename;
-        let url = downloadFileById.replace('filename', realFileName)
-        window.open(url)
-        */
-
         //Method Two(better) ---- download the file without opening another window
         let realFileName = e.target.parentNode.parentNode.childNodes[1].innerHTML;
-        let url = downloadFileById.replace('filename', realFileName);
+        let url = downloadFileById.replace('id', Cookies.get('userId'));
+        url += `?access_token=${Cookies.get('access_token')}&fileId=${e.target.id}`;
         window.location = url;
-
-        /* The request sent by API.Request is useless
-        let downloadId = e.target.id;
-        let fileIndex = Number(downloadId.replace(/[^0-9]/ig, ''));
-        let realFileName = this.state.fileList[fileIndex].filename;
-        let url = downloadFileById.replace('filename', realFileName)
-        let data = {};
-        API.Request(url, 'GET', data, true)
-        .then(res => {
-            //console.log(res);
-            window.open(url);
-        })
-        .catch(err => {
-            console.error(err);
-        });
-        */
     }
 
     handleShop(e) {
-        let _fileName = e.target.parentNode.parentNode.childNodes[1].innerHTML;
-        this.props.history.push('/shop', {fileName: _fileName});
+        let fileId = Number(e.target.parentNode.parentNode.id.replace(/[^0-9]/ig, ''));
+        console.log(fileId);
+        console.log(this.state.fileList);
+        let i, file;
+        for(i = 0; i < this.state.fileList.length; i++){
+            if(fileId === this.state.fileList[i].id){
+                file = this.state.fileList[i].id;
+                this.props.history.push('/shop', {fileInfo: this.state.fileList[i]});
+            }
+        }
     }
 
     handleDelete(e) {
         let fileId = this.state.deleteId;
-        let url = customerDeleteFile.replace('id', Cookies.get('userId')).replace('fk', fileId);
+        let url = customerDeleteFile.replace('id', Cookies.get('userId')) + `?fileId=${fileId}`;
         let fileInfoRowId = `fileInfoRow${fileId}`;
-        let data = {};
-        API.Request(url, 'DELETE', data, true)
+        API.Request(url, 'DELETE', {}, true)
         .then(res => {
             if(document.getElementById(fileInfoRowId)) {
                 document.getElementById(fileInfoRowId).remove();
@@ -252,7 +236,7 @@ class Files extends React.Component {
                                     return (
                                         <tr key={item.id} id={`fileInfoRow${item.id}`}>
                                             <td>{padZeroes(item.uploadTime)}</td>
-                                            <td>{item.filename}</td>
+                                            <td>{item.fileName}</td>
                                             {
                                                 Cookies.get('userType') === "customer"
                                                 ? null
@@ -289,7 +273,7 @@ class Files extends React.Component {
                                                   </td>)
                                             */}
                                             <td>
-                                                <i className="fa fa-download" onClick={this.handleDownload}></i>
+                                                <i className="fa fa-download" id={item.id} onClick={this.handleDownload}></i>
                                             </td>
                                             {
                                                 Cookies.get('userType') === "customer"

@@ -6,6 +6,7 @@ const path = require('path');
 const errors = require('../../server/toolbox/errors');
 const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/;
 const log = require('../../db/toolbox/log');
+const {formatBytes, currentTime} = require('../../server/toolbox/calculate') ;
 
 module.exports = function(Customer) {
     //validate security of password(at least 8 digits, include at least one uppercase
@@ -15,7 +16,7 @@ module.exports = function(Customer) {
     // create default address for user
     Customer.afterRemote('create', function(ctx, customerInstance, next){
         //for the future: can probably move this function to its own js file
-        console.log(customerInstance);
+        // console.log(customerInstance);
         //copy over the address data
         //if possible, we should only pass in the customer data to the creation
         //of the customer model too
@@ -33,7 +34,7 @@ module.exports = function(Customer) {
             if(err){
                 //roll back the customer creation
                 customer.deleteById(customerInstance.id);
-                console.log(err);
+                console.error(err);
             }
             else{
                 //next: send verification email
@@ -47,9 +48,9 @@ module.exports = function(Customer) {
 
     Customer.prototype.resendVerifyEmail = function(options, cb){
         //we use .prototype because this is an instance method
-        console.log(options);
+        // console.log(options);
         const user = this;
-        console.log(user.id);
+        // console.log(user.id);
         var emailOptions = {
             type: 'email',
             from: SENDER_EMAIL_USERNAME,
@@ -91,7 +92,7 @@ module.exports = function(Customer) {
             subject: '[Edrop] Password Reset Request',
             html: html
         }, function(err) {
-            if (err) return console.log('> Error sending password reset email');
+            if (err) return console.error('> Error sending password reset email');
             console.log('> Sending password reset email to:', info.email);
         });
     })
@@ -108,11 +109,11 @@ module.exports = function(Customer) {
         data.zipCode = ctx.req.body.zipCode;
         data.isDefault = ctx.req.body.isDefault;
         currentCustomerId = ctx.req.accessToken.userId;
-        console.log(ctx.req.body);
+        // console.log(ctx.req.body);
         Customer.findById(currentCustomerId, (err, customerInstance) => {
             customerInstance.customerAddresses.create(data, (err, addressInstance) => {
                 if(err){
-                    console.log(err);
+                    console.error(err);
                 }
                 else{
                     return addressInstance;
@@ -125,7 +126,7 @@ module.exports = function(Customer) {
         const customer = this;
         customer.customerOrders({"where": {"orderComplete": false}}, function(err, orders) {
             if(err || orders.length > 1){
-                console.log(`Error getting customer cart or there's more than one active cart: ${err}`);
+                console.error(`Error getting customer cart or there's more than one active cart: ${err}`);
                 var error = new Error(`Error while querying for customer cart`);
                 cb(error);
             }
@@ -135,19 +136,171 @@ module.exports = function(Customer) {
             }
             else{
                 console.log(`Cart already exists, is order info model with id ${orders[0].id}`);
-                cb(null, orders[0].id, orders[0].checkoutIdClient);
+                cb(null, orders[0].id, orders[0].checkoutIdClient, orders[0].checkoutLink);
             }
         });
     }
 
+    Customer.prototype.uploadFile = function(ctx, options, cb){
+        const user = this;
+        if(!options) options = {};
+        // console.log(ctx.req);
+        ctx.req.params.container = 'test_container'; // we may want to use username for this
+        Customer.app.models.container.upload(ctx.req, ctx.result, options, function (err, fileObj) {
+            if(err){
+                cb(err);
+            }
+            else {          
+                // console.log(fileObj);
+                var uploadedFile = fileObj.files['attach-document'][0];
+                // console.log(uploadedFile);
+                const FileInfoModel = app.models.fileInfo;
+                FileInfoModel.create({
+                    uploadTime: currentTime(),
+                    fileName: uploadedFile.originalFilename,
+                    containerFileName: uploadedFile.name,
+                    container: uploadedFile.container,
+                    uploader: user.username,
+                    customerId: user.id,
+                    isDeleted: false,
+                    fileSize: formatBytes(uploadedFile.size, 1),
+                }, function (err, obj){
+                    if(err){
+                        cb(err);
+                    }
+                    else{
+                        cb(null, obj);
+                    }
+                });
+            }
+        });
+    }
+
+    Customer.prototype.downloadFile = function(ctx, cb){
+        const fileId = ctx.req.query.fileId;
+        const user = this;
+        // console.log(fileId);
+        if(fileId === undefined){
+            let error = new Error(`Missing fileId argument`)
+            error.status = 400;
+            cb(error);
+        } else {
+            Customer.app.models.fileInfo.findById(fileId, function(err, file){
+                if(err){
+                    console.error(`Error getting file: ${err}`)
+                    cb(err)
+                } else if(file === null){
+                    let error = new Error(`File not found`);
+                    error.status = 404;
+                    cb(error);
+                } else if(file.customerId != user.id){
+                    let error = new Error(`Forbidden to access file`);
+                    error.status = 403;
+                    cb(error);
+                } else {
+                    ctx.res.set('Content-Disposition', `inline; filename="${file.fileName}"`); // this sets the file name
+                    Customer.app.models.container.download('test_container', file.containerFileName, ctx.req, ctx.res, function(err, fileData){
+                        if(err){
+                            cb(err);
+                        } else {
+                            cb(null);
+                        }
+                    });
+                }
+            });
+        }
+    }
+
+    Customer.prototype.deleteFile = function(ctx, cb){
+        const fileId = ctx.req.query.fileId;
+        const user = this;
+        // console.log(fileId);
+        if(fileId === undefined){
+            let error = new Error(`Missing fileId argument`)
+            error.status = 400;
+            cb(error);
+        } else {
+            Customer.app.models.fileInfo.findById(fileId, function(err, file){
+                var containerFileName = file.containerFileName;
+                if(err){
+                    console.error(`Error getting file: ${err}`);
+                    cb(err);
+                } else if(file === null){
+                    let error = new Error(`File not found`);
+                    error.status = 404;
+                    cb(error);
+                } else if(file.customerId != user.id){
+                    let error = new Error(`Forbidden to access file`);
+                    error.status = 403;
+                    cb(error);
+                } else {
+                    // Do a soft delete
+                    file.updateAttributes({
+                        isDeleted: true,
+                    });
+                    cb(null);
+
+                    // Hard delete code that destroys the fileInfo instance and 
+                    // also deletes from container
+                    // Customer.app.models.fileInfo.destroyById(fileId, function(err){
+                    //     if(err){
+                    //         console.error(`Error deleting file: ${err}`);
+                    //         cb(err);
+                    //     } else {
+                    //         Customer.app.models.container.removeFile('test_container', containerFileName, function(err){
+                    //             if(err){
+                    //                 cb(err);
+                    //             } else {
+                    //                 cb(null);
+                    //             }
+                    //         });
+                    //     }
+                    // }); 
+                }
+            });
+        }
+    }
+
     // Remote methods
+    Customer.remoteMethod('prototype.uploadFile', {
+        // see https://stackoverflow.com/questions/28885282/how-to-store-files-with-meta-data-in-loopback
+        // and https://github.com/strongloop/loopback-component-storage/blob/a3c8509adf09fb6161f893c65277eb0f79762013/lib/storage-handler.js
+        description: "CUSTOM METHOD: Upload a file",
+        accepts: [
+            { arg: 'ctx', type: 'object', http: { source: 'context' } },
+            { arg: 'options', type: 'object', http: { source: 'query'} },
+        ],
+        http: {path: '/uploadFile', verb: 'post'},
+        returns: {arg: 'fileInfo', type: 'object'},
+        // returns: [],
+    });
+
+    Customer.remoteMethod('prototype.downloadFile', {
+        description: 'CUSTOM METHOD: Download a file',
+        accepts: [
+            {arg: 'ctx', type: 'object', http: { source: 'context' }},
+        ],
+        http: {path: '/downloadFile', verb: 'get'},
+        returns: [],
+    });
+
+    Customer.remoteMethod('prototype.deleteFile', {
+        description: 'CUSTOM METHOD: Delete a file',
+        accepts: [
+            { arg: 'ctx', type: 'object', http: { source: 'context' }},
+        ],
+        http: {path: '/deleteFile', verb: 'delete'},
+        returns: [],
+    });
+
     Customer.remoteMethod('prototype.getCustomerCart', {
         description: 'CUSTOM METHOD: Get ID of orderInfo that represents customers cart; if not present, returns 0',
         accepts: [],
         http: {path: '/getCustomerCart', verb: 'get'},
         returns: [
             {arg: 'id', type: 'number'},
-            {arg: 'checkoutIdClient', type: 'string'}
+            {arg: 'checkoutIdClient', type: 'string'},
+            {arg: 'checkoutLink', type: 'string'},
         ]
     });
 

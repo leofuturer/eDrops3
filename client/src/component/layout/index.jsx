@@ -15,7 +15,6 @@ class Layout extends React.Component{
                 <div className="wrapper">
                     <NavTop/>
                         {this.props.children}
-                    
                 </div>
                 <Footer/>
             </div>

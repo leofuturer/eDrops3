@@ -1,124 +1,139 @@
 import React from 'react';
-
 import API from '../../api/api';
-
-import { getOrderInfoById, foundryWorkerGetProfile } from '../../api/serverConfig';
+import { getOrderInfoById, getCustomerCart, getProductOrders, 
+    getChipOrders, modifyProductOrders, 
+    modifyChipOrders 
+} from '../../api/serverConfig';
 import Cookies from 'js-cookie';
+import OrderItem from './orderItem.jsx';
+import OrderAddress from './orderAddress.jsx';
 
 class OrderDetail extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            orderDetail: {},
-            orderAddress: {},
-            workerInfo: {}
-        }
+            doneLoading: false,
+        };
     }
 
     componentDidMount() {
+        let _this = this;
         let orderId = window._orderItemId;
-        let orderURL = getOrderInfoById.replace('id', orderId);
-        let data = {};
-        API.Request(orderURL, 'GET', data, true)
+        console.log(orderId);
+        let url = getOrderInfoById.replace('id', orderId);
+        API.Request(url, 'GET', {}, true)
         .then(res => {
             this.setState({
                 orderDetail: res.data,
-                orderAddress: res.data.orderAddress
+                
             });
-            return res.data.workerId;
-        })
-        .then(workerId => {
-            if(Cookies.get("userType") === "customer"){
-                let workerURL = foundryWorkerGetProfile.replace('id', workerId)
-                API.Request(workerURL, 'GET', data, true)
-                .then(workerRes => {
-                    this.setState({
-                        workerInfo: workerRes.data
+            this.setState({
+                shippingAddress: {
+                    type: "Shipping",
+                    name: res.data.sa_name,
+                    street: res.data.sa_address1,
+                    street2: res.data.sa_address2,
+                    city: res.data.sa_city,
+                    state: res.data.sa_province,
+                    country: res.data.sa_country,
+                    zipCode:  res.data.sa_zip,
+                }, 
+                billingAddress: {
+                    type: "Billing",
+                    name: res.data.ba_name,
+                    street: res.data.ba_address1,
+                    street2: res.data.ba_address2,
+                    city: res.data.ba_city,
+                    state: res.data.ba_province,
+                    country: res.data.ba_country,
+                    zipCode:  res.data.ba_zip,
+                },
+            });
+            console.log(this.state);
+            let orderInfoId = res.data.id;
+            url = getProductOrders.replace('id', orderInfoId);
+            API.Request(url, 'GET', {}, true)
+            .then(res => {
+                _this.setState({
+                    productOrders: res.data,
+                });
+                url = getChipOrders.replace('id', orderInfoId);
+                API.Request(url, 'GET', {}, true)
+                .then(res => {
+                    _this.setState({
+                        chipOrders: res.data,
+                        doneLoading: true,
                     });
                 })
-                .catch(workerErr => {
-                    console.log(workerErr);
-                })
-            }
+                .catch(err => {
+                    console.error(err);
+                });
+            })
+            .catch(err => {
+                console.error(err);
+            });
         })
         .catch(err => {
-            console.log(err);
+            console.error(err);
         });
     }
 
     render() {
         let thisOrder = this.state.orderDetail;
-        let address = this.state.orderAddress;
-        let worker = this.state.workerInfo;
+        let totalItemsPrice = 0;
+        if(this.state.productOrders !== undefined){
+            this.state.productOrders.forEach(product => {
+                totalItemsPrice += (product.quantity * product.price);
+            });
+        }
+        if(this.state.chipOrders !== undefined){
+            this.state.chipOrders.forEach(product => {
+                totalItemsPrice += (product.quantity * product.price);
+            });
+        }
+         
         return (
-                <div className="order-detail-frame">
+            <div className="order-detail-frame">
+                { !this.state.doneLoading
+                ?  <div className="order-detail-title-container">
+                        <h2>Page loading...</h2>
+                    </div>
+                : <div>
                     <div className="order-detail-title-container">
-                        <h2>Order Details</h2>
+                    <h2>Edrop Order Details</h2>
                     </div>
-                    <div className="order-detail-grid-container">
-                        <div className="order-detail-grid-item order-number">
-                            <div className="order-item-title">Order Number: </div>
-                            <div>{thisOrder.orderInfoId}</div>
-                        </div>
-                        <div className="order-detail-grid-item sample-amount">
-                            <div className="order-item-title">Sample Amount: </div>
-                            <div>{thisOrder.sampleQuantity}</div>
-                        </div>
-                        <div className="order-detail-grid-item customized-option">
-                            <div className="order-item-title">Customized Options</div>
-                            <div className="order-item-content">
-                                <div>{`Substrate: ${thisOrder.process}`}</div>
-                                <div>{`With cover plate: ${thisOrder.coverPlate ? "Yes" : "No"}`}</div>
-                                <div>Comment: This feature is coming soon!</div>
-                            </div>
-                        </div>
-                        {
-                            Cookies.get('userType') === 'worker' || Cookies.get('userType') === 'admin'
-                            ? (
-                            <div className="order-detail-grid-item shipping-info">
-                                <div className="order-item-title">Shipping Information</div>
-                                <div className="order-item-content">
-                                    <div className="content-item">
-                                        <span className="content-item-key">Name: </span><span>{address.first_name + ' ' + address.last_name }</span>
-                                    </div>
-                                    <div>
-                                        <span>Email: </span><span>{thisOrder.email }</span>
-                                    </div>
-                                    <div>
-                                        <span>Address: </span><span>{`${address.address1}, ${address.address2}, ${address.city}, 
-                                        ${address.province}, ${address.zip}`}</span> 
-                                    </div>
-                                </div>
-                            </div>
-                            )
-                            : (
-                            <div className="order-detail-grid-item shipping-info">
-                                <div className="order-item-title">Foundry Information</div>
-                                {
-                                    thisOrder.status === "Uploaded" 
-                                    ?   <div className="unassigned-info">This order has not been assigned to any foundry yet</div>
-                                    :   (                  
-                                        <div className="order-item-content">
-                                            <div>
-                                                <span>Affiliation: </span><span>{worker.affiliation}</span>
-                                            </div>
-                                            <div className="content-item">
-                                                <span className="content-item-key">Worker: </span><span>{worker.firstName + ' ' + worker.lastName }</span>
-                                            </div>
-                                            <div>
-                                                <span>Email: </span><span>{worker.email }</span>
-                                            </div>
-                                            <div>
-                                                <span>Status: </span><span>{thisOrder.status}</span> 
-                                            </div>
-                                        </div>
-                                    )
-                                }
-                            </div>
-                            )
-                        }
+                    <div className="order-item-title">
+                        Order Number: {thisOrder.orderComplete ? thisOrder.orderInfoId : "N/A, is currently a customer's cart"}
                     </div>
+                    <div id="order-addresses">
+                    <OrderAddress address={this.state.shippingAddress}/>
+                    <OrderAddress address={this.state.billingAddress}/>
+                    </div>
+                    {
+                        this.state.productOrders.map((oneProduct, index) => 
+                            <OrderItem key={index} info={oneProduct}/>
+                        )
+                    }
+                    {
+                        this.state.chipOrders.map((oneProduct, index) => 
+                            <OrderItem key={index} info={oneProduct}/>
+                        )
+                    }
+                    <div className="order-taxes-and-fees-price">
+                        {'Subtotal: $'}{parseFloat(totalItemsPrice).toFixed(2)}
+                    </div>
+                    <div className="order-taxes-and-fees-price">
+                        {'Fees and Taxes: $'}{thisOrder.orderComplete ? parseFloat(thisOrder.fees_and_taxes).toFixed(2) : "N/A"}
+                    </div>
+                    <div className="order-total-price">
+                        {'Total: $'}{thisOrder.orderComplete ? (parseFloat(totalItemsPrice) + parseFloat(thisOrder.fees_and_taxes)).toFixed(2) : "N/A"}
+                    </div>
+                    <div className="order-thank-you">
+                        Please contact us at edropwebsite@gmail.com for any questions. Thank you for the order!
+                    </div>  
                 </div>
+                } 
+            </div>
         );
     }
 }

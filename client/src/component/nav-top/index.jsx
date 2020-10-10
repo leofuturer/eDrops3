@@ -56,13 +56,14 @@ class NavTop extends React.Component{
                             <li><NavLink to="/featureComing" activeClassName="active">Community</NavLink></li>
                             <li><NavLink to="/featureComing" activeClassName="active">Support</NavLink></li>
                             <li>
-                                { // 4/23/2020: Only provide link to cart if customer is logged in - DY
+                                { Cookies.get('userType') === 'customer'
+                                    ?
                                     notLoggedIn
-                                        ? <NavLink to="/login"><i className="fa fa-shopping-cart"></i></NavLink>
-                                        : <NavLink to="/manage/cart"><i className="fa fa-shopping-cart"></i></NavLink> //to be implemented                               
+                                        ? <NavLink to="/login"><i className="fa fa-shopping-cart"></i></NavLink> // Cannot view cart if not logged in
+                                        : <NavLink to="/manage/cart"><i className="fa fa-shopping-cart"></i></NavLink>
+                                    : null                               
                                 }
                             </li>
-
                             { /* Should we be using NavLink or href? NavLink prevents page reloading */ }
                             <li><a href="/featureComing"><i className="fa fa-search"></i></a></li>
                             {

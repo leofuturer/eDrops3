@@ -24,7 +24,6 @@ class Upload extends React.Component{
             utype: ['mm','cm','in'],
             public: 'public',
             unit: 'mm',
-            fileData: {}
         }
         this.setCurrentIndex = this.setCurrentIndex.bind(this);
         this.setCurrentIndex1 = this.setCurrentIndex1.bind(this);
@@ -51,19 +50,19 @@ class Upload extends React.Component{
         const access_token = Cookies.get('access_token');
 
         $("#file1").fileinput({
-            uploadUrl: uploadFile + '?access_token=' + access_token, // you must set a valid URL here, or you will get an error
+            uploadUrl: uploadFile.replace('id', Cookies.get('userId')) + '?access_token=' + access_token, // you must set a valid URL here, or you will get an error
             allowedFileExtensions : ['dxf'],
             overwriteInitial: false,
             maxFileSize: 5000,
             maxFilesNum: 1,
+            name: "file",
             slugCallback: function(filename) {
                 return filename.replace('(', '_').replace(']', '_');
             }
         }).on("fileuploaded", function (event, data) {
             _this.setState({
-                fileData: data
+                fileInfo: data.response.fileInfo
             });
-            console.log(data);
             /*
             $.notify({
             // options
@@ -82,15 +81,13 @@ class Upload extends React.Component{
             });
             */
             $('#exampleModal').modal('show');
-            //console.log(data.response.result.files['attach-document'][0].name);
         });
     }
 
     handleShopping() {
         $('#exampleModal').modal('hide');
-        let data = this.state.fileData;
         this.props.history.push('/shop', {
-            fileName: data.response.result.files['attach-document'][0].name,
+            fileInfo: this.state.fileInfo,
         });
     }
 

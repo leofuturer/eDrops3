@@ -24,10 +24,9 @@
       "required": true,
       "default": "Fabrication request received"
     },
-    "fileName": {
+    "otherDetails": {
       "type": "string",
-      "required": true,
-      "description": "Name of design file"
+      "required": false
     }
   },
   "validations": [],
@@ -36,6 +35,14 @@
       "type": "belongsTo",
       "model": "orderInfo",
       "foreignKey": "orderId",
+      "options": {
+        "nestRemoting": true
+      }
+    },
+    "file": {
+      "type": "belongsTo",
+      "model": "fileInfo",
+      "foreignKey": "fileInfoId",
       "options": {
         "nestRemoting": true
       }
