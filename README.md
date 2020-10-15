@@ -9,35 +9,15 @@ To achieve a functional EWOD cloud manufacturing website by **improving** the mo
 (3) Secure order system (secure checkout gateway with Shopify API, order system integration with Shopify order system)
 
 ### Details to be improved
+To see current issues/bugs, navigate to the "Issues" tab on Github.  
 **Frontend**
-- [x] PDF preview in the shopping page of uploaded document.
-- [x] Notification of "username or email exists/already taken" in the account sign up page
-- [ ] Error handling——provide error reporting pages for all the errors (right now we just ignore them as long as the page doesn't collapse which means errors only show up in the system log console) or some other way to handle them (requires more investigation)
-- [ ] Foundry work edits order status - apply bootstrap dropdown module to replace the current native HTML form component
-- [ ] Just display part of the username (top right corner) & time stamp (in the order list page) if they are too long in case the layout of the page is messed up
-- [ ] Fix the page refreshing issue of the order detail window (because right now we are using window._variable which becomes undefined whe we refresh the page)
-- [ ] Replace the order assignment process with the automatical assignment based on the material customer chooses
-- [ ] Implement the order detail sub window with bootstrap Modal or other more delicated component instead of a new page(what we are using right now) 
 - [ ] [code quality improvement] Reorganize all the CSS rules——ensure match each page file with one CSS file and avoid using CSS rules from unmatched CSS files (right now we use CSS rules somewhere from matched files in order to reuse some rules which leads to the coupling of layout features of different web pages)
-- [x] Upload Mask File link should direct unlogged user to the login page
-- [x] [code quality improvement] Decouple the routing functionalities from the App component() —— Maybe use RouteMap
 - [ ] [code quality improvement] Optimize React.js code by reducing unnecessary "state"s
-- [ ] Create "under construction" page so that users know a broken link isn't actually broken and that simply we're still adding the feature.
-- [ ] Add cart page? (currently the cart icon at the top toolbar doesn't work)
-- [x] For the file & order list pages, when there's no file or order, a message should show up to remind user that they have not uploaded/placed any files/order yet, instead of just showing an empty table 
 
 **Backend**
 - [ ] Optimize the backend project file structure
-- [x] Enable the email login functionality and make sure the username shows up whatever login information we use. Right now we can only use username to login
-- [ ] Improve data security——apply authorization(supported by Loopback) to prevent unknown user retrieving data via our APIs
-- [ ] Add the specific time to the time stamp and display it in the frontend(right now there's only date showing up)
-- [ ] Integrate the user address information with address information from shopify as well as the billing address in the checkout page
-- [x] Email activation link to user after registration, the account is available only after the user clicks the activation link
 
 **Workflow Improvement**
-- [ ] Create automated testing to be done on every push to the repository.
-- [ ] Set up environment variables to replace some credentials in the code, e.g. datasource.json, shopify keys in the app.jsx, etc.
-- [x] Research on best practice for github collabration & establish an optimal workflow (record in the doc)
 
 ### Project architecture
 A picture to discribe the whole project architecture
