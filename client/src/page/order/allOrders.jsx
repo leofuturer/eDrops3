@@ -49,25 +49,7 @@ class AllOrders extends React.Component {
         WindowForOrderDetail._orderItemId = orderId;
     }
 
-    handleAssign(e) {
-        //The way to send data as well as to redirect to the '/manage/assign' page
-        /*
-        let originalTagId = e.target.id;
-        let orderId = Number(originalTagId.replace(/[^0-9]/ig, ''));
-        let redirectUrl = "/manage/assign-orders";
-        this.props.history.push(redirectUrl, {
-            orderId: orderId
-        });
-        */
-        
-        //Using the window.open() method to open a new window and display the page based on the passed in redirectUrl
-        let originalOrderId = e.target.id;
-        let orderId = Number(originalOrderId.replace(/[^0-9]/ig, ''));
-        let redirectUrl = "/manage/assign-orders";
-        let strWindowFeatures = "width=1200px, height=500px, left=-80px, top=150px";
-        let newWindow = window.open(redirectUrl, "_blank", strWindowFeatures);
-        newWindow._theOrderId = orderId;
-    }
+    
 
     render() {
         if(Cookies.get('userType') !== 'admin') {
@@ -85,12 +67,9 @@ class AllOrders extends React.Component {
                                 <tr>
                                     <th>Order ID</th>
                                     <th>Customer ID</th>
-                                    {/* <th>Uploader</th> */}
-                                    {/* <th>Worker</th> */}
                                     <th>Status</th>
-                                    {/* <th className="icon-center">Mask File</th> */}
                                     <th className="icon-center">Details</th>
-                                    {/* <th className="icon-center">Assign Order</th> */}
+                                    
                                 </tr>
                             </thead>
                             <tbody>
@@ -102,16 +81,10 @@ class AllOrders extends React.Component {
                                         <tr key={index} id={item.id}>
                                             <td>{item.orderComplete ? item.orderInfoId : "Customer cart"}</td>
                                             <td>{item.customerId}</td>
-                                            {/* <td>{item.customer}</td> */}
-                                            {/* <td>{item.workerName}</td> */}
                                             <td>{item.status}</td>
-                                            {/* <td className="icon-center"><i className="fa fa-download" onClick={this.handleDownload}></i></td> */}
                                             <td className="icon-center">
                                                 <i className="fa fa-commenting" onClick={this.handleDetail}></i>
                                             </td>
-                                            {/* <td className="icon-center">
-                                                <i className="fa fa-users" id={`allOrder${item.id}`} onClick={this.handleAssign}></i>
-                                            </td> */}
                                         </tr>
                                     )
                                 })

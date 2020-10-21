@@ -23,13 +23,12 @@ import AssignFile from 'page/files/assign.jsx';
 import Orders from 'page/order/index.jsx';
 import AllOrders from 'page/order/allOrders.jsx';
 import AssignOrders from 'page/order/assignOrders.jsx';
+import ChipOrders from 'page/order/chipOrders.jsx';
 
 //Cart
 import Cart from 'page/cart/index.jsx';
 
-
 import Cookies from "js-cookie";
-import { getAllOrderInfos } from '../../api/serverConfig';
 
 const routes = [
     //Pages for Admin:
@@ -136,13 +135,11 @@ const routes = [
         path: "/manage/foundryworkprofile",
         component: Profile
     },
+
+    // page for users to view their custom chip orders
     {
-        path: "/manage/workerfiles",
-        component: Files
-    },
-    {
-        path: "/manage/worker-orders",
-        component: Orders
+       path: "/manage/chip-orders",
+        component: ChipOrders
     },
 ];
 
@@ -186,10 +183,9 @@ class Manage extends React.Component{
                         {
                             Cookies.get('userType') === 'worker'
                                 ?
-                                <Redirect from="/manage" to="/manage/worker-orders"/>
+                                <Redirect from="/manage" to="/manage/chip-orders"/>
                                 : null
                         }
-
                     </Switch>
                 </div>
                 <div className="hr-div-login"></div>

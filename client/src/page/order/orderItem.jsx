@@ -32,7 +32,32 @@ class OrderItem extends React.Component{
                         dangerouslySetInnerHTML={{__html: this.props.info.otherDetails.replace(/\n/g, "<br/>")}}></div>
                 </div>
                 : null 
-                }  
+                } 
+                { this.props.adminAssignOrderDisplay
+                ? <div>
+                    <div>
+                        Customer name: {this.props.info.customerName}
+                    </div>
+                    <div>
+                        Chip Order ID: {this.props.info.id}
+                    </div>
+                    <div>
+                        Order ID: {this.props.info.orderId}
+                    </div>
+                    <div>
+                        Customer ID: {this.props.info.customerId}
+                    </div>
+                    <div>
+                        File ID: {this.props.info.fileInfoId}
+                    </div>
+                    <div>
+                        Status: {this.props.info.status}
+                    </div>
+                </div>
+                
+                : null
+
+                } 
             </div>  
         );
     }

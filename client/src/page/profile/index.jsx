@@ -59,7 +59,7 @@ class Profile extends React.Component{
                     }
                 );
             } else if (userType === "worker") {
-                console.log(res.data);
+                // console.log(res.data);
                 this.setState({
                     address: res.data.address,
                     firstName: res.data.firstName,

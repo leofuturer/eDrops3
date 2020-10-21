@@ -129,11 +129,14 @@ If you change the models in server/common/models and want to update the database
 `$ node ./server/db/migrate-db.js`  
 
 ### FAQ/Common Issues
-Q: Set the environment variables for connecting to the database but it doesn't work (permission denied error):
-A: Make sure you set the environment variables in the same shell window that you run the server in. To verify the value was set correctly, use `$ echo %ENV_VAR_NAME%` for Windows and `$ echo $ENV_VAR_NAME` for Linux/MacOS.
+Q: How to enable built in Loopback debugging?  
+A: See [Setting debug strings](https://loopback.io/doc/en/lb3/Setting-debug-strings.html) from the Loopback documentation.  
 
-Q: Cannot connect to the mySQL database?
-A: Make sure you have it running (on Windows, in the System Tray, right click on the mySQL notifier, and check if the server is running).
+Q: Set the environment variables for connecting to the database but it doesn't work (permission denied error):  
+A: Make sure you set the environment variables in the same shell window that you run the server in. To verify the value was set correctly, use `$ echo %ENV_VAR_NAME%` for Windows and `$ echo $ENV_VAR_NAME` for Linux/MacOS.  
+
+Q: Cannot connect to the mySQL database?  
+A: Make sure you have it running (on Windows, in the System Tray, right click on the mySQL notifier, and check if the server is running).  
 
 ### List of Environment Variables
 If things aren't working, check that these are correct for your environment.

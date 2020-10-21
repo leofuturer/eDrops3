@@ -1,5 +1,5 @@
 import React from 'react';
-import {NavLink} from  'react-router-dom';
+import {withRouter, NavLink} from  'react-router-dom';
 import Cookies from 'js-cookie';
 
 class NavTop extends React.Component{
@@ -135,4 +135,5 @@ class NavTop extends React.Component{
     }
 }
 
+NavTop = withRouter(NavTop)
 export default NavTop;

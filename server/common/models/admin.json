@@ -26,6 +26,12 @@
       "property": "downloadFile"
     },
     {
+      "principalType": "ROLE",
+      "principalId": "$authenticated",
+      "permission": "ALLOW",
+      "property": "getChipOrders"
+    },
+    {
       "accessType": "WRITE",
       "principalType": "ROLE",
       "principalId": "$authenticated",

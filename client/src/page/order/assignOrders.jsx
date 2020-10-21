@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-
+import OrderItem, {orderItem} from './orderItem.jsx';
 import { getAllFoundryWorkers, assignOrders } from '../../api/serverConfig';
 import API from '../../api/api';
 
@@ -9,7 +9,8 @@ class AssignOrders extends React.Component {
         super(props);
         this.state = {
             workerList: [],
-            assignId: -1
+            assignId: -1,
+            chipOrder: undefined,
         };
         this.handleAssign = this.handleAssign.bind(this);
         this.handleAssignId = this.handleAssignId.bind(this);
@@ -17,13 +18,11 @@ class AssignOrders extends React.Component {
 
     componentDidMount() {
         let url = getAllFoundryWorkers;
-        let data = {};
-        API.Request(url, 'GET', data, true)
+        API.Request(url, 'GET', {}, true)
         .then(res => {
             this.setState({
                 workerList: res.data
             });
-            console.log(res.data);
         })
         .catch(err => {
             console.log(err);
@@ -31,23 +30,18 @@ class AssignOrders extends React.Component {
     }
 
     handleAssignId(e) {
-        let _workerId = e.target.parentNode.parentNode.id;
         this.setState({
-            assignId: Number(_workerId)
-        })
+            assignId: Number(e.target.id.replace(/[^0-9]/ig, ''))
+        });
     }
 
     handleAssign(e) {
-        let _workerId = this.state.assignId;
-        let _orderId = window._theOrderId;
-
         let data = {
-            orderId: _orderId,
-            workerId: _workerId,
+            workerId: this.state.assignId,
         }
 
-        let url = assignOrders;
-        API.Request(url, 'POST', data, false)
+        let url = assignOrders.replace('id', window._order.id);
+        API.Request(url, 'PATCH', data, true)
         .then(res => {
             window.opener.location.href = window.opener.location.href;
             window.close();
@@ -58,12 +52,14 @@ class AssignOrders extends React.Component {
     }
 
     render() {
+        let order = window._order;
         return (
             <div className="ass-right-route-content">
                 <div className="ass-profile-content">
                     <h2>Assign Order</h2>
                 </div>
                 <div className="ass-content-show-table row">
+                    <OrderItem info={order} adminAssignOrderDisplay={true}/>
                     <div className="table-background">
                         <table className="table">
                             <thead>
@@ -80,18 +76,18 @@ class AssignOrders extends React.Component {
                                 {this.state.workerList.map((item, index) => {
                                     return (
                                         <tr key={index} id={item.id}>
-                                            <td>{item.firstName + item.lastName}</td>
+                                            <td>{item.firstName + ' ' + item.lastName}</td>
                                             <td>{item.username}</td>
                                             <td>{item.email}</td>
                                             <td>{item.phoneNumber}</td>
                                             <td>{item.affiliation}</td>
                                             <td id={`file${item.id}`} data-toggle="modal" data-target="#confirm-assign" onClick={this.handleAssignId}>
-                                                <NavLink to="#">
+                                                <NavLink id={`file${item.id}`} to="#">
                                                     Assign to Him/Her   
                                                 </NavLink>
                                             </td>
                                         </tr>
-                                    )
+                                    );
                                 })}
                             </tbody>
                         </table>
@@ -106,7 +102,7 @@ class AssignOrders extends React.Component {
                                 Edrop
                             </div>
                             <div className="modal-body">
-                                Do you want to assign the order to him/her?
+                                Do you want to assign the order to this worker?
                             </div>
                             <div className="modal-footer">
                                 <button type="button" className="btn btn-default" data-dismiss="modal">Cancel</button>
@@ -116,7 +112,7 @@ class AssignOrders extends React.Component {
                     </div>
                 </div>
             </div>
-        )
+        );
     }
 }
 

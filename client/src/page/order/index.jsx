@@ -21,7 +21,6 @@ class Orders extends React.Component{
             orderList: [],
             userInfo: {}
         }
-        this.handleDownload = this.handleDownload.bind(this);
     }
 
     componentDidMount() {
@@ -46,70 +45,7 @@ class Orders extends React.Component{
         });
     }
     
-    handleSubmit(e) {
-        e.preventDefault();
-        // Method One: using fetch()
-        var formdata = new URLSearchParams(new FormData(e.target));
-        fetch(editOrderStatus, {
-            method: 'post',
-            body: formdata
-        })
-        .then(res => {
-            $.notify({
-                // options
-                message: 'The status has been updated!' 
-            },{
-                // settings
-                placement: {
-                    from: "bottom",
-                    align: "center"
-                },
-                type: 'success',
-                animate: {
-                    enter: 'animated fadeInDown',
-                    exit: 'animated fadeOutUp'
-                }
-            });
-        })
-        .catch(err => {
-            console.log(err);
-        })
-
-        /*     Method Two
-        let formData = new URLSearchParams(new FormData(e.target));
-        let xhr = new XMLHttpRequest();
-        xhr.responseType = 'json';
-        xhr.open('post', editOrderStatus, true);
-        xhr.onreadystatechange = function() {
-            if (xhr.readyState === 4 && (xhr.status === 200 || xhr.status === 204)) {
-                $.notify({
-                    // options
-                    message: 'The status has been updated!' 
-                },{
-                    // settings
-                    placement: {
-                        from: "bottom",
-                        align: "center"
-                    },
-                    type: 'success',
-                    animate: {
-                        enter: 'animated fadeInDown',
-                        exit: 'animated fadeOutUp'
-                    }
-                });
-            }
-        }
-        xhr.send(formData);
-    */        
-    }
     
-    handleDownload(e) {
-        // let downloadId = e.target.id;
-        // let fileIndex = Number(downloadId.replace(/[^0-9]/ig, ''));
-        // let realFileName = this.state.orderList[fileIndex].fileName;
-        // let url = downloadFileById.replace('filename', realFileName);
-        // window.location = url;
-    }
 
     handleDetail(e) {
         //Using the window.open() method to open a new window 
@@ -125,8 +61,7 @@ class Orders extends React.Component{
     render() {
         return (
             <div>
-                <div className="right-route-content">
-                
+                <div className="right-route-content"> 
                     <div className="profile-content">
                         <h2>Orders</h2>
                     </div>
@@ -150,28 +85,20 @@ class Orders extends React.Component{
                                               : null
                                         }
                                         {
-                                            Cookies.get('userType') === "customer"
-                                            ? <th>Worker Assigned</th>
-                                            : null
-                                        }
-                                        {
                                             Cookies.get('userType') === 'customer'
                                             ? <th>Process Status</th>
                                             : Cookies.get('userType') === 'worker'
                                               ? <th className="icon-center">Edit Process Status</th>
                                               : null
                                         }
-                                            <th className="icon-center">Mask File</th>
                                             <th className="icon-center">Other Details</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {this.state.orderList.length !== 0
                                         ?  
-                                            this.state.orderList.map((item, index) => {
-                                                
+                                            this.state.orderList.map((item, index) => {                                              
                                                 return ( 
-                                                    
                                                     <tr key={index} id={item.id}>
                                                         {
                                                             Cookies.get('userType') === "customer"
@@ -185,43 +112,6 @@ class Orders extends React.Component{
                                                             Cookies.get('userType') === "customer"
                                                             ? <td>{item.workerName}</td>
                                                             : null
-                                                        }
-                                                        {
-                                                            Cookies.get('userType') === "customer"
-                                                            ? <td>{item.status}</td>
-                                                            : <td className="icon-center">
-                                                                    <form className="edit-order-status-form" 
-                                                                            onSubmit={this.handleSubmit}>{/*method='post' action={editOrderStatus}*/} 
-                                                                        <select className="order-status" name="status" defaultValue={item.status} >
-                                                                            <option value="Unassigned to Foundry">Unassigned to Foundry</option>
-                                                                            <option value="Assigned to Foundry">Assigned to Foundry</option>
-                                                                            <option value="Project Started">Project Started</option>
-                                                                            <option value="Project Completed">Project Completed</option>
-                                                                        </select>
-                                                                        <input type="hidden" name="orderId" value={item.id}></input>
-                                                                        <input type="submit" value="Submit"></input>
-                                                                    </form>
-                                                              </td> 
-                                                        }
-                                                        <td className="icon-center">
-                                                            <i className="fa" onClick={this.handleDownload} id={`download${index}`}>
-                                                                {item.fileName}
-                                                            </i>
-                                                        </td>
-                                                        { // For test orderStatusURL
-                                                        /*
-                                                            Cookies.get('userType') !== "customer"
-                                                            ?   null 
-                                                            :   item.orderStatusURL !== null
-                                                                ? <td className="icon-center">
-                                                                    <a href={item.orderStatusURL}>
-                                                                    <i className="fa fa-commenting icon-center"></i>
-                                                                    </a>   
-                                                                  </td>                                                       
-                                                                : <td className="icon-center">
-                                                                        <i className="fa fa-commenting icon-center"></i>                                                       
-                                                                  </td>
-                                                        */
                                                         }
                                                         {
                                                             Cookies.get('userType') === "worker" || Cookies.get('userType') === "customer"

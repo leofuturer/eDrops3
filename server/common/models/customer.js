@@ -261,6 +261,56 @@ module.exports = function(Customer) {
         }
     }
 
+    Customer.prototype.getChipOrders = function(ctx, cb){
+        const customer = this;
+        var allOrderChips = [];
+        customer.customerOrders({})
+        .then(orders => {
+            var promises = orders.map((order, index) => {
+                return order.orderChips({})
+                .then(orderChips => {
+                    allOrderChips = allOrderChips.concat(orderChips);
+                })
+                .catch(err => {
+                    console.error(err);
+                    cb(err);
+                });
+            });
+            Promise.all(promises).then(() => {
+                var promises2 = allOrderChips.map((orderChip, index) => {
+                    return Customer.app.models.foundryWorker.findById(orderChip.workerId)
+                    .then(worker => {
+                        if(worker === null){
+                            orderChip.workerName = `Unassigned`;
+                        } else {
+                            orderChip.workerName = `${worker.firstName} ${worker.lastName}`;
+                        }
+                    })
+                    .catch(err => {
+                        console.error(err);
+                        cb(err);
+                    });
+                    
+                })
+                Promise.all(promises2).then(() => {
+                    cb(null, allOrderChips);
+                });
+            });
+        })
+        .catch(err => {
+            cb(err);
+        });
+    }
+
+    Customer.remoteMethod('prototype.getChipOrders', {
+        description: 'CUSTOM METHOD: Get all chip orders',
+        accepts: [
+            {arg: 'ctx', type: 'object', http: { source: 'context' }},
+        ],
+        http: {path: '/orderChips', verb: 'get'},
+        returns: [{arg: 'orderChips', type: 'array'}],
+    });
+
     // Remote methods
     Customer.remoteMethod('prototype.uploadFile', {
         // see https://stackoverflow.com/questions/28885282/how-to-store-files-with-meta-data-in-loopback

@@ -42,7 +42,7 @@ export const findOneWorkerByWhere = ApiRootUrl + '/foundryWorkers';
 //File management
 export const customerFileRetrieve = ApiRootUrl + '/customers/id/customerFiles';
 export const customerDeleteFile = ApiRootUrl + '/customers/id/deleteFile';
-//export const workerFileRetrieve = ApiRootUrl + '/fileInfos/returnworkerfileInfo';
+export const workerDownloadFile = ApiRootUrl + '/foundryWorkers/downloadFile';
 export const downloadFileById = ApiRootUrl + '/customers/id/downloadFile';
 export const uploadFile = ApiRootUrl + '/customers/id/uploadFile';
 export const getAllFileInfos = ApiRootUrl + '/fileInfos';
@@ -67,5 +67,10 @@ export const modifyChipOrders = ApiRootUrl + '/orderChips/id';
 export const customerOrderRetrieve = ApiRootUrl + '/customers/id/customerOrders';
 export const workerOrderRetrieve = ApiRootUrl + '/foundryWorkers/id/workerOrders';
 
-export const editOrderStatus = ApiRootUrl + '/orderInfos/edit-order-status';
-export const assignOrders = ApiRootUrl + '/orderInfos/assign-order-info';
+export const editOrderStatus = ApiRootUrl + '/orderChips/id';
+export const assignOrders = ApiRootUrl + '/orderChips/id';
+
+// For chip order page
+export const adminGetChipOrders = ApiRootUrl + '/admins/orderChips';
+export const customerGetChipOrders = ApiRootUrl + '/customers/id/orderChips';
+export const workerGetChipOrders = ApiRootUrl + '/foundryWorkers/id/orderChips';

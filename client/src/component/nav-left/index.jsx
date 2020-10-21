@@ -163,20 +163,15 @@ class NavLeft extends React.Component{
                                         <span className="icon-txt">Orders</span>
                                     </NavLink>
                                 </li>
-                            :   Cookies.get('userType') === 'worker'
+                            :   Cookies.get('userType') === 'admin'
                                 ?
-                                    <li>
-                                        <NavLink to="/manage/worker-orders" activeStyle={{width:'117px',borderLeft:'3px solid #428bca',color:'#428bca'}}>
-                                            <span className="icon-nav"><i className="fa fa-money"></i></span>
-                                            <span className="icon-txt">Orders</span>
-                                        </NavLink>
-                                    </li>
-                                :   <li>
+                                     <li>
                                         <NavLink to="/manage/all-orders" activeStyle={{width:'117px',borderLeft:'3px solid #428bca',color:'#428bca'}}>
                                             <span className="icon-nav"><i className="fa fa-money"></i></span>
                                             <span className="icon-txt">Orders</span>
                                         </NavLink>
-                                    </li> 
+                                    </li>
+                                : null 
                 }
 
                     {/* <li>
@@ -196,6 +191,12 @@ class NavLeft extends React.Component{
                         </li>
                         : null
                 }
+                <li>
+                    <NavLink to="/manage/chip-orders" activeStyle={{width:'117px',borderLeft:'3px solid #428bca',color:'#428bca'}}>
+                        <span className="icon-nav"><i className="fa fa-microchip"></i></span>
+                        <span className="icon-txt">Chip Fab Orders</span>
+                    </NavLink>
+                </li>
                 </ul>
             </div>
 
