@@ -12,8 +12,7 @@ class AllOrders extends React.Component {
         this.state = {
             orderList: []
         };
-        this.handleDownload = this.handleDownload.bind(this);
-        this.handleAssign = this.handleAssign.bind(this);
+        this.handleDetail = this.handleDetail.bind(this);
     }
 
     componentDidMount() {
@@ -30,15 +29,6 @@ class AllOrders extends React.Component {
         })
     }
 
-    handleDownload(e) {
-        // console.log(e.target.parentNode.parentNode);
-        // let rowToDownload = e.target.parentNode.parentNode;
-        // let fileIndex = rowToDownload.id;
-        // let realFilename = this.state.orderList[fileIndex].fileName;
-        // let url = downloadFileById.replace('filename', realFilename)
-        // window.location = url;
-    }
-
     handleDetail(e) {
         //Using the window.open() method to open a new window 
         //and display the page based on the passed in redirectUrl
@@ -47,9 +37,7 @@ class AllOrders extends React.Component {
         let strWindowFeatures = "width=1200px, height=900px";
         let WindowForOrderDetail = window.open(redirectUrl, "_blank", strWindowFeatures);
         WindowForOrderDetail._orderItemId = orderId;
-    }
-
-    
+    } 
 
     render() {
         if(Cookies.get('userType') !== 'admin') {
@@ -98,9 +86,8 @@ class AllOrders extends React.Component {
                     </div>
                 </div>
             </div>
-        )
+        );
     }
-    
 }
 
 export default AllOrders
