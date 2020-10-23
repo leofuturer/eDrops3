@@ -16,7 +16,7 @@ class CartItem extends React.Component{
             <div className="cart-item-card">
                 <div>
                 { this.props.info.productIdShopify === ewodFabServiceId
-                ? <NavLink to={`/shop`}>
+                ? <NavLink to={`/chipfab`}>
                     <h3>{this.props.info.name}</h3>
                 </NavLink>
                 : <NavLink to={`/product?id=${this.props.info.productIdShopify}`}>

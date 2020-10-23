@@ -86,7 +86,7 @@ class Upload extends React.Component{
 
     handleShopping() {
         $('#exampleModal').modal('hide');
-        this.props.history.push('/shop', {
+        this.props.history.push('/chipfab', {
             fileInfo: this.state.fileInfo,
         });
     }

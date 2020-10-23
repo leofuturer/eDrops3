@@ -36,7 +36,7 @@ export class MainRouter extends React.Component {
                     </Route>
                     <Route path="/home" component={Home}/>
                     <Route path="/upload" component={Upload}/>
-                    <Route path="/shop" render={({location, history}) => 
+                    <Route path="/chipfab" render={({location, history}) => 
                         <Shop location={location} history={history} 
                                 shopifyClient={this.props.shopifyClient}/>}/>
                     {/* The project page is currently unused */}
