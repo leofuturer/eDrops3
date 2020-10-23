@@ -13,44 +13,46 @@ class Login extends React.Component  {
     constructor(props) {
         super(props);
         this.state = {
-            usernameOrEmail: localStorage.username,
-            password: localStorage.password,
+            usernameOrEmail: "",//localStorage.username,
+            password: "",//localStorage.password,
             usertype: ""
         }
         this.handleLogin = this.handleLogin.bind(this);
         this.handleNameEmailValidation = this.handleNameEmailValidation.bind(this);
         this.showError = this.showError.bind(this);
         this.clearReminder = this.clearReminder.bind(this);
-        this.handleRemeberMe = this.handleRemeberMe.bind(this);
+        // this.handleRemeberMe = this.handleRemeberMe.bind(this);
         this.componentDidMount = this.componentDidMount.bind(this);
     }
 
     componentDidMount() {
-        if (localStorage.chkbx === 'true') {
-            // console.log("in the 1");
-            $('.remeber-me').prop('checked', true);
-            $('.pass-input').val(localStorage.password);
-            $('.name-input').val(localStorage.username);
-        } else {
-            // console.log("in the 2");
-            $('.remeber-me').prop('checked', false);
-            $('.pass-input').val('');
-            $('.name-input').val('');
-            // console.log('password:' + $('pass-input').val());
-            // console.log('username:' + $('.name-input').val());
-        }
+        $('.pass-input').val('');
+        $('.name-input').val('');
+        // if (localStorage.chkbx === 'true') {
+        //     // console.log("in the 1");
+        //     $('.remeber-me').prop('checked', true);
+        //     $('.pass-input').val(localStorage.password);
+        //     $('.name-input').val(localStorage.username);
+        // } else {
+        //     // console.log("in the 2");
+        //     $('.remeber-me').prop('checked', false);
+        //     $('.pass-input').val('');
+        //     $('.name-input').val('');
+        //     // console.log('password:' + $('pass-input').val());
+        //     // console.log('username:' + $('.name-input').val());
+        // }
     }
 
-    handleRemeberMe() {
-        if ($('.remeber-me').prop('checked')) {
-            localStorage.username = $('.name-input').val();
-            localStorage.password = $('.pass-input').val();
-        } else {
-            localStorage.username = '';
-            localStorage.password = '';
-        }
-        localStorage.chkbx = $('.remeber-me').prop('checked');
-    }
+    // handleRemeberMe() {
+    //     if ($('.remeber-me').prop('checked')) {
+    //         localStorage.username = $('.name-input').val();
+    //         localStorage.password = $('.pass-input').val();
+    //     } else {
+    //         localStorage.username = '';
+    //         localStorage.password = '';
+    //     }
+    //     localStorage.chkbx = $('.remeber-me').prop('checked');
+    // }
 
     handleChange(key, value) {
         // console.log("I am called!");
@@ -256,9 +258,20 @@ class Login extends React.Component  {
                                             onChange={v => this.handleChange('password', v.target.value)} />
                                     <div className="passwordError messages"></div>
                                 </div>
+                                <div className="form-group row">
+                                    <div className="whitespace col-md-8"></div>
+                                    {/* <div className="check-inline col-sm-3">
+                                        <input type="checkbox" className="remeber-me" 
+                                                onClick={this.handleRemeberMe} /> 
+                                            <span className="remeber"> Remember me</span>
+                                    </div> */}
+                                    <div className="forget-pass col" style={{marginLeft: '30px'}}>
+                                        <NavLink to="/forgetPass">Forgot Password?</NavLink>
+                                    </div>
+                                </div>
                                 <div className="form-group row radio-group">
                                     <div className="col-md-3 col-sm-3 col-xs-3"></div>
-                                    <div className="col-md-6 col-sm-6 col-xs-6 text-left">
+                                    <div className="col-md-6 col-sm-6 col-xs-6">
                                         <label className="radio-inline">
                                             <input type="radio" 
                                                     className="radioToValidate" 
@@ -284,17 +297,7 @@ class Login extends React.Component  {
                                     </div>
                                     <div className="messages-radio col-md-3 col-sm-3 col-xs-3"></div>
                                 </div>
-                                <div className="form-group row">
-                                    <div className="whitespace col-sm-3"></div>
-                                    <div className="check-inline col-sm-3">
-                                        <input type="checkbox" className="remeber-me" 
-                                                onClick={this.handleRemeberMe} /> 
-                                            <span className="remeber"> Remember me</span>
-                                    </div>
-                                    <div className="forget-pass col-sm-3">
-                                        <NavLink to="/forgetPass">Trouble Logging In?</NavLink>
-                                    </div>
-                                </div>
+    
                                 <div className="form-group login-btn">
                                     <input type="button" value="Login" 
                                             className="input-btn" onClick={this.handleLogin}/>
