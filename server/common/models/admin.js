@@ -43,7 +43,12 @@ module.exports = function(Admin) {
                     var promises3 = allOrderChips.map((orderChip, index) => {
                         return Admin.app.models.foundryWorker.findById(orderChip.workerId)
                         .then(worker => {
-                            orderChip.workerName = `${worker.firstName} ${worker.lastName}`;
+                            if(worker){
+                                orderChip.workerName = `${worker.firstName} ${worker.lastName}`;
+                            } else {
+                                orderChip.workerName = `Not yet assigned`;
+                            }
+                            
                         })
                         .catch(err => {
                             console.error(err);
