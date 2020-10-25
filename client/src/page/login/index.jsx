@@ -15,7 +15,8 @@ class Login extends React.Component  {
         this.state = {
             usernameOrEmail: localStorage.username,
             password: localStorage.password,
-            usertype: ""
+            usertype: "",
+            isLoading: false,
         }
         this.handleLogin = this.handleLogin.bind(this);
         this.handleNameEmailValidation = this.handleNameEmailValidation.bind(this);
@@ -127,11 +128,17 @@ class Login extends React.Component  {
             block.classList.add("error");
             block.innerHTML = "Please select an identity!";
             messages.appendChild(block);
+            this.setState({
+                isLoading: false
+            });
         }
         return radioChecked;
     }
 
     handleLogin() {
+        this.setState({
+          isLoading: true
+        });
         let _this = this;
         let data;
         if(/@/.test(this.state.usernameOrEmail)) {
@@ -145,7 +152,7 @@ class Login extends React.Component  {
                 username: this.state.usernameOrEmail,
                 password: this.state.password
             }
-        }      
+        }
         let validationData = {};
         let url, validationUrl; //URLs for backend requests
         let validatedUsername, validatedEmail;
@@ -188,7 +195,7 @@ class Login extends React.Component  {
                     block.classList.add("error");
                     block.innerHTML = "The username/email has not been registered";
                     document.querySelector(".registrationError").appendChild(block);
-                }              
+                }
                 else {
                     // console.log(res.data);
                     // res.data is an array with only 1 element, so need to do [0]
@@ -207,7 +214,7 @@ class Login extends React.Component  {
                         _this.props.history.push('/home');
                     })
                     .catch(err => {
-                        console.log(err);    
+                        console.log(err);
                         let block = document.createElement("p");
                         if (err.response.status === 401) {
                             document.querySelector(".pass-field").classList.add("has-error");
@@ -216,11 +223,17 @@ class Login extends React.Component  {
                             block.innerHTML = "Incorrect password or email verification required";
                             document.querySelector(".passwordError").appendChild(block);
                         }
+                        this.setState({
+                            isLoading: false
+                        });
                     })
                 }
             })
             .catch(err => {
                 console.log(err);
+                this.setState({
+                    isLoading: false
+                });
             });
         }
     }
@@ -242,17 +255,17 @@ class Login extends React.Component  {
                                 </div>
                                 <div className="form-group name-field">
                                     <div className="whitespace"></div>
-                                    <input type="text" name="usernameOrEmail" 
-                                            className="form-control name-input need-validation" 
-                                            placeholder="Username or Email" 
+                                    <input type="text" name="usernameOrEmail"
+                                            className="form-control name-input need-validation"
+                                            placeholder="Username or Email"
                                             onChange={v => this.handleChange('usernameOrEmail', v.target.value)} />
                                     <div className="registrationError messages"></div>
                                 </div>
                                 <div className="form-group pass-field">
                                     <div className="whitespace"></div>
-                                    <input type="password" name="password" 
-                                            className="form-control pass-input need-validation" 
-                                            placeholder="Password" 
+                                    <input type="password" name="password"
+                                            className="form-control pass-input need-validation"
+                                            placeholder="Password"
                                             onChange={v => this.handleChange('password', v.target.value)} />
                                     <div className="passwordError messages"></div>
                                 </div>
@@ -260,24 +273,24 @@ class Login extends React.Component  {
                                     <div className="col-md-3 col-sm-3 col-xs-3"></div>
                                     <div className="col-md-6 col-sm-6 col-xs-6 text-left">
                                         <label className="radio-inline">
-                                            <input type="radio" 
-                                                    className="radioToValidate" 
-                                                    name="userType" value="customer" 
+                                            <input type="radio"
+                                                    className="radioToValidate"
+                                                    name="userType" value="customer"
                                                     onChange={v => this.handleChange('usertype', v.target.value)}/>
                                                 <span className="txt-radio">Customer</span>
                                         </label>
                                         <label className="radio-inline" style={{marginLeft:'50px'}}>
-                                            <input type="radio" 
-                                                    className="radioToValidate" 
-                                                    name="userType" value="admin" 
+                                            <input type="radio"
+                                                    className="radioToValidate"
+                                                    name="userType" value="admin"
                                                     onChange={v => this.handleChange('usertype', v.target.value)}/>
                                                 <span className="txt-radio">Admin</span>
                                         </label>
                                         <label className="radio-inline" style={{marginLeft:'50px'}}>
-                                            <input type="radio" 
-                                                    className="radioToValidate" 
-                                                    name="userType" 
-                                                    value="worker" 
+                                            <input type="radio"
+                                                    className="radioToValidate"
+                                                    name="userType"
+                                                    value="worker"
                                                     onChange={v => this.handleChange('usertype', v.target.value)}/>
                                                 <span className="txt-radio">Foundry Worker</span>
                                         </label>
@@ -287,8 +300,8 @@ class Login extends React.Component  {
                                 <div className="form-group row">
                                     <div className="whitespace col-sm-3"></div>
                                     <div className="check-inline col-sm-3">
-                                        <input type="checkbox" className="remeber-me" 
-                                                onClick={this.handleRemeberMe} /> 
+                                        <input type="checkbox" className="remeber-me"
+                                                onClick={this.handleRemeberMe} />
                                             <span className="remeber"> Remember me</span>
                                     </div>
                                     <div className="forget-pass col-sm-3">
@@ -296,10 +309,13 @@ class Login extends React.Component  {
                                     </div>
                                 </div>
                                 <div className="form-group login-btn">
-                                    <input type="button" value="Login" 
-                                            className="input-btn" onClick={this.handleLogin}/>
+                                    {
+                                        this.state.isLoading
+                                        ? <img src="../../../static/img/loading80px.gif" alt=""/>
+                                        : <input type="button" value="Login"className="input-btn" onClick={this.handleLogin}/>
+                                    }
                                 </div>
-                                
+
                                 {/* <div className="form-group">
                                     <div style={{marginTop:'20px'}}>
                                         <span className="spanLine"></span>
