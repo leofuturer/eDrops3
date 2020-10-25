@@ -128,6 +128,9 @@ class Login extends React.Component  {
             block.classList.add("error");
             block.innerHTML = "Please select an identity!";
             messages.appendChild(block);
+            this.setState({
+                isLoading: false
+            });
         }
         return radioChecked;
     }
