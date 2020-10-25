@@ -12,7 +12,7 @@ import Project from '../page/project/index.jsx';
 import Manage from '../page/manage/index.jsx';
 //import Profile from "page/profile/index.jsx";
 import ForgetPass from '../page/forgetPass/index.jsx';
-import Shop from '../page/shop/shop.jsx';
+import ChipOrder from '../page/product/chiporder.jsx';
 import CheckEmail from '../page/checkEmail/index.jsx';
 import EmailVerified from '../page/EmailVerified/index.jsx';
 import EmailVerifyInvalid from '../page/emailVerifyInvalid/index.jsx';
@@ -37,7 +37,7 @@ export class MainRouter extends React.Component {
                     <Route path="/home" component={Home}/>
                     <Route path="/upload" component={Upload}/>
                     <Route path="/chipfab" render={({location, history}) => 
-                        <Shop location={location} history={history} 
+                        <ChipOrder location={location} history={history} 
                                 shopifyClient={this.props.shopifyClient}/>}/>
                     {/* The project page is currently unused */}
                     <Route path="/project" component={Project}/>
