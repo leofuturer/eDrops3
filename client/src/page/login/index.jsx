@@ -13,46 +13,21 @@ class Login extends React.Component  {
     constructor(props) {
         super(props);
         this.state = {
-            usernameOrEmail: "",//localStorage.username,
-            password: "",//localStorage.password,
+            usernameOrEmail: "",
+            password: "",
             usertype: ""
         }
         this.handleLogin = this.handleLogin.bind(this);
         this.handleNameEmailValidation = this.handleNameEmailValidation.bind(this);
         this.showError = this.showError.bind(this);
         this.clearReminder = this.clearReminder.bind(this);
-        // this.handleRemeberMe = this.handleRemeberMe.bind(this);
         this.componentDidMount = this.componentDidMount.bind(this);
     }
 
     componentDidMount() {
         $('.pass-input').val('');
         $('.name-input').val('');
-        // if (localStorage.chkbx === 'true') {
-        //     // console.log("in the 1");
-        //     $('.remeber-me').prop('checked', true);
-        //     $('.pass-input').val(localStorage.password);
-        //     $('.name-input').val(localStorage.username);
-        // } else {
-        //     // console.log("in the 2");
-        //     $('.remeber-me').prop('checked', false);
-        //     $('.pass-input').val('');
-        //     $('.name-input').val('');
-        //     // console.log('password:' + $('pass-input').val());
-        //     // console.log('username:' + $('.name-input').val());
-        // }
     }
-
-    // handleRemeberMe() {
-    //     if ($('.remeber-me').prop('checked')) {
-    //         localStorage.username = $('.name-input').val();
-    //         localStorage.password = $('.pass-input').val();
-    //     } else {
-    //         localStorage.username = '';
-    //         localStorage.password = '';
-    //     }
-    //     localStorage.chkbx = $('.remeber-me').prop('checked');
-    // }
 
     handleChange(key, value) {
         // console.log("I am called!");
@@ -303,13 +278,6 @@ class Login extends React.Component  {
                                             className="input-btn" onClick={this.handleLogin}/>
                                 </div>
                                 
-                                {/* <div className="form-group">
-                                    <div style={{marginTop:'20px'}}>
-                                        <span className="spanLine"></span>
-                                        <span className="spanTxt">or</span>
-                                        <span className="spanLine"></span>
-                                    </div>
-                                </div> */}
                                 <div className="form-group">
                                     <div className="border-div-goole">
                                         <i className="fa fa-google"></i>
