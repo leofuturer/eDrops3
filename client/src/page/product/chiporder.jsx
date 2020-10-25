@@ -13,14 +13,14 @@
 */
 
 import React from 'react';
-import './shop.css';
+import './chiporder.css';
 import Cookies from "js-cookie";
 import {getCustomerCart, manipulateCustomerOrders, addOrderChipToCart} from "../../api/serverConfig";
 import API from "../../api/api";
 import { ewodFabServiceId, 
     ewodFabServiceVariantId } from "../../constants";
 
-class Shop extends React.Component {
+class ChipOrder extends React.Component {
     constructor(props) {
         super(props);
         
@@ -320,4 +320,4 @@ class Shop extends React.Component {
     }
 }
 
-export default Shop;
+export default ChipOrder;
