@@ -107,7 +107,7 @@ class Files extends React.Component {
         for(i = 0; i < this.state.fileList.length; i++){
             if(fileId === this.state.fileList[i].id){
                 file = this.state.fileList[i].id;
-                this.props.history.push('/shop', {fileInfo: this.state.fileList[i]});
+                this.props.history.push('/chipfab', {fileInfo: this.state.fileList[i]});
             }
         }
     }
