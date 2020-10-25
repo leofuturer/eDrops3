@@ -6,7 +6,9 @@ module.exports = function(OrderInfo) {
     // Caller: Shopify web hook, when an order is created
     // This hook is called when the order is paid for
     OrderInfo.newOrderCreated = (body, cb) => {
-        console.log(body);
+        // console.log(body);
+        console.log("An order was just paid, receiving webhook info from Shopify");
+        // TODO: Verify the request came from Shopify
         if(body.checkout_token !== null){
             OrderInfo.findOne({where: {checkoutToken: body.checkout_token}}, (err, orderInfoInstance) => {
                 if(err){
