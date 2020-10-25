@@ -235,11 +235,6 @@ class Login extends React.Component  {
                                 </div>
                                 <div className="form-group row">
                                     <div className="whitespace col-md-8"></div>
-                                    {/* <div className="check-inline col-sm-3">
-                                        <input type="checkbox" className="remeber-me" 
-                                                onClick={this.handleRemeberMe} /> 
-                                            <span className="remeber"> Remember me</span>
-                                    </div> */}
                                     <div className="forget-pass col" style={{marginLeft: '30px'}}>
                                         <NavLink to="/forgetPass">Forgot Password?</NavLink>
                                     </div>
