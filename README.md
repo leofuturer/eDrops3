@@ -30,7 +30,7 @@ A picture to discribe the whole project architecture
 * /api  
 API request to server: axios (a javascript package) & fetch() (conventional way is AJAX but is not popular any more)
 * /component  
-Some components shared by different pages, like: navigation bar, footer, layout(React-Router) 
+Some components shared by different pages, like: navigation bar, footer, layout(React-Router)
 * / page  
 pages as well as corresponding .CSS files
 * /router  
@@ -83,6 +83,14 @@ To do so in Linux/MacOS:
 Note: Setting it in Windows makes those environment variables only available in that command prompt session. If you wish to have the variables persist and usable across multiple sessions, use the `setx` command instead of `set`. However, `setx` has a 1024 character limit, so be careful.
 
 Note: Setting it in Linux/MacOS makes these environment variables only available in that user session. If you wish to have the variables persist across multiple logins sessions, include it in the appropriate profile file for your *nix distribution and shell (such as `~/.bash_profile`, `~/.bash_login`, etc.).
+
+**To configure file uploading:**
+Open up a new command window. Navigate back to the home/top level directory. Then:
+  `$ cd server`  
+  `$ mkdir storage`
+  `$ cd storage`  
+  `$ test_container`
+Uploaded files will now appear in the test_container folder.
 
 Then, initialize the database schema and add seed data. WARNING: This will delete everything previously in the database!  
 `$ node ./db/reset-db.js`  
