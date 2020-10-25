@@ -27,7 +27,6 @@ class Login extends React.Component  {
     }
 
     componentDidMount() {
-        console.log(this.state.isLoading)
         if (localStorage.chkbx === 'true') {
             // console.log("in the 1");
             $('.remeber-me').prop('checked', true);
@@ -136,7 +135,7 @@ class Login extends React.Component  {
     handleLogin() {
         this.setState({
           isLoading: true
-        })
+        });
         let _this = this;
         let data;
         if(/@/.test(this.state.usernameOrEmail)) {
@@ -221,11 +220,17 @@ class Login extends React.Component  {
                             block.innerHTML = "Incorrect password or email verification required";
                             document.querySelector(".passwordError").appendChild(block);
                         }
+                        this.setState({
+                            isLoading: false
+                        });
                     })
                 }
             })
             .catch(err => {
                 console.log(err);
+                this.setState({
+                    isLoading: false
+                });
             });
         }
     }
@@ -301,9 +306,11 @@ class Login extends React.Component  {
                                     </div>
                                 </div>
                                 <div className="form-group login-btn">
-                                    <input type="button" value="Login"
-                                            className="input-btn" onClick={this.handleLogin}/>
-                                    {this.state.isLoading ? <img className="loading-GIF" src="../../../static/img/loading80px.gif" alt=""/> : 0}
+                                    {
+                                        this.state.isLoading
+                                        ? <img src="../../../static/img/loading80px.gif" alt=""/>
+                                        : <input type="button" value="Login"className="input-btn" onClick={this.handleLogin}/>
+                                    }
                                 </div>
 
                                 {/* <div className="form-group">
