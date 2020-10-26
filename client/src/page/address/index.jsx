@@ -111,18 +111,18 @@ class Address extends React.Component{
                         )
                     }
                     {/* <AddressList  addressArray={this.state.addressList} onDelete = {addrIndex => this.handleDeleteAddress(addrIndex)}/> */}
-                </div>
-                <div className="col-lg-6 col-md-6 col-sm-6 col-xs-6">
-                    <div className="card-view">
-                        <div className="row row-add-new">
-                            <div className="col-md-4 col-sm-4 col-xs-4"></div>
-                            <div className="col-md-4 col-sm-4 col-xs-4">
-                                <button className="btn btn-success" onClick={this.handleAddNewAddress}>
-                                    <i>+</i>
-                                    <span className="btn-txt-padding">Add New</span>
-                                </button>
+                    <div className="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                        <div className="card-view">
+                            <div className="row row-add-new">
+                                <div className="col-md-4 col-sm-4 col-xs-4"></div>
+                                <div className="col-md-4 col-sm-4 col-xs-4">
+                                    <button className="btn btn-success" onClick={this.handleAddNewAddress}>
+                                        <i>+</i>
+                                        <span className="btn-txt-padding">Add New</span>
+                                    </button>
+                                </div>
+                                <div className="col-md-4 col-sm-4 col-xs-4"></div>
                             </div>
-                            <div className="col-md-4 col-sm-4 col-xs-4"></div>
                         </div>
                     </div>
                 </div>
