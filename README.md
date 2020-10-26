@@ -84,7 +84,7 @@ Note: Setting it in Windows makes those environment variables only available in 
 
 Note: Setting it in Linux/MacOS makes these environment variables only available in that user session. If you wish to have the variables persist across multiple logins sessions, include it in the appropriate profile file for your *nix distribution and shell (such as `~/.bash_profile`, `~/.bash_login`, etc.).
 
-**To configure file uploading:**
+**To configure file uploading:**  
 Open up a new command window. Navigate back to the home/top level directory. Then:  
   `$ cd server`  
   `$ mkdir storage`  
