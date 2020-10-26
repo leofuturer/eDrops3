@@ -1,8 +1,8 @@
-/* 
+/*
     Some basic concepts here:
     product: a type of product created in the Shopify development store
 
-    product variant: a product can have multiple product variant, the "EWOD chip manufacturing service" 
+    product variant: a product can have multiple product variant, the "EWOD chip manufacturing service"
     is a product variant set in the Shopify development store
 
     checkout: a "checkout" can be treated as bundled information used to create an order in the Shopify development store,
@@ -17,13 +17,13 @@ import './chiporder.css';
 import Cookies from "js-cookie";
 import {getCustomerCart, manipulateCustomerOrders, addOrderChipToCart} from "../../api/serverConfig";
 import API from "../../api/api";
-import { ewodFabServiceId, 
+import { ewodFabServiceId,
     ewodFabServiceVariantId } from "../../constants";
 
 class ChipOrder extends React.Component {
     constructor(props) {
         super(props);
-        
+
         this.state = {
             cIndex: 0,
             material: ['ITO Glass', 'Paper', 'PCB'],
@@ -34,14 +34,15 @@ class ChipOrder extends React.Component {
                 id: 0,
                 fileName: "",
             },
+            isLoading: false,
         }
-      
+
         this.setCurrentIndex = this.setCurrentIndex.bind(this);
         this.addVariantToCart = this.addVariantToCart.bind(this);
     }
 
     componentDidMount() {
-        // console.log(this.props);  
+        // console.log(this.props);
         if(Cookies.get('access_token') === undefined){
             alert("Login required for this page");
             this.props.history.push('/login');
@@ -53,7 +54,7 @@ class ChipOrder extends React.Component {
             return;
         }
         else{
-            
+
             let _this = this;
             let url = getCustomerCart.replace('id', Cookies.get('userId'));
             let shopifyClient = _this.props.shopifyClient;
@@ -70,7 +71,7 @@ class ChipOrder extends React.Component {
             .catch((err) => {
                 console.error(err);
                 //redirect to all items page if product ID is invalid
-                this.props.history.push('/allItems'); 
+                this.props.history.push('/allItems');
             });
             API.Request(url, 'GET', {}, true)
             .then(res => {
@@ -126,9 +127,9 @@ class ChipOrder extends React.Component {
                 console.error(err);
             });
         }
-        
+
     }
-    
+
     handleChange(key, value) {
         this.setState(
             {
@@ -141,12 +142,12 @@ class ChipOrder extends React.Component {
         This function realize the functionality of adding the manufacture service to the cart
 
         We create a virtual product called "EWOD Chip Manufacturing Service" in Shopify development store
-        and here we are actually add this product with some customized options 
-        set in the Shopify development store by the "customAttribute" (a feature provided by Shopify -> Product) 
-        to the "shopifyClient.checkout.lineItems", an API provided by js-buy-sdk. 
-        
+        and here we are actually add this product with some customized options
+        set in the Shopify development store by the "customAttribute" (a feature provided by Shopify -> Product)
+        to the "shopifyClient.checkout.lineItems", an API provided by js-buy-sdk.
+
         Then later in the cart.jsx, when "shopifyClient.checkout.webUrl" is opened by a new "window" Object,
-        all the items added to the "shopifyClient.checkout.lineItems" will be added to the created order(taken care of by js-buy-sdk) 
+        all the items added to the "shopifyClient.checkout.lineItems" will be added to the created order(taken care of by js-buy-sdk)
         automatically when customers checkout in that page.
 
         @variantId: The variantId here is the variantId of the product set by the development
@@ -154,14 +155,20 @@ class ChipOrder extends React.Component {
         @quantity: The quantity seleted by customer, put in from frontend page
     */
     addVariantToCart(variantId, quantity){
+        this.setState({
+          isLoading: true,
+        });
         if(quantity < 1){
             alert("Quantity must be at least 1");
+            this.setState({
+              isLoading: false,
+            });
             return;
         } else {
             let _this = this;
             const wcpbVal = _this.state.wcpb.toString();
-            const lineItemsToAdd = [{variantId, 
-                                    quantity: parseInt(quantity, 10), 
+            const lineItemsToAdd = [{variantId,
+                                    quantity: parseInt(quantity, 10),
                                     customAttributes: [
                                     {
                                         key: "material",
@@ -175,7 +182,7 @@ class ChipOrder extends React.Component {
                                         key: "fileName",
                                         value: _this.state.fileInfo.fileName
                                     }
-                                    ] 
+                                    ]
                                 }];
             let customServerOrderAttributes = "";
             customServerOrderAttributes += `material: ${_this.state.materialVal}\n`;
@@ -212,16 +219,24 @@ class ChipOrder extends React.Component {
                 let url = addOrderChipToCart.replace('id', _this.state.orderInfoId);
                 API.Request(url, 'POST', data, true)
                 .then(res => {
-                    // console.log(res);
+                    this.setState({
+                      isLoading: false,
+                    });
                 })
                 .catch(err =>{
                     console.error(err);
+                    this.setState({
+                      isLoading: false,
+                    });
                 });
             })
             .catch(err => {
                 console.error(err);
+                this.setState({
+                  isLoading: false,
+                });
             });
-        }   
+        }
     }
 
     setCurrentIndex(event) {
@@ -236,17 +251,17 @@ class ChipOrder extends React.Component {
         let variantId = ewodFabServiceVariantId;
         for(let i = 0; i < this.state.material.length; i++) {
             tabShow.push(
-                <li key={i} 
-                    className={this.state.cIndex === i ? 'active':''} 
-                    index={i} 
-                    onClick={this.setCurrentIndex} > 
+                <li key={i}
+                    className={this.state.cIndex === i ? 'active':''}
+                    index={i}
+                    onClick={this.setCurrentIndex} >
                     <a data-toggle="tab">
                         {this.state.material[i]}
                     </a>
                 </li>
             );
         }
-        
+
         return(
             <div className="order-container">
                 <div className="shop-main-content">
@@ -266,17 +281,17 @@ class ChipOrder extends React.Component {
                             <div className="col-sm-9 col-md-9 col-lg-9">
                                 <div className="tab-content">
                                     <div className={this.state.cIndex === 0 ? 'tab-pane fade in active':'tab-pane fade in'}>
-                                        ITO glass is good substrate choice for optical applications. The ITO layer has 
-                                        thickness of 200 nm. The glass is soda-lime glass with thickness of 0.7 nm. The 
+                                        ITO glass is good substrate choice for optical applications. The ITO layer has
+                                        thickness of 200 nm. The glass is soda-lime glass with thickness of 0.7 nm. The
                                         whole substrate is 4 inches in diameter.
                                     </div>
                                     <div className={this.state.cIndex === 1 ? 'tab-pane fade in active':'tab-pane fade in'}>
-                                        Paper is good substrate choice for optical applications. The ITO layer has a 
-                                        thickness of 200 nm. The glass is soda-lime glass with thickness of 0.7 nm. The 
+                                        Paper is good substrate choice for optical applications. The ITO layer has a
+                                        thickness of 200 nm. The glass is soda-lime glass with thickness of 0.7 nm. The
                                         whole substrate is 4 inches in diameter.
                                     </div>
                                     <div className={this.state.cIndex === 2 ? 'tab-pane fade in active':'tab-pane fade in'}>
-                                        PCB has thickness of 200 nm, which enables multiple layers of patterns. The 
+                                        PCB has thickness of 200 nm, which enables multiple layers of patterns. The
                                         whole substrate is 4 inches in diameter.
                                     </div>
                                 </div>
@@ -295,23 +310,27 @@ class ChipOrder extends React.Component {
                         </div>
                         <div className="div-shop-quantity">
                             <label>Quantity:&nbsp;</label>
-                            { this.state.product !== undefined 
+                            { this.state.product !== undefined
                             ?
-                            <div> 
-                                <input type="number" className="input-quantity" 
-                                    value={this.state.quantity} 
-                                    onChange={v => this.handleChange('quantity', v.target.value)}/> X ${this.state.product.variants[0].price} = 
-                                <span> ${(this.state.quantity * this.state.product.variants[0].price).toFixed(2)}</span>   
+                            <div>
+                                <input type="number" className="input-quantity"
+                                    value={this.state.quantity}
+                                    onChange={v => this.handleChange('quantity', v.target.value)}/> X ${this.state.product.variants[0].price} =
+                                <span> ${(this.state.quantity * this.state.product.variants[0].price).toFixed(2)}</span>
                             </div>
                             : null
-                            }                                            
+                            }
                             <p className="cart-btn">
-                                <input type="button" className="btn btn-primary btn-lg btn-block" 
-                                    value="Add to Cart" 
-                                    onClick={e => this.addVariantToCart(variantId, this.state.quantity)}/>
-                            </p>                          
+                                {
+                                    this.state.isLoading
+                                    ? <img src="../../../static/img/loading80px.gif" alt="" className="loading-icon"/>
+                                    : <input type="button" className="btn btn-primary btn-lg btn-block"
+                                        value="Add to Cart"
+                                        onClick={e => this.addVariantToCart(variantId, this.state.quantity)}/>
+                                }
+                            </p>
                         </div>
-                        <div className="tax-info">Note: Price excludes sales tax</div>                   
+                        <div className="tax-info">Note: Price excludes sales tax</div>
                     </div>
                 </div>
                 <div className="hr-div-login"></div>
