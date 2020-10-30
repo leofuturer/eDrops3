@@ -10,34 +10,42 @@ class AllOrders extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            orderList: []
+            orderList: [],
+            isLoading: false,
         };
         this.handleDetail = this.handleDetail.bind(this);
     }
 
     componentDidMount() {
+        this.setState({
+          isLoading: true
+        });
         let url = getAllOrderInfos;
         let data = {};
         API.Request(url, 'GET', data, true)
         .then((res) => {
             this.setState({
-                orderList: res.data
+                orderList: res.data,
+                isLoading: false
             })
         })
         .catch(err => {
             console.log(err);
+            this.setState({
+              isLoading: false
+            });
         })
     }
 
     handleDetail(e) {
-        //Using the window.open() method to open a new window 
+        //Using the window.open() method to open a new window
         //and display the page based on the passed in redirectUrl
         let orderId = e.target.parentNode.parentNode.id;
         let redirectUrl = "/subpage/order-detail";
         let strWindowFeatures = "width=1200px, height=900px";
         let WindowForOrderDetail = window.open(redirectUrl, "_blank", strWindowFeatures);
         WindowForOrderDetail._orderItemId = orderId;
-    } 
+    }
 
     render() {
         if(Cookies.get('userType') !== 'admin') {
@@ -57,13 +65,13 @@ class AllOrders extends React.Component {
                                     <th>Customer ID</th>
                                     <th>Status</th>
                                     <th className="icon-center">Details</th>
-                                    
+
                                 </tr>
                             </thead>
                             <tbody>
-                                { this.state.orderList.length !== 0 
+                                { this.state.orderList.length !== 0
                                 ?
-                                
+
                                 this.state.orderList.map((item, index) => {
                                     return(
                                         <tr key={index} id={item.id}>
@@ -78,7 +86,13 @@ class AllOrders extends React.Component {
                                 })
                                 :
                                 <tr>
-                                    <td>No orders have been submitted yet.</td>
+                                    <td>
+                                        {
+                                            this.state.isLoading
+                                            ? <img src="../../../static/img/loading80px.gif" alt="" className="loading-icon"/>
+                                            : "No orders have been submitted yet."
+                                        }
+                                    </td>
                                 </tr>
                             }
                             </tbody>

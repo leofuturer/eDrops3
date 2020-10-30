@@ -3,9 +3,9 @@ import { withRouter, NavLink } from 'react-router-dom';
 
 import './order.css';
 import API from "../../api/api";
-import { customerOrderRetrieve, workerOrderRetrieve, 
-         downloadFileById, editOrderStatus, 
-         findCustomerByWhere, findOneWorkerByWhere } 
+import { customerOrderRetrieve, workerOrderRetrieve,
+         downloadFileById, editOrderStatus,
+         findCustomerByWhere, findOneWorkerByWhere }
          from '../../api/serverConfig';
 
 import Cookies from "js-cookie";
@@ -19,11 +19,15 @@ class Orders extends React.Component{
         super(props);
         this.state = {
             orderList: [],
-            userInfo: {}
+            userInfo: {},
+            isLoading: false,
         }
     }
 
     componentDidMount() {
+        this.setState({
+          isLoading: true
+        });
         var data = {};
         var method = 'GET';
         if (this.props.match.path === '/manage/worker-orders') {
@@ -37,18 +41,22 @@ class Orders extends React.Component{
         API.Request(url, method, data, true)
         .then(res => {
             this.setState({
-                orderList: res.data
+                orderList: res.data,
+                isLoading: false
             });
         })
         .catch(err => {
             console.error(err);
+            this.setState({
+              isLoading: false
+            });
         });
     }
-    
-    
+
+
 
     handleDetail(e) {
-        //Using the window.open() method to open a new window 
+        //Using the window.open() method to open a new window
         //and display the page based on the passed in redirectUrl
         let originalOrderId = e.target.id;
         let orderId = Number(originalOrderId.replace(/[^0-9]/ig, ''));
@@ -61,7 +69,7 @@ class Orders extends React.Component{
     render() {
         return (
             <div>
-                <div className="right-route-content"> 
+                <div className="right-route-content">
                     <div className="profile-content">
                         <h2>Orders</h2>
                     </div>
@@ -71,15 +79,15 @@ class Orders extends React.Component{
                                 <thead>
                                     <tr>
                                         {
-                                            Cookies.get('userType') === 'customer' 
-                                            ? <th>Order ID</th> 
+                                            Cookies.get('userType') === 'customer'
+                                            ? <th>Order ID</th>
                                             : Cookies.get('userType') === 'worker'
                                               ? <th>Uploader</th>
                                               : null
                                         }
                                         {
-                                            Cookies.get('userType') === 'customer' 
-                                            ? <th>Order Date</th> 
+                                            Cookies.get('userType') === 'customer'
+                                            ? <th>Order Date</th>
                                             : Cookies.get('userType') === 'worker'
                                               ? <th>Date Assigned</th>
                                               : null
@@ -96,9 +104,9 @@ class Orders extends React.Component{
                                 </thead>
                                 <tbody>
                                     {this.state.orderList.length !== 0
-                                        ?  
-                                            this.state.orderList.map((item, index) => {                                              
-                                                return ( 
+                                        ?
+                                            this.state.orderList.map((item, index) => {
+                                                return (
                                                     <tr key={index} id={item.id}>
                                                         {
                                                             Cookies.get('userType') === "customer"
@@ -116,7 +124,7 @@ class Orders extends React.Component{
                                                         {
                                                             Cookies.get('userType') === "worker" || Cookies.get('userType') === "customer"
                                                             ? <td className="icon-center">
-                                                                    <i className="fa fa-commenting" id={`worker-order${item.id}`} onClick={this.handleDetail}></i>                                           
+                                                                    <i className="fa fa-commenting" id={`worker-order${item.id}`} onClick={this.handleDetail}></i>
                                                               </td>
                                                             : null
                                                         }
@@ -125,9 +133,12 @@ class Orders extends React.Component{
                                             })
                                         : <tr>
                                             <td>
-                                                {Cookies.get('userType') === "worker"
-                                                ? "No orders have been assigned to you yet."
-                                                : "No orders have been placed."
+                                                {
+                                                    this.state.isLoading
+                                                        ? <img src="../../../static/img/loading80px.gif" alt="" className="loading-icon"/>
+                                                        : (Cookies.get('userType') === "worker"
+                                                            ? "No orders have been assigned to you yet."
+                                                            : "No orders have been placed.")
                                                 }
                                             </td>
                                         </tr>
@@ -138,7 +149,7 @@ class Orders extends React.Component{
                     </div>
                 </div>
             </div>
-        );   
+        );
     }
 }
 
