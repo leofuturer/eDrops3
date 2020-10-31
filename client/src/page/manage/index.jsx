@@ -14,6 +14,11 @@ import FoundryWorker from 'page/foundryWorker/index.jsx';
 import Users from 'page/users/index.jsx';
 import AddOrEditWorker from 'page/foundryWorker/addOrEditWorker.jsx';
 import AddOrEditUser from 'page/users/addOrEditUser.jsx';
+
+//Admins
+import Admins from 'page/admins/index.jsx';
+import AddOrEditAdmin from 'page/admins/AddOrEditAdmin.jsx';
+
 //Files
 import Files from 'page/files/index.jsx';
 import AllFiles from 'page/files/allFiles.jsx';
@@ -61,6 +66,21 @@ const routes = [
     {
         path: "/manage/users/edituser",
         component: AddOrEditUser
+    },
+    //Admin view(manage) all admins
+    {
+        path: "/manage/admins",
+        component: Admins
+    },
+    //Admin add new admin
+    {
+        path: "/manage/admins/addNewAdmin",
+        component: AddOrEditAdmin
+    },
+    //Admin edit an admin
+    {
+        path: "/manage/admins/editAdmin",
+        component: AddOrEditAdmin
     },
     //Admin view(manage) all files
     {
