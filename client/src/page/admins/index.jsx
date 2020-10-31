@@ -39,6 +39,7 @@ class Admins extends Component {
                         <table className="table">
                             <thead>
                             <tr>
+                                <th>ID</th>
                                 <th>Phone</th>
                                 <th>Realm</th>
                                 <th>Login username</th>
