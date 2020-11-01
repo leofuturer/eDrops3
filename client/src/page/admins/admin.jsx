@@ -21,7 +21,7 @@ class Admin extends Component {
         let admin = this.props.admin;
         let url = deleteAdminById.replace('id', admin.id);
         let classSelector = `#admin${admin.id}`;
-        API.Request(url, 'DELETE', data, true)
+        API.Request(url, 'DELETE', {}, true)
         .then(response=>{
             console.log(res);
             $(classSelector).remove();
