@@ -43,7 +43,7 @@ class NavLeft extends React.Component{
                             ?
                             <li>
                                 <NavLink to="/manage/admins" activeStyle={{width:'117px',borderLeft:'3px solid #428bca',color:'#428bca'}}>
-                                    <span className="icon-nav"><i className="fa fa-address-card"></i></span>
+                                    <span className="icon-nav"><i className="fa fa-user"></i></span>
                                     <span className="icon-txt">Admins</span>
                                 </NavLink>
                             </li>
