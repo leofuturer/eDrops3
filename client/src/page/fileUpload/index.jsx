@@ -46,7 +46,7 @@ class Upload extends React.Component{
     }
 
     componentDidMount() {
-        let _this = this;   
+        let _this = this;
         const access_token = Cookies.get('access_token');
 
         $("#file1").fileinput({
@@ -56,6 +56,10 @@ class Upload extends React.Component{
             maxFileSize: 5000,
             maxFilesNum: 1,
             name: "file",
+            uploadExtraData: {
+                isPublic: this.state.public == 'public' ? true : false,
+                unit: this.state.unit
+            },
             slugCallback: function(filename) {
                 return filename.replace('(', '_').replace(']', '_');
             }
@@ -66,7 +70,7 @@ class Upload extends React.Component{
             /*
             $.notify({
             // options
-                message: 'The file has been uploaded!' 
+                message: 'The file has been uploaded!'
             },{
                 // settings
                 placement: {
@@ -102,7 +106,7 @@ class Upload extends React.Component{
 
         let ptypeList = [];
         for(let i=0; i<this.state.ptype.length; i++) {
-            ptypeList.push(<li key={i} className={this.state.currentIndex === i ? 
+            ptypeList.push(<li key={i} className={this.state.currentIndex === i ?
                 'li-active' : ''} index={i} onClick={this.setCurrentIndex}>{this.state.ptype[i]}</li>);
         }
 
@@ -141,7 +145,7 @@ class Upload extends React.Component{
                     </div>
                 </div>
                 <div className="hr-div-login"></div>
-                
+
                 {/*The modal */}
                 <div className="modal fade" id="exampleModal" tabIndex="-1" role="dialog" aria-labelledby="exampleModalLabel" >
                     <div className="modal-dialog modal-dialog-centered" role="document">
@@ -161,7 +165,7 @@ class Upload extends React.Component{
                         </div>
                         </div>
                     </div>
-                </div>            
+                </div>
             </div>
         )
     }

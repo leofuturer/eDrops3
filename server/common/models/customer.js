@@ -61,7 +61,7 @@ module.exports = function(Customer) {
             port: FRONTEND_PORT,
             redirect: '/emailVerified'
         };
-        
+
         user.verify(emailOptions);
         cb(null);
     }
@@ -79,12 +79,12 @@ module.exports = function(Customer) {
     Customer.on('resetPasswordRequest', function(info){
         // from https://loopback.io/doc/en/lb3/Logging-in-users.html
         var url = `http://${FRONTEND_HOSTNAME}:${FRONTEND_PORT}/resetPassword`;
-        var html = `Hello ${info.user.firstName} ${info.user.lastName},<br><br>` + 
-                    `You've requested a password reset. Please click <a href="${url}?access_token=` + 
-                    `${info.accessToken.id}">here</a> to reset your password. ` + 
-                    `This link will expire in 15 minutes.<br><br>` + 
-                    `Sincerely,<br>` + 
-                    `Edrop<br><br>` + 
+        var html = `Hello ${info.user.firstName} ${info.user.lastName},<br><br>` +
+                    `You've requested a password reset. Please click <a href="${url}?access_token=` +
+                    `${info.accessToken.id}">here</a> to reset your password. ` +
+                    `This link will expire in 15 minutes.<br><br>` +
+                    `Sincerely,<br>` +
+                    `Edrop<br><br>` +
                     `Need help? Contact us at ${SENDER_EMAIL_USERNAME}<br>`;
         Customer.app.models.Email.send({
             to: info.email,
@@ -97,7 +97,7 @@ module.exports = function(Customer) {
         });
     })
 
-    //Customer instance creates an address belongsTo himself 
+    //Customer instance creates an address belongsTo himself
     //Actually we do not need this, we should use the exposed API below for model relation instead.
     //Using: POST /customers/{id}/orders
     Customer.createAddress = (ctx, body) => {
@@ -150,7 +150,7 @@ module.exports = function(Customer) {
             if(err){
                 cb(err);
             }
-            else {          
+            else {
                 // console.log(fileObj);
                 var uploadedFile = fileObj.files['attach-document'][0];
                 // console.log(uploadedFile);
@@ -163,6 +163,8 @@ module.exports = function(Customer) {
                     uploader: user.username,
                     customerId: user.id,
                     isDeleted: false,
+                    isPublic: false,
+                    unit: 'mm',
                     fileSize: formatBytes(uploadedFile.size, 1),
                 }, function (err, obj){
                     if(err){
@@ -240,7 +242,7 @@ module.exports = function(Customer) {
                     });
                     cb(null);
 
-                    // Hard delete code that destroys the fileInfo instance and 
+                    // Hard delete code that destroys the fileInfo instance and
                     // also deletes from container
                     // Customer.app.models.fileInfo.destroyById(fileId, function(err){
                     //     if(err){
@@ -255,7 +257,7 @@ module.exports = function(Customer) {
                     //             }
                     //         });
                     //     }
-                    // }); 
+                    // });
                 }
             });
         }
@@ -290,7 +292,7 @@ module.exports = function(Customer) {
                         console.error(err);
                         cb(err);
                     });
-                    
+
                 })
                 Promise.all(promises2).then(() => {
                     cb(null, allOrderChips);
@@ -369,7 +371,7 @@ module.exports = function(Customer) {
         accepts: [
             {arg: 'ctx', type: 'object', http: {source: 'context'}},
             {arg: 'body', type: 'object', http: {source: 'body'}},
-            
+
         ],
         http: {path: '/createAddress', verb: 'post'},
         returns: {arg: 'addressInstance', type: 'object', root: true}
