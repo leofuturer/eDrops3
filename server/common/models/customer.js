@@ -151,9 +151,9 @@ module.exports = function(Customer) {
                 cb(err);
             }
             else {
-                // console.log(fileObj);
                 var uploadedFile = fileObj.files['attach-document'][0];
-                // console.log(uploadedFile);
+                var uploadedFileFields = fileObj.fields;
+
                 const FileInfoModel = app.models.fileInfo;
                 FileInfoModel.create({
                     uploadTime: currentTime(),
@@ -163,8 +163,8 @@ module.exports = function(Customer) {
                     uploader: user.username,
                     customerId: user.id,
                     isDeleted: false,
-                    isPublic: false,
-                    unit: 'mm',
+                    isPublic: uploadedFileFields.isPublic == 'true' ? true : false,
+                    unit: uploadedFileFields.unit,
                     fileSize: formatBytes(uploadedFile.size, 1),
                 }, function (err, obj){
                     if(err){

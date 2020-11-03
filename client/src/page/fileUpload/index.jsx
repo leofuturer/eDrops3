@@ -20,9 +20,9 @@ class Upload extends React.Component{
         this.state = {
             currentIndex: 0,
             currentIndex1: 0,
-            ptype: ['public','private'],
+            ptype: ['private','public'],
             utype: ['mm','cm','in'],
-            public: 'public',
+            public: 'private',
             unit: 'mm',
         }
         this.setCurrentIndex = this.setCurrentIndex.bind(this);
@@ -36,6 +36,7 @@ class Upload extends React.Component{
             currentIndex: parseInt(event.currentTarget.getAttribute('index'), 10)
         });
         this.state.public = this.state.ptype[event.currentTarget.getAttribute('index')]
+        console.log(this.state.public == 'public' ? true : false)
     }
 
     setCurrentIndex1(event) {
@@ -43,6 +44,7 @@ class Upload extends React.Component{
             currentIndex1: parseInt(event.currentTarget.getAttribute('index'), 10)
         })
         this.state.unit = this.state.utype[event.currentTarget.getAttribute('index')]
+        console.log(this.state.unit)
     }
 
     componentDidMount() {

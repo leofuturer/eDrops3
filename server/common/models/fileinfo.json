@@ -37,11 +37,13 @@
     },
     "isPublic": {
         "type": "Boolean",
-        "required": true
+        "required": true,
+        "default": false
     },
-    "units": {
+    "unit": {
         "type": "string",
-        "required": true
+        "required": true,
+        "default": "mm"
     }
   },
   "validations": [],
