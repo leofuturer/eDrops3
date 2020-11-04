@@ -32,36 +32,47 @@ class Upload extends React.Component{
     }
 
     setCurrentIndex(event) {
+        $("#file1").fileinput('destroy');
         this.setState({
-            currentIndex: parseInt(event.currentTarget.getAttribute('index'), 10)
+            currentIndex: parseInt(event.currentTarget.getAttribute('index'), 10),
+            public: this.state.ptype[event.currentTarget.getAttribute('index')]
         });
-        this.state.public = this.state.ptype[event.currentTarget.getAttribute('index')]
-        console.log(this.state.public == 'public' ? true : false)
     }
 
     setCurrentIndex1(event) {
+        $("#file1").fileinput('destroy');
         this.setState({
-            currentIndex1: parseInt(event.currentTarget.getAttribute('index'), 10)
-        })
-        this.state.unit = this.state.utype[event.currentTarget.getAttribute('index')]
-        console.log(this.state.unit)
+            currentIndex1: parseInt(event.currentTarget.getAttribute('index'), 10),
+            unit: this.state.utype[event.currentTarget.getAttribute('index')]
+        });
     }
 
     componentDidMount() {
+        this.setState({});
+    }
+
+    componentDidUpdate() {
         let _this = this;
         const access_token = Cookies.get('access_token');
 
+        console.log(uploadFile.replace('id', Cookies.get('userId')) + '?access_token=' + access_token + '&isPublic=' + this.state.public + '&unit=' + this.state.unit)
+
         $("#file1").fileinput({
-            uploadUrl: uploadFile.replace('id', Cookies.get('userId')) + '?access_token=' + access_token, // you must set a valid URL here, or you will get an error
+            uploadUrl: uploadFile.replace('id', Cookies.get('userId')) + '?access_token=' + access_token + '&isPublic=' + this.state.public + '&unit=' + this.state.unit, // you must set a valid URL here, or you will get an error
             allowedFileExtensions : ['dxf'],
             overwriteInitial: false,
             maxFileSize: 5000,
             maxFilesNum: 1,
             name: "file",
-            uploadExtraData: {
-                isPublic: this.state.public == 'public' ? true : false,
+            /*uploadExtraData: {//function(previewId, index) {
+                var data = {
+                    isPublic: this.state.public, // currently throwing an error
+                    unit: this.state.unit
+                };
+                return data;
+                isPublic: this.state.public,
                 unit: this.state.unit
-            },
+            },*/
             slugCallback: function(filename) {
                 return filename.replace('(', '_').replace(']', '_');
             }

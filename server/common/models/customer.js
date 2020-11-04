@@ -145,6 +145,7 @@ module.exports = function(Customer) {
         const user = this;
         if(!options) options = {};
         // console.log(ctx.req);
+        console.log(ctx.req.query)
         ctx.req.params.container = 'test_container'; // we may want to use username for this
         Customer.app.models.container.upload(ctx.req, ctx.result, options, function (err, fileObj) {
             if(err){
@@ -152,7 +153,10 @@ module.exports = function(Customer) {
             }
             else {
                 var uploadedFile = fileObj.files['attach-document'][0];
-                var uploadedFileFields = fileObj.fields;
+                var uploadedFields = ctx.req.query;
+                /*var uploadedFields = fileObj.fields;
+                console.log(uploadedFields.isPublic)
+                console.log(uploadedFields.unit)*/
 
                 const FileInfoModel = app.models.fileInfo;
                 FileInfoModel.create({
@@ -163,8 +167,8 @@ module.exports = function(Customer) {
                     uploader: user.username,
                     customerId: user.id,
                     isDeleted: false,
-                    isPublic: uploadedFileFields.isPublic == 'true' ? true : false,
-                    unit: uploadedFileFields.unit,
+                    isPublic: uploadedFields.isPublic == 'public' ? true : false,
+                    unit: uploadedFields.unit,
                     fileSize: formatBytes(uploadedFile.size, 1),
                 }, function (err, obj){
                     if(err){
