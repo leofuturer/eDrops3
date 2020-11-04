@@ -25,9 +25,11 @@ export const updateAdminProfile = ApiRootUrl + '/admins/id';
 export const adminDownloadFile = ApiRootUrl + '/admins/downloadFile';
 export const addFoundryWorker = ApiRootUrl + '/foundryWorkers';
 export const addCustomer = ApiRootUrl + '/customers';
+export const addAdmin = ApiRootUrl + '/admins';
 export const getAllCustomers = ApiRootUrl+'/customers';
 export const getAllFoundryWorkers = ApiRootUrl + '/foundryWorkers';
 export const findAdminByWhere = ApiRootUrl + '/admins';
+export const deleteAdminById = ApiRootUrl + '/admins/id'
 
 //Foundry Worker
 export const FoundryWorkerLogin = ApiRootUrl+ '/foundryWorkers/login';
