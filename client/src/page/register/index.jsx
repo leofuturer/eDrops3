@@ -14,6 +14,7 @@ class Register extends React.Component {
         super(props);
         this.state = {
             address: "",
+            streetLine2: "",
             firstName: "",
             lastName: "",
             phoneNumber: "",
@@ -178,6 +179,7 @@ class Register extends React.Component {
             email: this.state.email,
             password: this.state.password,
             address: this.state.address,
+            streetLine2: this.state.streetLine2,
             country: this.state.country,
             state: this.state.state,
             city: this.state.city,
@@ -329,6 +331,17 @@ class Register extends React.Component {
                                     <div className="col-md-6 col-sm-6 col-xs-6 text-left">
                                         <input type="text" className="form-control" placeholder="Address"
                                                onChange={v => this.handleChange('address', v.target.value)}/>
+                                    </div>
+                                    <div className="col-md-4 col-sm-4 col-xs-4 messages-unset"></div>
+                                </div>
+
+                                <div className="form-group row">
+                                    <label className="col-md-2 col-sm-2 col-xs-2 control-label">
+                                        <span>Address Line 2</span>
+                                    </label>
+                                    <div className="col-md-6 col-sm-6 col-xs-6 text-left">
+                                        <input type="text" className="form-control" placeholder="Address Line 2 (optional)"
+                                               onChange={v => this.handleChange('streetLine2', v.target.value)}/>
                                     </div>
                                     <div className="col-md-4 col-sm-4 col-xs-4 messages-unset"></div>
                                 </div>

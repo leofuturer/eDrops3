@@ -10,6 +10,7 @@ class UpdateAddress extends React.Component {
         super(props);
         this.state = {
             street: "",
+            streetLine2: "",
             city: "",
             state:"",
             country:"",
@@ -23,6 +24,7 @@ class UpdateAddress extends React.Component {
         let addressInfo = this.props.location.state.addressInfo;
         this.setState({
             street: addressInfo.street,
+            streetLine2: addressInfo.streetLine2,
             city: addressInfo.city,
             state: addressInfo.state,
             country: addressInfo.country,
@@ -41,6 +43,7 @@ class UpdateAddress extends React.Component {
         let addressId = this.props.location.state.addressId;
         let addressMes = {
             street: this.state.street,
+            streetLine2: this.state.streetLine2,
             city: this.state.city,
             state: this.state.state,
             country: this.state.country,
@@ -73,6 +76,16 @@ class UpdateAddress extends React.Component {
                                 <input type="text" value={this.state.street} 
                                     className="form-control" 
                                     onChange={v => this.handleChange('street', v.target.value)}/>
+                            </div>
+                        </div>
+                        <div className="form-group">
+                            <label className="col-md-4 col-sm-4 col-xs-4 control-label">
+                                <span>Address Line 2</span>
+                            </label>
+                            <div className="col-md-8 col-sm-8 col-xs-8">
+                                <input type="text" value={this.state.streetLine2} 
+                                    className="form-control" 
+                                    onChange={v => this.handleChange('streetLine2', v.target.value)}/>
                             </div>
                         </div>
                         <div className="form-group">
