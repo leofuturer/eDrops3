@@ -2,9 +2,9 @@ import React from 'react';
 import { withRouter } from 'react-router-dom';
 import './order.css';
 import API from "../../api/api";
-import { adminGetChipOrders, customerGetChipOrders, 
-        workerGetChipOrders, editOrderStatus, 
-        downloadFileById, adminDownloadFile, workerDownloadFile } 
+import { adminGetChipOrders, customerGetChipOrders,
+        workerGetChipOrders, editOrderStatus,
+        downloadFileById, adminDownloadFile, workerDownloadFile }
          from '../../api/serverConfig';
 import Cookies from "js-cookie";
 
@@ -14,6 +14,7 @@ class ChipOrders extends React.Component{
         super(props);
         this.state = {
             orderList: [],
+            isLoading: false,
         }
         this.handleDownload = this.handleDownload.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -21,6 +22,9 @@ class ChipOrders extends React.Component{
     }
 
     componentDidMount() {
+        this.setState({
+          isLoading: true
+        });
         let url = "";
         if(Cookies.get('userType') === 'customer'){
             url = customerGetChipOrders.replace('id', Cookies.get('userId'));
@@ -34,26 +38,30 @@ class ChipOrders extends React.Component{
         .then(res => {
             this.setState({
                 orderList: res.data.orderChips,
+                isLoading: false
             });
         })
         .catch(err => {
             console.error(err);
+            this.setState({
+              isLoading: false
+            });
         });
     }
- 
+
     handleDownload(e) {
         console.log(e.target.id);
         let url = "";
         let fileId = Number(e.target.id.replace(/[^0-9]/ig, ''));
         console.log(Cookies.get('userType'))
         if(Cookies.get('userType') === 'customer'){
-            url = downloadFileById.replace('id', Cookies.get('userId'));  
+            url = downloadFileById.replace('id', Cookies.get('userId'));
         } else if(Cookies.get('userType') === 'worker'){
             url = workerDownloadFile.replace('id', Cookies.get('userId'));
         } else if(Cookies.get('userType') === 'admin') {
             url = adminDownloadFile;
         }
-        
+
         url += `?access_token=${Cookies.get('access_token')}&fileId=${fileId}`;
         window.location = url;
     }
@@ -86,7 +94,7 @@ class ChipOrders extends React.Component{
     render() {
         return (
             <div>
-                <div className="right-route-content"> 
+                <div className="right-route-content">
                     <div className="profile-content">
                         <h2>Chip Orders</h2>
                     </div>
@@ -95,13 +103,13 @@ class ChipOrders extends React.Component{
                             <table className="table">
                                 <thead>
                                     <tr>
-                                        <th>ID</th> 
+                                        <th>ID</th>
                                         {
                                             !(Cookies.get('userType') === 'customer')
                                             ? <th>Uploader</th> // admin or worker
                                             : null
                                         }
-                                        <th>Last Updated</th> 
+                                        <th>Last Updated</th>
                                         {
                                             !(Cookies.get('userType') === 'worker')
                                             ? <th>Worker Assigned</th> //customer or admin
@@ -123,9 +131,9 @@ class ChipOrders extends React.Component{
                                 </thead>
                                 <tbody>
                                     {this.state.orderList.length !== 0
-                                        ?  
+                                        ?
                                             this.state.orderList.map((item, index) => {
-                                                return (                                                
+                                                return (
                                                     <tr key={index} id={item.id}>
                                                         <td>{item.id}</td>
                                                         {
@@ -143,7 +151,7 @@ class ChipOrders extends React.Component{
                                                             Cookies.get('userType') === "customer"
                                                             ? <td>{item.status}</td>
                                                             : <td className="icon-center">
-                                                                    <form id="edit-order-status-form" className="edit-order-status-form" 
+                                                                    <form id="edit-order-status-form" className="edit-order-status-form"
                                                                             onSubmit={this.handleSubmit}>
                                                                         <select id="status-selection" className="order-status" name="status" defaultValue={item.status}>
                                                                             <option value="Project Started">Project Started</option>
@@ -151,7 +159,7 @@ class ChipOrders extends React.Component{
                                                                         </select>
                                                                         <input type="submit" id={`allOrder${index}`}></input>
                                                                     </form>
-                                                              </td> 
+                                                              </td>
                                                         }
                                                         <td className="icon-center">
                                                             {item.quantity}
@@ -160,7 +168,7 @@ class ChipOrders extends React.Component{
                                                             <i className="fa fa-download" onClick={this.handleDownload} id={`download${item.fileInfoId}`}/>
                                                         </td>
                                                         {
-                                                            Cookies.get('userType') === "admin" 
+                                                            Cookies.get('userType') === "admin"
                                                             ? <td className="icon-center">
                                                                 <i className="fa fa-users" id={`allOrder${index}`} onClick={this.handleAssign}/>
                                                               </td>
@@ -171,10 +179,13 @@ class ChipOrders extends React.Component{
                                             })
                                         : <tr>
                                             <td>
-                                                {Cookies.get('userType') === "worker"
-                                                ? "No orders have been assigned to you yet."
-                                                : "No chip orders have been placed yet."
-                                                }
+                                            {
+                                                this.state.isLoading
+                                                    ? <img src="../../../static/img/loading80px.gif" alt="" className="loading-icon"/>
+                                                    : (Cookies.get('userType') === "worker"
+                                                        ? "No orders have been assigned to you yet."
+                                                        : "No orders have been placed.")
+                                            }
                                             </td>
                                         </tr>
                                     }
@@ -184,7 +195,7 @@ class ChipOrders extends React.Component{
                     </div>
                 </div>
             </div>
-        );   
+        );
     }
 }
 
