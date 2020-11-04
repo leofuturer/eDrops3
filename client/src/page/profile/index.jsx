@@ -16,7 +16,8 @@ class Profile extends React.Component{
     constructor(props) {
         super(props)
         this.state = {
-            address: "",
+            street: "",
+            streetLine2: "",
             firstName: "",
             lastName: "",
             phoneNumber: "",
@@ -61,7 +62,8 @@ class Profile extends React.Component{
             } else if (userType === "worker") {
                 // console.log(res.data);
                 this.setState({
-                    address: res.data.address,
+                    street: res.data.street,
+                    streetLine2: res.data.streetLine2,
                     firstName: res.data.firstName,
                     lastName: res.data.lastName,
                     phoneNumber: res.data.phoneNumber,
@@ -93,7 +95,8 @@ class Profile extends React.Component{
                 .then(res => {
                     // console.log(res.data);
                     Object.assign(data, {
-                        address: res.data[0].street,
+                        street: res.data[0].street,
+                        streetLine2: res.data[0].streetLine2,
                         country: res.data[0].country,
                         state: res.data[0].state,
                         city: res.data[0].city,
@@ -102,7 +105,8 @@ class Profile extends React.Component{
                     this.defaultAddressId = res.data[0].id; //for later use with saving
                     // console.log(data);
                     this.setState({
-                        address: data.address,
+                        street: data.street,
+                        streetLine2: data.streetLine2,
                         firstName: data.firstName,
                         lastName: data.lastName,
                         phoneNumber: data.phoneNumber,
@@ -128,7 +132,8 @@ class Profile extends React.Component{
         let userMes = {
             // we keep address info in here for the foundry workers
             // sending this data to customer will automatically discard it
-            address: this.state.address,
+            street: this.state.street,
+            streetLine2: this.state.streetLine2,
             firstName: this.state.firstName,
             lastName: this.state.lastName,
             phoneNumber: this.state.phoneNumber,
@@ -149,7 +154,8 @@ class Profile extends React.Component{
         }
         let addressData = {
             // in case customer accidentally leaves it blank
-            street: this.state.address || "N/A",
+            street: this.state.street || "N/A",
+            streetLine2: this.state.streetLine2 || "N/A",
             country: this.state.country || "N/A",
             state: this.state.state || "N/A",
             city: this.state.city || "N/A",
@@ -279,10 +285,18 @@ class Profile extends React.Component{
                                     
                                     <div className="form-group">
                                         <label className="col-md-4 col-sm-4 col-xs-4 control-label">
-                                            <span>Address</span>
+                                            <span>Street</span>
                                         </label>
                                         <div className="col-md-8 col-sm-8 col-xs-8">
-                                            <input type="text" className="form-control" value={this.state.address} onChange={v => this.handleChange('address', v.target.value)}/>
+                                            <input type="text" className="form-control" value={this.state.street} onChange={v => this.handleChange('street', v.target.value)}/>
+                                        </div>
+                                    </div>
+                                    <div className="form-group">
+                                        <label className="col-md-4 col-sm-4 col-xs-4 control-label">
+                                            <span>Street Line 2</span>
+                                        </label>
+                                        <div className="col-md-8 col-sm-8 col-xs-8">
+                                            <input type="text" className="form-control" value={this.state.streetLine2} onChange={v => this.handleChange('streetLine2', v.target.value)}/>
                                         </div>
                                     </div>
                                     <div className="form-group">

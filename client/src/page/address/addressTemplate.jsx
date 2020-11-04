@@ -52,6 +52,7 @@ class AddressTemplate extends React.Component {
                                 </div>
                                 <div className="row">
                                     <div className="row-txt-padding">{address.street}</div>
+                                    <div className="row-txt-padding">{address.streetLine2}</div>
                                     <div className="row-txt-padding">{address.city}</div>
                                     <div className="row-txt-padding">{address.state}</div>
                                     <div className="row-txt-padding">{address.country}</div>
