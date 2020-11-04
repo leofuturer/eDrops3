@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { withRouter } from 'react-router-dom';
 import { deleteAdminById } from '../../api/serverConfig';
 import $ from 'jquery';
+import Cookies from 'js-cookie';
 import API from '../../api/api';
 
 class Admin extends Component {
@@ -19,11 +20,14 @@ class Admin extends Component {
     }
     handleDelete(){
         let admin = this.props.admin;
+        let userId = Cookies.get('userId');
+        console.log(userId);
+        if(userId === admin.id) return;
         let url = deleteAdminById.replace('id', admin.id);
         let classSelector = `#admin${admin.id}`;
         API.Request(url, 'DELETE', {}, true)
         .then(response=>{
-            console.log(res);
+            console.log(response);
             $(classSelector).remove();
         })
         .catch((err) => {
@@ -34,7 +38,7 @@ class Admin extends Component {
     render() {
         let admin = this.props.admin;
         return (
-            <tr id={`customer${admin.id}`}>
+            <tr id={`admin${admin.id}`}>
                 <td>{admin.id}</td>
                 <td>{admin.phoneNumber}</td>
                 <td>{admin.realm==null?"Null":admin.realm}</td>

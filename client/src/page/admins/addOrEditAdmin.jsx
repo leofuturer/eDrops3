@@ -75,7 +75,7 @@ class AddOrEditAdmin extends React.Component {
         if(Cookies.get('username') === undefined){
             return <Redirect to='/login'></Redirect>
         }
-        if(this.props.match.path === "/manage/adminss/editAdmin") {
+        if(this.props.match.path === "/manage/admins/editAdmin") {
             var profileContent = "Edit Admin Info";
         } else {
             var profileContent = "Add New Admin";
