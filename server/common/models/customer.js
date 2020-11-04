@@ -153,10 +153,9 @@ module.exports = function(Customer) {
             }
             else {
                 var uploadedFile = fileObj.files['attach-document'][0];
-                var uploadedFields = ctx.req.query;
-                /*var uploadedFields = fileObj.fields;
+                var uploadedFields = fileObj.fields;
                 console.log(uploadedFields.isPublic)
-                console.log(uploadedFields.unit)*/
+                console.log(uploadedFields.unit)
 
                 const FileInfoModel = app.models.fileInfo;
                 FileInfoModel.create({

@@ -55,24 +55,17 @@ class Upload extends React.Component{
         let _this = this;
         const access_token = Cookies.get('access_token');
 
-        console.log(uploadFile.replace('id', Cookies.get('userId')) + '?access_token=' + access_token + '&isPublic=' + this.state.public + '&unit=' + this.state.unit)
-
         $("#file1").fileinput({
-            uploadUrl: uploadFile.replace('id', Cookies.get('userId')) + '?access_token=' + access_token + '&isPublic=' + this.state.public + '&unit=' + this.state.unit, // you must set a valid URL here, or you will get an error
+            uploadUrl: uploadFile.replace('id', Cookies.get('userId')) + '?access_token=' + access_token, // you must set a valid URL here, or you will get an error
             allowedFileExtensions : ['dxf'],
             overwriteInitial: false,
             maxFileSize: 5000,
             maxFilesNum: 1,
             name: "file",
-            /*uploadExtraData: {//function(previewId, index) {
-                var data = {
-                    isPublic: this.state.public, // currently throwing an error
-                    unit: this.state.unit
-                };
-                return data;
+            uploadExtraData: {
                 isPublic: this.state.public,
                 unit: this.state.unit
-            },*/
+            },
             slugCallback: function(filename) {
                 return filename.replace('(', '_').replace(']', '_');
             }
