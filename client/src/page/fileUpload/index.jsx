@@ -20,9 +20,9 @@ class Upload extends React.Component{
         this.state = {
             currentIndex: 0,
             currentIndex1: 0,
-            ptype: ['public','private'],
+            ptype: ['private','public'],
             utype: ['mm','cm','in'],
-            public: 'public',
+            public: 'private',
             unit: 'mm',
         }
         this.setCurrentIndex = this.setCurrentIndex.bind(this);
@@ -32,21 +32,27 @@ class Upload extends React.Component{
     }
 
     setCurrentIndex(event) {
+        $("#file1").fileinput('destroy');
         this.setState({
-            currentIndex: parseInt(event.currentTarget.getAttribute('index'), 10)
+            currentIndex: parseInt(event.currentTarget.getAttribute('index'), 10),
+            public: this.state.ptype[event.currentTarget.getAttribute('index')]
         });
-        this.state.public = this.state.ptype[event.currentTarget.getAttribute('index')]
     }
 
     setCurrentIndex1(event) {
+        $("#file1").fileinput('destroy');
         this.setState({
-            currentIndex1: parseInt(event.currentTarget.getAttribute('index'), 10)
-        })
-        this.state.unit = this.state.utype[event.currentTarget.getAttribute('index')]
+            currentIndex1: parseInt(event.currentTarget.getAttribute('index'), 10),
+            unit: this.state.utype[event.currentTarget.getAttribute('index')]
+        });
     }
 
     componentDidMount() {
-        let _this = this;   
+        this.setState({});
+    }
+
+    componentDidUpdate() {
+        let _this = this;
         const access_token = Cookies.get('access_token');
 
         $("#file1").fileinput({
@@ -56,6 +62,10 @@ class Upload extends React.Component{
             maxFileSize: 5000,
             maxFilesNum: 1,
             name: "file",
+            uploadExtraData: {
+                isPublic: this.state.public,
+                unit: this.state.unit
+            },
             slugCallback: function(filename) {
                 return filename.replace('(', '_').replace(']', '_');
             }
@@ -66,7 +76,7 @@ class Upload extends React.Component{
             /*
             $.notify({
             // options
-                message: 'The file has been uploaded!' 
+                message: 'The file has been uploaded!'
             },{
                 // settings
                 placement: {
@@ -102,7 +112,7 @@ class Upload extends React.Component{
 
         let ptypeList = [];
         for(let i=0; i<this.state.ptype.length; i++) {
-            ptypeList.push(<li key={i} className={this.state.currentIndex === i ? 
+            ptypeList.push(<li key={i} className={this.state.currentIndex === i ?
                 'li-active' : ''} index={i} onClick={this.setCurrentIndex}>{this.state.ptype[i]}</li>);
         }
 
@@ -141,7 +151,7 @@ class Upload extends React.Component{
                     </div>
                 </div>
                 <div className="hr-div-login"></div>
-                
+
                 {/*The modal */}
                 <div className="modal fade" id="exampleModal" tabIndex="-1" role="dialog" aria-labelledby="exampleModalLabel" >
                     <div className="modal-dialog modal-dialog-centered" role="document">
@@ -161,7 +171,7 @@ class Upload extends React.Component{
                         </div>
                         </div>
                     </div>
-                </div>            
+                </div>
             </div>
         )
     }
