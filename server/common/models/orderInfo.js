@@ -26,7 +26,7 @@ module.exports = function(OrderInfo) {
                         
                         fees_and_taxes: (parseFloat(body.total_price) - parseFloat(body.total_line_items_price)).toString(),
 
-                        sa_name:     body.shipping_address.first_name + body.shipping_address.last_name,
+                        sa_name:     body.shipping_address.first_name + ' ' + body.shipping_address.last_name,
                         sa_address1: body.shipping_address.address1,
                         sa_address2: body.shipping_address.address2,
                         sa_city:     body.shipping_address.city,
@@ -34,7 +34,7 @@ module.exports = function(OrderInfo) {
                         sa_zip:      body.shipping_address.zip,
                         sa_country:  body.shipping_address.country,
                         
-                        ba_name:     body.billing_address.first_name + body.billing_address.last_name,
+                        ba_name:     body.billing_address.first_name + ' ' + body.billing_address.last_name,
                         ba_address1: body.billing_address.address1,
                         ba_address2: body.billing_address.address2,
                         ba_city:     body.billing_address.city,
