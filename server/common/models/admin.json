@@ -38,13 +38,6 @@
       "property": "create"
     },
     {
-      "accessType": "WRITE",
-      "principalType": "ROLE",
-      "principalId": "$authenticated",
-      "permission": "ALLOW",
-      "property": "deleteById"
-    },
-    {
       "principalType": "ROLE",
       "principalId": "$everyone",
       "permission": "ALLOW",
