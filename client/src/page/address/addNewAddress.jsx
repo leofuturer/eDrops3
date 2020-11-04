@@ -72,7 +72,7 @@ class AddNewAddress extends React.Component {
                         </div>
                         <div className="form-group">
                             <label className="col-md-4 col-sm-4 col-xs-4 control-label">
-                                <span>Address Line 2</span>
+                                <span>Street Line 2</span>
                             </label>
                             <div className="col-md-8 col-sm-8 col-xs-8">
                                 <input type="text" className="form-control" onChange={v => this.handleChange('streetLine2', v.target.value)}/>

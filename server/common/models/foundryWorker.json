@@ -6,7 +6,10 @@
     "validateUpsert": true
   },
   "properties": {
-    "address": {
+    "street": {
+      "type": "string"
+    },
+    "streetLine2": {
       "type": "string"
     },
     "firstName": {

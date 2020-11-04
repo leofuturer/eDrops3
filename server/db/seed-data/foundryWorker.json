@@ -1,6 +1,7 @@
 [
     {
-        "address": "1400 Midware Ave, 216 Apt",
+        "street": "1400 Midware Ave",
+        "streetLine2": "Apt 216",
         "firstName": "Leo",
         "lastName": "Chen",
         "phoneNumber": "3102896978",
@@ -15,7 +16,8 @@
         "emailVerified": true
     },
     {
-        "address": "1O090 Haton Ave, 248 Apt",
+        "street": "1O090 Haton Ave",
+        "streetLine2": "Apt 248",
         "firstName": "Sarah",
         "lastName": "Cuill",
         "phoneNumber": "3102896978",

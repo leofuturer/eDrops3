@@ -1,6 +1,7 @@
 [
     {
         "street": "10988 Ashton Ave",
+        "streetLine2": "",
         "city": "Los Angeles",
         "state": "California",
         "country": "United States",
@@ -10,6 +11,7 @@
     },
     {
         "street": "1432 Haton Ave",
+        "streetLine2": "",
         "city": "Los Angeles",
         "state": "California",
         "country": "United States",
@@ -19,6 +21,7 @@
     },
     {
         "street": "1234 Cilas Ave",
+        "streetLine2": "",
         "city": "Los Angeles",
         "state": "California",
         "country": "United States",
@@ -28,6 +31,7 @@
     },
     {
         "street": "456 Cilas Ave",
+        "streetLine2": "",
         "city": "Los Angeles",
         "state": "California",
         "country": "United States",
