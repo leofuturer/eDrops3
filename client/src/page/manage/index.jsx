@@ -7,6 +7,7 @@ import Profile from 'page/profile/index.jsx';
 import Password from 'page/changePass/index.jsx';
 import Address from 'page/address/index.jsx';
 import AddNewAddress from 'page/address/addNewAddress.jsx';
+import AddNewAddress2 from 'page/beforeCheckout/addNewAddress2.jsx';
 import UpdateAddress from 'page/address/updateAddress.jsx';
 
 //Workers
@@ -35,14 +36,8 @@ import Cart from 'page/cart/index.jsx';
 
 import Cookies from "js-cookie";
 
-import AddNewAddress2 from 'page/beforeCheckout/addNewAddress2.jsx';
-
 
 const routes = [
-    {
-        path: "/manage/beforeCheckout/newAddress",
-        component: AddNewAddress2
-    },
     //Pages for Admin:
     //Admin view(manage) all workers
     {
@@ -136,6 +131,11 @@ const routes = [
     {
         path: "/manage/address/newAddress",
         component: AddNewAddress
+    },
+    // Customer add a new address before checkout
+    {
+        path: "/manage/beforeCheckout/newAddress",
+        component: AddNewAddress2
     },
     //Customer edit a certain address
     {
