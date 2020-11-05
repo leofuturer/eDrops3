@@ -35,7 +35,14 @@ import Cart from 'page/cart/index.jsx';
 
 import Cookies from "js-cookie";
 
+import AddNewAddress2 from 'page/beforeCheckout/addNewAddress2.jsx';
+
+
 const routes = [
+    {
+        path: "/manage/beforeCheckout/newAddress",
+        component: AddNewAddress2
+    },
     //Pages for Admin:
     //Admin view(manage) all workers
     {

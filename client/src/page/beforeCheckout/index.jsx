@@ -26,6 +26,7 @@ class BeforeCheckout extends React.Component  {
         this.handleReturnToCart = this.handleReturnToCart.bind(this);
         this.handleSelectAddress = this.handleSelectAddress.bind(this);
         this.handlePayment = this.handlePayment.bind(this);
+        this.handleAddNewAddress = this.handleAddNewAddress.bind(this);
     }
 
     componentDidMount(){
@@ -76,6 +77,11 @@ class BeforeCheckout extends React.Component  {
                 });
             });
         }
+    }
+
+    handleAddNewAddress(){
+        let _this = this;
+        _this.props.history.push('/manage/beforeCheckout/newAddress');
     }
 
     handleSelectAddress(index) {
@@ -151,6 +157,20 @@ class BeforeCheckout extends React.Component  {
                                 />
                             )
                         }
+                        <div>
+                            <div className="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                                <div className="card-view" style={{minHeight: "200px"}}>
+                                    <div className="row" style={{paddingTop: "70px", paddingLeft: "165px"}}>
+                                        <div className="col-md-4 col-sm-4 col-xs-4">
+                                            <button className="btn btn-success" onClick={this.handleAddNewAddress}>
+                                                <i>+</i>
+                                                <span className="btn-txt-padding">Add New</span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                         </div>
                         { this.state.preparingForCheckout
                         ? <img className="loading-GIF-checkout-button" src="../../../static/img/loading-sm.gif" alt=""/>
