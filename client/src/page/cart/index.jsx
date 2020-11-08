@@ -10,11 +10,7 @@ import { getCustomerCart, getProductOrders,
         modifyChipOrders 
     } from '../../api/serverConfig';
 import Cookies from "js-cookie";
-import ShopifyClient from 'shopify-buy';
-const shopifyClient = ShopifyClient.buildClient({
-    storefrontAccessToken: 'c098a4c1f8d45e55b35caf24ca9c97bb',
-    domain: 'wqntest.myshopify.com'
-});
+
 
 class Cart extends React.Component{
     constructor(props) {
@@ -117,6 +113,7 @@ class Cart extends React.Component{
 
     handleDelete(itemType, index){
         let _this = this;
+        const shopifyClient = _this.props.shopifyClient;
         let url;
         if(itemType === 'product'){
             var array = _this.state.productOrders;
@@ -161,7 +158,8 @@ class Cart extends React.Component{
     handleSaveForOrders(array, type){
         // console.log("Updating DB");       
         let url;
-        let _this = this;     
+        let _this = this;   
+        const shopifyClient = _this.props.shopifyClient;  
         if(_this.state.modifiedItems.size > 0){
             this.setState({
                 saveInProgress: true,

@@ -5,12 +5,6 @@ import Cookies from 'js-cookie';
 import SingleAddress from './singleAddress.jsx';
 import { withRouter } from 'react-router';
 import "./beforeCheckout.css";
-import ShopifyClient from 'shopify-buy';
-
-const shopifyClient = ShopifyClient.buildClient({
-    storefrontAccessToken: 'c098a4c1f8d45e55b35caf24ca9c97bb',
-    domain: 'wqntest.myshopify.com'
-});
 
 class BeforeCheckout extends React.Component  {
     constructor(props) {
@@ -36,6 +30,7 @@ class BeforeCheckout extends React.Component  {
         }
         else if(_this.props.location.state.shopifyCheckoutLink === undefined
                 || _this.props.location.state.cartId === undefined){
+            console.log("check..");
             _this.props.history.push('/manage/cart');
             return;
         }
@@ -90,6 +85,7 @@ class BeforeCheckout extends React.Component  {
 
     handlePayment(){
         let _this = this;
+        const shopifyClient = _this.props.shopifyClient;
         _this.setState({
             preparingForCheckout: true,
         });
