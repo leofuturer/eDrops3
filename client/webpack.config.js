@@ -9,6 +9,8 @@ const webpack           = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 
+require('dotenv').config();
+
 let WEBPACK_ENV = process.env.WEBPACK_ENV || 'dev';
 console.log(WEBPACK_ENV);
 module.exports = {
@@ -98,6 +100,10 @@ module.exports = {
         new webpack.optimize.CommonsChunkPlugin({
             name : 'common',
             filename: 'js/base.js'
+        }),
+        new webpack.DefinePlugin({
+            'process.env.REACT_APP_SHOPIFY_TOKEN': JSON.stringify(process.env.REACT_APP_SHOPIFY_TOKEN),
+            'process.env.REACT_APP_SHOPIFY_DOMAIN': JSON.stringify(process.env.REACT_APP_SHOPIFY_DOMAIN)
         })
     ],
     devServer: {

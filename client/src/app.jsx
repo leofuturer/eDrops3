@@ -1,10 +1,8 @@
-
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter as Router, Switch, Redirect, Route, Link } from 'react-router-dom'
 import ShopifyClient from 'shopify-buy';
 import "bootstrap";
-
 // Router components
 import {MainRouter, SubRouter} from 'router/routeMap.jsx';
 
@@ -14,9 +12,9 @@ import {MainRouter, SubRouter} from 'router/routeMap.jsx';
     specified by the domain and authenticated by the storefrontAccessToken
 */
 const shopifyClient = ShopifyClient.buildClient({
-    storefrontAccessToken: 'c098a4c1f8d45e55b35caf24ca9c97bb',
-    domain: 'wqntest.myshopify.com'
-  });
+    storefrontAccessToken: process.env.REACT_APP_SHOPIFY_TOKEN,
+    domain: process.env.REACT_APP_SHOPIFY_DOMAIN
+});
 
 //The root APP of React
 class App extends React.Component {
