@@ -7,6 +7,8 @@ const errors = require('../../server/toolbox/errors');
 const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/;
 const log = require('../../db/toolbox/log');
 const {formatBytes, currentTime} = require('../../server/toolbox/calculate') ;
+const path = require('path');
+require('dotenv').config({path: path.resolve(__dirname, '.env')});
 
 module.exports = function(Customer) {
     //validate security of password(at least 8 digits, include at least one uppercase
@@ -382,8 +384,8 @@ module.exports = function(Customer) {
 
     Customer.getApiToken = function(cb){
       cb(null, {
-        token: 'c098a4c1f8d45e55b35caf24ca9c97bb',
-        domain: 'wqntest.myshopify.com'
+        token: process.env.SHOPIFY_TOKEN,
+        domain: process.env.SHOPIFY_DOMAIN
       }, 'application/json');
     }
 

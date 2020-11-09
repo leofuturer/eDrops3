@@ -5,7 +5,8 @@ const Roles = require('../../server/constants/Roles');
 const app = require("../../server/server.js");
 //Remote hooks
 const adminRoleMappingCreator = require('../../server/hooks/adminRoleMappingCreator');
-
+const path = require('path');
+require('dotenv').config({path: path.resolve(__dirname, '.env')});
 const { ADMIN_ROLE_NAME } = Roles;
 
 module.exports = function(Admin) {
@@ -130,8 +131,8 @@ module.exports = function(Admin) {
 
     Admin.getApiToken = function(cb){
       cb(null, {
-        token: 'c098a4c1f8d45e55b35caf24ca9c97bb',
-        domain: 'wqntest.myshopify.com'
+        token: process.env.SHOPIFY_TOKEN,
+        domain: process.env.SHOPIFY_DOMAIN
       }, 'application/json');
     }
 
