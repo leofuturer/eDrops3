@@ -2,6 +2,7 @@ import React from 'react';
 import { withRouter, NavLink } from 'react-router-dom';
 import '@babel/polyfill'
 import  CartItem  from './cartItem.jsx';
+import Shopify from '../../app.jsx';
 import { ewodFabServiceId } from '../../constants';
 import './cart.css';
 import API from "../../api/api";
@@ -113,7 +114,7 @@ class Cart extends React.Component{
 
     handleDelete(itemType, index){
         let _this = this;
-        const shopifyClient = _this.props.shopifyClient;
+        const shopifyClient = Shopify.getInstance();
         let url;
         if(itemType === 'product'){
             var array = _this.state.productOrders;
