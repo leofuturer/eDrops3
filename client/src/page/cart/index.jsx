@@ -7,14 +7,15 @@ import './cart.css';
 import API from "../../api/api";
 import { getCustomerCart, getProductOrders, 
         getChipOrders, modifyProductOrders, 
-        modifyChipOrders 
+        modifyChipOrders, customerGetApiToken 
     } from '../../api/serverConfig';
 import Cookies from "js-cookie";
 import ShopifyClient from 'shopify-buy';
-const shopifyClient = ShopifyClient.buildClient({
-    storefrontAccessToken: process.env.REACT_APP_SHOPIFY_TOKEN,
-    domain: process.env.REACT_APP_SHOPIFY_DOMAIN
-});
+// const shopifyClient = ShopifyClient.buildClient({
+//     storefrontAccessToken: process.env.REACT_APP_SHOPIFY_TOKEN,
+//     domain: process.env.REACT_APP_SHOPIFY_DOMAIN
+// });
+let shopifyClient;
 
 class Cart extends React.Component{
     constructor(props) {
@@ -37,6 +38,16 @@ class Cart extends React.Component{
 
     componentDidMount() {
         let _this = this;
+        API.Request(customerGetApiToken, 'GET', {}, true)
+        .then( res => {
+            console.log(res);
+            if(res.status === 200){
+                shopifyClient = ShopifyClient.buildClient({
+                    storefrontAccessToken: res.data.info.token,
+                    domain: res.data.info.domain
+                });
+            }
+        }).catch(err => console.log(err));
         let url = getCustomerCart.replace('id', Cookies.get('userId'));
         API.Request(url, 'GET', {}, true)
         .then(res => {

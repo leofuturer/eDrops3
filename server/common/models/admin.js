@@ -48,7 +48,7 @@ module.exports = function(Admin) {
                             } else {
                                 orderChip.workerName = `Not yet assigned`;
                             }
-                            
+
                         })
                         .catch(err => {
                             console.error(err);
@@ -59,7 +59,7 @@ module.exports = function(Admin) {
                         cb(null, allOrderChips);
                     });
                 });
-            });       
+            });
         })
         .catch(err => {
             cb(err);
@@ -126,5 +126,18 @@ module.exports = function(Admin) {
         ],
         http: {path: '/downloadFile', verb: 'get'},
         returns: [],
+    });
+
+    Admin.getApiToken = function(cb){
+      cb(null, {
+        token: 'c098a4c1f8d45e55b35caf24ca9c97bb',
+        domain: 'wqntest.myshopify.com'
+      }, 'application/json');
+    }
+
+    Admin.remoteMethod('getApiToken', {
+      description: 'CUSTOM METHOD: get Api key and domain',
+      http: {path: '/getApi', verb: 'get'},
+      returns: [{arg: 'info', type: 'object'}],
     });
 };

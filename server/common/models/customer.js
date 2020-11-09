@@ -379,4 +379,17 @@ module.exports = function(Customer) {
         http: {path: '/createAddress', verb: 'post'},
         returns: {arg: 'addressInstance', type: 'object', root: true}
     });
+
+    Customer.getApiToken = function(cb){
+      cb(null, {
+        token: 'c098a4c1f8d45e55b35caf24ca9c97bb',
+        domain: 'wqntest.myshopify.com'
+      }, 'application/json');
+    }
+
+    Customer.remoteMethod('getApiToken', {
+      description: 'CUSTOM METHOD: get Api key and domain',
+      http: {path: '/getApi', verb: 'get'},
+      returns: [{arg: 'info', type: 'object'}],
+    });
 }
