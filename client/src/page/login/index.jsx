@@ -1,13 +1,14 @@
 import React from 'react';
 import { NavLink, withRouter } from  'react-router-dom';
 import './login.css';
-import {customerLogin, AdminLogin, FoundryWorkerLogin, customerGetProfile, findAdminByWhere, findOneWorkerByWhere, findCustomerByWhere} from "../../api/serverConfig";
+import {customerLogin, AdminLogin, FoundryWorkerLogin, customerGetProfile, findAdminByWhere, findOneWorkerByWhere, findCustomerByWhere, customerGetApiToken} from "../../api/serverConfig";
 
 import API from "../../api/api";
 import Cookies from 'js-cookie';
 import _ from 'lodash';
 import $ from 'jquery';
 var validate = require('validate.js');
+import Shopify from '../../app.jsx';
 
 class Login extends React.Component  {
     constructor(props) {
@@ -188,6 +189,12 @@ class Login extends React.Component  {
 
                         localStorage.setItem('username', validatedUsername);
                         localStorage.setItem('password', this.state.password);
+                        API.Request(customerGetApiToken, 'GET', {}, true)
+                        .then( res => {
+                            if(res.status === 200){
+                                Shopify.getInstance(res.data.info.token, res.data.info.domain);
+                            }
+                        }).catch(err => console.log(err));
                         _this.props.history.push('/home');
                     })
                     .catch(err => {

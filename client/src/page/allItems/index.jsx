@@ -4,6 +4,7 @@ import { withRouter } from 'react-router';
 import './allItems.css';
 import ItemCard from "./itemCard.jsx";
 import {productIds} from "../../constants";
+import Shopify from '../../app.jsx';
 
 class AllItems extends React.Component{
     constructor(props){
@@ -17,7 +18,7 @@ class AllItems extends React.Component{
 
     componentDidMount(){
         let _this = this;
-        this.props.shopifyClient.product.fetchMultiple(productIds)
+        Shopify.getInstance("","").product.fetchMultiple(productIds)
         .then((res) => {
             _this.setState({
                 products: res,

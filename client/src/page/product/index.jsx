@@ -9,6 +9,7 @@ import {getCustomerCart, customerGetProfile,
         manipulateCustomerOrders,
         addOrderProductToCart} from "../../api/serverConfig";
 import API from "../../api/api";
+import Shopify from '../../app.jsx';
 
 class Product extends React.Component{
     constructor(props){
@@ -42,7 +43,7 @@ class Product extends React.Component{
                 },
             });
         }
-        this.props.shopifyClient.product.fetch(productId)
+        Shopify.getInstance("","").product.fetch(productId)
         .then((product) => {
             // console.log(product);
             _this.setState({
@@ -98,7 +99,7 @@ class Product extends React.Component{
                 addedToCart: false,
             });
             // console.log(_this.props);
-            let shopifyClient = _this.props.shopifyClient;
+            let shopifyClient = Shopify.getInstance("","");
             let url = getCustomerCart.replace('id', Cookies.get('userId'));
             API.Request(url, 'GET', {}, true)
             .then(res => {
@@ -203,7 +204,7 @@ class Product extends React.Component{
             variantId: variantId,
             quantity: quantity,
         }];
-        _this.props.shopifyClient.checkout.addLineItems(shopifyClientCheckoutId, lineItemsToAdd)
+        Shopify.getInstance("","").checkout.addLineItems(shopifyClientCheckoutId, lineItemsToAdd)
         .then(res => {
             let lineItemId;
             // console.log(res);

@@ -11,11 +11,27 @@ import {MainRouter, SubRouter} from 'router/routeMap.jsx';
     js-buy-sdk APIs to retrieve "product" data & create "order" in that Shopify development store
     specified by the domain and authenticated by the storefrontAccessToken
 */
-const shopifyClient = ShopifyClient.buildClient({
-    storefrontAccessToken: process.env.REACT_APP_SHOPIFY_TOKEN,
-    domain: process.env.REACT_APP_SHOPIFY_DOMAIN
-});
+var Shopify = (function(){
+    let shopify_instance = null;
+    function createInstance(token, domain){
+        if(token===""&&domain==="") return null;
+        const inst = ShopifyClient.buildClient({
+            storefrontAccessToken: token,
+            domain: domain
+        });
+        return inst;
+    }
+    return {
+        getInstance: function(token, domain){
+            if(shopify_instance === null){
+                shopify_instance = createInstance(token, domain);
+            }
+            return shopify_instance;
+        }
+    };
+})();
 
+export default Shopify;
 //The root APP of React
 class App extends React.Component {
     constructor(props){
@@ -27,7 +43,7 @@ class App extends React.Component {
             <Router>
                 <Switch>
                     <Route path="/subpage" component={SubRouter}/>
-                    <Route path="/" render={() => <MainRouter shopifyClient={shopifyClient}/>} />
+                    <Route path="/" render={() => <MainRouter/>} />
                 </Switch>
             </Router>
         )
@@ -35,6 +51,6 @@ class App extends React.Component {
 }
 
 ReactDOM.render(
-    <App shopifyClient={shopifyClient} />,
+    <App/>,
     document.getElementById('app')
 );

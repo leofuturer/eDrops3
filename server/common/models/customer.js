@@ -7,7 +7,6 @@ const errors = require('../../server/toolbox/errors');
 const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/;
 const log = require('../../db/toolbox/log');
 const {formatBytes, currentTime} = require('../../server/toolbox/calculate') ;
-const path = require('path');
 require('dotenv').config({path: path.resolve(__dirname, '.env')});
 
 module.exports = function(Customer) {

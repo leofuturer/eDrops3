@@ -34,6 +34,7 @@ import ChipOrders from 'page/order/chipOrders.jsx';
 import Cart from 'page/cart/index.jsx';
 
 import Cookies from "js-cookie";
+import Shopify from '../../app.jsx';
 
 const routes = [
     //Pages for Admin:
@@ -180,11 +181,14 @@ class Manage extends React.Component{
                 <div className="right-content">
                     <Switch>    
                         {routes.map((route, index) => (
+                            route.path!=='/manage/cart'?
                             <Route exact
                                 key={index}
                                 path={route.path}
                                 component={route.component}
-                            />
+                            />:
+                            <Route key={index} path={route.path} 
+                                render={({location, history})=><Cart shopifyClient={Shopify.getInstance("","")} location={location} history={history}/>}/>
                         ))}
 
                         {/*Forced redirections when none of the path above is matched*/}
