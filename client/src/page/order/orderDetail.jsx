@@ -1,56 +1,58 @@
 import React from 'react';
 import API from '../../api/api';
-import { getCustomerCart, getProductOrders,
+import { getOrderInfoById, getCustomerCart, getProductOrders,
     getChipOrders, modifyProductOrders,
-    modifyChipOrders, getAllOrderInfos
+    modifyChipOrders
 } from '../../api/serverConfig';
 import Cookies from 'js-cookie';
 import OrderItem from './orderItem.jsx';
 import OrderAddress from './orderAddress.jsx';
+import queryString from 'query-string';
 
 class OrderDetail extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             doneLoading: false,
+            orderId: queryString.parse(this.props.location.search, { ignoreQueryPrefix: true }).id
         };
     }
 
     componentDidMount() {
+        console.log(this.state.orderId)
         let _this = this;
-        let orderId = window._orderItemId;
-        console.log(orderId);
-        let url = getAllOrderInfos
-        API.Request(url, 'GET', {'id': 1}, true)
+        let url = getOrderInfoById.replace('id', this.state.orderId)
+        API.Request(url, 'GET', {}, true)
         .then(res => {
             this.setState({
-                orderDetail: res.data[0],
+                orderDetail: res.data,
 
             });
+            console.log(res.data)
             this.setState({
                 shippingAddress: {
                     type: "Shipping",
-                    name: res.data[0].sa_name,
-                    street: res.data[0].sa_address1,
-                    street2: res.data[0].sa_address2,
-                    city: res.data[0].sa_city,
-                    state: res.data[0].sa_province,
-                    country: res.data[0].sa_country,
-                    zipCode:  res.data[0].sa_zip,
+                    name: res.data.sa_name,
+                    street: res.data.sa_address1,
+                    street2: res.data.sa_address2,
+                    city: res.data.sa_city,
+                    state: res.data.sa_province,
+                    country: res.data.sa_country,
+                    zipCode:  res.data.sa_zip,
                 },
                 billingAddress: {
                     type: "Billing",
-                    name: res.data[0].ba_name,
-                    street: res.data[0].ba_address1,
-                    street2: res.data[0].ba_address2,
-                    city: res.data[0].ba_city,
-                    state: res.data[0].ba_province,
-                    country: res.data[0].ba_country,
-                    zipCode:  res.data[0].ba_zip,
+                    name: res.data.ba_name,
+                    street: res.data.ba_address1,
+                    street2: res.data.ba_address2,
+                    city: res.data.ba_city,
+                    state: res.data.ba_province,
+                    country: res.data.ba_country,
+                    zipCode:  res.data.ba_zip,
                 },
             });
             console.log(this.state);
-            let orderInfoId = res.data[0].id;
+            let orderInfoId = res.data.id;
             url = getProductOrders.replace('id', orderInfoId);
             API.Request(url, 'GET', {}, true)
             .then(res => {
@@ -58,7 +60,6 @@ class OrderDetail extends React.Component {
                     productOrders: res.data,
                 });
                 url = getChipOrders.replace('id', orderInfoId);
-                console.log(url)
                 API.Request(url, 'GET', {}, true)
                 .then(res => {
                     _this.setState({
