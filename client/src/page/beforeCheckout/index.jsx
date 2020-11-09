@@ -8,8 +8,8 @@ import "./beforeCheckout.css";
 import ShopifyClient from 'shopify-buy';
 
 const shopifyClient = ShopifyClient.buildClient({
-    storefrontAccessToken: 'c098a4c1f8d45e55b35caf24ca9c97bb',
-    domain: 'wqntest.myshopify.com'
+    storefrontAccessToken: process.env.REACT_APP_SHOPIFY_TOKEN,
+    domain: process.env.REACT_APP_SHOPIFY_DOMAIN
 });
 
 class BeforeCheckout extends React.Component  {
