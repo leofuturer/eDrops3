@@ -1,6 +1,6 @@
 import React from 'react';
 import API from '../../api/api';
-import { getOrderInfoById, getCustomerCart, getProductOrders,
+import { getCustomerCart, getProductOrders,
     getChipOrders, modifyProductOrders,
     modifyChipOrders, getAllOrderInfos
 } from '../../api/serverConfig';
@@ -20,7 +20,6 @@ class OrderDetail extends React.Component {
         let _this = this;
         let orderId = window._orderItemId;
         console.log(orderId);
-        // let url = getOrderInfoById.replace('id', orderId);
         let url = getAllOrderInfos
         API.Request(url, 'GET', {'id': 1}, true)
         .then(res => {
