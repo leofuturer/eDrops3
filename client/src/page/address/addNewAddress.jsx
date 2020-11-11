@@ -1,7 +1,7 @@
 import React from 'react';
-import {withRouter} from 'react-router-dom';
+import {withRouter, useHistory} from 'react-router-dom';
 import './address.css';
-import {customerAddresses} from "../../api/serverConfig";
+import {customerAddresses, getCustomerCart} from "../../api/serverConfig";
 import API from "../../api/api";
 import Cookies from "js-cookie";
 
@@ -26,6 +26,7 @@ class AddNewAddress extends React.Component {
             }
         )
     }
+    
     handleSaveAddress(){
         let _this = this;
         let addressMes = {
@@ -42,17 +43,50 @@ class AddNewAddress extends React.Component {
                 alert("Error: All fields must be filled");
         }
         else{
-            let url = customerAddresses.replace('id', Cookies.get('userId'));
-            API.Request(url, 'POST', addressMes, true)
-            .then(res => {
-                // console.log(res);
-                _this.props.history.push('/manage/address');
-            })
-            .catch(error => {
-                console.error(error);
-            });
+            let currentPage = window.location.pathname;
+            if (currentPage == '/beforeCheckout'){
+                let url = getCustomerCart.replace('id', Cookies.get('userId'));
+                API.Request(url, 'GET', {}, true)
+                .then(res=>{
+                    if(res.data.id){
+                        _this.setState({
+                            cartId:res.data.id,
+                            shopifyCheckoutId: res.data.checkoutIdClient,
+                            shopifyCheckoutLink: res.data.checkoutLink
+                        })
+                        url = customerAddresses.replace('id', Cookies.get('userId'));
+                        API.Request(url, 'POST', addressMes, true)
+                        .then(res => {
+                            //console.log(res);
+                            _this.props.history.go('/beforeCheckout', {
+                                cartId:_this.state.id,
+                                shopifyCheckoutId: _this.state.checkoutIdClient,
+                                shopifyCheckoutLink: _this.state.checkoutLink
+                            });
+                        })
+                        .catch(error => {
+                            console.error(error);
+                        });
+                    }
+                    else{
+                        console.log("didn't work");
+                    }
+                })
+            }
+            else{
+                let url = customerAddresses.replace('id', Cookies.get('userId'));
+                API.Request(url, 'POST', addressMes, true)
+                .then(res => {
+                    // console.log(res);
+                    _this.props.history.push('/manage/address');
+                })
+                .catch(error => {
+                    console.error(error);
+                });
+            }
         }
     }
+
 
     render() {
         return (
@@ -110,7 +144,6 @@ class AddNewAddress extends React.Component {
                                 <input type="text" className="form-control" onChange={v => this.handleChange('country', v.target.value)}/>
                             </div>
                         </div>
-                        
                         <div className="form-group">
                             <div className="col-md-10 col-sd-10 col-xs-10"></div>
                             <div className="btn-group col-md-2 col-sd-2 col-xs-2 text-right" role="group" aria-label="...">
