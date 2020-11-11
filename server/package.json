@@ -23,8 +23,10 @@
     "loopback-component-explorer": "^6.2.0",
     "loopback-component-storage": "^3.5.0",
     "loopback-connector-mysql": "^5.4.4",
+    "node-fetch": "^2.6.1",
     "nodemailer": "^4.6.8",
     "serve-favicon": "^2.0.1",
+    "shopify-buy": "^2.11.0",
     "strong-error-handler": "^3.0.0",
     "uuid": "^8.3.0"
   },

@@ -8,6 +8,11 @@ const adminRoleMappingCreator = require('../../server/hooks/adminRoleMappingCrea
 const path = require('path');
 require('dotenv').config({path: path.resolve(__dirname, '.env')});
 const { ADMIN_ROLE_NAME } = Roles;
+const Client = require('shopify-buy');
+const fetch = require('node-fetch');
+const Constants = require('../../constants');
+
+global.fetch = fetch;
 
 module.exports = function(Admin) {
     // create a RoleMapping entry in the database
@@ -140,5 +145,27 @@ module.exports = function(Admin) {
       description: 'CUSTOM METHOD: get Api key and domain',
       http: {path: '/getApi', verb: 'get'},
       returns: [{arg: 'info', type: 'object'}],
+    });
+
+    Admin.returnAllItems = function(cb){
+      const client = Client.buildClient({
+        storefrontAccessToken: process.env.SHOPIFY_TOKEN,
+        domain: process.env.SHOPIFY_DOMAIN,
+      });
+      const productIds = [
+        Constants.CONTROLSYSID,
+        Constants.TESTBOARDID,
+        Constants.UNIVEWODCHIPID,
+      ];
+      client.product.fetchMultiple(productIds)
+      .then((res) => {
+        cb(null, res);
+      }).catch(err => console.log(err));
+    }
+
+    Admin.remoteMethod('returnAllItems', {
+      description: 'Custom Method: get all products',
+      http: {path: '/getItems', verb: 'get'},
+      returns: [{arg: 'products', type: 'array'}],
     });
 };
