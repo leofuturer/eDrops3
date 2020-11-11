@@ -7,7 +7,7 @@ import { univEwodChipId,
 import Cookies from 'js-cookie';
 import {getCustomerCart, customerGetProfile,
         manipulateCustomerOrders,
-        addOrderProductToCart} from "../../api/serverConfig";
+        addOrderProductToCart, returnOneItem} from "../../api/serverConfig";
 import API from "../../api/api";
 import Shopify from '../../app.jsx';
 
@@ -43,16 +43,16 @@ class Product extends React.Component{
                 },
             });
         }
-        Shopify.getInstance("","").product.fetch(productId)
-        .then((product) => {
-            // console.log(product);
+        //console.log(productId);
+        let url = returnOneItem + `?productId=${productId}`;
+        API.Request(url, 'GET', {}, false)
+        .then( res => {
             _this.setState({
-                product: product,
+                product: res.data.product,
                 fetchedProduct: true,
                 addedToCart: true,
             });
-        })
-        .catch((err) => {
+        }).catch((err) => {
             console.error(err);
             //redirect to all items page if product ID is invalid
             this.props.history.push('/allItems'); 

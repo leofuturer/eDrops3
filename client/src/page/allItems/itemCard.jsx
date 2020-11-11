@@ -16,16 +16,15 @@ class ItemCard extends React.Component {
     }
 
     render(){
-        let access = (Cookies.get('userType') === 'customer'||Cookies.get('userType') === 'admin');
         return (
             <div className="card" >
-                <NavLink to={access?`/product?id=${this.props.id}`:'/login'}>
+                <NavLink to={`/product?id=${this.props.id}`}>
                     <div className="product-title">
                         <h4>{this.props.product.title}</h4>
                     </div>
                 </NavLink>
 
-                <NavLink to={access?`/product?id=${this.props.id}`:'/login'}>
+                <NavLink to={`/product?id=${this.props.id}`}>
                     <img className="product-img" 
                         src={this.props.product.variants[0].image.src}/>
                 </NavLink>
@@ -41,7 +40,7 @@ class ItemCard extends React.Component {
                     ${this.props.product.variants[0].price}
                 </div>
 
-                <NavLink to={access?`/product?id=${this.props.id}`:'/login'}>
+                <NavLink to={`/product?id=${this.props.id}`}>
                     <button className="btn btn-primary">Details</button>
                 </NavLink>
             </div>           

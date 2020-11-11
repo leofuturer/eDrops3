@@ -11,6 +11,10 @@ const { ADMIN_ROLE_NAME } = Roles;
 const Client = require('shopify-buy');
 const fetch = require('node-fetch');
 const Constants = require('../../constants');
+const client = Client.buildClient({
+  storefrontAccessToken: process.env.SHOPIFY_TOKEN,
+  domain: process.env.SHOPIFY_DOMAIN,
+});
 
 global.fetch = fetch;
 
@@ -148,10 +152,6 @@ module.exports = function(Admin) {
     });
 
     Admin.returnAllItems = function(cb){
-      const client = Client.buildClient({
-        storefrontAccessToken: process.env.SHOPIFY_TOKEN,
-        domain: process.env.SHOPIFY_DOMAIN,
-      });
       const productIds = [
         Constants.CONTROLSYSID,
         Constants.TESTBOARDID,
@@ -167,5 +167,19 @@ module.exports = function(Admin) {
       description: 'Custom Method: get all products',
       http: {path: '/getItems', verb: 'get'},
       returns: [{arg: 'products', type: 'array'}],
+    });
+
+    Admin.returnOneItem = function(productId, cb){
+      client.product.fetch(productId)
+      .then((res) => {
+        cb(null, res);
+      }).catch(err => console.log(err));
+    }
+
+    Admin.remoteMethod('returnOneItem', {
+      description: 'Custom Method: get one product',
+      http: {path: '/getOne', verb: 'get'},
+      accepts: {arg: 'productId', type: 'string'},
+      returns: [{arg: 'product', type: 'object'}],
     });
 };
