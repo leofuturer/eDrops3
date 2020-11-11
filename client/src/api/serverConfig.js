@@ -32,6 +32,7 @@ export const getAllFoundryWorkers = ApiRootUrl + '/foundryWorkers';
 export const findAdminByWhere = ApiRootUrl + '/admins';
 export const deleteAdminById = ApiRootUrl + '/admins/id';
 export const getApiToken = ApiRootUrl + '/admins/getApi';
+export const returnAllItems = ApiRootUrl + '/admins/getItems';
 
 //Foundry Worker
 export const FoundryWorkerLogin = ApiRootUrl+ '/foundryWorkers/login';

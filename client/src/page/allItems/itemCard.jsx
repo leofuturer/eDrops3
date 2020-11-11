@@ -2,6 +2,7 @@ import React from 'react';
 import './itemCard.css'
 import { withRouter } from 'react-router';
 import {NavLink} from  'react-router-dom';
+import Cookies from 'js-cookie';
 
 class ItemCard extends React.Component {
     constructor(props) {
@@ -15,15 +16,16 @@ class ItemCard extends React.Component {
     }
 
     render(){
+        let access = (Cookies.get('userType') === 'customer'||Cookies.get('userType') === 'admin');
         return (
             <div className="card" >
-                <NavLink to={`/product?id=${this.props.id}`}>
+                <NavLink to={access?`/product?id=${this.props.id}`:'/login'}>
                     <div className="product-title">
                         <h4>{this.props.product.title}</h4>
                     </div>
                 </NavLink>
 
-                <NavLink to={`/product?id=${this.props.id}`}>
+                <NavLink to={access?`/product?id=${this.props.id}`:'/login'}>
                     <img className="product-img" 
                         src={this.props.product.variants[0].image.src}/>
                 </NavLink>
@@ -39,7 +41,7 @@ class ItemCard extends React.Component {
                     ${this.props.product.variants[0].price}
                 </div>
 
-                <NavLink to={`/product?id=${this.props.id}`}>
+                <NavLink to={access?`/product?id=${this.props.id}`:'/login'}>
                     <button className="btn btn-primary">Details</button>
                 </NavLink>
             </div>           

@@ -5,6 +5,8 @@ import './allItems.css';
 import ItemCard from "./itemCard.jsx";
 import {productIds} from "../../constants";
 import Shopify from '../../app.jsx';
+import {returnAllItems} from '../../api/serverConfig';
+import API from '../../api/api';
 
 class AllItems extends React.Component{
     constructor(props){
@@ -18,16 +20,15 @@ class AllItems extends React.Component{
 
     componentDidMount(){
         let _this = this;
-        Shopify.getInstance("","").product.fetchMultiple(productIds)
-        .then((res) => {
-            _this.setState({
-                products: res,
-                fetchedProducts: true,
-            });
-        })
-        .catch((err) => {
-            console.log(err);
-        });   
+        API.Request(returnAllItems, 'GET', {}, false)
+        .then(res => {
+            if(res.data.products){
+                _this.setState({
+                    products: res.data.products,
+                    fetchedProducts: true,
+                });
+            }
+        }).catch(err => console.log(err));
     }
 
     render() {
