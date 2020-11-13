@@ -19,7 +19,7 @@ class OrderDetail extends React.Component {
     }
 
     componentDidMount() {
-        console.log(this.state.orderId)
+        // console.log(this.state.orderId)
         let _this = this;
         let url = getOrderInfoById.replace('id', this.state.orderId)
         API.Request(url, 'GET', {}, true)
@@ -66,7 +66,7 @@ class OrderDetail extends React.Component {
                         chipOrders: res.data,
                         doneLoading: true,
                     });
-                    console.log(res.data)
+                    // console.log(res.data)
                 })
                 .catch(err => {
                     console.error(err);
