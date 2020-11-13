@@ -67,6 +67,7 @@ export const addOrderChipToCart = ApiRootUrl + '/orderInfos/id/addOrderChipToCar
 
 export const getProductOrders = ApiRootUrl + '/orderInfos/id/orderProducts';
 export const getChipOrders = ApiRootUrl + '/orderInfos/id/orderChips';
+export const getCustomerOrder = ApiRootUrl + '/orderInfos/id/customer/customerOrders'
 export const modifyProductOrders = ApiRootUrl + '/orderProducts/id';
 export const modifyChipOrders = ApiRootUrl + '/orderChips/id';
 

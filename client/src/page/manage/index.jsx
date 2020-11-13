@@ -101,7 +101,12 @@ const routes = [
     //Admin view all orders
     {
         path: "/manage/all-orders",
-        component: AllOrders 
+        component: AllOrders
+    },
+    //Admin view orders belonging to a certain customer
+    {
+        path: "/manage/admin-retrieve-user-orders",
+        component: Orders
     },
     //Admin assigne orders
     {
@@ -179,7 +184,7 @@ class Manage extends React.Component{
                     <NavLeft/>
                 </div>
                 <div className="right-content">
-                    <Switch>    
+                    <Switch>
                         {routes.map((route, index) => (
                             route.path!=='/manage/cart'?
                             <Route exact
@@ -187,8 +192,13 @@ class Manage extends React.Component{
                                 path={route.path}
                                 component={route.component}
                             />:
+<<<<<<< HEAD
                             <Route key={index} path={route.path} 
                                 render={({location, history})=><Cart shopifyClient={Shopify.getInstance("","")} location={location} history={history}/>}/>
+=======
+                            <Route key={index} path={route.path}
+                                render={({location, history})=><Cart shopifyClient={this.props.shopifyClient} location={location} history={history}/>}/>
+>>>>>>> 34af624... view orders specific to customer
                         ))}
 
                         {/*Forced redirections when none of the path above is matched*/}
