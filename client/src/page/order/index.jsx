@@ -23,6 +23,14 @@ class Orders extends React.Component{
             userInfo: {},
             isLoading: false,
         }
+        if(this.props.match.path === '/manage/admin-retrieve-user-orders'
+            && Cookies.get('userType') === 'admin'){
+            Object.assign(this.state, {
+                custId: this.props.location.state.userId,
+                isCustomer: this.props.location.state.isCustomer,
+                username: this.props.location.state.username
+            });
+        }
     }
 
     componentDidMount() {
@@ -36,7 +44,7 @@ class Orders extends React.Component{
         } else if (this.props.match.path === '/manage/customer-orders') {
             var url = customerOrderRetrieve.replace('id', Cookies.get('userId')) + '?filter={"where": {"orderComplete": true}}';
         } else if (this.props.match.path === '/manage/admin-retrieve-user-orders') {
-            var url = getCustomerOrder.replace('id', Cookies.get('userId')) + `?filter={"where": {"customerId": ${this.props.location.state.userId}}, "orderComplete": true}`;
+            var url = getCustomerOrder.replace('id', Cookies.get('userId')) + `?filter={"where": {"customerId": ${this.state.custId}}, "orderComplete": true}`;
         } else {
             console.error('Unexpected error');
         }
@@ -75,7 +83,11 @@ class Orders extends React.Component{
             <div>
                 <div className="right-route-content">
                     <div className="profile-content">
-                        <h2>Orders</h2>
+                        {
+                          this.props.match.path === '/manage/admin-retrieve-user-orders'
+                          ? <h2>Orders for {this.state.username}</h2>
+                          : <h2>Orders</h2>
+                        }
                     </div>
                     <div className="content-show-table row">
                         <div className="table-background">

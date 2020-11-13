@@ -25,7 +25,9 @@ class Customer extends React.Component {
     handleRetrieveOrders(){
         let customerId = this.props.customer.id;
         this.props.history.push('/manage/admin-retrieve-user-orders', {
-            userId: customerId
+            userId: customerId,
+            isCustomer: true,
+            username: this.props.customer.username
         })
     }
 
