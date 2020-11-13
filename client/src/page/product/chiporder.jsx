@@ -19,6 +19,7 @@ import {getCustomerCart, manipulateCustomerOrders, addOrderChipToCart} from "../
 import API from "../../api/api";
 import { ewodFabServiceId,
     ewodFabServiceVariantId } from "../../constants";
+import Shopify from '../../app.jsx';
 
 class ChipOrder extends React.Component {
     constructor(props) {
@@ -57,7 +58,7 @@ class ChipOrder extends React.Component {
 
             let _this = this;
             let url = getCustomerCart.replace('id', Cookies.get('userId'));
-            let shopifyClient = _this.props.shopifyClient;
+            let shopifyClient = Shopify.getInstance("","");
             _this.setState({
                 fileInfo: this.props.location.state.fileInfo,
             });
@@ -189,7 +190,7 @@ class ChipOrder extends React.Component {
             customServerOrderAttributes += `withCoverPlateAssembled: ${wcpbVal}\n`;
             customServerOrderAttributes += `fileName: ${_this.state.fileInfo.fileName}\n`;
             const checkoutId = _this.state.shopifyClientCheckoutId;
-            _this.props.shopifyClient.checkout.addLineItems(checkoutId, lineItemsToAdd)
+            Shopify.getInstance("","").checkout.addLineItems(checkoutId, lineItemsToAdd)
             .then(res => {
                 let lineItemId;
                 for(let i = 0; i<res.lineItems.length; i++){

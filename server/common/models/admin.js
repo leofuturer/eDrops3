@@ -5,8 +5,18 @@ const Roles = require('../../server/constants/Roles');
 const app = require("../../server/server.js");
 //Remote hooks
 const adminRoleMappingCreator = require('../../server/hooks/adminRoleMappingCreator');
-
+const path = require('path');
+require('dotenv').config({path: path.resolve(__dirname, '.env')});
 const { ADMIN_ROLE_NAME } = Roles;
+const Client = require('shopify-buy');
+const fetch = require('node-fetch');
+const Constants = require('../../constants');
+const client = Client.buildClient({
+  storefrontAccessToken: process.env.SHOPIFY_TOKEN,
+  domain: process.env.SHOPIFY_DOMAIN,
+});
+
+global.fetch = fetch;
 
 module.exports = function(Admin) {
     // create a RoleMapping entry in the database
@@ -48,7 +58,7 @@ module.exports = function(Admin) {
                             } else {
                                 orderChip.workerName = `Not yet assigned`;
                             }
-                            
+
                         })
                         .catch(err => {
                             console.error(err);
@@ -59,7 +69,7 @@ module.exports = function(Admin) {
                         cb(null, allOrderChips);
                     });
                 });
-            });       
+            });
         })
         .catch(err => {
             cb(err);
@@ -126,5 +136,50 @@ module.exports = function(Admin) {
         ],
         http: {path: '/downloadFile', verb: 'get'},
         returns: [],
+    });
+
+    Admin.getApiToken = function(cb){
+      cb(null, {
+        token: process.env.SHOPIFY_TOKEN,
+        domain: process.env.SHOPIFY_DOMAIN
+      }, 'application/json');
+    }
+
+    Admin.remoteMethod('getApiToken', {
+      description: 'CUSTOM METHOD: get Api key and domain',
+      http: {path: '/getApi', verb: 'get'},
+      returns: [{arg: 'info', type: 'object'}],
+    });
+
+    Admin.returnAllItems = function(cb){
+      const productIds = [
+        Constants.CONTROLSYSID,
+        Constants.TESTBOARDID,
+        Constants.UNIVEWODCHIPID,
+      ];
+      client.product.fetchMultiple(productIds)
+      .then((res) => {
+        cb(null, res);
+      }).catch(err => console.log(err));
+    }
+
+    Admin.remoteMethod('returnAllItems', {
+      description: 'Custom Method: get all products',
+      http: {path: '/getItems', verb: 'get'},
+      returns: [{arg: 'products', type: 'array'}],
+    });
+
+    Admin.returnOneItem = function(productId, cb){
+      client.product.fetch(productId)
+      .then((res) => {
+        cb(null, res);
+      }).catch(err => console.log(err));
+    }
+
+    Admin.remoteMethod('returnOneItem', {
+      description: 'Custom Method: get one product',
+      http: {path: '/getOne', verb: 'get'},
+      accepts: {arg: 'productId', type: 'string'},
+      returns: [{arg: 'product', type: 'object'}],
     });
 };

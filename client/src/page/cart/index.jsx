@@ -8,10 +8,14 @@ import './cart.css';
 import API from "../../api/api";
 import { getCustomerCart, getProductOrders, 
         getChipOrders, modifyProductOrders, 
-        modifyChipOrders 
+        modifyChipOrders, customerGetApiToken 
     } from '../../api/serverConfig';
 import Cookies from "js-cookie";
-
+//import ShopifyClient from 'shopify-buy';
+// const shopifyClient = ShopifyClient.buildClient({
+//     storefrontAccessToken: process.env.REACT_APP_SHOPIFY_TOKEN,
+//     domain: process.env.REACT_APP_SHOPIFY_DOMAIN
+// });
 
 class Cart extends React.Component{
     constructor(props) {
@@ -114,7 +118,7 @@ class Cart extends React.Component{
 
     handleDelete(itemType, index){
         let _this = this;
-        const shopifyClient = Shopify.getInstance();
+        const shopifyClient = Shopify.getInstance("","");
         let url;
         if(itemType === 'product'){
             var array = _this.state.productOrders;
@@ -160,7 +164,7 @@ class Cart extends React.Component{
         // console.log("Updating DB");       
         let url;
         let _this = this;   
-        const shopifyClient = _this.props.shopifyClient;  
+        const shopifyClient = Shopify.getInstance("","");  
         if(_this.state.modifiedItems.size > 0){
             this.setState({
                 saveInProgress: true,

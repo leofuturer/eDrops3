@@ -5,6 +5,7 @@ import Cookies from 'js-cookie';
 import SingleAddress from './singleAddress.jsx';
 import { withRouter } from 'react-router';
 import "./beforeCheckout.css";
+import Shopify from '../../app.jsx';
 
 class BeforeCheckout extends React.Component  {
     constructor(props) {
@@ -85,7 +86,7 @@ class BeforeCheckout extends React.Component  {
 
     handlePayment(){
         let _this = this;
-        const shopifyClient = _this.props.shopifyClient;
+        const shopifyClient = Shopify.getInstance("","");
         _this.setState({
             preparingForCheckout: true,
         });

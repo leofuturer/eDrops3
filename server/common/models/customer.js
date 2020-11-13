@@ -7,6 +7,7 @@ const errors = require('../../server/toolbox/errors');
 const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/;
 const log = require('../../db/toolbox/log');
 const {formatBytes, currentTime} = require('../../server/toolbox/calculate') ;
+require('dotenv').config({path: path.resolve(__dirname, '.env')});
 
 module.exports = function(Customer) {
     //validate security of password(at least 8 digits, include at least one uppercase
@@ -378,5 +379,18 @@ module.exports = function(Customer) {
         ],
         http: {path: '/createAddress', verb: 'post'},
         returns: {arg: 'addressInstance', type: 'object', root: true}
+    });
+
+    Customer.getApiToken = function(cb){
+      cb(null, {
+        token: process.env.SHOPIFY_TOKEN,
+        domain: process.env.SHOPIFY_DOMAIN
+      }, 'application/json');
+    }
+
+    Customer.remoteMethod('getApiToken', {
+      description: 'CUSTOM METHOD: get Api key and domain',
+      http: {path: '/getApi', verb: 'get'},
+      returns: [{arg: 'info', type: 'object'}],
     });
 }

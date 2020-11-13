@@ -1,10 +1,8 @@
-
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter as Router, Switch, Redirect, Route, Link } from 'react-router-dom'
 import ShopifyClient from 'shopify-buy';
 import "bootstrap";
-
 // Router components
 import {MainRouter, SubRouter} from 'router/routeMap.jsx';
 
@@ -15,17 +13,18 @@ import {MainRouter, SubRouter} from 'router/routeMap.jsx';
 */
 var Shopify = (function(){
     let shopify_instance = null;
-    function createInstance(){
+    function createInstance(token, domain){
+        if(token===""&&domain==="") return null;
         const inst = ShopifyClient.buildClient({
-            storefrontAccessToken: 'c098a4c1f8d45e55b35caf24ca9c97bb',
-            domain: 'wqntest.myshopify.com'
+            storefrontAccessToken: token,
+            domain: domain
         });
         return inst;
     }
     return {
-        getInstance: function(){
+        getInstance: function(token, domain){
             if(shopify_instance === null){
-                shopify_instance = createInstance();
+                shopify_instance = createInstance(token, domain);
             }
             return shopify_instance;
         }
@@ -44,7 +43,7 @@ class App extends React.Component {
             <Router>
                 <Switch>
                     <Route path="/subpage" component={SubRouter}/>
-                    <Route path="/" render={() => <MainRouter shopifyClient={Shopify.getInstance()}/>} />
+                    <Route path="/" render={() => <MainRouter/>} />
                 </Switch>
             </Router>
         )
@@ -52,6 +51,6 @@ class App extends React.Component {
 }
 
 ReactDOM.render(
-    <App shopifyClient={Shopify.getInstance()} />,
+    <App/>,
     document.getElementById('app')
 );

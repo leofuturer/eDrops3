@@ -37,13 +37,10 @@ export class MainRouter extends React.Component {
                     <Route path="/home" component={Home}/>
                     <Route path="/upload" component={Upload}/>
                     <Route path="/chipfab" render={({location, history}) => 
-                        <ChipOrder location={location} history={history} 
-                                shopifyClient={this.props.shopifyClient}/>}/>
+                        <ChipOrder location={location} history={history} />}/>
                     {/* The project page is currently unused */}
                     <Route path="/project" component={Project}/>
-                    <Route path="/manage" render={()=> 
-                        <Manage shopifyClient={this.props.shopifyClient}/>
-                    }/>
+                    <Route path="/manage" component={Manage}/>
                     <Route path="/login"  component={Login}/>
                     <Route path="/register" component={Register}/>
                     <Route path="/forgetPass" component={ForgetPass}/>
@@ -51,15 +48,9 @@ export class MainRouter extends React.Component {
                     <Route path ="/emailVerified" component={EmailVerified}/>
                     <Route path="/emailVerifyInvalid" component={EmailVerifyInvalid}/>
                     <Route path="/resetPassword" component={ResetPassword}/>
-                    <Route path="/beforeCheckout" render={()=>
-                        <BeforeCheckout shopifyClient={this.props.shopifyClient}/>
-                    }/>
-                    <Route path="/allItems" render = { () =>
-                        <AllItems shopifyClient = {this.props.shopifyClient}/>
-                    }/>
-                    <Route path="/product" render = { () =>
-                        <Product shopifyClient = {this.props.shopifyClient}/>
-                    }/>
+                    <Route path="/beforeCheckout" component={BeforeCheckout}/>
+                    <Route path="/allItems" component={AllItems}/>
+                    <Route path="/product" component={Product}/>
                     <Route path="/featureComing" component={FeatureComing}/>
                 </Switch>
             </Layout>

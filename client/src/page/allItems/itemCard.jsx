@@ -2,6 +2,7 @@ import React from 'react';
 import './itemCard.css'
 import { withRouter } from 'react-router';
 import {NavLink} from  'react-router-dom';
+import Cookies from 'js-cookie';
 
 class ItemCard extends React.Component {
     constructor(props) {
