@@ -12,7 +12,7 @@ class Customer extends React.Component {
         this.handleRetrieveFiles = this.handleRetrieveFiles.bind(this);
         this.handleRetrieveOrders = this.handleRetrieveOrders.bind(this);
     }
-    
+
     handleRetrieveFiles() {
         let customerId = this.props.customer.id;
         this.props.history.push('/manage/admin-retrieve-user-files', {
@@ -24,10 +24,11 @@ class Customer extends React.Component {
 
     handleRetrieveOrders(){
         let customerId = this.props.customer.id;
-        // TODO 6-16-2020: allow admin to view orders specific to
-        // a particular customer
-        // orders are not equal to files!
-        alert("Feature not yet implemented")
+        this.props.history.push('/manage/admin-retrieve-user-orders', {
+            userId: customerId,
+            isCustomer: true,
+            username: this.props.customer.username
+        })
     }
 
     handleDelete() {
