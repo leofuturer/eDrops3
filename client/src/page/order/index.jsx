@@ -60,10 +60,9 @@ class Orders extends React.Component{
         //and display the page based on the passed in redirectUrl
         let originalOrderId = e.target.id;
         let orderId = Number(originalOrderId.replace(/[^0-9]/ig, ''));
-        let redirectUrl = "/subpage/order-detail";
+        let redirectUrl = "/subpage/order-detail?id=" + orderId;
         let strWindowFeatures = "width=1200px, height=900px";
         let WindowForOrderDetail = window.open(redirectUrl, "_blank", strWindowFeatures);
-        WindowForOrderDetail._orderItemId = orderId;
     }
 
     render() {

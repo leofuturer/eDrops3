@@ -1,32 +1,34 @@
 import React from 'react';
 import API from '../../api/api';
-import { getOrderInfoById, getCustomerCart, getProductOrders, 
-    getChipOrders, modifyProductOrders, 
-    modifyChipOrders 
+import { getOrderInfoById, getCustomerCart, getProductOrders,
+    getChipOrders, modifyProductOrders,
+    modifyChipOrders
 } from '../../api/serverConfig';
 import Cookies from 'js-cookie';
 import OrderItem from './orderItem.jsx';
 import OrderAddress from './orderAddress.jsx';
+import queryString from 'query-string';
 
 class OrderDetail extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             doneLoading: false,
+            orderId: queryString.parse(this.props.location.search, { ignoreQueryPrefix: true }).id
         };
     }
 
     componentDidMount() {
+        // console.log(this.state.orderId)
         let _this = this;
-        let orderId = window._orderItemId;
-        console.log(orderId);
-        let url = getOrderInfoById.replace('id', orderId);
+        let url = getOrderInfoById.replace('id', this.state.orderId)
         API.Request(url, 'GET', {}, true)
         .then(res => {
             this.setState({
                 orderDetail: res.data,
-                
+
             });
+            console.log(res.data)
             this.setState({
                 shippingAddress: {
                     type: "Shipping",
@@ -37,7 +39,7 @@ class OrderDetail extends React.Component {
                     state: res.data.sa_province,
                     country: res.data.sa_country,
                     zipCode:  res.data.sa_zip,
-                }, 
+                },
                 billingAddress: {
                     type: "Billing",
                     name: res.data.ba_name,
@@ -64,6 +66,7 @@ class OrderDetail extends React.Component {
                         chipOrders: res.data,
                         doneLoading: true,
                     });
+                    // console.log(res.data)
                 })
                 .catch(err => {
                     console.error(err);
@@ -91,7 +94,7 @@ class OrderDetail extends React.Component {
                 totalItemsPrice += (product.quantity * product.price);
             });
         }
-         
+
         return (
             <div className="order-detail-frame">
                 { !this.state.doneLoading
@@ -110,12 +113,12 @@ class OrderDetail extends React.Component {
                     <OrderAddress address={this.state.billingAddress}/>
                     </div>
                     {
-                        this.state.productOrders.map((oneProduct, index) => 
+                        this.state.productOrders.map((oneProduct, index) =>
                             <OrderItem key={index} info={oneProduct}/>
                         )
                     }
                     {
-                        this.state.chipOrders.map((oneProduct, index) => 
+                        this.state.chipOrders.map((oneProduct, index) =>
                             <OrderItem key={index} info={oneProduct}/>
                         )
                     }
@@ -130,9 +133,9 @@ class OrderDetail extends React.Component {
                     </div>
                     <div className="order-thank-you">
                         Please contact us at edropwebsite@gmail.com for any questions. Thank you for the order!
-                    </div>  
+                    </div>
                 </div>
-                } 
+                }
             </div>
         );
     }
