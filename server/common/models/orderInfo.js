@@ -20,11 +20,15 @@ module.exports = function(OrderInfo) {
                     orderInfoInstance.updateAttributes({
                         orderInfoId:    body.id,
                         orderStatusURL: body.order_status_url,
-                        orderComplete: true, 
+                        orderComplete: true,
                         status: "Payment made",
                         lastModifiedAt: date.toISOString(),
-                        
+
                         fees_and_taxes: (parseFloat(body.total_price) - parseFloat(body.total_line_items_price)).toString(),
+                        subtotal_cost: (parseFloat(body.total_line_items_price)).toString(),
+                        total_cost: (parseFloat(body.total_price)).toString(),
+
+                        user_email: body.email,
 
                         sa_name:     body.shipping_address.first_name + ' ' + body.shipping_address.last_name,
                         sa_address1: body.shipping_address.address1,
@@ -33,7 +37,7 @@ module.exports = function(OrderInfo) {
                         sa_province: body.shipping_address.province,
                         sa_zip:      body.shipping_address.zip,
                         sa_country:  body.shipping_address.country,
-                        
+
                         ba_name:     body.billing_address.first_name + ' ' + body.billing_address.last_name,
                         ba_address1: body.billing_address.address1,
                         ba_address2: body.billing_address.address2,
@@ -43,12 +47,12 @@ module.exports = function(OrderInfo) {
                         ba_country:  body.billing_address.country,
                     });
                     cb(null);
-                } 
+                }
             });
         }
         else{
             cb(null);
-        }    
+        }
     }
 
     //Without the "next" parameter
@@ -59,7 +63,7 @@ module.exports = function(OrderInfo) {
         const OrderInfoId = body.id;
         console.log("Customer just went to Shopify");
         // console.log(body);
-        
+
     // try {
     //     let OrderInfoInstance = await OrderInfo.findById(OrderInfoId);
     //     if (!OrderInfoInstance) {
@@ -86,7 +90,7 @@ module.exports = function(OrderInfo) {
     // }
     // catch(err) {
     //     console.log(err);
-    // }  
+    // }
     }
 
     OrderInfo.prototype.addOrderChipToCart = (body, cb) => {

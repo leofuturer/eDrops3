@@ -64,6 +64,7 @@ class AllOrders extends React.Component {
                                     <th>Order ID</th>
                                     <th>Customer ID</th>
                                     <th>Status</th>
+                                    <th>Price</th>
                                     <th className="icon-center">Details</th>
 
                                 </tr>
@@ -78,6 +79,7 @@ class AllOrders extends React.Component {
                                             <td>{item.orderComplete ? item.orderInfoId : "Customer cart"}</td>
                                             <td>{item.customerId}</td>
                                             <td>{item.status}</td>
+                                            <td>${parseFloat(item.total_cost).toFixed(2)}</td>
                                             <td className="icon-center">
                                                 <i className="fa fa-commenting" onClick={this.handleDetail}></i>
                                             </td>
