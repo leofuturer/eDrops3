@@ -36,8 +36,7 @@ export class MainRouter extends React.Component {
                     </Route>
                     <Route path="/home" component={Home}/>
                     <Route path="/upload" component={Upload}/>
-                    <Route path="/chipfab" render={({location, history}) => 
-                        <ChipOrder location={location} history={history} />}/>
+                    <Route path="/chipfab" component={ChipOrder}/>
                     {/* The project page is currently unused */}
                     <Route path="/project" component={Project}/>
                     <Route path="/manage" component={Manage}/>

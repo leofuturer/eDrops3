@@ -12,7 +12,7 @@ import {MainRouter, SubRouter} from 'router/routeMap.jsx';
     specified by the domain and authenticated by the storefrontAccessToken
 */
 var Shopify = (function(){
-    let shopify_instance = null;
+    var shopify_instance = null;
     function createInstance(token, domain){
         if(token===""&&domain==="") return null;
         const inst = ShopifyClient.buildClient({

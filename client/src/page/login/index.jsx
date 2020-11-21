@@ -192,7 +192,8 @@ class Login extends React.Component  {
                         API.Request(customerGetApiToken, 'GET', {}, true)
                         .then( res => {
                             if(res.status === 200){
-                                Shopify.getInstance(res.data.info.token, res.data.info.domain);
+                                let shopify = Shopify.getInstance(res.data.info.token, res.data.info.domain);
+                                console.log(shopify);
                             }
                         }).catch(err => console.log(err));
                         _this.props.history.push('/home');
