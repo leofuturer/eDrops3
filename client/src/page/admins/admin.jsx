@@ -21,13 +21,13 @@ class Admin extends Component {
     handleDelete(){
         let admin = this.props.admin;
         let userId = Cookies.get('userId');
-        console.log(userId);
+        // console.log(userId);
         if(userId === admin.id) return;
         let url = deleteAdminById.replace('id', admin.id);
         let classSelector = `#admin${admin.id}`;
         API.Request(url, 'DELETE', {}, true)
         .then(response=>{
-            console.log(response);
+            // console.log(response);
             $(classSelector).remove();
         })
         .catch((err) => {

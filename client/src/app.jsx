@@ -1,10 +1,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { BrowserRouter as Router, Switch, Redirect, Route, Link } from 'react-router-dom'
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
 import ShopifyClient from 'shopify-buy';
 import API from './api/api'
 import {customerGetApiToken} from "./api/serverConfig";
 import "bootstrap";
+import {customerGetApiToken} from "./api/serverConfig";
+import API from "./api/api";
 // Router components
 import {MainRouter, SubRouter} from 'router/routeMap.jsx';
 
@@ -16,7 +18,7 @@ import {MainRouter, SubRouter} from 'router/routeMap.jsx';
 var Shopify = (function(){
     var shopify_instance = null;
     function createInstance(token, domain){
-        if(token===""&&domain==="") return null;
+        if(token==="" && domain==="") return null;
         const inst = ShopifyClient.buildClient({
             storefrontAccessToken: token,
             domain: domain

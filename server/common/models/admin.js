@@ -61,7 +61,6 @@ module.exports = function(Admin) {
                             } else {
                                 orderChip.workerName = `Not yet assigned`;
                             }
-
                         })
                         .catch(err => {
                             console.error(err);

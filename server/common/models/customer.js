@@ -155,8 +155,8 @@ module.exports = function(Customer) {
             else {
                 var uploadedFile = fileObj.files['attach-document'][0];
                 var uploadedFields = fileObj.fields;
-                console.log(uploadedFields.isPublic)
-                console.log(uploadedFields.unit)
+                // console.log(uploadedFields.isPublic)
+                // console.log(uploadedFields.unit)
 
                 const FileInfoModel = app.models.fileInfo;
                 FileInfoModel.create({
@@ -270,7 +270,7 @@ module.exports = function(Customer) {
     Customer.prototype.getChipOrders = function(ctx, cb){
         const customer = this;
         var allOrderChips = [];
-        customer.customerOrders({})
+        customer.customerOrders({"where": {"orderComplete": true}})
         .then(orders => {
             var promises = orders.map((order, index) => {
                 return order.orderChips({})

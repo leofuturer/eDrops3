@@ -6,10 +6,7 @@ import $ from 'jquery';
 import API from '../../api/api';
 import {    customerFileRetrieve, 
             customerDeleteFile, 
-            downloadFileById, 
-            editFileStatus, 
-            findCustomerByWhere, 
-            findOneWorkerByWhere } from '../../api/serverConfig';
+            downloadFileById, } from '../../api/serverConfig';
 
 import './index.css'
 
@@ -156,43 +153,6 @@ class Files extends React.Component {
         });
         console.log(fileId);
     }
-
-    /*
-    showDropdown(e) {
-        let clickedDiv = e.target.nextSibling;
-        if(clickedDiv.style.display === "none") {
-            clickedDiv.style.display = "block";
-        } else {
-            clickedDiv.style.display = "none";
-        }
-    }
-    */
-    
-    /*
-    showUserDropdown(e) {
-        let clickedDiv = e.target.nextSibling;
-        if(clickedDiv.style.display === "none") {
-            let userName = e.target.innerHTML;
-            let url = (Cookies.get('userType') === "customer"
-            ? `${findOneWorkerByWhere}?filter={"where": {"username": "${userName}"}}`
-            : `${findCustomerByWhere}?filter={"where": {"username": "${userName}"}}`)
-            let data = {};
-            API.Request(url, 'GET', data, false)
-            .then(res => {
-                this.setState({
-                    userInfo: res.data[0]
-                });
-                console.log(res.data[0]);
-            })
-            .catch(err => {
-                console.log(err);
-            });
-            clickedDiv.style.display = "block";
-        } else {
-            clickedDiv.style.display = "none";
-        }
-    }
-    */
 
     render() {
         return (

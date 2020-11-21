@@ -1,17 +1,9 @@
 import React from 'react';
-import { withRouter, NavLink } from 'react-router-dom';
-
 import './order.css';
 import API from "../../api/api";
-import { customerOrderRetrieve, workerOrderRetrieve,
-         downloadFileById, editOrderStatus,
-         findCustomerByWhere, findOneWorkerByWhere,
-         getCustomerOrder }
+import { customerOrderRetrieve, workerOrderRetrieve, getCustomerOrder, getAllOrderInfos }
          from '../../api/serverConfig';
-
 import Cookies from "js-cookie";
-import $ from 'jquery';
-import notify from 'bootstrap-notify';
 import './animate.css';
 
 //The order list page for both customer and worker
@@ -37,19 +29,18 @@ class Orders extends React.Component{
         this.setState({
           isLoading: true
         });
-        var data = {};
-        var method = 'GET';
         if (this.props.match.path === '/manage/customer-orders') {
             var url = customerOrderRetrieve.replace('id', Cookies.get('userId')) + '?filter={"where": {"orderComplete": true}}';
         } else if (this.props.match.path === '/manage/admin-retrieve-user-orders') {
-            var url = getCustomerOrder.replace('id', Cookies.get('userId')) + `?filter={"where": {"customerId": ${this.state.custId}}, "orderComplete": true}`;
+            var url = getAllOrderInfos + `?filter={"where": {"customerId": ${this.state.custId}, "orderComplete": true}}`;
         } else {
             console.error('Unexpected error');
+            return;
         }
 
-        API.Request(url, method, data, true)
+        API.Request(url, 'GET', {}, true)
         .then(res => {
-            console.log(res.data)
+            // console.log(res.data)
             this.setState({
                 orderList: res.data,
                 isLoading: false

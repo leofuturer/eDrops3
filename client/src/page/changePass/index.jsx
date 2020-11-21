@@ -1,7 +1,7 @@
 import React from 'react';
 import {Redirect,withRouter} from "react-router-dom";
 import './changePass.css';
-import {customerChangePass} from "../../api/serverConfig";
+import {customerChangePass, FoundryWorkerChangePass, AdminChangePass} from "../../api/serverConfig";
 import API from "../../api/api";
 import Cookies from 'js-cookie';
 import _ from 'lodash';
@@ -38,17 +38,20 @@ class FormsPage extends React.Component  {
             oldPassword: this.state.oldPassword,
             newPassword:this.state.newPassword
         }
-        let url =  customerChangePass;
+        let url = "";
+        if(Cookies.get('userType') === 'customer'){
+            url = customerChangePass;
+        } else if(Cookies.get('userType') === 'worker'){
+            url = FoundryWorkerChangePass;
+        } else if(Cookies.get('userType') === 'admin'){
+            url = AdminChangePass;
+        }
         let validateResult = _this.handleSubmit();
         if (validateResult) {
             API.Request(url, 'POST', data, true)
             .then( res => {
-                alert("Your password has been changed, please log in again later.");
-                Cookies.remove('username')
-                Cookies.remove('userId')
-                Cookies.remove('access_token')
-                Cookies.remove('userType')
-                _this.props.history.push('/home')
+                alert("Password successfully changed");
+                this.props.history.push('/manage/profile');
             })
             .catch(error => {
                 console.log(error.response.data.error.message);

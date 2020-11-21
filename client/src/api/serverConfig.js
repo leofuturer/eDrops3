@@ -24,6 +24,7 @@ export const AdminChangePass = ApiRootUrl + '/admins/change-password';
 export const adminGetProfile = ApiRootUrl + '/admins/id';
 export const updateAdminProfile = ApiRootUrl + '/admins/id';
 export const adminDownloadFile = ApiRootUrl + '/admins/downloadFile';
+
 export const addFoundryWorker = ApiRootUrl + '/foundryWorkers';
 export const addCustomer = ApiRootUrl + '/customers';
 export const addAdmin = ApiRootUrl + '/admins';
@@ -53,8 +54,6 @@ export const downloadFileById = ApiRootUrl + '/customers/id/downloadFile';
 export const uploadFile = ApiRootUrl + '/customers/id/uploadFile';
 export const getAllFileInfos = ApiRootUrl + '/fileInfos';
 export const adminRetrieveUserFiles = ApiRootUrl + '/customers/id/customerFiles';
-export const assignFile = ApiRootUrl + '/fileInfos/assignfile';
-export const editFileStatus = ApiRootUrl + '/fileInfos/worker-edit-status';
 
 //Order management
 export const getAllOrderInfos = ApiRootUrl + '/orderInfos';
@@ -67,7 +66,6 @@ export const addOrderChipToCart = ApiRootUrl + '/orderInfos/id/addOrderChipToCar
 
 export const getProductOrders = ApiRootUrl + '/orderInfos/id/orderProducts';
 export const getChipOrders = ApiRootUrl + '/orderInfos/id/orderChips';
-export const getCustomerOrder = ApiRootUrl + '/orderInfos/id/customer/customerOrders'
 export const modifyProductOrders = ApiRootUrl + '/orderProducts/id';
 export const modifyChipOrders = ApiRootUrl + '/orderChips/id';
 

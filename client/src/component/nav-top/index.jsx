@@ -16,6 +16,7 @@ class NavTop extends React.Component{
         Cookies.remove('userId');
         Cookies.remove('access_token');
         Cookies.remove('userType');
+        // TOOD: call /logout method of customer instance to delete access token
         this.props.history.push('/home') 
     }
     handleHideDrown() {

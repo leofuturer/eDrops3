@@ -26,8 +26,8 @@ class Address extends React.Component{
     }
 
     handleDeleteAddress(addrIndex) {
-        console.log(this.state.addressList);
-        console.log(addrIndex);
+        // console.log(this.state.addressList);
+        // console.log(addrIndex);
         let _this = this;
         let address = _this.state.addressList[addrIndex];
         let addressId = address.id;
@@ -67,7 +67,7 @@ class Address extends React.Component{
 
         const addresses = this.state.addressList.filter(i => i.id !== addressId);
         this.setState({addressList: addresses});
-        console.log(addresses);
+        // console.log(addresses);
         // Use jquery ajax to send request
         /*
         let address = _this.props.addressTem;

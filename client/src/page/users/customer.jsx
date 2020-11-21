@@ -38,7 +38,7 @@ class Customer extends React.Component {
         let classSelector = `#customer${customer.id}`;
         API.Request(url, 'DELETE', data, true)
         .then((res) => {
-            console.log(res);
+            // console.log(res);
             $(classSelector).remove();
         })
         .catch((err) => {

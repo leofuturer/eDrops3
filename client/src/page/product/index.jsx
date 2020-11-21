@@ -5,7 +5,7 @@ import { univEwodChipId,
     univEwodChipWithCoverPlate, 
     univEwodChipWithoutCoverPlate } from "../../constants";
 import Cookies from 'js-cookie';
-import {getCustomerCart, customerGetProfile,
+import {getCustomerCart, 
         manipulateCustomerOrders,
         addOrderProductToCart, returnOneItem} from "../../api/serverConfig";
 import API from "../../api/api";
@@ -117,7 +117,7 @@ class Product extends React.Component{
                 else{ //no cart, need to create one
                     // create Shopify cart
                     // console.log(`No cart currently exists, so need to create one`);
-                    shopifyClient.checkout.create()
+                    Shopify.getInstance("","").checkout.create()
                     .then(res => {
                         // console.log(res);
                         _this.setState({

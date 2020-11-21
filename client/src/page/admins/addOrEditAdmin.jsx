@@ -31,7 +31,7 @@ class AddOrEditAdmin extends React.Component {
     }
 
     handleSave() {
-        let _this = this
+        let _this = this;
         let userMes = {
             phoneNumber: this.state.phoneNumber,
             realm: this.state.realm,
@@ -46,7 +46,7 @@ class AddOrEditAdmin extends React.Component {
             }).catch(error => {
                 console.error(error);
             });
-        } else { //add new customer
+        } else { //add new admin
             let url = addAdmin;
             Object.assign(userMes, {
                 password: this.state.password,

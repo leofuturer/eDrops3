@@ -29,7 +29,7 @@ module.exports = (ctx, containerInstance, next) => {
                     console.log(err);
                 } else {
                     fileId = fileInstance.id;
-                    console.log(fileInstance);
+                    // console.log(fileInstance);
                 }
             })
             /*

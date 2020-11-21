@@ -1,7 +1,7 @@
 import React from 'react';
 import {withRouter} from 'react-router-dom';
 import API from '../../api/api'
-import { customerSignUp, findCustomerByWhere, customerAddresses } from '../../api/serverConfig';
+import { customerSignUp, findCustomerByWhere } from '../../api/serverConfig';
 import {constraints} from './formConstraints';
 import './register.css';
 import _ from 'lodash';

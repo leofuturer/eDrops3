@@ -196,7 +196,7 @@ class Login extends React.Component  {
                         .then( res => {
                             if(res.status === 200){
                                 let shopify = Shopify.getInstance(res.data.info.token, res.data.info.domain);
-                                console.log(shopify);
+                                // console.log(shopify);
                             }
                         }).catch(err => console.log(err));
                         _this.props.history.push('/home');
