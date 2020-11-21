@@ -30,8 +30,11 @@ module.exports = function(Admin) {
             var promises = chipOrders.map((chipOrder, index) => {
                 return Admin.app.models.orderInfo.findById(chipOrder.orderId)
                 .then(orderInfo => {
-                    chipOrder.customerId = orderInfo.customerId;
-                    allOrderChips = allOrderChips.concat(chipOrder);
+                    console.log(orderInfo.status);
+                    if(orderInfo.status!=='Order in progress'){
+                      chipOrder.customerId = orderInfo.customerId;
+                      allOrderChips = allOrderChips.concat(chipOrder);
+                    }
                 })
                 .catch(err => {
                     console.error(err);
