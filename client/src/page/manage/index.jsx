@@ -36,6 +36,7 @@ import Cart from 'page/cart/index.jsx';
 import Cookies from "js-cookie";
 import Shopify from '../../app.jsx';
 
+
 const routes = [
     //Pages for Admin:
     //Admin view(manage) all workers
@@ -136,6 +137,7 @@ const routes = [
         path: "/manage/address/newAddress",
         component: AddNewAddress
     },
+    
     //Customer edit a certain address
     {
         path: "/manage/address/updateAddress",

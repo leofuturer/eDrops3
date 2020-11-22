@@ -3,9 +3,16 @@ import { customerGetProfile, customerAddresses  } from "../../api/serverConfig";
 import API from "../../api/api";
 import Cookies from 'js-cookie';
 import SingleAddress from './singleAddress.jsx';
-import { withRouter } from 'react-router';
+import { withRouter} from 'react-router-dom';
+import 'bootstrap-modal';
 import "./beforeCheckout.css";
-import Shopify from '../../app.jsx';
+import ShopifyClient from 'shopify-buy';
+import AddNewAddress from '../address/addNewAddress.jsx';
+
+const shopifyClient = ShopifyClient.buildClient({
+    storefrontAccessToken: 'c098a4c1f8d45e55b35caf24ca9c97bb',
+    domain: 'wqntest.myshopify.com'
+});
 
 class BeforeCheckout extends React.Component  {
     constructor(props) {
@@ -16,13 +23,13 @@ class BeforeCheckout extends React.Component  {
             shopifyCheckoutId: undefined,
             addressList: [],
             selectedAddrIndex: 0,
-            doneLoading: false,
+            doneLoading: false
         };
         this.handleReturnToCart = this.handleReturnToCart.bind(this);
         this.handleSelectAddress = this.handleSelectAddress.bind(this);
         this.handlePayment = this.handlePayment.bind(this);
     }
-
+    
     componentDidMount(){
         let _this = this;
         if(Cookies.get('access_token') === undefined){
@@ -126,6 +133,7 @@ class BeforeCheckout extends React.Component  {
     }
 
     render() {
+        //this.state.isModalOpen;
         // console.log(this.props.location)
         return(     
             <div>
@@ -148,6 +156,36 @@ class BeforeCheckout extends React.Component  {
                                 />
                             )
                         }
+                        <div>
+                            <div className="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                                <div className="card-view" style={{minHeight: "200px"}}>
+                                    <div className="row" style={{paddingTop: "70px", paddingLeft: "165px"}}>
+                                        <div className="col-md-4 col-sm-4 col-xs-4">
+                                            <button id="addnew" className="btn btn-success" data-toggle="modal" data-target="#formModal" >
+                                                <i>+</i>
+                                                <span className="btn-txt-padding">Add New</span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="modal fade" id="formModal" tabIndex="-1" role="dialog" aria-labelledby="formModalLabel" >
+                            <div className="modal-dialog modal-dialog-centered" role="document">
+                                <div className="modal-content">
+                                    <div className="modal-header">
+                                        <button type="button" className="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div className="modal-body">
+                                        <AddNewAddress 
+                                        
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                         </div>
                         { this.state.preparingForCheckout
                         ? <img className="loading-GIF-checkout-button" src="../../../static/img/loading-sm.gif" alt=""/>
