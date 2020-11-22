@@ -38,6 +38,7 @@ class BeforeCheckout extends React.Component  {
         }
         else if(_this.props.location.state.shopifyCheckoutLink === undefined
                 || _this.props.location.state.cartId === undefined){
+            console.log("check..");
             _this.props.history.push('/manage/cart');
             return;
         }
@@ -92,6 +93,7 @@ class BeforeCheckout extends React.Component  {
 
     handlePayment(){
         let _this = this;
+        const shopifyClient = Shopify.getInstance("","");
         _this.setState({
             preparingForCheckout: true,
         });

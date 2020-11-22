@@ -1,10 +1,8 @@
-
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter as Router, Switch, Redirect, Route, Link } from 'react-router-dom'
 import ShopifyClient from 'shopify-buy';
 import "bootstrap";
-
 // Router components
 import {MainRouter, SubRouter} from 'router/routeMap.jsx';
 
@@ -13,11 +11,27 @@ import {MainRouter, SubRouter} from 'router/routeMap.jsx';
     js-buy-sdk APIs to retrieve "product" data & create "order" in that Shopify development store
     specified by the domain and authenticated by the storefrontAccessToken
 */
-const shopifyClient = ShopifyClient.buildClient({
-    storefrontAccessToken: 'c098a4c1f8d45e55b35caf24ca9c97bb',
-    domain: 'wqntest.myshopify.com'
-  });
+var Shopify = (function(){
+    var shopify_instance = null;
+    function createInstance(token, domain){
+        if(token===""&&domain==="") return null;
+        const inst = ShopifyClient.buildClient({
+            storefrontAccessToken: token,
+            domain: domain
+        });
+        return inst;
+    }
+    return {
+        getInstance: function(token, domain){
+            if(shopify_instance === null){
+                shopify_instance = createInstance(token, domain);
+            }
+            return shopify_instance;
+        }
+    };
+})();
 
+export default Shopify;
 //The root APP of React
 class App extends React.Component {
     constructor(props){
@@ -29,7 +43,7 @@ class App extends React.Component {
             <Router>
                 <Switch>
                     <Route path="/subpage" component={SubRouter}/>
-                    <Route path="/" render={() => <MainRouter shopifyClient={shopifyClient}/>} />
+                    <Route path="/" render={() => <MainRouter/>} />
                 </Switch>
             </Router>
         )
@@ -37,6 +51,6 @@ class App extends React.Component {
 }
 
 ReactDOM.render(
-    <App shopifyClient={shopifyClient} />,
+    <App/>,
     document.getElementById('app')
 );

@@ -2,19 +2,20 @@ import React from 'react';
 import { withRouter, NavLink } from 'react-router-dom';
 import '@babel/polyfill'
 import  CartItem  from './cartItem.jsx';
+import Shopify from '../../app.jsx';
 import { ewodFabServiceId } from '../../constants';
 import './cart.css';
 import API from "../../api/api";
 import { getCustomerCart, getProductOrders, 
         getChipOrders, modifyProductOrders, 
-        modifyChipOrders 
+        modifyChipOrders, customerGetApiToken 
     } from '../../api/serverConfig';
 import Cookies from "js-cookie";
-import ShopifyClient from 'shopify-buy';
-const shopifyClient = ShopifyClient.buildClient({
-    storefrontAccessToken: 'c098a4c1f8d45e55b35caf24ca9c97bb',
-    domain: 'wqntest.myshopify.com'
-});
+//import ShopifyClient from 'shopify-buy';
+// const shopifyClient = ShopifyClient.buildClient({
+//     storefrontAccessToken: process.env.REACT_APP_SHOPIFY_TOKEN,
+//     domain: process.env.REACT_APP_SHOPIFY_DOMAIN
+// });
 
 class Cart extends React.Component{
     constructor(props) {
@@ -117,6 +118,7 @@ class Cart extends React.Component{
 
     handleDelete(itemType, index){
         let _this = this;
+        const shopifyClient = Shopify.getInstance("","");
         let url;
         if(itemType === 'product'){
             var array = _this.state.productOrders;
@@ -161,7 +163,8 @@ class Cart extends React.Component{
     handleSaveForOrders(array, type){
         // console.log("Updating DB");       
         let url;
-        let _this = this;     
+        let _this = this;   
+        const shopifyClient = Shopify.getInstance("","");  
         if(_this.state.modifiedItems.size > 0){
             this.setState({
                 saveInProgress: true,

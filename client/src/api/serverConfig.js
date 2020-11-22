@@ -15,6 +15,7 @@ export const customerDeleteById = ApiRootUrl + '/customers/id';
 export const updateCustomerProfile = ApiRootUrl + '/customers/id';
 export const findCustomerByWhere = ApiRootUrl + '/customers';
 export const customerResendVerifyEmail = ApiRootUrl + '/customers/id/resendVerifyEmail';
+export const customerGetApiToken = ApiRootUrl + '/customers/getApi';
 
 //Admin
 export const AdminLogin = ApiRootUrl + '/admins/login';
@@ -29,7 +30,10 @@ export const addAdmin = ApiRootUrl + '/admins';
 export const getAllCustomers = ApiRootUrl+'/customers';
 export const getAllFoundryWorkers = ApiRootUrl + '/foundryWorkers';
 export const findAdminByWhere = ApiRootUrl + '/admins';
-export const deleteAdminById = ApiRootUrl + '/admins/id'
+export const deleteAdminById = ApiRootUrl + '/admins/id';
+export const getApiToken = ApiRootUrl + '/admins/getApi';
+export const returnAllItems = ApiRootUrl + '/admins/getItems';
+export const returnOneItem = ApiRootUrl + '/admins/getOne';
 
 //Foundry Worker
 export const FoundryWorkerLogin = ApiRootUrl+ '/foundryWorkers/login';
@@ -63,6 +67,7 @@ export const addOrderChipToCart = ApiRootUrl + '/orderInfos/id/addOrderChipToCar
 
 export const getProductOrders = ApiRootUrl + '/orderInfos/id/orderProducts';
 export const getChipOrders = ApiRootUrl + '/orderInfos/id/orderChips';
+export const getCustomerOrder = ApiRootUrl + '/orderInfos/id/customer/customerOrders'
 export const modifyProductOrders = ApiRootUrl + '/orderProducts/id';
 export const modifyChipOrders = ApiRootUrl + '/orderChips/id';
 
