@@ -28,7 +28,7 @@ module.exports = function(Admin) {
         Admin.app.models.orderInfo.find({where: {orderComplete: true}})
         .then(orderInfos => {
             var promises = orderInfos.map((orderInfo, index) => {
-                return Admin.app.models.chipOrder.findOne({where: {orderId: orderInfo.id}})
+                return Admin.app.models.orderChip.findOne({where: {orderId: orderInfo.id}})
                 .then(chipOrder => {
                     //console.log(orderInfo.status);
                     //if(orderInfo.orderComplete===1){
