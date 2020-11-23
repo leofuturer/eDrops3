@@ -25,13 +25,16 @@ module.exports = function(Admin) {
 
     Admin.getChipOrders = function(ctx, cb){
         var allOrderChips = [];
-        Admin.app.models.orderChip.find({})
-        .then(chipOrders => {
-            var promises = chipOrders.map((chipOrder, index) => {
-                return Admin.app.models.orderInfo.findById(chipOrder.orderId)
-                .then(orderInfo => {
+        Admin.app.models.orderInfo.find({where: {orderComplete: true}})
+        .then(orderInfos => {
+            var promises = orderInfos.map((orderInfo, index) => {
+                return Admin.app.models.orderChip.findOne({where: {orderId: orderInfo.id}})
+                .then(chipOrder => {
+                    //console.log(orderInfo.status);
+                    //if(orderInfo.orderComplete===1){
                     chipOrder.customerId = orderInfo.customerId;
                     allOrderChips = allOrderChips.concat(chipOrder);
+                    //}
                 })
                 .catch(err => {
                     console.error(err);
