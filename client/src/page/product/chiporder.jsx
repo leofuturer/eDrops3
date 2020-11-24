@@ -59,86 +59,87 @@ class ChipOrder extends React.Component {
 
             let _this = this;
             let url = getCustomerCart.replace('id', Cookies.get('userId'));
-            API.Request(customerGetApiToken, 'GET', {}, true)
-                .then( res => {
-                    if(res.status === 200){
-                        _this.shopifyClient = ShopifyClient.buildClient({
-                            storefrontAccessToken: res.data.info.token, 
-                            domain: res.data.info.domain
-                        })
-                    }
-                })
-                .then(()=>{
+            // API.Request(customerGetApiToken, 'GET', {}, true)
+            //     .then( res => {
+            //         if(res.status === 200){
+            //             _this.shopifyClient = ShopifyClient.buildClient({
+            //                 storefrontAccessToken: res.data.info.token, 
+            //                 domain: res.data.info.domain
+            //             })
+            //         }
+            //     })
+            //     .then(()=>{
+                    
+            //     })
+            //     .catch(err => console.log(err));
+            _this.setState({
+                fileInfo: this.props.location.state.fileInfo,
+            });
+            Shopify.getInstance("","").product.fetch(ewodFabServiceId)
+            .then((product) => {
+                // console.log(product);
+                _this.setState({
+                    product: product,
+                });
+            })
+            .catch((err) => {
+                console.error(err);
+                //redirect to all items page if product ID is invalid
+                this.props.history.push('/allItems');
+            });
+            API.Request(url, 'GET', {}, true)
+            .then(res => {
+                if(res.data.id){
+                    // console.log(`Have cart already with ID ${res.data.id}`);
                     _this.setState({
-                        fileInfo: this.props.location.state.fileInfo,
+                        orderInfoId: res.data.id,
+                        shopifyClientCheckoutId: res.data.checkoutIdClient,
                     });
-                    _this.shopifyClient.product.fetch(ewodFabServiceId)
-                    .then((product) => {
-                        // console.log(product);
-                        _this.setState({
-                            product: product,
-                        });
-                    })
-                    .catch((err) => {
-                        console.error(err);
-                        //redirect to all items page if product ID is invalid
-                        this.props.history.push('/allItems');
-                    });
-                    API.Request(url, 'GET', {}, true)
+                }
+                else{ //no cart, need to create one
+                    // create Shopify cart
+                    // console.log(`No cart currently exists, so need to create one`);
+                    Shopify.getInstance("","").checkout.create()
                     .then(res => {
-                        if(res.data.id){
-                            // console.log(`Have cart already with ID ${res.data.id}`);
+                        // console.log(res);
+                        _this.setState({
+                            shopifyClientCheckoutId: res.id
+                        });
+                        let lastSlash = res.webUrl.lastIndexOf('/');
+                        let lastQuestionMark = res.webUrl.lastIndexOf('?');
+                        let shopifyCheckoutToken = res.webUrl.slice(lastSlash + 1, lastQuestionMark);
+                        let data = {
+                            "checkoutIdClient": res.id,
+                            "checkoutToken": shopifyCheckoutToken,
+                            "checkoutLink": res.webUrl,
+                            "createdAt": res.createdAt,
+                            "lastModifiedAt": res.updatedAt,
+                            "orderComplete": false,
+                            "status": "Order in progress",
+                            "shippingAddressId": 0, //0 to indicate no address selected yet (pk cannot be 0)
+                            "billingAddressId": 0
+                        };
+                        // and then create orderInfo in our backend
+                        url = manipulateCustomerOrders.replace('id', Cookies.get('userId'));
+                        API.Request(url, 'POST', data, true)
+                        .then(res => {
+                            // console.log(res);
                             _this.setState({
                                 orderInfoId: res.data.id,
-                                shopifyClientCheckoutId: res.data.checkoutIdClient,
                             });
-                        }
-                        else{ //no cart, need to create one
-                            // create Shopify cart
-                            // console.log(`No cart currently exists, so need to create one`);
-                            _this.shopifyClient.checkout.create()
-                            .then(res => {
-                                // console.log(res);
-                                _this.setState({
-                                    shopifyClientCheckoutId: res.id
-                                });
-                                let lastSlash = res.webUrl.lastIndexOf('/');
-                                let lastQuestionMark = res.webUrl.lastIndexOf('?');
-                                let shopifyCheckoutToken = res.webUrl.slice(lastSlash + 1, lastQuestionMark);
-                                let data = {
-                                    "checkoutIdClient": res.id,
-                                    "checkoutToken": shopifyCheckoutToken,
-                                    "checkoutLink": res.webUrl,
-                                    "createdAt": res.createdAt,
-                                    "lastModifiedAt": res.updatedAt,
-                                    "orderComplete": false,
-                                    "status": "Order in progress",
-                                    "shippingAddressId": 0, //0 to indicate no address selected yet (pk cannot be 0)
-                                    "billingAddressId": 0
-                                };
-                                // and then create orderInfo in our backend
-                                url = manipulateCustomerOrders.replace('id', Cookies.get('userId'));
-                                API.Request(url, 'POST', data, true)
-                                .then(res => {
-                                    // console.log(res);
-                                    _this.setState({
-                                        orderInfoId: res.data.id,
-                                    });
-                                })
-                                .catch(err => {
-                                    console.error(err);
-                                });
-                            })
-                            .catch(err => {
-                                console.error(err);
-                            });
-                        }
+                        })
+                        .catch(err => {
+                            console.error(err);
+                        });
                     })
                     .catch(err => {
                         console.error(err);
                     });
-                })
-                .catch(err => console.log(err));
+                }
+            })
+            .catch(err => {
+                console.error(err);
+            });
             
         }
 
@@ -203,7 +204,7 @@ class ChipOrder extends React.Component {
             customServerOrderAttributes += `withCoverPlateAssembled: ${wcpbVal}\n`;
             customServerOrderAttributes += `fileName: ${_this.state.fileInfo.fileName}\n`;
             const checkoutId = _this.state.shopifyClientCheckoutId;
-            _this.shopifyClient.checkout.addLineItems(checkoutId, lineItemsToAdd)
+            Shopify.getInstance("","").checkout.addLineItems(checkoutId, lineItemsToAdd)
             .then(res => {
                 let lineItemId;
                 for(let i = 0; i<res.lineItems.length; i++){
