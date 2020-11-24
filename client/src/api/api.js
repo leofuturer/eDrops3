@@ -1,6 +1,4 @@
-//Backend API lists
 import axios from 'axios'
-import * as serverConfig from './serverConfig'
 import Cookies from 'js-cookie'
 
 class API {
@@ -14,32 +12,22 @@ class API {
      */
     async Request(url, method, data, useToken, headers = {'content-type':'application/json; charset=utf-8'}){
         try{
-            let requestUrl = "";
             if(useToken){
-                if(url.indexOf('?') > -1){
-                    requestUrl = url + `&access_token=${Cookies.get('access_token')}`;
-                }
-                else{
-                    requestUrl = url + `?access_token=${Cookies.get('access_token')}`;
-                }
-            }
-            else{
-                requestUrl = url;
-            }
-
+                headers.Authorization = Cookies.get('access_token');
+            }         
             let options = {
-                method:method,
-                headers:headers,
-                data:JSON.stringify(data),
-                url: requestUrl
-            }
-            let res = await axios(options)
-            //console.log(res)
-            return res
+                method: method,
+                headers: headers,
+                data: JSON.stringify(data),
+                url: url
+            };
+            let res = await axios(options);
+            return res;
         }catch(error){
-            console.log(error)
+            console.error(error);
             throw error;
         }
     }
 }
+
 export default new API();
