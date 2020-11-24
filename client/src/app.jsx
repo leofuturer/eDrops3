@@ -29,9 +29,10 @@ var Shopify = (function(){
             return shopify_instance;
         }
     };
-})();
+}());
 
 export default Shopify;
+
 //The root APP of React
 class App extends React.Component {
     constructor(props){

@@ -6,13 +6,8 @@ import SingleAddress from './singleAddress.jsx';
 import { withRouter} from 'react-router-dom';
 import 'bootstrap-modal';
 import "./beforeCheckout.css";
-import ShopifyClient from 'shopify-buy';
 import AddNewAddress from '../address/addNewAddress.jsx';
-
-const shopifyClient = ShopifyClient.buildClient({
-    storefrontAccessToken: 'c098a4c1f8d45e55b35caf24ca9c97bb',
-    domain: 'wqntest.myshopify.com'
-});
+import Shopify from '../../app.jsx';
 
 class BeforeCheckout extends React.Component  {
     constructor(props) {
