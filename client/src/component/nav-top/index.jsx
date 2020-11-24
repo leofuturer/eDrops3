@@ -74,7 +74,7 @@ class NavTop extends React.Component{
                             {
                                 notLoggedIn ? null
                                     : (Cookies.get('userType') === 'customer'
-                                        ? <li><a href="/manage/files"><i className="fa fa-database"></i></a></li>
+                                        ? <li><NavLink to="/manage/files"><i className="fa fa-database"></i></NavLink></li>
                                         : (Cookies.get('userType') === 'admin'
                                             ? <li><a href="/manage/allfiles"><i className="fa fa-database"></i></a></li>
                                             : null)
