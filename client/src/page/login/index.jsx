@@ -173,6 +173,9 @@ class Login extends React.Component  {
                     block.classList.add("error");
                     block.innerHTML = "The username/email has not been registered";
                     document.querySelector(".registrationError").appendChild(block);
+                    this.setState({
+                        isLoading: false
+                      });
                 }
                 else {
                     // console.log(res.data);
@@ -215,7 +218,7 @@ class Login extends React.Component  {
                 }
             })
             .catch(err => {
-                console.log(err);
+                console.error(err);
                 this.setState({
                     isLoading: false
                 });
