@@ -39,9 +39,7 @@ class Orders extends React.Component{
         });
         var data = {};
         var method = 'GET';
-        if (this.props.match.path === '/manage/worker-orders') {
-            var url = workerOrderRetrieve.replace('id', Cookies.get('userId'));
-        } else if (this.props.match.path === '/manage/customer-orders') {
+        if (this.props.match.path === '/manage/customer-orders') {
             var url = customerOrderRetrieve.replace('id', Cookies.get('userId')) + '?filter={"where": {"orderComplete": true}}';
         } else if (this.props.match.path === '/manage/admin-retrieve-user-orders') {
             var url = getCustomerOrder.replace('id', Cookies.get('userId')) + `?filter={"where": {"customerId": ${this.state.custId}}, "orderComplete": true}`;
@@ -93,28 +91,11 @@ class Orders extends React.Component{
                             <table className="table">
                                 <thead>
                                     <tr>
-                                        {
-                                            Cookies.get('userType') === 'customer' || Cookies.get('userType') === "admin"
-                                            ? <th>Order ID</th>
-                                            : Cookies.get('userType') === 'worker'
-                                              ? <th>Uploader</th>
-                                              : null
-                                        }
-                                        {
-                                            Cookies.get('userType') === 'customer' || Cookies.get('userType') === "admin"
-                                            ? <th>Order Date</th>
-                                            : Cookies.get('userType') === 'worker'
-                                              ? <th>Date Assigned</th>
-                                              : null
-                                        }
-                                        {
-                                            Cookies.get('userType') === 'customer' || Cookies.get('userType') === "admin"
-                                            ? <th>Process Status</th>
-                                            : Cookies.get('userType') === 'worker'
-                                              ? <th className="icon-center">Edit Process Status</th>
-                                              : null
-                                        }
-                                            <th className="icon-center">Other Details</th>
+                                        <th>Order ID</th>
+                                        <th>Order Date</th>
+                                        <th>Process Status</th>
+                                        <th>Total Price</th>
+                                        <th className="icon-center">Other Details</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -123,26 +104,13 @@ class Orders extends React.Component{
                                             this.state.orderList.map((item, index) => {
                                                 return (
                                                     <tr key={index} id={item.id}>
-                                                        {
-                                                            Cookies.get('userType') === "customer" || Cookies.get('userType') === "admin"
-                                                            ? <td>{item.orderInfoId}</td>
-                                                            : Cookies.get('userType') === "worker"
-                                                              ? <td>{item.customer}</td>
-                                                              : null
-                                                        }
+                                                        <td>{item.orderInfoId}</td>
                                                         <td>{item.createdAt.substring(0, item.createdAt.indexOf('T'))}</td>
-                                                        {
-                                                            Cookies.get('userType') === "customer" || Cookies.get('userType') === "admin"
-                                                            ? <td>{item.workerName}</td>
-                                                            : null
-                                                        }
-                                                        {
-                                                            Cookies.get('userType') === "worker" || Cookies.get('userType') === "customer" || Cookies.get('userType') === "admin"
-                                                            ? <td className="icon-center">
-                                                                    <i className="fa fa-commenting" id={`worker-order${item.id}`} onClick={this.handleDetail}></i>
-                                                              </td>
-                                                            : null
-                                                        }
+                                                        <td>{item.status}</td>
+                                                        <td>${parseFloat(item.total_cost).toFixed(2)}</td>
+                                                        <td className="icon-center">
+                                                                <i className="fa fa-commenting" id={`worker-order${item.id}`} onClick={this.handleDetail}></i>
+                                                        </td>
                                                     </tr>
                                                 );
                                             })

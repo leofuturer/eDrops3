@@ -3,7 +3,7 @@ import axios from 'axios'
 import * as serverConfig from './serverConfig'
 import Cookies from 'js-cookie'
 
-class API {    
+class API {
     /**
      * Custom function used to send request to backend APIs
      * @param {string} url - backend API url
@@ -26,7 +26,7 @@ class API {
             else{
                 requestUrl = url;
             }
-            
+
             let options = {
                 method:method,
                 headers:headers,
