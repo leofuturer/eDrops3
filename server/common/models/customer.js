@@ -17,7 +17,7 @@ module.exports = function(Customer) {
     // create default address for user
     Customer.afterRemote('create', function(ctx, customerInstance, next){
         //for the future: can probably move this function to its own js file
-        // console.log(customerInstance);
+        // log(customerInstance);
         //copy over the address data
         //if possible, we should only pass in the customer data to the creation
         //of the customer model too
@@ -44,27 +44,45 @@ module.exports = function(Customer) {
         });
     });
 
+    Customer.afterRemote('login', function(ctx, tokenInstance, next){
+        Customer.findById(tokenInstance.userId, (err, userInstance) => {
+            if(err){
+                next(err);
+            } else {
+                tokenInstance.username = userInstance.username;
+                next();
+            }
+        })
+    });
+
     //send verification email after registration and address creation
     Customer.afterRemote('create', customerEmailVerification);
 
-    Customer.prototype.resendVerifyEmail = function(options, cb){
-        //we use .prototype because this is an instance method
-        // console.log(options);
-        const user = this;
-        // console.log(user.id);
-        var emailOptions = {
-            type: 'email',
-            from: SENDER_EMAIL_USERNAME,
-            subject: '[Edrop] Resent Email Verification',
-            text: `Hello ${user.firstName} ${user.lastName}! Here's another email verification link that you requested.`,
-            template: path.resolve(__dirname, '../../server/views/verify.ejs'),
-            host: FRONTEND_HOSTNAME,
-            port: FRONTEND_PORT,
-            redirect: '/emailVerified'
-        };
-
-        user.verify(emailOptions);
-        cb(null);
+    Customer.resendVerifyEmail = function(body, cb){
+        Customer.find({"where": {"email": body.email}}, (err, users) => {
+            if(err){
+                console.error(err);
+                cb(err);
+            } else if(users.length > 1){
+                let err = new Error("more than one user found with that email");
+                cb(err);
+            } else {
+                let user = users[0];
+                var emailOptions = {
+                    type: 'email',
+                    from: SENDER_EMAIL_USERNAME,
+                    subject: '[Edrop] Resent Email Verification',
+                    text: `Hello ${user.firstName} ${user.lastName}! Here's another email verification link that you requested.`,
+                    template: path.resolve(__dirname, '../../server/views/verify.ejs'),
+                    host: FRONTEND_HOSTNAME,
+                    port: FRONTEND_PORT,
+                    redirect: '/emailVerified'
+                };
+        
+                user.verify(emailOptions);
+                cb(null);
+            }
+        });
     }
 
     Customer.beforeRemote('setPassword', function(ctx, customerInstance, next){
@@ -94,7 +112,7 @@ module.exports = function(Customer) {
             html: html
         }, function(err) {
             if (err) return console.error('> Error sending password reset email');
-            console.log('> Sending password reset email to:', info.email);
+            log('> Sending password reset email to:', info.email);
         });
     })
 
@@ -110,7 +128,7 @@ module.exports = function(Customer) {
         data.zipCode = ctx.req.body.zipCode;
         data.isDefault = ctx.req.body.isDefault;
         currentCustomerId = ctx.req.accessToken.userId;
-        // console.log(ctx.req.body);
+        // log(ctx.req.body);
         Customer.findById(currentCustomerId, (err, customerInstance) => {
             customerInstance.customerAddresses.create(data, (err, addressInstance) => {
                 if(err){
@@ -123,6 +141,54 @@ module.exports = function(Customer) {
         });
     }
 
+    Customer.credsTaken = function(body, cb){
+        if(!body.username && !body.email){
+            var err = new Error(`Missing username and/or email keys`);
+            err.status = 400;
+            console.error(err)
+            return cb(err);
+        } else {
+            var result = {
+                "usernameTaken": false,
+                "emailTaken": false,
+            }
+            Customer.find({"where": {"username": body.username || ""}}, (err, models) => {
+                // querying "username": undefined actually will return results (why??)
+                // same seems to be true for email field
+                if(err){
+                    console.error(err);
+                    cb(err);
+                } else if(models.length > 0){
+                    log(`Username ${body.username} taken`)
+                    result.usernameTaken = true; 
+                }
+                Customer.find({"where": {"email": body.email || ""}}, (err, models2) => {
+                    if(err){
+                        console.error(err);
+                        cb(err);
+                    } else if(models2.length > 0){
+                        log(`Email ${body.email} taken`);
+                        result.emailTaken = true;
+                        cb(null, result);
+                    } else {
+                        cb(null, result);
+                    }
+                });
+            });
+        }
+    }
+
+    Customer.remoteMethod('credsTaken', {
+        description: 'CUSTOM METHOD: Check if username and/or email are taken',
+        accepts: [
+            {arg: 'body', type: 'object', http: {source: 'body'}},
+        ],
+        http: {path: '/credsTaken', verb: 'post'},
+        returns: [
+            {arg: 'result', type: 'object'},
+        ],
+    });
+
     Customer.prototype.getCustomerCart = function(cb) {
         const customer = this;
         customer.customerOrders({"where": {"orderComplete": false}}, function(err, orders) {
@@ -132,11 +198,11 @@ module.exports = function(Customer) {
                 cb(error);
             }
             else if(orders.length === 0){
-                console.log(`No cart found for customer id=${customer.id}, need to create one`);
+                log(`No cart found for customer id=${customer.id}, need to create one`);
                 cb(null, 0); //return id = 0 for "false"
             }
             else{
-                console.log(`Cart already exists, is order info model with id ${orders[0].id}`);
+                log(`Cart already exists, is order info model with id ${orders[0].id}`);
                 cb(null, orders[0].id, orders[0].checkoutIdClient, orders[0].checkoutLink);
             }
         });
@@ -145,8 +211,8 @@ module.exports = function(Customer) {
     Customer.prototype.uploadFile = function(ctx, options, cb){
         const user = this;
         if(!options) options = {};
-        // console.log(ctx.req);
-        console.log(ctx.req.query)
+        // log(ctx.req);
+        log(ctx.req.query)
         ctx.req.params.container = 'test_container'; // we may want to use username for this
         Customer.app.models.container.upload(ctx.req, ctx.result, options, function (err, fileObj) {
             if(err){
@@ -155,9 +221,6 @@ module.exports = function(Customer) {
             else {
                 var uploadedFile = fileObj.files['attach-document'][0];
                 var uploadedFields = fileObj.fields;
-                // console.log(uploadedFields.isPublic)
-                // console.log(uploadedFields.unit)
-
                 const FileInfoModel = app.models.fileInfo;
                 FileInfoModel.create({
                     uploadTime: currentTime(),
@@ -185,7 +248,6 @@ module.exports = function(Customer) {
     Customer.prototype.downloadFile = function(ctx, cb){
         const fileId = ctx.req.query.fileId;
         const user = this;
-        // console.log(fileId);
         if(fileId === undefined){
             let error = new Error(`Missing fileId argument`)
             error.status = 400;
@@ -220,7 +282,7 @@ module.exports = function(Customer) {
     Customer.prototype.deleteFile = function(ctx, cb){
         const fileId = ctx.req.query.fileId;
         const user = this;
-        // console.log(fileId);
+        // log(fileId);
         if(fileId === undefined){
             let error = new Error(`Missing fileId argument`)
             error.status = 400;
@@ -362,10 +424,10 @@ module.exports = function(Customer) {
 
     // Customer resends verification email
     // Using: POST /customers/{id}/resendEmail
-    Customer.remoteMethod('prototype.resendVerifyEmail',{
+    Customer.remoteMethod('resendVerifyEmail',{
         description: 'CUSTOM METHOD: resend verification email, use this instead of /verify',
         accepts: [
-            {arg: 'options', type: 'object', http: 'optionsFromRequest'},
+            {arg: 'body', type: 'object', http: {source: 'body'}},
         ],
         http: {verb: 'post'},
     });

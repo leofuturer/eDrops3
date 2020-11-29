@@ -1,33 +1,52 @@
 import React from 'react';
 import {withRouter, NavLink} from  'react-router-dom';
 import Cookies from 'js-cookie';
+import {customerLogout, AdminLogout, FoundryWorkerLogout} from "../../api/serverConfig";
+import API from "../../api/api";
 
 class NavTop extends React.Component{
     constructor(props){
         super(props);
-        this.state= {
+        this.state = {
             show: false,
             drownH: '130px'
         }
     }
+
     signout() {
-        this.setState({show:false});
+        let url = "";
+        if(Cookies.get('userType') === 'admin'){
+            url = AdminLogout;
+        } else if(Cookies.get('userType') === 'customer'){
+            url = customerLogout;
+        } else if(Cookies.get('userType') === 'worker'){
+            url = FoundryWorkerLogout;
+        }
+        Cookies.remove('userType');
         Cookies.remove('username');
         Cookies.remove('userId');
-        Cookies.remove('access_token');
-        Cookies.remove('userType');
-        // TOOD: call /logout method of customer instance to delete access token
-        this.props.history.push('/home') 
+        API.Request(url, 'POST', {}, true)
+        .then(res => {
+            Cookies.remove('access_token');
+            this.setState({show:false});
+            this.props.history.push('/home')
+        })
+        .catch(err => {
+            console.error(err);
+        });
     }
+
     handleHideDrown() {
         this.setState({show:false});
     }
+
     showDrowpn() {
-        if(Cookies.get('userType') != 'customer'){
+        if(Cookies.get('userType') !== 'customer'){
             this.setState({drownH:'60px'});
         }
         this.setState({show:!this.state.show});
     }
+
     render() {
         var show= this.state.show ? "block": "none";
         var drownHeight = this.state.drownH;
@@ -38,8 +57,6 @@ class NavTop extends React.Component{
             height: drownHeight
         }
 
-        // 4/23/2020: both username and email are set for the cookie
-        // when login is successful, so only need to check one - DY
         var notLoggedIn = (Cookies.get('username') === undefined);
         return (
             //At this time the className "header-div" has no use
@@ -115,9 +132,7 @@ class NavTop extends React.Component{
                                                 }
                                                 <li onClick={()=>this.signout()}>
                                                     <i className="fa fa-sign-out" style={{paddingRight:'15px'}}></i>
-                                                    {/* Change from NavLink to href to force page redirect
-                                                    Otherwise user may stay on sensitive pages */}
-                                                    <a href="/home">Logout</a>
+                                                    <NavLink to="/home">Logout</NavLink>
                                                 </li>
                                             </ul>
                                         </div>

@@ -171,7 +171,7 @@ class Manage extends React.Component{
         super(props);
     }
     render() {
-        if(Cookies.get('username') === undefined){
+        if(Cookies.get('userId') === undefined){
             return <Redirect to='/login'></Redirect>
         }
         return(

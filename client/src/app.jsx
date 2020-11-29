@@ -5,20 +5,13 @@ import ShopifyClient from 'shopify-buy';
 import API from './api/api'
 import {customerGetApiToken} from "./api/serverConfig";
 import "bootstrap";
-import {customerGetApiToken} from "./api/serverConfig";
-import API from "./api/api";
 // Router components
 import {MainRouter, SubRouter} from 'router/routeMap.jsx';
 
-/*  Using Shopify js-buy SDK to implement the checkout and payment functionalities
-    With the "ShopifyClient" Object passed down to the shop.jsx page, we can use 
-    js-buy-sdk APIs to retrieve "product" data & create "order" in that Shopify development store
-    specified by the domain and authenticated by the storefrontAccessToken
-*/
 var Shopify = (function(){
     var shopify_instance = null;
     function createInstance(token, domain){
-        if(token==="" && domain==="") return null;
+        if(token === "" && domain === "") return null;
         const inst = ShopifyClient.buildClient({
             storefrontAccessToken: token,
             domain: domain
@@ -42,7 +35,6 @@ var Shopify = (function(){
             } else {
                 return shopify_instance;
             }
-            
         }
     };
 }());

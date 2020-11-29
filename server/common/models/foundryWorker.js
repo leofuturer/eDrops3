@@ -1,6 +1,17 @@
 'use strict';
 
 module.exports = function(FoundryWorker) {
+    FoundryWorker.afterRemote('login', function(ctx, tokenInstance, next){
+        FoundryWorker.findById(tokenInstance.userId, (err, userInstance) => {
+            if(err){
+                next(err);
+            } else {
+                tokenInstance.username = userInstance.username;
+                next();
+            }
+        })
+    });
+    
     FoundryWorker.prototype.getChipOrders = function(ctx, cb){
         const foundryWorker = this;
         var allOrderChips = [];

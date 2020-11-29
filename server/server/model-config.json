@@ -35,7 +35,7 @@
   },
   "Email": {
     "dataSource": "myEmailDataSource",
-    "public": true
+    "public": false
   },
   "orderItemBase": {
     "dataSource": "mysqlDS",
@@ -55,12 +55,13 @@
           "prototype.replaceById": true,
           "find": true,
           
+          "credsTaken": true,
           "login": true,
           "logout": true,
           "resetPassword": true,
           "setPassword": true,
           "changePassword": true,
-          "prototype.resendVerifyEmail": true,
+          "resendVerifyEmail": true,
           "confirm": true,
 
           "getApiToken": true,

@@ -111,11 +111,18 @@
     {
       "accessType": "READ",
       "principalType": "ROLE",
-      "principalId": "$everyone",
+      "principalId": "admin",
       "permission": "ALLOW",
       "property": "find"
     },
 
+    {
+      "accessType": "EXECUTE",
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "ALLOW",
+      "property": "credsTaken"
+    },
     {
       "principalType": "ROLE",
       "principalId": "$owner",

@@ -11,7 +11,7 @@ export const constraints = {
         },
         format: {
             pattern: /^[a-z0-9_]{1,100}$/i,
-            message: "can only contain a-z, A-Z, 0-9 and _"
+            message: "must only contain a-z, A-Z, 0-9 and _"
         }
     },
     password: {
@@ -22,7 +22,7 @@ export const constraints = {
         },
         format: {
             pattern: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[^]{8,}$/,
-            message: "should at least contain a capital letter, a lowercase letter, a number, and be at least 8 characters long"
+            message: "must at least contain a capital letter, a lowercase letter, a number, and be at least 8 characters long"
         }
     },
     confirmPassword: {
