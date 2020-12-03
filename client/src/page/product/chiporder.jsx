@@ -56,8 +56,8 @@ class ChipOrder extends React.Component {
             return;
         }
         else{
-
             let _this = this;
+            // TODO: instead of building client, use Shopify.getInstance("","")
             let url = getCustomerCart.replace('id', Cookies.get('userId'));
             // API.Request(customerGetApiToken, 'GET', {}, true)
             //     .then( res => {

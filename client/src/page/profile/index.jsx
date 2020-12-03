@@ -209,7 +209,7 @@ class Profile extends React.Component{
     }
     
     render() {
-        if(Cookies.get('username') === undefined) {
+        if(Cookies.get('userId') === undefined) {
             return <Redirect to='/login'></Redirect>
         }
         var profileContent;

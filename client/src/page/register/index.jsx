@@ -1,11 +1,10 @@
 import React from 'react';
 import {withRouter} from 'react-router-dom';
 import API from '../../api/api'
-import { customerSignUp, findCustomerByWhere, customerAddresses } from '../../api/serverConfig';
+import { customerSignUp, customerCredsTaken } from '../../api/serverConfig';
 import {constraints} from './formConstraints';
 import './register.css';
 import _ from 'lodash';
-import { resolve } from 'path';
 
 var validate = require('validate.js');
 
@@ -105,44 +104,35 @@ class Register extends React.Component {
     handleValidateInput(e) {
         let ele = e.target;
         let form = this.closestParent(e.target, "vertical-form");
-        // console.log(form);
         let errors = validate(form, constraints) || {};
-        // console.log(errors);
         this.showErrorsOrSuccessForInput(ele, errors[ele.name]);
     }
 
     handleFormSubmit(e) {
         let form = document.querySelector(".vertical-form");
-        let noDupsFound = true; //not the cleanest way to do it but it'll work
         let errors = {};
         this.setState({
             requestInProgress: true
         });
         validate.async(form, constraints, {cleanAttributes: false})
-        .then(success => {
-            let customerName = document.getElementById("inputUsername").value;
-            let url = `${findCustomerByWhere}?filter={"where": {"username": "${customerName}"}}`;    
-            return API.Request(url, 'GET', {}, false); //GET, so no need to pass in anything
+        .then(success => { 
+            let data = {
+                username: document.getElementById("inputUsername").value,
+                email: document.getElementById("inputEmail").value
+            };
+            let url = customerCredsTaken;
+            return API.Request(url, 'POST', data, false);
         })
         .then(res => {
-            // Improvement : this could probably all be done using server side 
-            // remote methods: https://loopback.io/doc/en/lb3/Validating-model-data.html
-            if (res.data.length !== 0) {            
+            if(res.data.result.usernameTaken) {            
                 errors.username = ["Account already exists with this username"];
                 let input1 = document.querySelector("#inputUsername");
                 this.showErrorsOrSuccessForInput(input1, errors.username);
-                noDupsFound = false;
                 this.setState({
                     requestInProgress: false
                 });
             }
-
-            let customerEmail = document.getElementById("inputEmail").value;          
-            let url = `${findCustomerByWhere}?filter={"where": {"email": "${customerEmail}"}}`;
-            return API.Request(url, 'GET', {}, false);
-        })
-        .then(res => {
-            if(res.data.length !== 0){ //dup username
+            if(res.data.result.emailTaken) {            
                 errors.email = ["Account already exists with this email"];
                 let emailInput = document.getElementById("inputEmail");
                 this.showErrorsOrSuccessForInput(emailInput, errors.email);
@@ -150,18 +140,18 @@ class Register extends React.Component {
                     requestInProgress: false
                 });
             }
-            else if(noDupsFound){ //passed no dup email and no dup username
+            if(!res.data.result.emailTaken && !res.data.result.usernameTaken){
                 this.handleRegister(e);
             }
-        })      
+        })     
         .catch(errors => {
+            console.error(errors);
             console.log("Displaying errors");
                 _.each(form.querySelectorAll("input.needValidation"), function(input) {
                     //what's the purpose of this line?
                     if(this){
                         this.showErrorsOrSuccessForInput(input, errors && errors[input.name]);
                     }
-                    
                 });         
             this.setState({
                 requestInProgress: false
@@ -188,8 +178,6 @@ class Register extends React.Component {
         };
         API.Request(customerSignUp, 'POST', customerData, false)
         .then(res => {
-            // console.log(res.data);
-            // alert("Your have successfully signed up, please verify your email to log in using your new account!");
             this.props.history.push('/checkEmail');
         })
         .catch(error => {
@@ -230,7 +218,7 @@ class Register extends React.Component {
                                                onChange={v => this.handleChange('username', v.target.value)} onBlur={this.handleValidateInput} />
                                     </div>
                                     <div className="col-md-4 col-sm-4 col-xs-4 messages">
-                                        <small className="text-muted">Username can only contain a-z, A-Z, 0-9 and _, at least 8 characters</small>
+                                        <small className="text-muted">Username must only contain a-z, A-Z, 0-9 and _, at least 8 characters</small>
                                     </div>
                                 </div>
                                 <div className="form-group row">
@@ -242,7 +230,7 @@ class Register extends React.Component {
                                                onChange={v => this.handleChange('password', v.target.value)} onBlur={this.handleValidateInput}/>
                                     </div>
                                     <div className="col-md-4 col-sm-4 col-xs-4 messages">
-                                        <small className="text-muted">Password should contain at least a number, capital 
+                                        <small className="text-muted">Password must contain at least a number, capital 
                                                                         letter and lowercase letter, and at least 8 characters</small>
                                     </div>
                                 </div>

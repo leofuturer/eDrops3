@@ -33,7 +33,7 @@ class BeforeCheckout extends React.Component  {
         }
         else if(_this.props.location.state.shopifyCheckoutLink === undefined
                 || _this.props.location.state.cartId === undefined){
-            console.log("check..");
+            // console.log("check..");
             _this.props.history.push('/manage/cart');
             return;
         }
@@ -88,11 +88,10 @@ class BeforeCheckout extends React.Component  {
 
     handlePayment(){
         let _this = this;
-        const shopifyClient = Shopify.getInstance("","");
         _this.setState({
             preparingForCheckout: true,
         });
-        shopifyClient.checkout.updateEmail(this.state.shopifyCheckoutId, this.state.customer.email)
+        Shopify.getInstance("","").checkout.updateEmail(this.state.shopifyCheckoutId, this.state.customer.email)
         .then((res) => {
             let address = _this.state.addressList[_this.state.selectedAddrIndex];
             let shippingAddr = {
@@ -106,7 +105,7 @@ class BeforeCheckout extends React.Component  {
                 lastName: _this.state.customer.lastName,
                 phone: _this.state.customer.phoneNumber,
             }
-            shopifyClient.checkout.updateShippingAddress(this.state.shopifyCheckoutId, shippingAddr)
+            Shopify.getInstance("","").checkout.updateShippingAddress(this.state.shopifyCheckoutId, shippingAddr)
             .then((res) => {
                 // console.log(res);
                 

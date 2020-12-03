@@ -6,6 +6,7 @@ const ApiRootUrl ='/api';
 //Customer
 export const customerSignUp = ApiRootUrl+'/customers';
 export const customerLogin = ApiRootUrl+'/customers/login';
+export const customerLogout = ApiRootUrl + '/customers/logout';
 export const customerForgetPass = ApiRootUrl+'/customers/reset';
 export const customerChangePass = ApiRootUrl +'/customers/change-password';
 export const customerResetPass = ApiRootUrl +'/customers/reset-password';
@@ -14,16 +15,19 @@ export const customerGetProfile = ApiRootUrl + '/customers/id';
 export const customerDeleteById = ApiRootUrl + '/customers/id';
 export const updateCustomerProfile = ApiRootUrl + '/customers/id';
 export const findCustomerByWhere = ApiRootUrl + '/customers';
-export const customerResendVerifyEmail = ApiRootUrl + '/customers/id/resendVerifyEmail';
+export const customerCredsTaken = ApiRootUrl + '/customers/credsTaken';
+export const customerResendVerifyEmail = ApiRootUrl + '/customers/resendVerifyEmail';
 export const customerGetApiToken = ApiRootUrl + '/customers/getApi';
 
 //Admin
 export const AdminLogin = ApiRootUrl + '/admins/login';
+export const AdminLogout = ApiRootUrl + '/admins/logout';
 export const AdminForgetPassword = ApiRootUrl + '/admin-forget-password';
 export const AdminChangePass = ApiRootUrl + '/admins/change-password';
 export const adminGetProfile = ApiRootUrl + '/admins/id';
 export const updateAdminProfile = ApiRootUrl + '/admins/id';
 export const adminDownloadFile = ApiRootUrl + '/admins/downloadFile';
+
 export const addFoundryWorker = ApiRootUrl + '/foundryWorkers';
 export const addCustomer = ApiRootUrl + '/customers';
 export const addAdmin = ApiRootUrl + '/admins';
@@ -37,13 +41,13 @@ export const returnOneItem = ApiRootUrl + '/admins/getOne';
 
 //Foundry Worker
 export const FoundryWorkerLogin = ApiRootUrl+ '/foundryWorkers/login';
+export const FoundryWorkerLogout = ApiRootUrl + '/foundryWorkers/logout';
 export const FoundryWorkerForgetPass = ApiRootUrl + '/worker-forget-password';
 export const FoundryWorkerChangePass = ApiRootUrl + '/foundryWorkers/change-password';
 export const foundryWorkerGetProfile = ApiRootUrl + '/foundryWorkers/id';
 export const editFoundryWorker = ApiRootUrl + '/foundryWorkers/id';
 export const FoundryWorkerChangeProfile = ApiRootUrl + '/foundryWorkers/id';
 export const updateWorkerProfile = ApiRootUrl + '/foundryWorkers/id';
-export const findOneWorkerByWhere = ApiRootUrl + '/foundryWorkers';
 
 //File management
 export const customerFileRetrieve = ApiRootUrl + '/customers/id/customerFiles';
@@ -53,8 +57,6 @@ export const downloadFileById = ApiRootUrl + '/customers/id/downloadFile';
 export const uploadFile = ApiRootUrl + '/customers/id/uploadFile';
 export const getAllFileInfos = ApiRootUrl + '/fileInfos';
 export const adminRetrieveUserFiles = ApiRootUrl + '/customers/id/customerFiles';
-export const assignFile = ApiRootUrl + '/fileInfos/assignfile';
-export const editFileStatus = ApiRootUrl + '/fileInfos/worker-edit-status';
 
 //Order management
 export const getAllOrderInfos = ApiRootUrl + '/orderInfos';
@@ -67,7 +69,6 @@ export const addOrderChipToCart = ApiRootUrl + '/orderInfos/id/addOrderChipToCar
 
 export const getProductOrders = ApiRootUrl + '/orderInfos/id/orderProducts';
 export const getChipOrders = ApiRootUrl + '/orderInfos/id/orderChips';
-export const getCustomerOrder = ApiRootUrl + '/orderInfos/id/customer/customerOrders'
 export const modifyProductOrders = ApiRootUrl + '/orderProducts/id';
 export const modifyChipOrders = ApiRootUrl + '/orderChips/id';
 

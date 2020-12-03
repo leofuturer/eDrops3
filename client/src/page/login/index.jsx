@@ -1,7 +1,10 @@
 import React from 'react';
 import { NavLink, withRouter } from  'react-router-dom';
 import './login.css';
-import {customerLogin, AdminLogin, FoundryWorkerLogin, customerGetProfile, findAdminByWhere, findOneWorkerByWhere, findCustomerByWhere, customerGetApiToken} from "../../api/serverConfig";
+import {customerLogin, 
+        AdminLogin, 
+        FoundryWorkerLogin, 
+        customerGetApiToken} from "../../api/serverConfig";
 
 import API from "../../api/api";
 import Cookies from 'js-cookie';
@@ -14,8 +17,8 @@ class Login extends React.Component  {
     constructor(props) {
         super(props);
         this.state = {
-            usernameOrEmail: localStorage.username,
-            password: localStorage.password,
+            usernameOrEmail: "",
+            password: "",
             usertype: "",
             isLoading: false,
         }
@@ -33,11 +36,9 @@ class Login extends React.Component  {
 
     handleChange(key, value) {
         // console.log("I am called!");
-        this.setState(
-            {
-                [key]: value
-            }
-        )
+        this.setState({
+            [key]: value
+        });
     }
 
     clearReminder() {
@@ -124,101 +125,51 @@ class Login extends React.Component  {
                 email: this.state.usernameOrEmail,
                 password: this.state.password
             }
-        }
-        else {
+        } else {
             data = {
                 username: this.state.usernameOrEmail,
                 password: this.state.password
             }
         }
-        let validationData = {};
-        let url, validationUrl; //URLs for backend requests
-        let validatedUsername, validatedEmail;
+        let url; //URLs for backend requests
         if (this.state.usertype === 'customer') {
             url = customerLogin;
-            if(!data.email) {
-                validationUrl = `${findCustomerByWhere}?filter={"where": {"username": "${this.state.usernameOrEmail}"}}`;
-            } else {
-                //DY 4/23/2020: changed from {"email": "${this.state.email}"} to this.state.usernameOrEmail
-                // otherwise, cannot log in using email
-                validationUrl = `${findCustomerByWhere}?filter={"where": {"email": "${this.state.usernameOrEmail}"}}`;
-            }
-        }
-        else if (this.state.usertype === 'admin') {
+        } else if (this.state.usertype === 'admin') {
             url = AdminLogin;
-            if(!data.email) {
-                validationUrl = `${findAdminByWhere}?filter={"where": {"username": "${this.state.usernameOrEmail}"}}`;
-            } else {
-                validationUrl = `${findAdminByWhere}?filter={"where": {"email": "${this.state.usernameOrEmail}"}}`;
-            }
-        }
-        else if (this.state.usertype === 'worker') {
+        } else if (this.state.usertype === 'worker') {
             url = FoundryWorkerLogin;
-            if(!data.email) {
-                validationUrl = `${findOneWorkerByWhere}?filter={"where": {"username": "${this.state.usernameOrEmail}"}}`;
-            } else {
-                validationUrl = `${findOneWorkerByWhere}?filter={"where": {"email": "${this.state.usernameOrEmail}"}}`;
-            }
         }
         _this.clearReminder();
         let nameEmailResult = _this.handleNameEmailValidation();
         let radioResult = _this.handleRadioValidation();
         if (nameEmailResult && radioResult) {
-            API.Request(validationUrl, 'GET', validationData, false)
+            API.Request(url, 'POST', data, false)
             .then(res => {
-                if (res.data.length === 0) {
-                    document.querySelector(".name-field").classList.add("has-error");
-                    let block = document.createElement("p");
-                    block.classList.add("help-block");
-                    block.classList.add("error");
-                    block.innerHTML = "The username/email has not been registered";
-                    document.querySelector(".registrationError").appendChild(block);
-                    this.setState({
-                        isLoading: false
-                      });
-                }
-                else {
-                    // console.log(res.data);
-                    // res.data is an array with only 1 element, so need to do [0]
-                    validatedUsername = res.data[0].username;
-                    validatedEmail = res.data[0].email;
-                    API.Request(url, 'POST', data, false)
-                    .then(res => {
-                        // 4/23/2020: Always have cookies and local storage
-                        Cookies.set('access_token', res.data.id);
-                        Cookies.set('userId', res.data.userId);
-                        Cookies.set('userType', _this.state.usertype);
-                        Cookies.set('username', validatedUsername);
+                // 4/23/2020: Always have cookies and local storage
+                Cookies.set('access_token', res.data.id);
+                Cookies.set('userId', res.data.userId);
+                Cookies.set('userType', _this.state.usertype);
+                Cookies.set('username', res.data.username);
 
-                        localStorage.setItem('username', validatedUsername);
-                        localStorage.setItem('password', this.state.password);
-                        API.Request(customerGetApiToken, 'GET', {}, true)
-                        .then( res => {
-                            if(res.status === 200){
-                                let shopify = Shopify.getInstance(res.data.info.token, res.data.info.domain);
-                                console.log(shopify);
-                            }
-                        }).catch(err => console.log(err));
-                        _this.props.history.push('/home');
-                    })
-                    .catch(err => {
-                        console.log(err);
-                        let block = document.createElement("p");
-                        if (err.response.status === 401) {
-                            document.querySelector(".pass-field").classList.add("has-error");
-                            block.classList.add("help-block");
-                            block.classList.add("error");
-                            block.innerHTML = "Incorrect password or email verification required";
-                            document.querySelector(".passwordError").appendChild(block);
-                        }
-                        this.setState({
-                            isLoading: false
-                        });
-                    })
-                }
+                //any authenticated user can use this endpoint
+                API.Request(customerGetApiToken, 'GET', {}, true)
+                .then(res => {
+                    if(res.status === 200){
+                        let shopify = Shopify.getInstance(res.data.info.token, res.data.info.domain);
+                    }
+                }).catch(err => console.error(err));
+                _this.props.history.push('/home');
             })
             .catch(err => {
                 console.error(err);
+                let block = document.createElement("p");
+                if (err.response.status === 401) {
+                    document.querySelector(".pass-field").classList.add("has-error");
+                    block.classList.add("help-block");
+                    block.classList.add("error");
+                    block.innerHTML = "Login error. Please check username/email and password. Email verification is required before logging in";
+                    document.querySelector(".passwordError").appendChild(block);
+                }
                 this.setState({
                     isLoading: false
                 });
@@ -257,12 +208,7 @@ class Login extends React.Component  {
                                             onChange={v => this.handleChange('password', v.target.value)} />
                                     <div className="passwordError messages"></div>
                                 </div>
-                                <div className="form-group row">
-                                    <div className="whitespace col-md-8"></div>
-                                    <div className="forget-pass col" style={{marginLeft: '30px'}}>
-                                        <NavLink to="/forgetPass">Forgot Password?</NavLink>
-                                    </div>
-                                </div>
+                                
                                 <div className="form-group row radio-group">
                                     <div className="col-md-3 col-sm-3 col-xs-3"></div>
                                     <div className="col-md-6 col-sm-6 col-xs-6">
@@ -299,8 +245,13 @@ class Login extends React.Component  {
                                         : <input type="button" value="Login"className="input-btn" onClick={this.handleLogin}/>
                                     }
                                 </div>
+                                <div className="form-group row">
+                                    <div className="forget-pass col" style={{marginLeft: '30px'}}>
+                                        <NavLink to="/forgetPass">Forgot Password?</NavLink>
+                                    </div>
+                                </div>
                                 
-                                <div className="form-group">
+                                {/* <div className="form-group">
                                     <div className="border-div-goole">
                                         <i className="fa fa-google"></i>
                                         <span className="span-txt-padding">Login with Google</span>
@@ -309,7 +260,7 @@ class Login extends React.Component  {
                                         <i className="fa fa-facebook"></i>
                                         <span className="span-txt-padding">Login with Facebook</span>
                                     </div>
-                                </div>
+                                </div> */}
                                 <div className="form-group">
                                     <span>If you have trouble logging in to your account, </span>
                                     <a href="mailto:edropwebsite@gmail.com">contact us.</a>

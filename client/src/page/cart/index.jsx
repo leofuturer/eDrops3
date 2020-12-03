@@ -1,21 +1,15 @@
 import React from 'react';
-import { withRouter, NavLink } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import '@babel/polyfill'
 import  CartItem  from './cartItem.jsx';
 import Shopify from '../../app.jsx';
-import { ewodFabServiceId } from '../../constants';
 import './cart.css';
 import API from "../../api/api";
 import { getCustomerCart, getProductOrders, 
         getChipOrders, modifyProductOrders, 
-        modifyChipOrders, customerGetApiToken 
+        modifyChipOrders, 
     } from '../../api/serverConfig';
 import Cookies from "js-cookie";
-//import ShopifyClient from 'shopify-buy';
-// const shopifyClient = ShopifyClient.buildClient({
-//     storefrontAccessToken: process.env.REACT_APP_SHOPIFY_TOKEN,
-//     domain: process.env.REACT_APP_SHOPIFY_DOMAIN
-// });
 
 class Cart extends React.Component{
     constructor(props) {
@@ -118,7 +112,6 @@ class Cart extends React.Component{
 
     handleDelete(itemType, index){
         let _this = this;
-        const shopifyClient = Shopify.getInstance("","");
         let url;
         if(itemType === 'product'){
             var array = _this.state.productOrders;
@@ -128,7 +121,7 @@ class Cart extends React.Component{
         }
         // Delete from Shopify, then our own DB
         const itemToDelete = [array[index].lineItemIdShopify];
-        shopifyClient.checkout.removeLineItems(_this.state.shopifyCheckoutId, itemToDelete)
+        Shopify.getInstance("","").checkout.removeLineItems(_this.state.shopifyCheckoutId, itemToDelete)
         .then(checkout => {
             // console.log(checkout.lineItems);
             if(itemType === 'product'){
@@ -164,7 +157,6 @@ class Cart extends React.Component{
         // console.log("Updating DB");       
         let url;
         let _this = this;   
-        const shopifyClient = Shopify.getInstance("","");  
         if(_this.state.modifiedItems.size > 0){
             this.setState({
                 saveInProgress: true,
@@ -176,7 +168,7 @@ class Cart extends React.Component{
                     id: array[i].lineItemIdShopify,
                     quantity: parseInt(array[i].quantity),
                 }];
-                shopifyClient.checkout.updateLineItems(_this.state.shopifyCheckoutId, itemsToUpdate)
+                Shopify.getInstance("","").checkout.updateLineItems(_this.state.shopifyCheckoutId, itemsToUpdate)
                 .then(checkout => {
                     // console.log(checkout.lineItems);
                     if(type === 'product'){

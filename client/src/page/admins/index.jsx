@@ -21,7 +21,6 @@ class Admins extends Component {
         API.Request(url, 'GET', {}, true)
             .then(response => {
                 this.setState({adminList: response.data});
-                console.log(response.data);
             })
             .catch(err => console.log(err));
     }

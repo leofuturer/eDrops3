@@ -22,7 +22,6 @@ import AddOrEditAdmin from 'page/admins/AddOrEditAdmin.jsx';
 //Files
 import Files from 'page/files/index.jsx';
 import AllFiles from 'page/files/allFiles.jsx';
-import AssignFile from 'page/files/assign.jsx';
 
 //Orders
 import Orders from 'page/order/index.jsx';
@@ -93,11 +92,6 @@ const routes = [
     {
         path: "/manage/admin-retrieve-user-files",
         component: Files
-    },
-    //Admin assign files to workers
-    {
-        path: "/manage/assign",
-        component: AssignFile
     },
     //Admin view all orders
     {
@@ -177,7 +171,7 @@ class Manage extends React.Component{
         super(props);
     }
     render() {
-        if(Cookies.get('username') === undefined){
+        if(Cookies.get('userId') === undefined){
             return <Redirect to='/login'></Redirect>
         }
         return(

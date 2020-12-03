@@ -109,7 +109,7 @@ class AddOrEditWorker extends React.Component{
         )
     }
     render(){
-        if(Cookies.get('username') === undefined){
+        if(Cookies.get('userId') === undefined){
             return <Redirect to='/login'></Redirect>
         }
         if (this.props.match.path === "/manage/foundryworkers/editworker") {

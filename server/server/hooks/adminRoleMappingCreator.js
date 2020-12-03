@@ -7,17 +7,46 @@ module.exports = roleName => (ctx, userInstance, next) => {
   const { Role, RoleMapping } = ctx.req.app.models;
 
   Role.findOne({ where: { name: roleName } }, (err, role) => {
-    if (err) return next(err);
-
-    //role.principals.create() is an instance method
-    //create roleMapping
-    if(role === null || role === undefined) return;
-    role.principals.create({
-      principalType: ADMIN_ROLE_NAME,
-      principalId: userInstance.id,
-    }, (err) => {
-      if (err) return next(err);
-      return next();
-    });
+    if (err){
+      console.error(err);
+      return next(err);
+    } 
+    else if(role === null || role === undefined){
+      Role.create({
+        name: "admin"
+      }, function(err, role){
+        if(err){
+          console.error(err);
+          return next(err);
+        }
+        else{
+          role.principals.create({
+            principalType: RoleMapping.USER,
+            principalId: userInstance.id,
+          }, function(err, principal){
+            if(err){
+              console.error(err);
+              return next(err);
+            }
+            else{
+              return next();
+            }
+          });
+        }
+      })
+    } else {
+      role.principals.create({
+        principalType: RoleMapping.USER,
+        principalId: userInstance.id,
+      }, function(err, principal){
+        if(err){
+          console.error(err);
+          return next(err);
+        }
+        else{
+          return next();
+        }
+      });
+    };
   });
 };

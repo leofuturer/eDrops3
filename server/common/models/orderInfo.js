@@ -5,7 +5,8 @@ module.exports = function(OrderInfo) {
 
     // Caller: Shopify web hook, when an order is created
     // This hook is called when the order is paid for
-    OrderInfo.newOrderCreated = (body, cb) => {
+    OrderInfo.newOrderCreated = (body, req, cb) => {
+        console.log(req.headers['x-shopify-hmac-sha256']);
         // console.log(body);
         console.log("An order was just paid, receiving webhook info from Shopify");
         // TODO: Verify the request came from Shopify
@@ -53,44 +54,6 @@ module.exports = function(OrderInfo) {
         else{
             cb(null);
         }
-    }
-
-    //Without the "next" parameter
-    OrderInfo.orderProcessStarted = async (body) => {
-        // For when a new checkout is created
-        // Currently does nothing
-        // Query the database to find whether the OrderInfo exists
-        const OrderInfoId = body.id;
-        console.log("Customer just went to Shopify");
-        // console.log(body);
-
-    // try {
-    //     let OrderInfoInstance = await OrderInfo.findById(OrderInfoId);
-    //     if (!OrderInfoInstance) {
-    //         //console.log(body.line_items[0].properties);
-    //         console.log(body);
-    //         let data = {};
-    //         data.orderInfoId = OrderInfoId;
-    //         // data.email = body.email;
-    //         // data.createdAt = body.created_at;
-    //         // data.process = body.line_items[0].properties[0].value;
-    //         // data.coverPlate = body.line_items[0].properties[1].value === "true" ? "Yes" : "No";;
-    //         // data.fileName = body.line_items[0].properties[2].value;
-    //         // data.orderStatusURL = body.order_status_url;
-    //         // data.orderAddress = body.customer.default_address;
-    //         // data.sampleQuantity = body.line_items[0].quantity;
-
-    //         let Customer = OrderInfo.app.models.customer;
-    //         let customerInstance = await Customer.findOne({where: {email: body.email}});
-    //         data.customerId = customerInstance.id;
-    //         await OrderInfo.create(data);
-    //     } else {
-    //         console.log('OrderInfo already exists!');
-    //     }
-    // }
-    // catch(err) {
-    //     console.log(err);
-    // }
     }
 
     OrderInfo.prototype.addOrderChipToCart = (body, cb) => {
@@ -228,6 +191,7 @@ module.exports = function(OrderInfo) {
         description: 'An Order (customer has paid) was created by Shopify',
         accepts: [
             {arg: 'body', type: 'object', http: {source: 'body'}},
+            {arg: 'req', type: 'object', http: {source: 'req'}},
         ],
         http: {path: '/newOrderCreated', verb: 'post'},
         returns: {arg: 'msg', type: 'string'}

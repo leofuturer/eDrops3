@@ -23,6 +23,17 @@ module.exports = function(Admin) {
     // so that new admin user gets the right admin permissions
     Admin.afterRemote('create', adminRoleMappingCreator(ADMIN_ROLE_NAME));
 
+    Admin.afterRemote('login', function(ctx, tokenInstance, next){
+        Admin.findById(tokenInstance.userId, (err, userInstance) => {
+            if(err){
+                next(err);
+            } else {
+                tokenInstance.username = userInstance.username;
+                next();
+            }
+        })
+    });
+
     Admin.getChipOrders = function(ctx, cb){
         var allOrderChips = [];
         Admin.app.models.orderInfo.find({where: {orderComplete: true}})
@@ -61,7 +72,6 @@ module.exports = function(Admin) {
                             } else {
                                 orderChip.workerName = `Not yet assigned`;
                             }
-
                         })
                         .catch(err => {
                             console.error(err);

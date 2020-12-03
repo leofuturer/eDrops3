@@ -1,10 +1,6 @@
 import React from 'react';
 import API from '../../api/api';
-import { getOrderInfoById, getCustomerCart, getProductOrders,
-    getChipOrders, modifyProductOrders,
-    modifyChipOrders
-} from '../../api/serverConfig';
-import Cookies from 'js-cookie';
+import { getOrderInfoById, getProductOrders, getChipOrders } from '../../api/serverConfig';
 import OrderItem from './orderItem.jsx';
 import OrderAddress from './orderAddress.jsx';
 import queryString from 'query-string';

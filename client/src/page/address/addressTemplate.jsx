@@ -1,11 +1,6 @@
 import React from 'react';
 import { withRouter } from 'react-router';
 import './address.css';
-import { customerAddresses } from '../../api/serverConfig';
-import Cookies from 'js-cookie';
-import API from '../../api/api';
-import $ from 'jquery';
-
 class AddressTemplate extends React.Component {
     constructor(props) {
         super(props);

@@ -35,7 +35,7 @@
   },
   "Email": {
     "dataSource": "myEmailDataSource",
-    "public": true
+    "public": false
   },
   "orderItemBase": {
     "dataSource": "mysqlDS",
@@ -43,38 +43,170 @@
   },
   "customer": {
     "dataSource": "mysqlDS",
-    "public": true
+    "public": true,
+    "options": {
+      "remoting": {
+        "sharedMethods": {
+          "*": false,
+          "create": true,
+          "findById": true,
+          "deleteById": true,
+          "prototype.patchAttributes": true,
+          "prototype.replaceById": true,
+          "find": true,
+          
+          "credsTaken": true,
+          "login": true,
+          "logout": true,
+          "resetPassword": true,
+          "setPassword": true,
+          "changePassword": true,
+          "resendVerifyEmail": true,
+          "confirm": true,
+
+          "getApiToken": true,
+
+          "prototype.deleteFile": true,
+          "prototype.downloadFile": true,
+          "prototype.uploadFile": true,
+          "prototype.__get__customerFiles": true,
+          
+          "prototype.getCustomerCart": true,
+          "prototype.__get__customerOrders": true,
+          "prototype.__create__customerOrders": true,
+          "prototype.getChipOrders": true,
+
+          "prototype.__get__customerAddresses": true,
+          "prototype.__create__customerAddresses": true,
+          "prototype.__destroyById__customerAddresses": true,
+          "prototype.__updateById__customerAddresses": true
+        }
+      }
+    }
   },
   "admin": {
     "dataSource": "mysqlDS",
-    "public": true
+    "public": true,
+    "options": {
+      "remoting": {
+        "sharedMethods": {
+          "*": false,
+          "create": true,
+          "findById": true,
+          "deleteById": true,
+          "prototype.patchAttributes": true,
+          "prototype.replaceById": true,
+          "find": true,
+          
+          "login": true,
+          "logout": true,
+          "resetPassword": true,
+          "setPassword": true,
+          "changePassword": true,
+
+          "getApiToken": true,
+          "returnAllItems": true,
+          "returnOneItem": true,
+
+          "downloadFile": true,
+
+          "getChipOrders": true
+        }
+      }
+    }
   },
   "foundryWorker": {
     "dataSource": "mysqlDS",
-    "public": true
+    "public": true,
+    "options": {
+      "remoting": {
+        "sharedMethods": {
+          "*": false,
+          "create": true,
+          "findById": true,
+          "deleteById": true,
+          "prototype.patchAttributes": true,
+          "prototype.replaceById": true,
+          "find": true,
+          
+          "login": true,
+          "logout": true,
+          "resetPassword": true,
+          "setPassword": true,
+          "changePassword": true,
+
+          "downloadFile": true,
+
+          "prototype.getChipOrders": true
+        }
+      }
+    }
   },
   "container": {
     "dataSource": "edropFile",
-    "public": true
+    "public": false
   },
   "customerAddress": {
     "dataSource": "mysqlDS",
-    "public": true
+    "public": false
   },
   "fileInfo": {
     "dataSource": "mysqlDS",
-    "public": true
+    "public": true,
+    "options": {
+      "remoting": {
+        "sharedMethods": {
+          "*": false,
+          "find": true
+        }
+      }
+    }
   },
   "orderInfo": {
     "dataSource": "mysqlDS",
-    "public": true
+    "public": true,
+    "options": {
+      "remoting": {
+        "sharedMethods": {
+          "*": false,
+          "findById": true,
+          "find": true,
+          
+          "prototype.addOrderProductToCart": true,
+          "prototype.addOrderChipToCart": true,
+          "newOrderCreated": true,
+          "prototype.__get__orderProducts": true,
+          "prototype.__get__orderChips": true
+        }
+      }
+    }
   },
   "orderChip": {
     "dataSource": "mysqlDS",
-    "public": true
+    "public": true,
+    "options": {
+      "remoting": {
+        "sharedMethods": {
+          "*": false,
+          "deleteById": true,
+          "prototype.patchAttributes": true,
+          "prototype.replaceById": true
+        }
+      }
+    }
   },
   "orderProduct": {
     "dataSource": "mysqlDS",
-    "public": true
+    "public": true,
+    "options": {
+      "remoting": {
+        "sharedMethods": {
+          "*": false,
+          "deleteById": true,
+          "prototype.patchAttributes": true,
+          "prototype.replaceById": true
+        }
+      }
+    }
   }
 }
