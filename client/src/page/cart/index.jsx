@@ -5,9 +5,9 @@ import  CartItem  from './cartItem.jsx';
 import Shopify from '../../app.jsx';
 import './cart.css';
 import API from "../../api/api";
-import { getCustomerCart, getProductOrders, 
-        getChipOrders, modifyProductOrders, 
-        modifyChipOrders, 
+import { getCustomerCart, getProductOrders,
+        getChipOrders, modifyProductOrders,
+        modifyChipOrders,
     } from '../../api/serverConfig';
 import Cookies from "js-cookie";
 
@@ -23,6 +23,7 @@ class Cart extends React.Component{
             modifiedItems: new Set(),
             saveInProgress: false,
             cartLoading: true,
+            deleteLoading: false,
         }
         this.handleQtyChange = this.handleQtyChange.bind(this);
         this.handleSave = this.handleSave.bind(this);
@@ -107,10 +108,13 @@ class Cart extends React.Component{
                     modifiedItems: new Set(this.state.modifiedItems).add(item.variantIdShopify),
                 });
             }
-        }  
+        }
     }
 
     handleDelete(itemType, index){
+        this.setState({
+            deleteLoading: true
+        });
         let _this = this;
         let url;
         if(itemType === 'product'){
@@ -143,20 +147,29 @@ class Cart extends React.Component{
                     const chips = this.state.chipOrders.filter(item => item.id !== array[index].id);
                     this.setState({chipOrders: chips});
                 }
+                this.setState({
+                    deleteLoading: true
+                });
             })
             .catch(err => {
                 console.error(err)
+                this.setState({
+                    deleteLoading: true
+                });
             });
         })
         .catch(err => {
             console.error(err);
+            this.setState({
+                deleteLoading: true
+            });
         });
     }
 
     handleSaveForOrders(array, type){
-        // console.log("Updating DB");       
+        // console.log("Updating DB");
         let url;
-        let _this = this;   
+        let _this = this;
         if(_this.state.modifiedItems.size > 0){
             this.setState({
                 saveInProgress: true,
@@ -196,9 +209,9 @@ class Cart extends React.Component{
                     this.setState({
                         saveInProgress: false,
                     });
-                });    
+                });
             }
-        }      
+        }
     }
 
     handleSave(){
@@ -224,49 +237,50 @@ class Cart extends React.Component{
             totalPrice += (product.quantity * product.price);
         });
         return (
-            <div> 
+            <div>
                 { Cookies.get('userType') === 'customer'
-                ? <div className="right-route-content"> 
+                ? <div className="right-route-content">
                     <div className="profile-content">
                         <h2>Cart</h2>
                     </div>
-                    { this.state.productOrders.length + this.state.chipOrders.length > 0 
+                    { this.state.productOrders.length + this.state.chipOrders.length > 0
                     ? <div>
                         <div className="left-right-wrapper">
                             <div className="cart-info-text">
-                                Use the "save" button to save any 
+                                Use the "save" button to save any
                                 changes to quantities. Deletions are saved immediately.
                             </div>
                             <div>
                                 { this.state.saveInProgress
                                 ? <img className="cart-loading-GIF" src="../../../static/img/loading80px.gif" alt=""/>
                                 : <span className="cart-save-btn">
-                                    <input type="button" value="Save" 
+                                    <input type="button" value="Save"
                                         className="btn btn-success"
-                                        onClick = {() => this.handleSave()}>            
+                                        onClick = {() => this.handleSave()}>
                                     </input>
                                 </span>
                                 }
                                 <span className="btn-txt-padding">
-                                    <input type="button" value="Checkout" 
+                                    <input type="button" value="Checkout"
                                         className="btn btn-primary btn-padding"
-                                        onClick = {() => this.handleCheckout()}>            
+                                        onClick = {() => this.handleCheckout()}>
                                     </input>
-                                </span>     
-                            </div>                                
+                                </span>
+                            </div>
                         </div>
                         {
-                            this.state.productOrders.map((oneProduct, index) => 
+                            this.state.productOrders.map((oneProduct, index) =>
                                 <CartItem key={index} info={oneProduct}
-                                    onChange={(e) => this.handleQtyChange(e, 'product', index)} 
+                                    onChange={(e) => this.handleQtyChange(e, 'product', index)}
                                     onDelete={() => this.handleDelete('product', index)}
+                                    deleteLoading={this.state.deleteLoading}
                                 />
                             )
                         }
                         {
-                            this.state.chipOrders.map((oneProduct, index) => 
+                            this.state.chipOrders.map((oneProduct, index) =>
                                 <CartItem key={index} info={oneProduct}
-                                    onChange={(e) => this.handleQtyChange(e, 'chip', index)} 
+                                    onChange={(e) => this.handleQtyChange(e, 'chip', index)}
                                     onDelete={() => this.handleDelete('chip', index)}
                                 />
                             )
@@ -276,26 +290,26 @@ class Cart extends React.Component{
                         </div>
                         <div className="cart-total-price-info">
                             Excludes tax and shipping and handling
-                        </div>             
+                        </div>
                     </div>
                     : <div>
                         { this.state.cartLoading
                         ? <img className="loading-GIF" src="../../../static/img/loading80px.gif" alt=""/>
                         : <div className = "empty-cart">
-                            {`Your cart is currently empty. You can either upload a 
-                                file for a custom chip order or view our products `} 
+                            {`Your cart is currently empty. You can either upload a
+                                file for a custom chip order or view our products `}
                                 <NavLink to="/allItems">here</NavLink>.
                         </div>
                     }
                     </div>
-                    } 
+                    }
                 </div>
                 : null
 
                 }
-                
+
             </div>
-        );   
+        );
     }
 }
 

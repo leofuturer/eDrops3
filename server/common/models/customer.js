@@ -78,7 +78,7 @@ module.exports = function(Customer) {
                     port: FRONTEND_PORT,
                     redirect: '/emailVerified'
                 };
-        
+
                 user.verify(emailOptions);
                 cb(null);
             }
@@ -112,7 +112,7 @@ module.exports = function(Customer) {
             html: html
         }, function(err) {
             if (err) return console.error('> Error sending password reset email');
-            log('> Sending password reset email to:', info.email);
+            log.success('> Sending password reset email to:', info.email);
         });
     })
 
@@ -159,15 +159,15 @@ module.exports = function(Customer) {
                     console.error(err);
                     cb(err);
                 } else if(models.length > 0){
-                    log(`Username ${body.username} taken`)
-                    result.usernameTaken = true; 
+                    log.warning(`Username ${body.username} taken`)
+                    result.usernameTaken = true;
                 }
                 Customer.find({"where": {"email": body.email || ""}}, (err, models2) => {
                     if(err){
                         console.error(err);
                         cb(err);
                     } else if(models2.length > 0){
-                        log(`Email ${body.email} taken`);
+                        log.warning(`Email ${body.email} taken`);
                         result.emailTaken = true;
                         cb(null, result);
                     } else {
@@ -193,16 +193,16 @@ module.exports = function(Customer) {
         const customer = this;
         customer.customerOrders({"where": {"orderComplete": false}}, function(err, orders) {
             if(err || orders.length > 1){
-                console.error(`Error getting customer cart or there's more than one active cart: ${err}`);
+                log.error(`Error getting customer cart or there's more than one active cart: ${err}`);
                 var error = new Error(`Error while querying for customer cart`);
                 cb(error);
             }
             else if(orders.length === 0){
-                log(`No cart found for customer id=${customer.id}, need to create one`);
+                log.warning(`No cart found for customer id=${customer.id}, need to create one`);
                 cb(null, 0); //return id = 0 for "false"
             }
             else{
-                log(`Cart already exists, is order info model with id ${orders[0].id}`);
+                log.info(`Cart already exists, is order info model with id ${orders[0].id}`);
                 cb(null, orders[0].id, orders[0].checkoutIdClient, orders[0].checkoutLink);
             }
         });
@@ -212,7 +212,7 @@ module.exports = function(Customer) {
         const user = this;
         if(!options) options = {};
         // log(ctx.req);
-        log(ctx.req.query)
+        // log(ctx.req.query)
         ctx.req.params.container = 'test_container'; // we may want to use username for this
         Customer.app.models.container.upload(ctx.req, ctx.result, options, function (err, fileObj) {
             if(err){
@@ -235,9 +235,11 @@ module.exports = function(Customer) {
                     fileSize: formatBytes(uploadedFile.size, 1),
                 }, function (err, obj){
                     if(err){
+                        log.error(`Error uploading ${obj.fileName}`)
                         cb(err);
                     }
                     else{
+                        log.success(`Successfully uploaded ${obj.fileName}`)
                         cb(null, obj);
                     }
                 });
