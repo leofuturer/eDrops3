@@ -148,20 +148,20 @@ class Cart extends React.Component{
                     this.setState({chipOrders: chips});
                 }
                 this.setState({
-                    deleteLoading: true
+                    deleteLoading: false
                 });
             })
             .catch(err => {
                 console.error(err)
                 this.setState({
-                    deleteLoading: true
+                    deleteLoading: false
                 });
             });
         })
         .catch(err => {
             console.error(err);
             this.setState({
-                deleteLoading: true
+                deleteLoading: false
             });
         });
     }
@@ -282,6 +282,7 @@ class Cart extends React.Component{
                                 <CartItem key={index} info={oneProduct}
                                     onChange={(e) => this.handleQtyChange(e, 'chip', index)}
                                     onDelete={() => this.handleDelete('chip', index)}
+                                    deleteLoading={this.state.deleteLoading}
                                 />
                             )
                         }
