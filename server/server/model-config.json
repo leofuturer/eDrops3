@@ -41,6 +41,25 @@
     "dataSource": "mysqlDS",
     "public": false
   },
+  "user":{
+    "dataSource": "mysqlDS",
+    "public":true,
+    "options":{
+      "remoting":{
+        "sharedMethods":{
+          "*": false,
+          "create": true,
+          "findById": true,
+          "deleteById": true,
+          "prototype.patchAttributes": true,
+          "prototype.replaceById": true,
+          "find": true,
+
+          "login": true
+        }
+      }
+    }
+  },
   "customer": {
     "dataSource": "mysqlDS",
     "public": true,
@@ -54,7 +73,7 @@
           "prototype.patchAttributes": true,
           "prototype.replaceById": true,
           "find": true,
-          
+
           "credsTaken": true,
           "login": true,
           "logout": true,
@@ -70,7 +89,7 @@
           "prototype.downloadFile": true,
           "prototype.uploadFile": true,
           "prototype.__get__customerFiles": true,
-          
+
           "prototype.getCustomerCart": true,
           "prototype.__get__customerOrders": true,
           "prototype.__create__customerOrders": true,
@@ -97,7 +116,7 @@
           "prototype.patchAttributes": true,
           "prototype.replaceById": true,
           "find": true,
-          
+
           "login": true,
           "logout": true,
           "resetPassword": true,
@@ -128,7 +147,7 @@
           "prototype.patchAttributes": true,
           "prototype.replaceById": true,
           "find": true,
-          
+
           "login": true,
           "logout": true,
           "resetPassword": true,
@@ -171,7 +190,7 @@
           "*": false,
           "findById": true,
           "find": true,
-          
+
           "prototype.addOrderProductToCart": true,
           "prototype.addOrderChipToCart": true,
           "newOrderCreated": true,
