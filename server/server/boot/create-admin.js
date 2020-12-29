@@ -5,6 +5,7 @@ ADMIN_ROLE_NAME = "admin"
 
 module.exports = function(app) {
   var Admin = app.models.admin;
+  var User = app.models.user;
   var Role = app.models.Role;
   var RoleMapping = app.models.RoleMapping;
 
@@ -15,9 +16,9 @@ module.exports = function(app) {
     } else if(adminAccount === null || adminAccount === undefined){
       Admin.create([
         {
-          username: 'adminA', 
-          email: 'edropwebsite@gmail.com', 
-          password: 'edropTest123', 
+          username: 'adminA',
+          email: 'edropwebsite@gmail.com',
+          password: 'edropTest123',
           phoneNumber: "1-310-111-2222",
         },
       ], function(err, users) {
@@ -25,6 +26,25 @@ module.exports = function(app) {
           throw err;
         } else {
           console.log('Created users:', users);
+          User.findOne({where: {username: "adminA"}}, (err, user) => {
+            if(err) throw err;
+            else if(user === null || user === undefined){
+              User.create([
+                {
+                  username: 'adminA',
+                  email: 'edropwebsite@gmail.com',
+                  password: 'edropTest123',
+                  userType: 'admin',
+                  userId: 1,
+                },
+              ], (err, res)=>{
+                if(err) throw err;
+                else{
+                  console.log('Linked to user model.');
+                }
+              })
+            }
+          })
           Role.findOne({where: {name: ADMIN_ROLE_NAME}}, (err, role) => {
             if (err){
               throw err;
@@ -62,10 +82,10 @@ module.exports = function(app) {
                   console.log('Created principal:', principal);
                 }
               });
-            } 
+            }
           });
         }
       });
     }
-  }); 
+  });
 };

@@ -15,8 +15,7 @@
       "default": "customer"
     },
     "userId":{
-      "type": "number",
-      "required": true
+      "type": "number"
     }
   },
   "validations": [],
@@ -66,7 +65,7 @@
     {
       "accessType": "READ",
       "principalType": "ROLE",
-      "principalId": "admin",
+      "principalId": "$owner",
       "permission": "ALLOW",
       "property": "find"
     },

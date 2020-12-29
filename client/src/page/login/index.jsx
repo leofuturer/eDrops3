@@ -144,37 +144,48 @@ class Login extends React.Component  {
         let nameEmailResult = _this.handleNameEmailValidation();
         let radioResult = _this.handleRadioValidation();
         if (nameEmailResult && radioResult) {
-            API.Request(url, 'POST', data, false)
+            API.Request(userLogin, 'POST', data, false)
             .then(res => {
-                // 4/23/2020: Always have cookies and local storage
-                Cookies.set('access_token', res.data.id);
-                Cookies.set('userId', res.data.userId);
-                Cookies.set('userType', _this.state.usertype);
-                Cookies.set('username', res.data.username);
-
-                //any authenticated user can use this endpoint
-                API.Request(customerGetApiToken, 'GET', {}, true)
-                .then(res => {
-                    if(res.status === 200){
-                        let shopify = Shopify.getInstance(res.data.info.token, res.data.info.domain);
-                    }
-                }).catch(err => console.error(err));
-                _this.props.history.push('/home');
-            })
-            .catch(err => {
-                console.error(err);
-                let block = document.createElement("p");
-                if (err.response.status === 401) {
-                    document.querySelector(".pass-field").classList.add("has-error");
-                    block.classList.add("help-block");
-                    block.classList.add("error");
-                    block.innerHTML = "Login error. Please check username/email and password. Email verification is required before logging in";
-                    document.querySelector(".passwordError").appendChild(block);
+                let userType = res.data.userType;
+                if (userType === "customer") {
+                    url = customerLogin;
+                } else if (userType === "admin") {
+                    url = AdminLogin;
+                } else if (userType  === "worker") {
+                    url = FoundryWorkerLogin;
                 }
-                this.setState({
-                    isLoading: false
+                API.Request(url, 'POST', data, false)
+                .then(res => {
+                    // 4/23/2020: Always have cookies and local storage
+                    Cookies.set('access_token', res.data.id);
+                    Cookies.set('userId', res.data.userId);
+                    Cookies.set('userType', userType );
+                    Cookies.set('username', res.data.username);
+
+                    //any authenticated user can use this endpoint
+                    API.Request(customerGetApiToken, 'GET', {}, true)
+                    .then(res => {
+                        if(res.status === 200){
+                            let shopify = Shopify.getInstance(res.data.info.token, res.data.info.domain);
+                        }
+                    }).catch(err => console.error(err));
+                    _this.props.history.push('/home');
+                    })
+                .catch(err => {
+                    console.error(err);
+                    let block = document.createElement("p");
+                    if (err.response.status === 401) {
+                        document.querySelector(".pass-field").classList.add("has-error");
+                        block.classList.add("help-block");
+                        block.classList.add("error");
+                        block.innerHTML = "Login error. Please check username/email and password. Email verification is required before logging in";
+                        document.querySelector(".passwordError").appendChild(block);
+                    }
+                    this.setState({
+                        isLoading: false
+                    });
                 });
-            });
+            })
         }
     }
 

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Redirect, withRouter } from 'react-router-dom'
-import { updateAdminProfile, addAdmin } from "../../api/serverConfig";
+import { updateAdminProfile, addAdmin, userSignUp } from "../../api/serverConfig";
 import API from "../../api/api";
 import Cookies from 'js-cookie'
 
@@ -57,7 +57,18 @@ class AddOrEditAdmin extends React.Component {
                 return;
             }
             API.Request(url, 'POST', userMes, true).then(res => {
-                _this.props.history.push('/manage/admins');
+                let obj = {
+                    password: this.state.password,
+                    userType: "admin",
+                    userId: res.data.id,
+                    phoneNumber: this.state.phoneNumber,
+                    realm: this.state.realm,
+                    username: this.state.username,
+                    email: this.state.email
+                };
+                API.Request(userSignUp, 'POST', obj, false).then(res =>{
+                    _this.props.history.push('/manage/admins');
+                })
             }).catch(error => {
                 console.error(error);
             });

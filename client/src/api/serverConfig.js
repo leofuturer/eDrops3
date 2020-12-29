@@ -4,8 +4,8 @@
 const ApiRootUrl ='/api';
 
 //Overall User
-export const userSignUp = ApiRootUrl+'/user';
-export const userLogin = ApiRootUrl+'/user/login';
+export const userSignUp = ApiRootUrl+'/users';
+export const userLogin = ApiRootUrl+'/users/login';
 
 //Customer
 export const customerSignUp = ApiRootUrl+'/customers';
