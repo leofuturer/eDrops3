@@ -100,6 +100,10 @@ Open up a new command window. Navigate back to the home/top level directory. The
   `$ mkdir test_container`  
 Uploaded files will now appear in the test_container folder.  
 
+Then, use the `mysql` command and log in to MySQl to create the Edrop database using the following SQL command (the backticks are required):
+
+  ``CREATE DATABASE `edrop-user-namangement`;``
+
 Then, initialize the database schema and add seed data. WARNING: This will delete everything previously in the database!  
 `$ node ./db/reset-db.js`  
 

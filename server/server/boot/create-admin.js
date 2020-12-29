@@ -1,7 +1,8 @@
 // Bootstrap script to create default admin user with all permissions
 // Adapted from https://github.com/strongloop/loopback-example-access-control/blob/master/server/boot/sample-models.js
 
-ADMIN_ROLE_NAME = "admin"
+const ADMIN_ROLE_NAME = "admin"
+const SERVER_START_FILE_NAME = "server"
 
 module.exports = function(app) {
   var Admin = app.models.admin;
@@ -9,6 +10,9 @@ module.exports = function(app) {
   var Role = app.models.Role;
   var RoleMapping = app.models.RoleMapping;
 
+if(process.argv[1].slice(-1*SERVER_START_FILE_NAME.length) === SERVER_START_FILE_NAME){
+  // only run this script if we run `node .` or `node server/server.js`
+  console.log("Creating default admin user!");
   // If adminA already exists, such as when running reset-db.js, skip
   Admin.findOne({where: {username: "adminA"}}, (err, adminAccount) => {
     if(err){
@@ -88,4 +92,5 @@ module.exports = function(app) {
       });
     }
   });
+}
 };
