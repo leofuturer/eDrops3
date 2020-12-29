@@ -20,7 +20,6 @@ class Login extends React.Component  {
         this.state = {
             usernameOrEmail: "",
             password: "",
-            usertype: "",
             isLoading: false,
         }
         this.handleLogin = this.handleLogin.bind(this);
@@ -89,32 +88,6 @@ class Login extends React.Component  {
         return true;
     }
 
-    handleRadioValidation() {
-        let radioChecked = false;
-        let radioGroup = document.querySelectorAll(".radioToValidate");
-        let i = 0;
-        while(!radioChecked && i < radioGroup.length) {
-            if (radioGroup[i].checked) {
-                radioChecked = true;
-            }
-            i++;
-        }
-        if (!radioChecked) {
-            let radioDiv = document.querySelector(".radio-group");
-            radioDiv.classList.add("has-error");
-            let messages = document.querySelector(".messages-radio");
-            let block = document.createElement("p");
-            block.classList.add("help-block");
-            block.classList.add("error");
-            block.innerHTML = "Please select an identity!";
-            messages.appendChild(block);
-            this.setState({
-                isLoading: false
-            });
-        }
-        return radioChecked;
-    }
-
     handleLogin() {
         this.setState({
           isLoading: true
@@ -133,17 +106,9 @@ class Login extends React.Component  {
             }
         }
         let url; //URLs for backend requests
-        if (this.state.usertype === 'customer') {
-            url = customerLogin;
-        } else if (this.state.usertype === 'admin') {
-            url = AdminLogin;
-        } else if (this.state.usertype === 'worker') {
-            url = FoundryWorkerLogin;
-        }
         _this.clearReminder();
         let nameEmailResult = _this.handleNameEmailValidation();
-        let radioResult = _this.handleRadioValidation();
-        if (nameEmailResult && radioResult) {
+        if (nameEmailResult) {
             API.Request(userLogin, 'POST', data, false)
             .then(res => {
                 let userType = res.data.userType;
@@ -223,30 +188,6 @@ class Login extends React.Component  {
                                 
                                 <div className="form-group row radio-group">
                                     <div className="col-md-3 col-sm-3 col-xs-3"></div>
-                                    <div className="col-md-6 col-sm-6 col-xs-6">
-                                        <label className="radio-inline">
-                                            <input type="radio"
-                                                    className="radioToValidate"
-                                                    name="userType" value="customer"
-                                                    onChange={v => this.handleChange('usertype', v.target.value)}/>
-                                                <span className="txt-radio">Customer</span>
-                                        </label>
-                                        <label className="radio-inline" style={{marginLeft:'50px'}}>
-                                            <input type="radio"
-                                                    className="radioToValidate"
-                                                    name="userType" value="admin"
-                                                    onChange={v => this.handleChange('usertype', v.target.value)}/>
-                                                <span className="txt-radio">Admin</span>
-                                        </label>
-                                        <label className="radio-inline" style={{marginLeft:'50px'}}>
-                                            <input type="radio"
-                                                    className="radioToValidate"
-                                                    name="userType"
-                                                    value="worker"
-                                                    onChange={v => this.handleChange('usertype', v.target.value)}/>
-                                                <span className="txt-radio">Foundry Worker</span>
-                                        </label>
-                                    </div>
                                     <div className="messages-radio col-md-3 col-sm-3 col-xs-3"></div>
                                 </div>
     
