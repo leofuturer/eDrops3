@@ -20,12 +20,9 @@ var Shopify = (function(){
     }
     return {
         getInstance: async function(token, domain){
-            console.log("HI");
-            console.log(shopify_instance);
             if(shopify_instance === null){
                 API.Request(customerGetApiToken, 'GET', {}, true)
                 .then(res => {
-                    console.log("done");
                     if(res.status === 200){
                         shopify_instance = createInstance(res.data.info.token, res.data.info.domain);
                         return shopify_instance;
