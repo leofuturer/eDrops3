@@ -10,7 +10,7 @@ import {MainRouter, SubRouter} from 'router/routeMap.jsx';
 
 var Shopify = (function(){
     var shopify_instance = null;
-    function createInstance(token, domain){
+    async function createInstance(token, domain){
         if(token === "" && domain === "") return null;
         const inst = ShopifyClient.buildClient({
             storefrontAccessToken: token,
@@ -19,10 +19,13 @@ var Shopify = (function(){
         return inst;
     }
     return {
-        getInstance: function(token, domain){
+        getInstance: async function(token, domain){
+            console.log("HI");
+            console.log(shopify_instance);
             if(shopify_instance === null){
                 API.Request(customerGetApiToken, 'GET', {}, true)
                 .then(res => {
+                    console.log("done");
                     if(res.status === 200){
                         shopify_instance = createInstance(res.data.info.token, res.data.info.domain);
                         return shopify_instance;

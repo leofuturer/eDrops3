@@ -125,38 +125,45 @@ class Cart extends React.Component{
         }
         // Delete from Shopify, then our own DB
         const itemToDelete = [array[index].lineItemIdShopify];
-        Shopify.getInstance("","").checkout.removeLineItems(_this.state.shopifyCheckoutId, itemToDelete)
-        .then(checkout => {
-            // console.log(checkout.lineItems);
-            if(itemType === 'product'){
-                url = modifyProductOrders.replace('id', array[index].id);
-            }
-            else if(itemType === 'chip'){
-                url = modifyChipOrders.replace('id', array[index].id);
-            }
-            API.Request(url, 'DELETE', {}, true)
-            .then(res => {
+        Shopify.getInstance("","")
+        .then((instance) => {
+            instance.checkout.removeLineItems(_this.state.shopifyCheckoutId, itemToDelete)
+            .then(checkout => {
                 if(itemType === 'product'){
-                    const products = this.state.productOrders.filter(function(item){
-                        return item.id !== array[index].id
-                    });
-                    this.setState({productOrders: products});
-                    // console.log(products);
+                    url = modifyProductOrders.replace('id', array[index].id);
                 }
                 else if(itemType === 'chip'){
-                    const chips = this.state.chipOrders.filter(item => item.id !== array[index].id);
-                    this.setState({chipOrders: chips});
+                    url = modifyChipOrders.replace('id', array[index].id);
                 }
-                this.setState({
-                    deleteLoading: false
+                API.Request(url, 'DELETE', {}, true)
+                .then(res => {
+                    if(itemType === 'product'){
+                        const products = this.state.productOrders.filter(function(item){
+                            return item.id !== array[index].id
+                        });
+                        this.setState({productOrders: products});
+                    }
+                    else if(itemType === 'chip'){
+                        const chips = this.state.chipOrders.filter(item => item.id !== array[index].id);
+                        this.setState({chipOrders: chips});
+                    }
+                    this.setState({
+                        deleteLoading: false
+                    });
+                })
+                .catch(err => {
+                    console.error(err)
+                    this.setState({
+                        deleteLoading: false
+                    });
                 });
             })
             .catch(err => {
-                console.error(err)
+                console.error(err);
                 this.setState({
                     deleteLoading: false
                 });
-            });
+            });            
         })
         .catch(err => {
             console.error(err);
@@ -167,7 +174,6 @@ class Cart extends React.Component{
     }
 
     handleSaveForOrders(array, type){
-        // console.log("Updating DB");
         let url;
         let _this = this;
         if(_this.state.modifiedItems.size > 0){
@@ -181,31 +187,40 @@ class Cart extends React.Component{
                     id: array[i].lineItemIdShopify,
                     quantity: parseInt(array[i].quantity),
                 }];
-                Shopify.getInstance("","").checkout.updateLineItems(_this.state.shopifyCheckoutId, itemsToUpdate)
-                .then(checkout => {
-                    // console.log(checkout.lineItems);
-                    if(type === 'product'){
-                        url = modifyProductOrders.replace('id', array[i].id);
-                    }
-                    else if(type === 'chip'){
-                        url = modifyChipOrders.replace('id', array[i].id);
-                    }
-                    let data = {quantity: parseInt(array[i].quantity)};
-                    API.Request(url, 'PATCH', data, true)
-                    .then(res => {
-                        this.setState({
-                            saveInProgress: false,
+                Shopify.getInstance("","")
+                .then((instance) => {
+                    instance.checkout.updateLineItems(_this.state.shopifyCheckoutId, itemsToUpdate)
+                    .then(checkout => {
+                        // console.log(checkout.lineItems);
+                        if(type === 'product'){
+                            url = modifyProductOrders.replace('id', array[i].id);
+                        }
+                        else if(type === 'chip'){
+                            url = modifyChipOrders.replace('id', array[i].id);
+                        }
+                        let data = {quantity: parseInt(array[i].quantity)};
+                        API.Request(url, 'PATCH', data, true)
+                        .then(res => {
+                            this.setState({
+                                saveInProgress: false,
+                            });
+                        })
+                        .catch(err => {
+                            console.error(err)
+                            this.setState({
+                                saveInProgress: false,
+                            });
                         });
                     })
                     .catch(err => {
-                        console.error(err)
+                        console.error(err);
                         this.setState({
                             saveInProgress: false,
                         });
                     });
                 })
                 .catch(err => {
-                    console.error(err);
+                    console.error(err)
                     this.setState({
                         saveInProgress: false,
                     });

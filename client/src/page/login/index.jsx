@@ -126,14 +126,6 @@ class Login extends React.Component  {
                     Cookies.set('userId', res.data.userId);
                     Cookies.set('userType', userType );
                     Cookies.set('username', res.data.username);
-
-                    //any authenticated user can use this endpoint
-                    API.Request(customerGetApiToken, 'GET', {}, true)
-                    .then(res => {
-                        if(res.status === 200){
-                            let shopify = Shopify.getInstance(res.data.info.token, res.data.info.domain);
-                        }
-                    }).catch(err => console.error(err));
                     _this.props.history.push('/home');
                     })
                 .catch(err => {
