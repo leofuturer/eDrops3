@@ -84,13 +84,8 @@ Note: Setting it in Windows makes those environment variables only available in 
 
 Note: Setting it in Linux/MacOS makes these environment variables only available in that user session. If you wish to have the variables persist across multiple logins sessions, include it in the appropriate profile file for your *nix distribution and shell (such as `~/.bash_profile`, `~/.bash_login`, etc.).
 
-Note: From now on, please create a `.env` file at /server/server and add the variables into it, including:
-| variable name | belongs to |
-|---------------|------------|
-APP_MYSQL_DATABASE| server
-APP_MYSQL_PASSWORD| server
-SHOPIFY_TOKEN| server
-SHOPIFY_DOMAIN| server
+Note: From now on, please create a `.env` file at /server/server and add the variables into it, including: APP_MYSQL_DATABASE, APP_MYSQL_PASSWORD, SHOPIFY_TOKEN,
+SHOPIFY_DOMAIN
 
 **To configure file uploading:**  
 Open up a new command window. Navigate back to the home/top level directory. Then:  
