@@ -13,7 +13,6 @@ module.exports = function(User){
       else{
         tokenInstance.username = user.username;
         tokenInstance.userType = user.userType;
-        tokenInstance.userId = user.userId;
         next();
       }
     })

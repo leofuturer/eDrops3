@@ -6,16 +6,10 @@
     "validateUpsert": true
   },
   "properties": {
-    "phoneNumber": {
-      "type": "string"
-    },
     "userType":{
       "type": "string",
       "required": true,
       "default": "customer"
-    },
-    "userId":{
-      "type": "number"
     }
   },
   "validations": [],

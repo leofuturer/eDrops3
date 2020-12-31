@@ -82,12 +82,10 @@ class AddOrEditWorker extends React.Component{
             .then(res => {
                 console.log(res);
                 let obj = {
-                    phoneNumber: this.state.phoneNumber,
                     email: this.state.email,
                     username: this.state.username,
                     password: this.state.password,
                     userType: 'worker',
-                    userId: res.data.id
                 }
                 API.Request(userSignUp, 'POST', obj, false)
                 .then(res => {

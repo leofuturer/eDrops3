@@ -181,9 +181,7 @@ class Register extends React.Component {
             console.log(res);
             let obj = {
                 userType: 'customer',
-                userId: res.data.id,
                 username: this.state.username,
-                phoneNumber: this.state.phoneNumber,  
                 email: this.state.email,
                 password: this.state.password,
             }

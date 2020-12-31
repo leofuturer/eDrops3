@@ -60,8 +60,6 @@ class AddOrEditAdmin extends React.Component {
                 let obj = {
                     password: this.state.password,
                     userType: "admin",
-                    userId: res.data.id,
-                    phoneNumber: this.state.phoneNumber,
                     realm: this.state.realm,
                     username: this.state.username,
                     email: this.state.email
