@@ -1,6 +1,6 @@
 import React from 'react';
 import { Redirect, withRouter } from 'react-router-dom'
-import { updateCustomerProfile, addCustomer } from "../../api/serverConfig";
+import { updateCustomerProfile, addCustomer, userSignUp } from "../../api/serverConfig";
 import API from "../../api/api";
 import Cookies from 'js-cookie'
 
@@ -63,7 +63,15 @@ class AddOrEditUser extends React.Component {
                 return;
             }
             API.Request(url, 'POST', userMes, true).then(res => {
-                _this.props.history.push('/manage/users');
+                let obj = {
+                    username: this.state.username,
+                    email: this.state.email,
+                    userType: 'customer',
+                    password: this.state.password,
+                };
+                API.Request(userSignUp, 'POST', obj, false).then(res =>{
+                    _this.props.history.push('/manage/users');
+                })
             }).catch(error => {
                 console.error(error);
             });
