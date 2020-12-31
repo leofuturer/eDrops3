@@ -84,8 +84,13 @@ Note: Setting it in Windows makes those environment variables only available in 
 
 Note: Setting it in Linux/MacOS makes these environment variables only available in that user session. If you wish to have the variables persist across multiple logins sessions, include it in the appropriate profile file for your *nix distribution and shell (such as `~/.bash_profile`, `~/.bash_login`, etc.).
 
-Note: From now on, please create a `.env` file at /server/server and add the variables into it, including: APP_MYSQL_DATABASE, APP_MYSQL_PASSWORD, SHOPIFY_TOKEN,
-SHOPIFY_DOMAIN
+Note: From now on, please create a `.env` file at /server/server and add the variables into it, including: 
+
+    APP_MYSQL_DATABASE
+    APP_MYSQL_PASSWORD
+    SHOPIFY_TOKEN
+    SHOPIFY_DOMAIN
+
 
 **To configure file uploading:**  
 Open up a new command window. Navigate back to the home/top level directory. Then:  
@@ -179,8 +184,8 @@ If things aren't working, check that these are correct for your environment.
 | APP\_EMAIL\_PORT            | Port number for email server used to send emails    | 465                                |
 | APP\_EMAIL\_USERNAME        | Email address for email account used to send emails | "edropwebsite@gmail\.com"          |
 | APP\_EMAIL\_PASSWORD        | Password for email account used to send emails      | "cjmemsEdrop"                      |
-| REACT\_APP\_SHOPIFY\_DOMAIN | Domain for our Shopify website                      | "wqntest.myshopify.com"            |
-| REACT\_APP\_SHOPIFY\_TOKEN  | Token for Shopify Storefront API                    | "c098a4c1f8d45e55b35caf24ca9c97bb" |
+| SHOPIFY\_DOMAIN | Domain for our Shopify website                      | "wqntest.myshopify.com"            |
+| SHOPIFY\_TOKEN  | Token for Shopify Storefront API                    | "c098a4c1f8d45e55b35caf24ca9c97bb" |
 
 ## ISSUES
 - [ ] Assign file functions are all useless, need to be deleted and make sure no other functionalities are affected
