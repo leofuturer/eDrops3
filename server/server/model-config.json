@@ -41,7 +41,7 @@
     "dataSource": "mysqlDS",
     "public": false
   },
-  "user":{
+  "userBase":{
     "dataSource": "mysqlDS",
     "public":true,
     "options":{

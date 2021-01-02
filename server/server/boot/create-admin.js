@@ -6,7 +6,7 @@ const SERVER_START_FILE_NAME = "server"
 
 module.exports = function(app) {
   var Admin = app.models.admin;
-  var User = app.models.user;
+  var User = app.models.userBase;
   var Role = app.models.Role;
   var RoleMapping = app.models.RoleMapping;
 
