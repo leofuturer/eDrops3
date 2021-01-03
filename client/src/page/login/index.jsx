@@ -1,7 +1,8 @@
 import React from 'react';
 import { NavLink, withRouter } from  'react-router-dom';
 import './login.css';
-import {customerLogin, 
+import {userLogin,
+        customerLogin, 
         AdminLogin, 
         FoundryWorkerLogin, 
         customerGetApiToken} from "../../api/serverConfig";
@@ -19,7 +20,6 @@ class Login extends React.Component  {
         this.state = {
             usernameOrEmail: "",
             password: "",
-            usertype: "",
             isLoading: false,
         }
         this.handleLogin = this.handleLogin.bind(this);
@@ -88,32 +88,6 @@ class Login extends React.Component  {
         return true;
     }
 
-    handleRadioValidation() {
-        let radioChecked = false;
-        let radioGroup = document.querySelectorAll(".radioToValidate");
-        let i = 0;
-        while(!radioChecked && i < radioGroup.length) {
-            if (radioGroup[i].checked) {
-                radioChecked = true;
-            }
-            i++;
-        }
-        if (!radioChecked) {
-            let radioDiv = document.querySelector(".radio-group");
-            radioDiv.classList.add("has-error");
-            let messages = document.querySelector(".messages-radio");
-            let block = document.createElement("p");
-            block.classList.add("help-block");
-            block.classList.add("error");
-            block.innerHTML = "Please select an identity!";
-            messages.appendChild(block);
-            this.setState({
-                isLoading: false
-            });
-        }
-        return radioChecked;
-    }
-
     handleLogin() {
         this.setState({
           isLoading: true
@@ -132,48 +106,43 @@ class Login extends React.Component  {
             }
         }
         let url; //URLs for backend requests
-        if (this.state.usertype === 'customer') {
-            url = customerLogin;
-        } else if (this.state.usertype === 'admin') {
-            url = AdminLogin;
-        } else if (this.state.usertype === 'worker') {
-            url = FoundryWorkerLogin;
-        }
         _this.clearReminder();
         let nameEmailResult = _this.handleNameEmailValidation();
-        let radioResult = _this.handleRadioValidation();
-        if (nameEmailResult && radioResult) {
-            API.Request(url, 'POST', data, false)
+        if (nameEmailResult) {
+            API.Request(userLogin, 'POST', data, false)
             .then(res => {
-                // 4/23/2020: Always have cookies and local storage
-                Cookies.set('access_token', res.data.id);
-                Cookies.set('userId', res.data.userId);
-                Cookies.set('userType', _this.state.usertype);
-                Cookies.set('username', res.data.username);
-
-                //any authenticated user can use this endpoint
-                API.Request(customerGetApiToken, 'GET', {}, true)
-                .then(res => {
-                    if(res.status === 200){
-                        let shopify = Shopify.getInstance(res.data.info.token, res.data.info.domain);
-                    }
-                }).catch(err => console.error(err));
-                _this.props.history.push('/home');
-            })
-            .catch(err => {
-                console.error(err);
-                let block = document.createElement("p");
-                if (err.response.status === 401) {
-                    document.querySelector(".pass-field").classList.add("has-error");
-                    block.classList.add("help-block");
-                    block.classList.add("error");
-                    block.innerHTML = "Login error. Please check username/email and password. Email verification is required before logging in";
-                    document.querySelector(".passwordError").appendChild(block);
+                let userType = res.data.userType;
+                if (userType === "customer") {
+                    url = customerLogin;
+                } else if (userType === "admin") {
+                    url = AdminLogin;
+                } else if (userType  === "worker") {
+                    url = FoundryWorkerLogin;
                 }
-                this.setState({
-                    isLoading: false
+                API.Request(url, 'POST', data, false)
+                .then(res => {
+                    // 4/23/2020: Always have cookies and local storage
+                    Cookies.set('access_token', res.data.id);
+                    Cookies.set('userId', res.data.userId);
+                    Cookies.set('userType', userType );
+                    Cookies.set('username', res.data.username);
+                    _this.props.history.push('/home');
+                    })
+                .catch(err => {
+                    console.error(err);
+                    let block = document.createElement("p");
+                    if (err.response.status === 401) {
+                        document.querySelector(".pass-field").classList.add("has-error");
+                        block.classList.add("help-block");
+                        block.classList.add("error");
+                        block.innerHTML = "Login error. Please check username/email and password. Email verification is required before logging in";
+                        document.querySelector(".passwordError").appendChild(block);
+                    }
+                    this.setState({
+                        isLoading: false
+                    });
                 });
-            });
+            })
         }
     }
 
@@ -211,30 +180,6 @@ class Login extends React.Component  {
                                 
                                 <div className="form-group row radio-group">
                                     <div className="col-md-3 col-sm-3 col-xs-3"></div>
-                                    <div className="col-md-6 col-sm-6 col-xs-6">
-                                        <label className="radio-inline">
-                                            <input type="radio"
-                                                    className="radioToValidate"
-                                                    name="userType" value="customer"
-                                                    onChange={v => this.handleChange('usertype', v.target.value)}/>
-                                                <span className="txt-radio">Customer</span>
-                                        </label>
-                                        <label className="radio-inline" style={{marginLeft:'50px'}}>
-                                            <input type="radio"
-                                                    className="radioToValidate"
-                                                    name="userType" value="admin"
-                                                    onChange={v => this.handleChange('usertype', v.target.value)}/>
-                                                <span className="txt-radio">Admin</span>
-                                        </label>
-                                        <label className="radio-inline" style={{marginLeft:'50px'}}>
-                                            <input type="radio"
-                                                    className="radioToValidate"
-                                                    name="userType"
-                                                    value="worker"
-                                                    onChange={v => this.handleChange('usertype', v.target.value)}/>
-                                                <span className="txt-radio">Foundry Worker</span>
-                                        </label>
-                                    </div>
                                     <div className="messages-radio col-md-3 col-sm-3 col-xs-3"></div>
                                 </div>
     

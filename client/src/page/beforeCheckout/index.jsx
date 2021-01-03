@@ -91,34 +91,52 @@ class BeforeCheckout extends React.Component  {
         _this.setState({
             preparingForCheckout: true,
         });
-        Shopify.getInstance("","").checkout.updateEmail(this.state.shopifyCheckoutId, this.state.customer.email)
-        .then((res) => {
-            let address = _this.state.addressList[_this.state.selectedAddrIndex];
-            let shippingAddr = {
-                address1: address.street,
-                address2: address.streetLine2,
-                city: address.city,
-                province: address.state,
-                country: address.country,
-                zip: address.zipCode,
-                firstName: _this.state.customer.firstName,
-                lastName: _this.state.customer.lastName,
-                phone: _this.state.customer.phoneNumber,
-            }
-            Shopify.getInstance("","").checkout.updateShippingAddress(this.state.shopifyCheckoutId, shippingAddr)
+        Shopify.getInstance("","")
+        .then((instance) => {
+            instance.checkout.updateEmail(this.state.shopifyCheckoutId, this.state.customer.email)
             .then((res) => {
-                // console.log(res);
-                
-                window.location.replace(`${this.state.shopifyCheckoutLink}`);
+                let address = _this.state.addressList[_this.state.selectedAddrIndex];
+                let shippingAddr = {
+                    address1: address.street,
+                    address2: address.streetLine2,
+                    city: address.city,
+                    province: address.state,
+                    country: address.country,
+                    zip: address.zipCode,
+                    firstName: _this.state.customer.firstName,
+                    lastName: _this.state.customer.lastName,
+                    phone: _this.state.customer.phoneNumber,
+                }
+                Shopify.getInstance("","")
+                .then((instance) => {
+                    instance.checkout.updateShippingAddress(this.state.shopifyCheckoutId, shippingAddr)
+                    .then((res) => {
+                        // console.log(res);
+                        
+                        window.location.replace(`${this.state.shopifyCheckoutLink}`);
+                    })
+                    .catch((err) =>{
+                        _this.setState({
+                            preparingForCheckout: false,
+                        });
+                        console.error(err);
+                    });
+                })
+                .catch(err => {
+                    _this.setState({
+                        preparingForCheckout: false,
+                    });
+                    console.error(err);
+                });
             })
-            .catch((err) =>{
+            .catch((err) => {
                 _this.setState({
                     preparingForCheckout: false,
                 });
                 console.error(err);
             });
         })
-        .catch((err) => {
+        .catch(err => {
             _this.setState({
                 preparingForCheckout: false,
             });

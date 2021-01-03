@@ -1,6 +1,6 @@
 import React from 'react';
 import { Redirect, withRouter } from 'react-router-dom'
-import { addFoundryWorker, editFoundryWorker } from "../../api/serverConfig";
+import { addFoundryWorker, editFoundryWorker, userSignUp } from "../../api/serverConfig";
 import API from "../../api/api";
 import Cookies from 'js-cookie'
 
@@ -81,7 +81,16 @@ class AddOrEditWorker extends React.Component{
             API.Request(addFoundryWorker, 'POST', data, true)
             .then(res => {
                 console.log(res);
-                _this.props.history.push('/manage/foundryworkers');
+                let obj = {
+                    email: this.state.email,
+                    username: this.state.username,
+                    password: this.state.password,
+                    userType: 'worker',
+                }
+                API.Request(userSignUp, 'POST', obj, false)
+                .then(res => {
+                    _this.props.history.push('/manage/foundryworkers');
+                })
             })
             .catch(error => {
                 console.error(error);

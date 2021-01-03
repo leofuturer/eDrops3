@@ -98,8 +98,6 @@ class Product extends React.Component{
             _this.setState({
                 addedToCart: false,
             });
-            // console.log(_this.props);
-            let shopifyClient = Shopify.getInstance("","");
             let url = getCustomerCart.replace('id', Cookies.get('userId'));
             API.Request(url, 'GET', {}, true)
             .then(res => {
@@ -117,41 +115,50 @@ class Product extends React.Component{
                 else{ //no cart, need to create one
                     // create Shopify cart
                     // console.log(`No cart currently exists, so need to create one`);
-                    Shopify.getInstance("","").checkout.create()
-                    .then(res => {
-                        // console.log(res);
-                        _this.setState({
-                            shopifyClientCheckoutId: res.id
-                        });
-                        let lastSlash = res.webUrl.lastIndexOf('/');
-                        let lastQuestionMark = res.webUrl.lastIndexOf('?');
-
-                        let shopifyCheckoutToken = res.webUrl.slice(lastSlash + 1, lastQuestionMark);
-                        // console.log(shopifyCheckoutToken);
-                        let data = {
-                            "checkoutIdClient": res.id,
-                            "checkoutToken": shopifyCheckoutToken,
-                            "checkoutLink": res.webUrl,
-                            "createdAt": res.createdAt,
-                            "lastModifiedAt": res.updatedAt,
-                            "orderComplete": false,
-                            "status": "Order in progress",
-                            // "customerId": Cookies.get('userId'),
-                            "shippingAddressId": 0, //0 to indicate no address selected yet (pk cannot be 0)
-                            "billingAddressId": 0
-                        };
-                        // and then create orderInfo in our backend
-                        url = manipulateCustomerOrders.replace('id', Cookies.get('userId'));
-                        API.Request(url, 'POST', data, true)
+                    Shopify.getInstance("","")
+                    .then((instance) => {
+                        instance.checkout.create()
                         .then(res => {
                             // console.log(res);
                             _this.setState({
-                                orderInfoId: res.data.id,
+                                shopifyClientCheckoutId: res.id
                             });
-                            _this.addItemToCart(res.data.id, 
-                                                res.data.checkoutIdClient, 
-                                                parseInt(this.state.quantity)
-                            );
+                            let lastSlash = res.webUrl.lastIndexOf('/');
+                            let lastQuestionMark = res.webUrl.lastIndexOf('?');
+    
+                            let shopifyCheckoutToken = res.webUrl.slice(lastSlash + 1, lastQuestionMark);
+                            // console.log(shopifyCheckoutToken);
+                            let data = {
+                                "checkoutIdClient": res.id,
+                                "checkoutToken": shopifyCheckoutToken,
+                                "checkoutLink": res.webUrl,
+                                "createdAt": res.createdAt,
+                                "lastModifiedAt": res.updatedAt,
+                                "orderComplete": false,
+                                "status": "Order in progress",
+                                // "customerId": Cookies.get('userId'),
+                                "shippingAddressId": 0, //0 to indicate no address selected yet (pk cannot be 0)
+                                "billingAddressId": 0
+                            };
+                            // and then create orderInfo in our backend
+                            url = manipulateCustomerOrders.replace('id', Cookies.get('userId'));
+                            API.Request(url, 'POST', data, true)
+                            .then(res => {
+                                // console.log(res);
+                                _this.setState({
+                                    orderInfoId: res.data.id,
+                                });
+                                _this.addItemToCart(res.data.id, 
+                                                    res.data.checkoutIdClient, 
+                                                    parseInt(this.state.quantity)
+                                );
+                            })
+                            .catch(err => {
+                                _this.setState({
+                                    addedToCart: true,
+                                });
+                                console.error(err);
+                            });
                         })
                         .catch(err => {
                             _this.setState({
@@ -204,38 +211,47 @@ class Product extends React.Component{
             variantId: variantId,
             quantity: quantity,
         }];
-        Shopify.getInstance("","").checkout.addLineItems(shopifyClientCheckoutId, lineItemsToAdd)
-        .then(res => {
-            let lineItemId;
-            // console.log(res);
-            for(let i = 0; i<res.lineItems.length; i++){
-                if(res.lineItems[i].variant.id === variantId){
-                    lineItemId = res.lineItems[i].id;
-                    // console.log(lineItemId);
-                    break;
-                }
-            }
-            let data = {
-                "orderInfoId": orderInfoId,
-                "productIdShopify": _this.state.product.id,
-                "variantIdShopify": variantId,
-                "lineItemIdShopify": lineItemId,
-                "description": _this.state.product.description,
-                "quantity": quantity,
-                "price": parseFloat(_this.state.product.variants[0].price),
-                "name": _this.state.product.title,
-                "otherDetails": customServerOrderAttributes,
-            };
-            // console.log(data);
-            let url = addOrderProductToCart.replace('id', orderInfoId);
-            API.Request(url, 'POST', data, true)
+        Shopify.getInstance("","")
+        .then((instance) => {
+            instance.checkout.addLineItems(shopifyClientCheckoutId, lineItemsToAdd)
             .then(res => {
+                let lineItemId;
                 // console.log(res);
-                _this.setState({
-                    addedToCart: true,
+                for(let i = 0; i<res.lineItems.length; i++){
+                    if(res.lineItems[i].variant.id === variantId){
+                        lineItemId = res.lineItems[i].id;
+                        // console.log(lineItemId);
+                        break;
+                    }
+                }
+                let data = {
+                    "orderInfoId": orderInfoId,
+                    "productIdShopify": _this.state.product.id,
+                    "variantIdShopify": variantId,
+                    "lineItemIdShopify": lineItemId,
+                    "description": _this.state.product.description,
+                    "quantity": quantity,
+                    "price": parseFloat(_this.state.product.variants[0].price),
+                    "name": _this.state.product.title,
+                    "otherDetails": customServerOrderAttributes,
+                };
+                // console.log(data);
+                let url = addOrderProductToCart.replace('id', orderInfoId);
+                API.Request(url, 'POST', data, true)
+                .then(res => {
+                    // console.log(res);
+                    _this.setState({
+                        addedToCart: true,
+                    });
+                })
+                .catch(err =>{
+                    console.error(err);
+                    _this.setState({
+                        addedToCart: true,
+                    });
                 });
             })
-            .catch(err =>{
+            .catch(err => {
                 console.error(err);
                 _this.setState({
                     addedToCart: true,

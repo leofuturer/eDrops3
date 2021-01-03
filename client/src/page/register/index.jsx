@@ -1,7 +1,7 @@
 import React from 'react';
 import {withRouter} from 'react-router-dom';
 import API from '../../api/api'
-import { customerSignUp, customerCredsTaken } from '../../api/serverConfig';
+import { customerSignUp, customerCredsTaken, userSignUp } from '../../api/serverConfig';
 import {constraints} from './formConstraints';
 import './register.css';
 import _ from 'lodash';
@@ -178,7 +178,17 @@ class Register extends React.Component {
         };
         API.Request(customerSignUp, 'POST', customerData, false)
         .then(res => {
-            this.props.history.push('/checkEmail');
+            console.log(res);
+            let obj = {
+                userType: 'customer',
+                username: this.state.username,
+                email: this.state.email,
+                password: this.state.password,
+            }
+            API.Request(userSignUp, 'POST', obj, false)
+            .then(res =>{
+                this.props.history.push('/checkEmail');
+            })
         })
         .catch(error => {
             console.error(error)
