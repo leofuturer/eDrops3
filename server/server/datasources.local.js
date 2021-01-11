@@ -12,11 +12,11 @@ module.exports = {
     name: 'mysqlDS',
     connector: 'mysql',
     debug: false,
-    database: process.env.APP_MYSQL_DATABASE || 'edrop-user-management',
+    database: process.env.APP_MYSQL_DATABASE || 'edrop_user_management',
     host: process.env.APP_MYSQL_HOST || 'localhost',
-    port: process.env.APP_MYSQL_PORT || 3306,
-    username: process.env.APP_MYSQL_USERNAME || 'root',
-    password: process.env.APP_MYSQL_PASSWORD || '12345678',
+    port: parseInt(process.env.APP_MYSQL_PORT) || 3306,
+    username: process.env.APP_MYSQL_USERNAME,
+    password: process.env.APP_MYSQL_PASSWORD,
   },
   edropFile: {
     name: "edropFile",
@@ -34,10 +34,10 @@ module.exports = {
         type: "SMTP",
         host: process.env.APP_EMAIL_HOST || "smtp.gmail.com",
         secure: true,
-        port: process.env.APP_EMAIL_PORT || 465,
+        port: parseInt(process.env.APP_EMAIL_PORT) || 465,
         auth: {
-          user: process.env.APP_EMAIL_USERNAME || "edropwebsite@gmail.com",
-          pass: process.env.APP_EMAIL_PASSWORD || "cjmemsEdrop"
+          user: process.env.APP_EMAIL_USERNAME,
+          pass: process.env.APP_EMAIL_PASSWORD
         }
       }
     ]

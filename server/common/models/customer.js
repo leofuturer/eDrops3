@@ -1,7 +1,7 @@
 const customerEmailVerification = require("../../server/hooks/customerEmailVerification");
 const passwordValidation = require("../../server/hooks/passwordValidation");
 const app = require("../../server/server.js");
-const { FRONTEND_HOSTNAME, FRONTEND_PORT, SENDER_EMAIL_USERNAME } = require('../../server/constants/emailconstants');
+const { FRONTEND_HOSTNAME, FRONTEND_PORT } = require('../../server/constants/emailconstants');
 const path = require('path');
 const errors = require('../../server/toolbox/errors');
 const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/;
@@ -70,7 +70,7 @@ module.exports = function(Customer) {
                 let user = users[0];
                 var emailOptions = {
                     type: 'email',
-                    from: SENDER_EMAIL_USERNAME,
+                    from: process.env.APP_EMAIL_USERNAME,
                     subject: '[Edrop] Resent Email Verification',
                     text: `Hello ${user.firstName} ${user.lastName}! Here's another email verification link that you requested.`,
                     template: path.resolve(__dirname, '../../server/views/verify.ejs'),
@@ -104,10 +104,10 @@ module.exports = function(Customer) {
                     `This link will expire in 15 minutes.<br><br>` +
                     `Sincerely,<br>` +
                     `Edrop<br><br>` +
-                    `Need help? Contact us at ${SENDER_EMAIL_USERNAME}<br>`;
+                    `Need help? Contact us at ${process.env.APP_EMAIL_USERNAME}<br>`;
         Customer.app.models.Email.send({
             to: info.email,
-            from: SENDER_EMAIL_USERNAME,
+            from: process.env.APP_EMAIL_USERNAME,
             subject: '[Edrop] Password Reset Request',
             html: html
         }, function(err) {

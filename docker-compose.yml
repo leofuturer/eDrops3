@@ -1,0 +1,63 @@
+version: "3.3"
+
+# https://start.jcolemorrison.com/authorized-resources-and-database-migrations-with-strongloops-loopback/
+
+services:  
+  edrop_mysqldb:
+    image: mysql:8.0 # max version supported by AWS RDS
+    container_name: edrop_mysqldb
+    env_file:
+      - ./deploy/dev/mysql.env
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    ports:
+      - 3306:3306
+    volumes:
+      - dockerdbdev:/var/lib/mysql # persistent storage for DB
+
+  edrop_backend:
+    image: danningyu/edrop_backend
+    container_name: edrop_backend
+    env_file:
+      - ./deploy/dev/backend.env
+    ports:
+      - 3000:3000
+      - 465:465
+    volumes:
+      - ./server/:/usr/src/app
+    restart: on-failure
+    environment:
+      # to reset database, pass in as `RESET_DATABASE=Yes; docker-compose up`
+      - RESET_DATABASE=$RESET_DATABASE
+      # to migrate database, pass in as `MIGRATE_DATABASE=Yes; docker-compose up`
+      - MIGRATE_DATABASE=$MIGRATE_DATABASE
+    depends_on:
+      - edrop_mysqldb # start database before backend
+  
+  edrop_ngrok:
+    # for local dev development, to receive Shopify webhooks
+    image: wernight/ngrok:latest
+    container_name: edrop_ngrok
+    env_file:
+      - ./deploy/dev/ngrok.env
+    ports:
+      - 4040:4040 # ngrok web interface
+    environment:
+      - NGROK_PORT=3000
+      - NGROK_AUTH=1hTFRuF8RI7oMYvi2hKMrWclrSH_QEWSdztvHYwNnbxrqbu4
+      - NGROK_LOOK_DOMAIN=edrop_backend
+      - NGROK_DEBUG=true
+
+  # edrop_frontend:
+  #   image: danningyu/edrop_frontend
+  #   container_name: edrop_frontend
+  #   ports:
+  #     - 8086:8086
+  #   volumes:
+  #     - ./client/:/usr/src/app
+  #   restart: on-failure
+  #   depends_on:
+  #     - edrop_backend
+
+volumes:
+  dockerdbdev: 

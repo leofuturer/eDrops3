@@ -6,9 +6,9 @@ module.exports = function(OrderInfo) {
     // Caller: Shopify web hook, when an order is created
     // This hook is called when the order is paid for
     OrderInfo.newOrderCreated = (body, req, cb) => {
-        console.log(req.headers['x-shopify-hmac-sha256']);
+        console.log(`Shopify order creation webhook token: ${req.headers['x-shopify-hmac-sha256']}`);
         // console.log(body);
-        console.log("An order was just paid, receiving webhook info from Shopify");
+        console.log(`An order was just paid using email ${body.email}, receiving webhook info from Shopify`);
         // TODO: Verify the request came from Shopify
         if(body.checkout_token !== null){
             OrderInfo.findOne({where: {checkoutToken: body.checkout_token}}, (err, orderInfoInstance) => {
@@ -16,7 +16,6 @@ module.exports = function(OrderInfo) {
                     cb(err);
                 }
                 else{
-                    // console.log(orderInfoInstance);
                     var date = new Date();
                     orderInfoInstance.updateAttributes({
                         orderInfoId:    body.id,
