@@ -211,20 +211,21 @@ module.exports = function(Customer) {
     Customer.prototype.uploadFile = function(ctx, options, cb){
         const user = this;
         if(!options) options = {};
-        // log(ctx.req);
-        // log(ctx.req.query)
+        //console.log(ctx.req);
+        //console.log(ctx.req.query)
         ctx.req.params.container = 'test_container'; // we may want to use username for this
         Customer.app.models.container.upload(ctx.req, ctx.result, options, function (err, fileObj) {
             if(err){
                 cb(err);
             }
             else {
+
                 var uploadedFile = fileObj.files['attach-document'][0];
                 var uploadedFields = fileObj.fields;
                 const FileInfoModel = app.models.fileInfo;
                 FileInfoModel.create({
                     uploadTime: currentTime(),
-                    fileName: uploadedFile.originalFilename,
+                    fileName: uploadedFields.hasOwnProperty('newName') ? uploadedFields.newName : uploadedFile.originalFilename,
                     containerFileName: uploadedFile.name,
                     container: uploadedFile.container,
                     uploader: user.username,

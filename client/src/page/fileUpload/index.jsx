@@ -1,7 +1,8 @@
 import React from 'react';
 import { Redirect, withRouter } from 'react-router-dom';
 
-import { uploadFile } from "../../api/serverConfig";
+import { uploadFile, customerFileRetrieve} from "../../api/serverConfig";
+import API from "../../api/api";
 import 'bootstrap-fileinput';
 import 'bootstrap-modal';
 import $ from 'jquery';
@@ -24,11 +25,15 @@ class Upload extends React.Component{
             utype: ['mm','cm','in'],
             public: 'private',
             unit: 'mm',
+            checked: false,
+            originalName: ""
         }
         this.setCurrentIndex = this.setCurrentIndex.bind(this);
         this.setCurrentIndex1 = this.setCurrentIndex1.bind(this);
         this.handleShopping = this.handleShopping.bind(this);
         this.handleLibrary = this.handleLibrary.bind(this);
+        this.handleRename = this.handleRename.bind(this);
+        this.handleCancel = this.handleCancel.bind(this);
     }
 
     setCurrentIndex(event) {
@@ -64,12 +69,27 @@ class Upload extends React.Component{
             name: "file",
             uploadExtraData: {
                 isPublic: this.state.public,
-                unit: this.state.unit
+                unit: this.state.unit,
             },
             slugCallback: function(filename) {
                 return filename.replace('(', '_').replace(']', '_');
             }
-        }).on("fileuploaded", function (event, data) {
+        }).on("fileloaded", function(event, file){
+            let url = customerFileRetrieve.replace('id', Cookies.get('userId'));
+            API.Request(url, 'GET', {}, true)
+            .then((res)=>{
+                res.data.forEach((e) => {
+                    if(e.fileName === file.name && !e.isDeleted && !_this.state.checked){
+                        //alert("Duplicate in your library. Please change your file name or delete the uploaded file!!");
+                        _this.setState({originalName: file.name});
+                        $("#confirmModal").modal('show');
+                        
+                        return;
+                    }
+                })
+            })
+        })
+        .on("fileuploaded", function (event, data) {
             _this.setState({
                 fileInfo: data.response.fileInfo
             });
@@ -103,6 +123,28 @@ class Upload extends React.Component{
 
     handleLibrary() {
         this.props.history.push('/manage/files');
+    }
+
+    handleRename() {
+        let ind = this.state.originalName.lastIndexOf('.');
+        let oriname = this.state.originalName;
+        this.setState({checked: true});
+        let date = new Date().toISOString().replace(/[^a-zA-Z0-9 ]/g, "");
+        $("#file1").fileinput('refresh', 
+            {
+                uploadExtraData:{
+                    isPublic: this.state.public,
+                    unit: this.state.unit,
+                    newName: oriname.slice(0, ind)+"("+ date +")"+oriname.slice(ind)
+                }
+            }   
+        ).fileinput('cancel');
+        $("#confirmModal").modal('hide');
+    }
+
+    handleCancel() {
+        $("#file1").fileinput('clear');
+        $("#confirmModal").modal('hide');
     }
 
     render() {
@@ -168,6 +210,25 @@ class Upload extends React.Component{
                         <div className="modal-footer">
                             <button type="button" className="btn btn-primary" onClick={this.handleShopping}>Proceed to fabrication</button>
                             <button type="button" className="btn btn-secondary" data-dismiss="modal" onClick={this.handleLibrary}>Go to file library</button>
+                        </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="modal fade" id="confirmModal" tabIndex="-1" role="dialog" aria-labelledby="exampleModalLabel" >
+                    <div className="modal-dialog modal-dialog-centered" role="document">
+                        <div className="modal-content">
+                        <div className="modal-header">
+                            <div className="modal-title" id="exampleModalLabel">Edrop</div>
+                        </div>
+                        <div className="modal-body">
+                            Duplicate file name! Would you like to upload another file, or you still want to
+                            upload this file? (It would be recommended that you change a new name to avoid 
+                            confusion.)
+                        </div>
+                        <div className="modal-footer">
+                            <button type="button" className="btn btn-primary" onClick={this.handleRename}>Yes</button>
+                            <button type="button" className="btn btn-secondary" data-dismiss="modal" onClick={this.handleCancel}>No</button>
                         </div>
                         </div>
                     </div>

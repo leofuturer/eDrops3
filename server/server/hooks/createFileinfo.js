@@ -11,7 +11,7 @@ module.exports = (ctx, containerInstance, next) => {
     const time = currentTime();
     const formatedSize = formatBytes(size, 1);
     //const time = files['attach-document'][0].time;
-    
+
     //Method One: use callback
     Customer.findById(customerId, (err, customerInstance) => {
         if (err)
@@ -42,8 +42,8 @@ module.exports = (ctx, containerInstance, next) => {
             next(fileId);
         }
     });
-    
-   
+
+
     // Method Two: use Promise
     /*
     return new Promise((resolve, reject) => {
