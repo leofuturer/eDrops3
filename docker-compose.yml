@@ -42,11 +42,6 @@ services:
       - ./deploy/dev/ngrok.env
     ports:
       - 4040:4040 # ngrok web interface
-    environment:
-      - NGROK_PORT=3000
-      - NGROK_AUTH=1hTFRuF8RI7oMYvi2hKMrWclrSH_QEWSdztvHYwNnbxrqbu4
-      - NGROK_LOOK_DOMAIN=edrop_backend
-      - NGROK_DEBUG=true
 
   # edrop_frontend:
   #   image: danningyu/edrop_frontend
