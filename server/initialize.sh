@@ -12,3 +12,4 @@ fi
 
 echo -e 'Starting server from intialize.sh'
 node server/server.js
+

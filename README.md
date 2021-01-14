@@ -94,10 +94,10 @@ Create the following files in `deploy/dev/` to supply environment variables to t
 `$ cd deploy/dev/`  
 `$ touch backend.dev mysql.dev ngrok.dev`  
 
-Then, initialize the database schema and add seed data. To do this, go into `docker-compose.yml` and comment out all the services except for `edrop_mysqldb`. Then, set the environment variable `RESET_DATABASE` to `Yes` before deploying. WARNING: This will delete everything previously in the database! The first time the MySQL container is created, the `edrop_user_management` database needs to be created, so this command will take around 2-3 minutes. Please be patient and wait until you receive a message indicating that the user `edrop` and database `edrop_user_management` has been created. 
+Then, initialize the database schema and add seed data. Note: the first time the MySQL container is created, the `edrop_user_management` database needs to be created, so this command will take around 2-3 minutes. Please be patient and wait until you receive a message indicating that the user `edrop` and database `edrop_user_management` has been created.  
 
 Windows: `$ $env:RESET_DATABASE = 'Yes'; docker-compose up -d; $env:RESET_DATABASE = ''; docker-compose logs -f`  
-*nix: `$ RESET_DATABASE=Yes && docker-compose up -d && unset RESET_DATABASE && docker-compose logs -f`  
+*nix: `$ RESET_DATABASE=Yes docker-compose up -d && docker-compose logs -f`  
 
 Then uncomment out the `edrop_backend` and `edrop_ngrok` services from `docker-compose.yml`. You are now ready to start up the backend (make sure RESET_DATABASE is **not** equal to 'Yes'):  
 Windows: `$ docker-compose down; docker-compose up -d; docker-compose logs -f`  
@@ -133,15 +133,14 @@ To create a webhook, enter the following settings:
 - URL: https://your_ngrok_address_hash.ngrok.io/api/orderInfos/newOrderCreated
 
 ### Steps to import seed data for development & testing
-From the top level directory, initialize the database schema and add seed data. To add or modify seed data, change the json objects in `server/db/seed-data/`. WARNING: This will delete everything previously in the database!  
+From the top level directory, initialize the database schema and add seed data. To add or modify seed data, change the json objects in `server/db/seed-data/`. **WARNING: This will delete everything previously in the database!**  
 Windows: `$ $env:RESET_DATABASE = 'Yes'; docker-compose up -d; $env:RESET_DATABASE = ''; docker-compose logs -f`  
-
-*nix: `$ RESET_DATABASE=Yes && docker-compose up -d && unset RESET_DATABASE && docker-compose logs -f`  
+*nix: `$ RESET_DATABASE=Yes docker-compose up -d && docker-compose logs -f`  
 
 ### Steps to change database models
 If you change the models in server/common/models and want to update the database without deleting preexisting data, run the following command. If you are adding a new column to a table, think about what the value will be for preexisting rows in that table.  
 Windows: `$ $env:MIGRATE_DATABASE = 'Yes'; docker-compose up -d; $env:MIGRATE_DATABASE = ''; docker-compose logs -f`  
-*nix: `$ MIGRATE_DATABASE=Yes && docker-compose up -d && unset MIGRATE_DATABASE && docker-compose logs -f`  
+*nix: `$ MIGRATE_DATABASE=Yes docker-compose up -d && docker-compose logs -f`  
 
 ### FAQ/Common Issues
 Q: How to enable built in Loopback debugging?  
