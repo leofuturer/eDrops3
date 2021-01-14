@@ -13,10 +13,6 @@ COPY package*.json ./
 # Production version
 RUN npm ci --only=production && npm cache clean --force
 
-# We don't do the below line for dev, mount the code as a volume 
-# in docker-compose.yml instead so that you can iterate faster
-# COPY . .
-
 # 3000 for API, 465 for email
 EXPOSE 3000
 EXPOSE 465
