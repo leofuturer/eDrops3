@@ -20,7 +20,6 @@ import API from "../../api/api";
 import { ewodFabServiceId,
     ewodFabServiceVariantId } from "../../constants";
 import Shopify from '../../app.jsx';
-import ShopifyClient from 'shopify-buy';
 
 class ChipOrder extends React.Component {
     constructor(props) {
@@ -64,7 +63,6 @@ class ChipOrder extends React.Component {
             });
             Shopify.getInstance("","")
             .then(instance => {
-                console.log(instance);
                 instance.product.fetch(ewodFabServiceId) // hard coded for chip order
                 .then((product) => {
                     _this.setState({

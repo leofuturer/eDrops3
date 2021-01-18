@@ -1,5 +1,5 @@
 const path = require('path');
-const { FRONTEND_HOSTNAME, FRONTEND_PORT, SENDER_EMAIL_USERNAME } = require('../constants/emailconstants');
+const { FRONTEND_HOSTNAME, FRONTEND_PORT } = require('../constants/emailconstants');
 
 'use strict';
 
@@ -14,7 +14,7 @@ module.exports = (ctx, customerInstance, next) => {
     var options = {
         type: 'email',
         to: email,
-        from: SENDER_EMAIL_USERNAME,
+        from: process.env.APP_EMAIL_USERNAME,
         subject: '[Edrop] Email Verification',
         text: `Hello ${customerInstance.username}! Thanks for registering to use Edrop. Please verify your email by clicking on the following link:`,
         template: path.resolve(__dirname, '../views/verify.ejs'),

@@ -53,110 +53,94 @@ Some code to initiate the database automatially (build schemas and import seed d
 Common file structure of Loopback
 
 ## SETUP
-### Steps to run the code on localhost
+Prerequisites:
+- Node version 14.15 or higher
+- NPM version 6.14 or higher
+- Docker version 18.06 or higher
+- An Ngrok account (sign up at ngrok.com)
+
+### Steps to run the code on localhost  
 Download this repository:  
 `$ git clone https://github.com/danningyu/Edrop-v2.0.0.git`  
 `$ cd Edrop-v2.0.0`  
 
-**To get the server running:**  
-`$ cd server`  
+For development purposes, there are 3 containers to run for the backend:  
+- Loopback backend containing the main server logic  
+- MySQL container to persist data  
+- Ngrok container to act as tunnel for receiving Shopify webhooks  
+
+The frontend is run without a container to enable easy hot-reloading.  
+
+When we deploy, we deploy the backed as a container and the frontend as a static HTML/CSS/JS bundle.  
+
+**To get the frontend running:**  
+From the home/top level directory:  
+`$ cd client`  
 `$ npm install`  
 
-At this point, make sure that you have a mySQL server running and have created an empty database. Then, set the following environment variables if any of their values differ from what is given in `Edrop-v2.0.0/server/server/datasources.local.js`:  
+Then, to run the client (in development mode):  
+`$ npm run dev`  
 
-    APP_MYSQL_DATABASE  
-    APP_MYSQL_HOST  
-    APP_MYSQL_PORT  
-    APP_MYSQL_USERNAME  
-    APP_MYSQL_PASSWORD  
+Navigate to localhost:8086/home to get to the home page of the Edrop application.  
 
-Scroll down to the bottom of this document for a listing of all the environment variables used in this project.  
+**To get the backend running:**  
+Open a new terminal window. Build the backend container and download images for MySQL and Ngrok.   
+`$ cd server`  
+`$ docker build -t danningyu/edrop_backend .`  
+`$ docker pull mysql:8.0`  
+`$ docker pull wernight/ngrok:latest`  
 
-To do this in Windows (using Command Prompt):  
-`$ set ENV_VAR_NAME=env_var_value`  
-`$ set APP_MYSQL_PASSWORD=password123 #sample: set APP_MYSQL_PASSWORD to password123`  
+Create the following files in `deploy/dev/` to supply environment variables to the containers. Ask Danning or Qining for a copy of those files, as they contain sensitive information.  
+`$ cd deploy/dev/`  
+`$ touch backend.dev mysql.dev ngrok.dev`  
 
-To do so in Linux/MacOS:  
-`export ENV_VAR_NAME=env_var_value`  
-`export APP_MYSQL_PASSWORD=password123 #sample: set APP_MYSQL_PASSWORD to password123`  
+Then, initialize the database schema and add seed data. Note: the first time the MySQL container is created, the `edrop_user_management` database needs to be created, so this command will take around 2-3 minutes. Please be patient and wait until you receive a message indicating that the user `edrop` and database `edrop_user_management` has been created.  
 
-Note: Setting it in Windows makes those environment variables only available in that command prompt session. If you wish to have the variables persist and usable across multiple sessions, use the `setx` command instead of `set`. However, `setx` has a 1024 character limit, so be careful.
+Windows: `$ $env:RESET_DATABASE = 'Yes'; docker-compose up -d; $env:RESET_DATABASE = ''; docker-compose logs -f`  
+*nix: `$ RESET_DATABASE=Yes docker-compose up -d && docker-compose logs -f`  
 
-Note: Setting it in Linux/MacOS makes these environment variables only available in that user session. If you wish to have the variables persist across multiple logins sessions, include it in the appropriate profile file for your *nix distribution and shell (such as `~/.bash_profile`, `~/.bash_login`, etc.).
+Then uncomment out the `edrop_backend` and `edrop_ngrok` services from `docker-compose.yml`. You are now ready to start up the backend (make sure RESET_DATABASE is **not** equal to 'Yes'):  
+Windows: `$ docker-compose down; docker-compose up -d; docker-compose logs -f`  
+*nix: `$ docker-compose down && docker-compose up -d && docker-compose logs -f`  
 
-Note: From now on, please create a `.env` file at /server/server and add the variables into it, including: 
+Once you see the following messages, the backend can be accessed:
+```
+...
+edrop_backend    | Checking if we need to create default admin user
+edrop_backend    | Web server listening at: http://localhost:3000
+edrop_backend    | Browse your REST API at http://localhost:3000/explorer
+```
 
-    APP_MYSQL_DATABASE
-    APP_MYSQL_PASSWORD
-    SHOPIFY_TOKEN
-    SHOPIFY_DOMAIN
+For reference, `docker-compose up -d` starts the containers up in the background. `docker-compose logs -f` follows the logs they emit, and you can press ^C to exit from trailing the logs. Use `docker-compose down` to stop the server.
 
+You can edit backend files normally and then use the following command to restart the backend with your changes:
+`$ docker-compose restart edrop_backend`
 
-**To configure file uploading:**  
-Open up a new command window. Navigate back to the home/top level directory. Then:  
-  `$ cd server`  
-  `$ mkdir storage`  
-  `$ cd storage`  
-  `$ mkdir test_container`  
-Uploaded files will now appear in the test_container folder.  
+Once the backend is running, where to find useful information:
+- localhost:3000 shows a status message about the uptime of Loopback
+- localhost:3000/explorer shows all API entry points
+- localhost:4040 shows the Ngrok tunnel URL and interface (track incoming HTTP/S requests)
+- Uploaded files appear in the `server/storage/test_container` folder.  
 
-Then, use the `mysql` command and log in to MySQl to create the Edrop database using the following SQL command (the backticks are required):
-
-  ``CREATE DATABASE `edrop-user-namangement`;``
-
-Then, initialize the database schema and add seed data. WARNING: This will delete everything previously in the database!  
-`$ node ./db/reset-db.js`  
-
-Then, start the server:  
-`$ node .`  
-
-Navigate to localhost:3000 and you should see a status message. Navigate to localhost:3000/explorer and you should see the API entry points.  
-
-If you run into authentication issues connecting to MySQL, refer to  `mysql_troubleshooting.md` file for potential solutions.  
-
-**To integrate Shopify**  
-Create an account on https://ngrok.com/ and download their client application.  
-
-Set up your ngrok application with an authentication token, which can be retrieved by logging in to your ngrok account:  
-`$ ngrok auth <auth_token>`  
-
-Finally, allow your local server to receive webhook updates from Shopify:  
-`$ ngrok http 3000`  
-
+**To Use Shopify**
 To place orders via our test store, enter `1` for the credit card number, any date in the future for expiry date, and any 3 digit number for the CVV. See [Shopify's docs](https://help.shopify.com/en/partners/dashboard/managing-stores/test-orders-in-dev-stores) for more details.
 
-Go to https://wqntest.myshopify.com/admin -> Settings (bottom left) -> Notifications, scroll down to the bottom, and update the webhook URLs for checkout and order creation with the URL generated by ngrok.  If you have the server running at this point, you can send a test notification to confirm that everything works.  
+Go to https://wqntest.myshopify.com/admin -> Settings (bottom left) -> Notifications, scroll down to the bottom, and update the webhook URLs for order creation with the URL generated by Ngrok. This URL can be found by navigating to localhost:4040 or viewing the Ngrok container's logs.  If you have the server running at this point, you can send a test notification to confirm that everything works.  
 
 To create a webhook, enter the following settings:  
 - Event: Order payment
 - Format: JSON
 - URL: https://your_ngrok_address_hash.ngrok.io/api/orderInfos/newOrderCreated
 
-**To get the client running:**  
-Open up a new command window. Navigate back to the home/top level directory. Then:  
-    `$ cd client`  
-    `$ npm install`  
-
-If there is an error about python2 not being found:  
-`$ rm -rf node_modules #delete the node_modules folder client`  
-`$ npm install --global windows-build-tools`  
-`$ npm install`  
-
-Note: This is due to a python2 dependency that NodeJS has. See [this
-StackOverflow question](https://stackoverflow.com/questions/45801457/node-js-python-not-found-exception-due-to-node-sass-and-node-gyp). It also prepends something along the lines of `C:\Users\<username>\.windows-build-tools\python27;` to your PATH environment variable, so make sure to delete that from your PATH so that it doesn't conflict with other Python installations.
-
-Then, run the client (in development mode):  
-`$ npm run dev`
-
-Navigate to localhost:8086/home to get to the home page of the Edrop application. (Note: the server should also be running at this point)  
-
 ### Steps to import seed data for development & testing
-From the top level directory, initialize the database schema and add seed data. To add or modify seed data, change the json objects in `server/db/seed-data/`. WARNING: This will delete everything previously in the database!  
-`$ node ./server/db/reset-db.js`  
+From the top level directory, initialize the database schema and add seed data. To add or modify seed data, change the json objects in `server/db/seed-data/`. **WARNING: This will delete everything previously in the database!**  
+Windows: `$ $env:RESET_DATABASE = 'Yes'; docker-compose up -d; $env:RESET_DATABASE = ''; docker-compose logs -f`  
+*nix: `$ RESET_DATABASE=Yes docker-compose up -d && docker-compose logs -f`  
 
 ### Steps to change database models
 If you change the models in server/common/models and want to update the database without deleting preexisting data, run the following command. If you are adding a new column to a table, think about what the value will be for preexisting rows in that table.  
-`$ node ./server/db/migrate-db.js`  
+Windows: `$ $env:MIGRATE_DATABASE = 'Yes'; docker-compose up -d; $env:MIGRATE_DATABASE = ''; docker-compose logs -f`  
+*nix: `$ MIGRATE_DATABASE=Yes docker-compose up -d && docker-compose logs -f`  
 
 ### FAQ/Common Issues
 Q: How to enable built in Loopback debugging?  
@@ -165,27 +149,65 @@ A: See [Setting debug strings](https://loopback.io/doc/en/lb3/Setting-debug-stri
 Q: Set the environment variables for connecting to the database but it doesn't work (permission denied error):  
 A: Make sure you set the environment variables in the same shell window that you run the server in. To verify the value was set correctly, use `$ echo %ENV_VAR_NAME%` for Windows and `$ echo $ENV_VAR_NAME` for Linux/MacOS.  
 
-Q: Cannot connect to the mySQL database?  
-A: Make sure you have it running (on Windows, in the System Tray, right click on the mySQL notifier, and check if the server is running).  
-
 ### List of Environment Variables
-If things aren't working, check that these are correct for your environment.
+If things aren't working, check that these are correct for your environment. Contact Danning or Qining for sensitive values.
 
-| Environment Variable        | Description                                         | Default Value                      |
-|-----------------------------|-----------------------------------------------------|------------------------------------|
-| APP\_MYSQL\_HOST            | Hostname for MySQL database                         | "localhost"                        |
-| APP\_MYSQL\_PORT            | Port number for MySQL database                      | 3306                               |
-| APP\_MYSQL\_DATABASE        | Table name for MySQL database                       | "edrop-user-management"            |
-| APP\_MYSQL\_USERNAME        | Username for MySQL database                         | "root"                             |
-| APP\_MYSQL\_PASSWORD        | Password for MySQL database                         | "12345678"                         |
-| APP\_FRONTEND\_HOSTNAME     | Hostname for front end server                       | "localhost"                        |
-| APP\_FRONTEND\_PORT         | Port number for front end server                    | 8086                               |
-| APP\_EMAIL\_HOST            | Hostname for email server used to send emails       | "smtp\.gmail\.com"                 |
-| APP\_EMAIL\_PORT            | Port number for email server used to send emails    | 465                                |
-| APP\_EMAIL\_USERNAME        | Email address for email account used to send emails | "edropwebsite@gmail\.com"          |
-| APP\_EMAIL\_PASSWORD        | Password for email account used to send emails      | "cjmemsEdrop"                      |
-| SHOPIFY\_DOMAIN | Domain for our Shopify website                      | "wqntest.myshopify.com"            |
-| SHOPIFY\_TOKEN  | Token for Shopify Storefront API                    | "c098a4c1f8d45e55b35caf24ca9c97bb" |
+| Environment Variable     | Description                                         | Default Value             |
+|--------------------------|-----------------------------------------------------|---------------------------|
+| APP\_MYSQL\_HOST         | Hostname for MySQL database                         | "localhost"               |
+| APP\_MYSQL\_PORT         | Port number for MySQL database                      | 3306                      |
+| APP\_MYSQL\_DATABASE     | Table name for MySQL database                       | "edrop_user_management"   |
+| APP\_MYSQL\_USERNAME     | Username for MySQL database                         | "edrop"                   |
+| APP\_MYSQL\_PASSWORD     | Password for MySQL database                         | "12345678"                |
+| APP\_FRONTEND\_HOSTNAME  | Hostname for front end server                       | "localhost"               |
+| APP\_FRONTEND\_PORT      | Port number for front end server                    | 8086                      |
+| APP\_EMAIL\_HOST         | Hostname for email server used to send emails       | "smtp\.gmail\.com"        |
+| APP\_EMAIL\_PORT         | Port number for email server used to send emails    | 465                       |
+| APP\_EMAIL\_USERNAME     | Email address for email account used to send emails | "edropwebsite@gmail\.com" |
+| APP\_EMAIL\_PASSWORD     | Password for email account used to send emails      | Contact Danning/Qining    |
+| SHOPIFY\_DOMAIN          | Domain for our Shopify website                      | "wqntest.myshopify.com"   |
+| SHOPIFY\_TOKEN           | Token for Shopify Storefront API                    | Contact Danning/Qining    |
 
-## ISSUES
-- [ ] Assign file functions are all useless, need to be deleted and make sure no other functionalities are affected
+### How to set environment variables
+The commands below show how to set environment variables for Windows and *nix and give an example where `APP_MYSQL_PASSWORD` is set to `password123`.
+
+To do this in Windows (using Command Prompt):  
+`$ set ENV_VAR_NAME=env_var_value`  
+`$ set APP_MYSQL_PASSWORD=password123`
+
+To do this in Windows (using Powershell):  
+Note the leading dollar sign single quotes around the value.  
+`$ $env:ENV_VAR_NAME = 'VALUE'`
+`$ $env:APP_MYSQL_PASSWORD = 'password123'`
+
+To do so in Linux/MacOS:  
+`export ENV_VAR_NAME=env_var_value`  
+`export APP_MYSQL_PASSWORD=password123`  
+
+NOTE: Remember that setting environment variables only makes them available in that particular terminal window. If you open new windows, make sure to set them again.
+
+## Useful Commands
+Build backend image:  
+`docker build -t danningyu/edrop_backend .`  
+
+Shut down backend:  
+`docker-compose down`  
+
+Start up all backend containers (add `-d` for detached/background mode):  
+`docker-compose up`  
+
+View backend logs for all containers (add `-f` to follow them):  
+`docker-compose logs`  
+
+View backend logs for a container (`-f` option available):  
+`docker-compose logs container_name`  
+
+Restart a container (often the backend):  
+`docker-compose restart container_name`  
+
+Open a terminal window in the backend container:  
+`docker exec -it edrop_backend bash` (method 1)  
+`docker-compose exec edrop_backend bash` (method 2)  
+
+Access the MySQL database directly to perform queries, etc.:  
+`docker exec -it edrop_mysqldb mysql -u edrop -p`  
