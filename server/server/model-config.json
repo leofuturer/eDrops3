@@ -55,7 +55,11 @@
           "prototype.replaceById": true,
           "find": true,
 
-          "login": true
+          "login": true,
+          "logout": true,
+          "resetPassword": true,
+          "setPassword": true,
+          "changePassword": true
         }
       }
     }

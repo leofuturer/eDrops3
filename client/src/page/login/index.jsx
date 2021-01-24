@@ -111,6 +111,7 @@ class Login extends React.Component  {
         if (nameEmailResult) {
             API.Request(userLogin, 'POST', data, false)
             .then(res => {
+                Cookies.set('base_access_token', res.data.id);
                 let userType = res.data.userType;
                 if (userType === "customer") {
                     url = customerLogin;

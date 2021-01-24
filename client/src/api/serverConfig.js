@@ -6,6 +6,10 @@ const ApiRootUrl ='/api';
 //Overall User
 export const userSignUp = ApiRootUrl+'/userBases';
 export const userLogin = ApiRootUrl+'/userBases/login';
+export const userLogout = ApiRootUrl + '/userBases/logout';
+export const userForgetPass = ApiRootUrl+'/userBases/reset';
+export const userChangePass = ApiRootUrl +'/userBases/change-password';
+export const userResetPass = ApiRootUrl +'/userBases/reset-password';
 
 //Customer
 export const customerSignUp = ApiRootUrl+'/customers';

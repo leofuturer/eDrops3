@@ -1,7 +1,6 @@
 import React from 'react';
 import './forgetPass.css';
-import {    customerForgetPass, 
-            customerResendVerifyEmail} from "../../api/serverConfig";
+import {userForgetPass, customerResendVerifyEmail} from "../../api/serverConfig";
 import API from "../../api/api";
 import _ from 'lodash';
 
@@ -29,18 +28,17 @@ class FormsPage extends React.Component  {
             email: this.state.email
         };
         if(helpType === 'resetPassword'){
-            API.Request(customerForgetPass, 'POST', data, false)
-            .then(res => {
-                this.setState({
-                    requestInProgress: true
-                });
-            })
-            .catch(err => {
-                console.error(err);
-                this.setState({
-                    requestInProgress: false
-                });
-            });
+            API.Request(userForgetPass, 'POST', data, false)
+                .then(res => {
+                    this.setState({
+                        requestInProgress: true
+                    });
+                }).catch(err => {
+                    console.error(err);
+                    this.setState({
+                        requestInProgress: false
+                    });
+                })
         }
         else{
             API.Request(customerResendVerifyEmail, 'POST', data, false)
