@@ -17,7 +17,7 @@ import AddOrEditUser from 'page/users/addOrEditUser.jsx';
 
 //Admins
 import Admins from 'page/admins/index.jsx';
-import AddOrEditAdmin from 'page/admins/AddOrEditAdmin.jsx';
+import AddOrEditAdmin from 'page/admins/addOrEditAdmin.jsx';
 
 //Files
 import Files from 'page/files/index.jsx';

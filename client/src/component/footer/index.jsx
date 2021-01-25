@@ -1,4 +1,5 @@
 import React from 'react';
+import IMG_2943 from "../../../static/img/IMG_2943.jpg";
 
 class FooterPage extends React.Component {
     render(){
@@ -9,12 +10,12 @@ class FooterPage extends React.Component {
                     <div className="top-title">
                         <h3 className="edrop-txt">EDrop</h3>
                         <p className="i-p">
-                            <i className="fa fa-twitter"></i>
-                            <i className="fa fa-facebook"></i>
-                            <i className="fa fa-youtube"></i>
+                            {/* <i className="fa fa-twitter"></i> */}
+                            {/* <i className="fa fa-facebook"></i> */}
+                            {/* <i className="fa fa-youtube"></i> */}
                         </p>
                         <p>
-                            &copy; EDrop 2018-2020
+                            &copy; EDrop 2018-2021
                         </p>
                     </div>
                     <div className="top-title">
@@ -24,8 +25,9 @@ class FooterPage extends React.Component {
                             <div>Email: edropwebsite@gmail.com</div>
                         </div>
                         <div style={{marginTop:'15px'}}>
-                            <div>1234 New Hampshire Avenue</div>
-                            <div> Washington, DC 20037, United States</div>
+                            <div>420 Westwood Plaza</div>
+                            <div>Los Angeles, CA 90095</div>
+                            <div>United States</div>
                         </div>
                     </div>
                     <div className="top-title">
@@ -43,13 +45,13 @@ class FooterPage extends React.Component {
                         <p className="pic-div">
                             <span className="left-inline">EWOD Control System</span>
                             <img className="right-inline" 
-                                src="../../../static/img/IMG_2943.jpg" 
+                                src={IMG_2943}
                                 alt="" width="30" height="30"/>
                         </p>
                         <p className="pic-div">
                             <span className="left-inline">EWOD Chip v1</span>
                             <img className="right-inline" 
-                                src="../../../static/img/IMG_2943.jpg" 
+                                src={IMG_2943} 
                                 alt="" width="30" height="30"/>
                         </p>
                     </div>

@@ -3,6 +3,7 @@ import './cart.css';
 import API from "../../api/api";
 import { withRouter, NavLink } from 'react-router-dom';
 import { ewodFabServiceId } from '../../constants';
+import loadingGif from "../../../static/img/loading80px.gif";
 
 //The order list page for both customer and worker
 class CartItem extends React.Component{
@@ -51,7 +52,7 @@ class CartItem extends React.Component{
                 }
                 <div>
                 { this.props.deleteLoading
-                  ? <img src="../../../static/img/loading80px.gif" alt=""/>
+                  ? <img src={loadingGif} alt=""/>
                   : <input type="button" className="btn btn-danger" value="Delete"
                     onClick={() => this.props.onDelete()}></input>
                 }

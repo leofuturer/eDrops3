@@ -1,8 +1,10 @@
 import React from 'react';
 import { Link } from  'react-router-dom';
-
-import './home.css';
 import Cookies from "js-cookie";
+import './home.css';
+import IMG_2943 from "../../../static/img/IMG_2943.jpg";
+import IMG_2941 from "../../../static/img/IMG_2941.jpg";
+import IMG_2936 from "../../../static/img/IMG_2936.jpg";
 
 class Home extends React.Component{
     render(){
@@ -48,7 +50,7 @@ class Home extends React.Component{
                         <div className="icon-div">
                             <figure className="figure-img">
                                 <a href="">
-                                    <img src="../../../static/img/IMG_2943.jpg" alt=""/>
+                                    <img src={IMG_2943} alt=""/>
                                 </a>
                                 <h4>EWOD Control System</h4>
                             </figure>
@@ -56,7 +58,7 @@ class Home extends React.Component{
                         <div className="icon-div icon-center">
                             <figure className="figure-img">
                                 <a href="">
-                                    <img src="../../../static/img/IMG_2941.jpg" alt=""/>
+                                    <img src={IMG_2941} alt=""/>
                                 </a>
                                 <h4>EWOD Chip v1</h4>
                             </figure>
@@ -64,7 +66,7 @@ class Home extends React.Component{
                         <div className="icon-div">
                             <figure className="figure-img">
                                 <a href="">
-                                    <img src="../../../static/img/IMG_2936.jpg" alt=""/>
+                                    <img src={IMG_2936} alt=""/>
                                 </a>
                                 <h4>EWOD Chip v2</h4>
                             </figure>

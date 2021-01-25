@@ -227,8 +227,8 @@ class Upload extends React.Component{
                             confusion.)
                         </div>
                         <div className="modal-footer">
-                            <button type="button" className="btn btn-primary" onClick={this.handleRename}>Yes</button>
-                            <button type="button" className="btn btn-secondary" data-dismiss="modal" onClick={this.handleCancel}>No</button>
+                            <button type="button" className="btn btn-primary" onClick={this.handleRename}>Upload this file</button>
+                            <button type="button" className="btn btn-secondary" data-dismiss="modal" onClick={this.handleCancel}>Change file</button>
                         </div>
                         </div>
                     </div>

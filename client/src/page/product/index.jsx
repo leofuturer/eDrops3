@@ -10,6 +10,7 @@ import {getCustomerCart,
         addOrderProductToCart, returnOneItem} from "../../api/serverConfig";
 import API from "../../api/api";
 import Shopify from '../../app.jsx';
+import loadingGif from "../../../static/img/loading80px.gif";
 
 class Product extends React.Component{
     constructor(props){
@@ -317,7 +318,7 @@ class Product extends React.Component{
                                     onClick={e => this.handleGetCart()}>            
                                 </input>
                             </div>
-                            : <img className="loading-GIF" src="../../../static/img/loading80px.gif" alt=""/>
+                            : <img className="loading-GIF" src={loadingGif} alt=""/>
                                 
                             }
                             
@@ -325,7 +326,7 @@ class Product extends React.Component{
 
                         </div>
                     </div>
-                    : <img className="loading-GIF" src="../../../static/img/loading80px.gif" alt=""/>
+                    : <img className="loading-GIF" src={loadingGif} alt=""/>
                 }           
                 </div>
             </div>

@@ -22,9 +22,13 @@ app.start = function() {
     app.emit('started');
     var baseUrl = app.get('url').replace(/\/$/, '');
     console.log('Web server listening at: %s', baseUrl);
-    if (app.get('loopback-component-explorer')) {
-      var explorerPath = app.get('loopback-component-explorer').mountPath;
-      console.log('Browse your REST API at %s%s', baseUrl, explorerPath);
+    if(process.env.NODE_ENV === "dev"){
+      if(app.get('loopback-component-explorer')) {
+        var explorerPath = app.get('loopback-component-explorer').mountPath;
+        console.log('Browse your REST API at %s%s', baseUrl, explorerPath);
+      }
+    } else if(process.env.NODE_ENV !== "production"){
+      console.warn(`WARNING: NODE_ENV environment variable is not set. Things may not work properly.`);
     }
   });
 };

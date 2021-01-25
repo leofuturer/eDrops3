@@ -4,15 +4,14 @@ import './login.css';
 import {userLogin,
         customerLogin, 
         AdminLogin, 
-        FoundryWorkerLogin, 
-        customerGetApiToken} from "../../api/serverConfig";
+        FoundryWorkerLogin, } from "../../api/serverConfig";
 
 import API from "../../api/api";
 import Cookies from 'js-cookie';
 import _ from 'lodash';
 import $ from 'jquery';
 var validate = require('validate.js');
-import Shopify from '../../app.jsx';
+import loadingGif from "../../../static/img/loading80px.gif";
 
 class Login extends React.Component  {
     constructor(props) {
@@ -143,7 +142,16 @@ class Login extends React.Component  {
                         isLoading: false
                     });
                 });
-            })
+            }).catch(err => {
+                console.error(err);
+                this.setState({
+                    isLoading: false
+                });
+            });
+        } else {
+            this.setState({
+                isLoading: false
+            });
         }
     }
 
@@ -187,7 +195,7 @@ class Login extends React.Component  {
                                 <div className="form-group login-btn">
                                     {
                                         this.state.isLoading
-                                        ? <img src="../../../static/img/loading80px.gif" alt=""/>
+                                        ? <img src={loadingGif} alt=""/>
                                         : <input type="button" value="Login"className="input-btn" onClick={this.handleLogin}/>
                                     }
                                 </div>
