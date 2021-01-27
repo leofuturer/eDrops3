@@ -13,8 +13,12 @@ class API {
     async Request(url, method, data, useToken, headers = {'content-type':'application/json; charset=utf-8'}){
         try{
             if(useToken){
-                headers.Authorization = Cookies.get('access_token');
-            }         
+                if(Cookies.get('access_token')===null || Cookies.get('access_token')===undefined){
+                    headers.Authorization = Cookies.get('base_access_token');
+                }else{
+                    headers.Authorization = Cookies.get('access_token');
+                }
+            }      
             let options = {
                 method: method,
                 headers: headers,

@@ -1,7 +1,7 @@
 import React from 'react';
 import {Redirect,withRouter} from "react-router-dom";
 import './changePass.css';
-import {customerChangePass, FoundryWorkerChangePass, AdminChangePass} from "../../api/serverConfig";
+import {customerChangePass, FoundryWorkerChangePass, AdminChangePass, userChangePass} from "../../api/serverConfig";
 import API from "../../api/api";
 import Cookies from 'js-cookie';
 import _ from 'lodash';
@@ -50,8 +50,13 @@ class FormsPage extends React.Component  {
         if (validateResult) {
             API.Request(url, 'POST', data, true)
             .then( res => {
-                alert("Password successfully changed");
-                this.props.history.push('/manage/profile');
+                API.Request(userChangePass, 'POST', data, true)
+                .then(res =>{
+                    alert("Password successfully changed");
+                    this.props.history.push('/manage/profile');
+                }).catch(error => {
+                    console.log("reset userbase password failed.");
+                }) 
             })
             .catch(error => {
                 console.log(error.response.data.error.message);

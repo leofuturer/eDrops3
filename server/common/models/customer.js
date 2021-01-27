@@ -3,8 +3,6 @@ const passwordValidation = require("../../server/hooks/passwordValidation");
 const app = require("../../server/server.js");
 const { FRONTEND_HOSTNAME, FRONTEND_PORT } = require('../../server/constants/emailconstants');
 const path = require('path');
-const errors = require('../../server/toolbox/errors');
-const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/;
 const log = require('../../db/toolbox/log');
 const {formatBytes, currentTime} = require('../../server/toolbox/calculate') ;
 require('dotenv').config({path: path.resolve(__dirname, '.env')});
@@ -84,37 +82,6 @@ module.exports = function(Customer) {
             }
         });
     }
-
-    Customer.beforeRemote('setPassword', function(ctx, customerInstance, next){
-        // this is called before password is reset with /customers/reset-password
-        if(!passwordRegex.test(ctx.req.body.newPassword)){
-            next(errors.validationError('Password does not meet security requirements'));
-        }
-        else{
-            next();
-        }
-    })
-
-    Customer.on('resetPasswordRequest', function(info){
-        // from https://loopback.io/doc/en/lb3/Logging-in-users.html
-        var url = `http://${FRONTEND_HOSTNAME}:${FRONTEND_PORT}/resetPassword`;
-        var html = `Hello ${info.user.firstName} ${info.user.lastName},<br><br>` +
-                    `You've requested a password reset. Please click <a href="${url}?access_token=` +
-                    `${info.accessToken.id}">here</a> to reset your password. ` +
-                    `This link will expire in 15 minutes.<br><br>` +
-                    `Sincerely,<br>` +
-                    `Edrop<br><br>` +
-                    `Need help? Contact us at ${process.env.APP_EMAIL_USERNAME}<br>`;
-        Customer.app.models.Email.send({
-            to: info.email,
-            from: process.env.APP_EMAIL_USERNAME,
-            subject: '[Edrop] Password Reset Request',
-            html: html
-        }, function(err) {
-            if (err) return console.error('> Error sending password reset email');
-            log.success('> Sending password reset email to:', info.email);
-        });
-    })
 
     //Customer instance creates an address belongsTo himself
     //Actually we do not need this, we should use the exposed API below for model relation instead.

@@ -1,6 +1,6 @@
 import React from 'react';
 import './resetPassword.css';
-import {customerResetPass} from "../../api/serverConfig";
+import {userResetPass} from "../../api/serverConfig";
 import API from "../../api/api";
 import {NavLink} from  'react-router-dom';
 import {constraints} from '../register/formConstraints';
@@ -43,7 +43,7 @@ class ResetPassword extends React.Component{
             });
         }
         else {
-            let url = `${customerResetPass}?access_token=${resetToken}`;
+            let url = `${userResetPass}?access_token=${resetToken}`;
             let options = {
                 newPassword: this.state.newPassword
             }

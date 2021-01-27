@@ -28,6 +28,7 @@
       "permission": "ALLOW",
       "property": "create"
     },
+
     {
       "accessType": "READ",
       "principalType": "ROLE",
@@ -42,6 +43,7 @@
       "permission": "ALLOW",
       "property": "deleteById"
     },
+
     {
       "accessType": "WRITE",
       "principalType": "ROLE",
