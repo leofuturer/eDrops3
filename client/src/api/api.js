@@ -18,7 +18,8 @@ class API {
                 }else{
                     headers.Authorization = Cookies.get('access_token');
                 }
-            }      
+            } 
+            headers['X-edrop-userbase'] =  Cookies.get('base_access_token');   
             let options = {
                 method: method,
                 headers: headers,

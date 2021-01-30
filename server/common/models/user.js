@@ -39,10 +39,10 @@ module.exports = function(Userbase){
           } else {
             Base = Userbase.app.models.foundryWorker;
           }
-          Base.app.models.customer.findOne({where: {email: instance.email}}, function(err, customerInstance){
+          Base.findOne({where: {email: instance.email}}, function(err, modelInstance) {
             if(err) console.log(err);
             else{
-              customerInstance.updateAttribute('password', User.hashPassword(ctx.req.body.newPassword), (err, newInstance)=>{
+              modelInstance.updateAttribute('password', User.hashPassword(ctx.req.body.newPassword), (err, newInstance)=>{
                 if(err){
                   console.log(err);
                 }else{

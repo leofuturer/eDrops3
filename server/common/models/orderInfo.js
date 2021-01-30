@@ -1,5 +1,8 @@
 'use strict';
 
+const checkOrderOwnership = require("../../server/hooks/checkOrderOwnership");
+const errors = require('../../server/toolbox/errors');
+
 module.exports = function(OrderInfo) {
     //Remote Methods
 
@@ -55,7 +58,7 @@ module.exports = function(OrderInfo) {
         }
     }
 
-    OrderInfo.prototype.addOrderChipToCart = (body, cb) => {
+    OrderInfo.prototype.addOrderChipToCart = (body, req, cb) => {
         // console.log(body);
         // Find the specified orderInfo (top level)
         OrderInfo.findById(body.orderInfoId, (err, orderInfo) => {
@@ -66,6 +69,25 @@ module.exports = function(OrderInfo) {
             else {
                 // console.log(orderInfo);
                 // Then see if product order already created, if we need to create one
+                OrderInfo.app.models.AccessToken.findById(req.headers['x-edrop-userbase'], function(err, token){
+                  if(err){
+                    console.log(err);
+                    cb(err);
+                  }else{
+                    OrderInfo.app.models.userBase.findById(token.userId, function(err, user){
+                      if(err) cb(err);
+                      else if(user.userType !== 'customer'){
+                        console.log("only customer can add chip to cart");
+                        cb(errors.forbidden("only customer can add chip to cart"));
+                      }
+                    })
+                  }
+
+                })
+                if(orderInfo.customerId !== req.accessToken.userId){
+                  console.log("customer and order info does not match");
+                  cb(null);
+                }else{
                 orderInfo.orderChips({"where": {"variantIdShopify": body.variantIdShopify, "otherDetails": body.otherDetails}}, function(err, orderChips){
                     // variant ID should uniquely identify it
                     // console.log(orderProducts);
@@ -105,6 +127,7 @@ module.exports = function(OrderInfo) {
                         });
                     }
                 });
+              }
             }
         });
     }
@@ -114,7 +137,7 @@ module.exports = function(OrderInfo) {
     // (2) Searches if the appropriate item is already in the customer's cart
     //      If so, update quantity; if not, create item and then add to cart
     // (3) Returns success/failure
-    OrderInfo.prototype.addOrderProductToCart = (body, cb) => {
+    OrderInfo.prototype.addOrderProductToCart = (body, req, cb) => {
         // console.log(body);
         // Find the specified orderInfo (top level)
         OrderInfo.findById(body.orderInfoId, (err, orderInfo) => {
@@ -125,6 +148,25 @@ module.exports = function(OrderInfo) {
             else {
                 // console.log(orderInfo);
                 // Then see if product order already created, if we need to create one
+                OrderInfo.app.models.AccessToken.findById(req.headers['x-edrop-userbase'], function(err, token){
+                  if(err){
+                    console.log(err);
+                    cb(err);
+                  }else{
+                    OrderInfo.app.models.userBase.findById(token.userId, function(err, user){
+                      if(err) cb(err);
+                      else if(user.userType !== 'customer'){
+                        console.log("only customer can add chip to cart");
+                        cb(null);
+                      }
+                    })
+                  }
+
+                })
+                if(orderInfo.customerId !== req.accessToken.userId){
+                  console.log("customer and order info does not match");
+                  cb(null);
+                }else{
                 orderInfo.orderProducts({"where": {"variantIdShopify": body.variantIdShopify, "otherDetails": body.otherDetails}}, function(err, orderProducts){
                     // variant ID should uniquely identify it
                     // console.log(orderProducts);
@@ -164,14 +206,71 @@ module.exports = function(OrderInfo) {
                         });
                     }
                 });
+              }
             }
         });
     }
 
+    OrderInfo.beforeRemote('findById', function(ctx, modelInstance, next){
+        console.log(ctx.req.params.id);
+        let userbaseToken = ctx.req.headers['x-edrop-userbase'];
+        OrderInfo.app.models.AccessToken.findById(userbaseToken, function(err, token){
+          if(err) next(err);
+          else{
+            OrderInfo.app.models.userBase.findById(token.userId, function(err, user){
+              if(user.userType!=='customer'){
+                next(errors.forbidden("only customer can retrieve order info"));
+              }
+            })
+          }
+        })
+        OrderInfo.findById(ctx.req.params.id, function(err, info){
+          if(err){
+            next(new Error("does not exist this order info."));
+          }
+          else if(ctx.req.accessToken.userId !== info.customerId){
+            next(new Error("this order is not owned by you."));
+          }else{
+            next();
+          }
+        })
+    })
+
+    OrderInfo.beforeRemote('prototype.__get__orderProducts', function(ctx, modelInstance, next){
+      checkOrderOwnership(ctx, modelInstance, next, true);
+    })
+
+    OrderInfo.beforeRemote('prototype.__get__orderChips', checkOrderOwnership)
+
+    OrderInfo.afterRemote('prototype.__get__orderChips', function(ctx, modelInstance, next){
+      OrderInfo.app.models.AccessToken.findById(ctx.req.headers['x-edrop-userbase'], function(err, token){
+        if(err) next(err);
+        else {
+          OrderInfo.app.models.userBase.findById(token.userId, function(err, user){
+            if(err) next(err);
+            else if(user.userType === 'worker'){
+              if(ctx.result){
+                if(Array.isArray(ctx.result)){
+                  ctx.result.forEach((element, index)=>{
+                    if(element.workerId !== ctx.req.accessToken.userId){
+                      ctx.result.splice(index, 1);
+                    }
+                  })
+                }
+              }
+            }
+          })
+          next();
+        }
+      })
+    })
+
+
     OrderInfo.remoteMethod('prototype.addOrderProductToCart', {
         description: 'CUSTOM METHOD: Add product order to cart (increase quantity)',
         accepts: [
-            {arg: 'body', type: 'object', http: {source: 'body'}}
+            {arg: 'body', type: 'object', http: {source: 'body'}},
+            {arg: 'req', type: 'object', http: {source: 'req'}},
         ],
         http: {path: '/addOrderProductToCart', verb: 'post'},
         returns: [],
@@ -180,7 +279,8 @@ module.exports = function(OrderInfo) {
     OrderInfo.remoteMethod('prototype.addOrderChipToCart', {
         description: 'CUSTOM METHOD: Add chip order to cart (increase quantity)',
         accepts: [
-            {arg: 'body', type: 'object', http: {source: 'body'}}
+            {arg: 'body', type: 'object', http: {source: 'body'}},
+            {arg: 'req', type: 'object', http: {source: 'req'}},
         ],
         http: {path: '/addOrderChipToCart', verb: 'post'},
         returns: [],
