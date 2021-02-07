@@ -50,9 +50,12 @@ class FormsPage extends React.Component  {
         if (validateResult) {
             API.Request(url, 'POST', data, true)
             .then( res => {
+                const userToken = Cookies.get('access_token');
+                Cookies.remove('access_token');
                 API.Request(userChangePass, 'POST', data, true)
                 .then(res =>{
                     alert("Password successfully changed");
+                    Cookies.set('access_token', userToken);
                     this.props.history.push('/manage/profile');
                 }).catch(error => {
                     console.log("reset userbase password failed.");

@@ -1,7 +1,7 @@
 import React from 'react';
 import {withRouter, NavLink} from  'react-router-dom';
 import Cookies from 'js-cookie';
-import {customerLogout, AdminLogout, FoundryWorkerLogout} from "../../api/serverConfig";
+import {customerLogout, AdminLogout, FoundryWorkerLogout, userLogout} from "../../api/serverConfig";
 import API from "../../api/api";
 
 class NavTop extends React.Component{
@@ -28,8 +28,12 @@ class NavTop extends React.Component{
         API.Request(url, 'POST', {}, true)
         .then(res => {
             Cookies.remove('access_token');
-            this.setState({show:false});
-            this.props.history.push('/home')
+            API.Request(userLogout, 'POST', {}, true)
+            .then(res => {
+                Cookies.remove('base_access_token');
+                this.setState({show:false});
+                this.props.history.push('/home')
+            })
         })
         .catch(err => {
             console.error(err);
