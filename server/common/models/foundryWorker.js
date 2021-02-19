@@ -11,23 +11,30 @@ module.exports = function(FoundryWorker) {
             }
         })
     });
-    
-    FoundryWorker.prototype.getChipOrders = function(ctx, cb){
+
+    FoundryWorker.prototype.getChipOrders = function(ctx, req, cb){
         const foundryWorker = this;
         var allOrderChips = [];
         foundryWorker.workerOrders({})
         .then(chipOrders => {
             var promises = chipOrders.map((chipOrder, index) => {
                 // console.log(chipOrder);
-                return FoundryWorker.app.models.orderInfo.findById(chipOrder.orderId)
-                .then(orderInfo => {
-                    chipOrder.customerId = orderInfo.customerId;
-                    allOrderChips = allOrderChips.concat(chipOrder);
-                })
-                .catch(err => {
-                    console.error(err);
-                    cb(err);
-                });
+                if(chipOrder.workerId === req.accessToken.userId){
+                  return FoundryWorker.app.models.orderInfo.findById(chipOrder.orderId)
+                  .then(orderInfo => {
+                      chipOrder.customerId = orderInfo.customerId;
+                      allOrderChips = allOrderChips.concat(chipOrder);
+                  })
+                  .catch(err => {
+                      console.error(err);
+                      cb(err);
+                  });
+                }else{
+                  console.log("Unmatched chip Order with current worker");
+                  let err = new Error("Unmatched chip Order with current worker");
+                  err.status = "403";
+                  cb(err);
+                }
             });
             Promise.all(promises).then(() => {
                 var promises2 = allOrderChips.map((orderChip, index) => {
@@ -54,6 +61,7 @@ module.exports = function(FoundryWorker) {
         description: 'CUSTOM METHOD: Get all chip orders',
         accepts: [
             {arg: 'ctx', type: 'object', http: { source: 'context' }},
+            {arg: 'req', type: 'object', http: { source: 'req' }},
         ],
         http: {path: '/orderChips', verb: 'get'},
         returns: [{arg: 'orderChips', type: 'array'}],

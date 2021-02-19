@@ -3,7 +3,7 @@ import React from 'react';
 import { NavLink } from 'react-router-dom';
 import Cookies from 'js-cookie';
 
-import { getAllOrderInfos, downloadFileById } from '../../api/serverConfig';
+import { getAllOrderInfos } from '../../api/serverConfig';
 import API from '../../api/api';
 
 class AllOrders extends React.Component {
