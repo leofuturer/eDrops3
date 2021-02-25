@@ -39,6 +39,18 @@ td i{
   width: 10%
 }
 
+.dxf-preview {
+    /* border-style: solid;
+    border-color: black; */
+    max-width: 485px;
+    text-align: center;
+}
+
+.preview-disclaimer {
+    font-size: 12px;
+    text-align: center;
+}
+
 /* ======= Cart =======
 .shop-cart-wrapper {
     float: right;

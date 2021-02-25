@@ -116,7 +116,7 @@ class Product extends React.Component{
                 else{ //no cart, need to create one
                     // create Shopify cart
                     // console.log(`No cart currently exists, so need to create one`);
-                    Shopify.getInstance("","")
+                    Shopify.getInstance().getPrivateValue()
                     .then((instance) => {
                         instance.checkout.create()
                         .then(res => {
@@ -212,7 +212,7 @@ class Product extends React.Component{
             variantId: variantId,
             quantity: quantity,
         }];
-        Shopify.getInstance("","")
+        Shopify.getInstance().getPrivateValue()
         .then((instance) => {
             instance.checkout.addLineItems(shopifyClientCheckoutId, lineItemsToAdd)
             .then(res => {

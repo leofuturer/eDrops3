@@ -4,7 +4,6 @@ import API from '../../api/api'
 import { customerSignUp, customerCredsTaken, userSignUp } from '../../api/serverConfig';
 import {constraints} from './formConstraints';
 import './register.css';
-import _ from 'lodash';
 import loadingGif from "../../../static/img/loading80px.gif";
 
 var validate = require('validate.js');
@@ -79,18 +78,17 @@ class Register extends React.Component {
         formGroup.classList.remove("has-error");
         formGroup.classList.remove("has-success");
         // and remove any old messages
-        _.each(formGroup.querySelectorAll(".help-block.error, .text-muted, .text-success"), function(ele) {
+        formGroup.querySelectorAll(".help-block.error, .text-muted, .text-success").forEach((ele, index) => {
             ele.remove();
-            //el.parentNode.removeChild(ele);
         });
 
         if (errors) {
             // we first mark the group has having errors
             formGroup.classList.add("has-error");
             // then we append all the errors
-             _.each(errors, function(error) {
-            _this.addError(messages, error); //Attention: we must use the _this instead of this!!!
-          });
+            errors.forEach((err, index) => {
+                _this.addError(messages, error); //Attention: we must use the _this instead of this!!!
+            });
         } else {
             // otherwise we simply mark it as success
             var messages2 = formGroup.querySelector(".messages");
@@ -148,12 +146,11 @@ class Register extends React.Component {
         .catch(errors => {
             // console.error(errors);
             // console.log("Displaying errors");
-                _.each(form.querySelectorAll("input.needValidation"), function(input) {
-                    //what's the purpose of this line?
-                    if(this){
-                        this.showErrorsOrSuccessForInput(input, errors && errors[input.name]);
-                    }
-                });         
+            form.querySelectorAll("input.needValidation").forEach((input, index) => {
+                if(this){
+                    this.showErrorsOrSuccessForInput(input, errors && errors[input.name]);
+                }
+            })        
             this.setState({
                 requestInProgress: false
             });

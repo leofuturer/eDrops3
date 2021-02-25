@@ -126,7 +126,7 @@ class Cart extends React.Component{
         }
         // Delete from Shopify, then our own DB
         const itemToDelete = [array[index].lineItemIdShopify];
-        Shopify.getInstance("","")
+        Shopify.getInstance().getPrivateValue()
         .then((instance) => {
             instance.checkout.removeLineItems(_this.state.shopifyCheckoutId, itemToDelete)
             .then(checkout => {
@@ -188,7 +188,7 @@ class Cart extends React.Component{
                     id: array[i].lineItemIdShopify,
                     quantity: parseInt(array[i].quantity),
                 }];
-                Shopify.getInstance("","")
+                Shopify.getInstance().getPrivateValue()
                 .then((instance) => {
                     instance.checkout.updateLineItems(_this.state.shopifyCheckoutId, itemsToUpdate)
                     .then(checkout => {

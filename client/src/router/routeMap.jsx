@@ -44,7 +44,7 @@ export class MainRouter extends React.Component {
                     <Route path="/register" component={Register}/>
                     <Route path="/forgetPass" component={ForgetPass}/>
                     <Route path="/checkEmail" component={CheckEmail}/>
-                    <Route path ="/emailVerified" component={EmailVerified}/>
+                    <Route path="/emailVerified" component={EmailVerified}/>
                     <Route path="/emailVerifyInvalid" component={EmailVerifyInvalid}/>
                     <Route path="/resetPassword" component={ResetPassword}/>
                     <Route path="/beforeCheckout" component={BeforeCheckout}/>
