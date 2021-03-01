@@ -8,6 +8,8 @@ import 'bootstrap-modal';
 import "./beforeCheckout.css";
 import AddNewAddress from '../address/addNewAddress.jsx';
 import Shopify from '../../app.jsx';
+import loading_sm from "../../../static/img/loading-sm.gif";
+import loadingGif from "../../../static/img/loading80px.gif";
 
 class BeforeCheckout extends React.Component  {
     constructor(props) {
@@ -200,7 +202,7 @@ class BeforeCheckout extends React.Component  {
                         </div>
                         </div>
                         { this.state.preparingForCheckout
-                        ? <img className="loading-GIF-checkout-button" src="../../../static/img/loading-sm.gif" alt=""/>
+                        ? <img className="loading-GIF-checkout-button" src={loading_sm} alt=""/>
                         : <div className="checkout-button">
                             <input type="button" className="btn btn-primary btn-padding"
                                 value="Return to Cart" onClick={() => this.handleReturnToCart()}>
@@ -212,7 +214,7 @@ class BeforeCheckout extends React.Component  {
                         </div>   
                         }
                     </div>
-                    : <img className="loading-GIF" src="../../../static/img/loading80px.gif" alt=""/>
+                    : <img className="loading-GIF" src={loadingGif} alt=""/>
                     }    
                 </div>
             </div>

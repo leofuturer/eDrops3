@@ -1,10 +1,9 @@
 // Admin only page, for customer page see order/index.jsx
 import React from 'react';
-import { NavLink } from 'react-router-dom';
 import Cookies from 'js-cookie';
-
 import { getAllOrderInfos } from '../../api/serverConfig';
 import API from '../../api/api';
+import loadingGif from "../../../static/img/loading80px.gif";
 
 class AllOrders extends React.Component {
     constructor(props) {
@@ -91,7 +90,7 @@ class AllOrders extends React.Component {
                                     <td>
                                         {
                                             this.state.isLoading
-                                            ? <img src="../../../static/img/loading80px.gif" alt="" className="loading-icon"/>
+                                            ? <img src={loadingGif} alt="" className="loading-icon"/>
                                             : "No orders have been submitted yet."
                                         }
                                     </td>

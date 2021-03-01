@@ -7,6 +7,7 @@ import { adminGetChipOrders, customerGetChipOrders,
         downloadFileById, adminDownloadFile, workerDownloadFile }
          from '../../api/serverConfig';
 import Cookies from "js-cookie";
+import loadingGif from "../../../static/img/loading80px.gif";
 
 // List all chip orders for all user types
 class ChipOrders extends React.Component{
@@ -181,7 +182,7 @@ class ChipOrders extends React.Component{
                                             <td>
                                             {
                                                 this.state.isLoading
-                                                    ? <img src="../../../static/img/loading80px.gif" alt="" className="loading-icon"/>
+                                                    ? <img src={loadingGif} alt="" className="loading-icon"/>
                                                     : (Cookies.get('userType') === "worker"
                                                         ? "No orders have been assigned to you yet."
                                                         : "No orders have been placed.")

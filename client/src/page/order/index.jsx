@@ -5,6 +5,7 @@ import { customerOrderRetrieve, workerOrderRetrieve, getCustomerOrder, getAllOrd
          from '../../api/serverConfig';
 import Cookies from "js-cookie";
 import './animate.css';
+import loadingGif from "../../../static/img/loading80px.gif";
 
 //The order list page for both customer and worker
 class Orders extends React.Component{
@@ -109,7 +110,7 @@ class Orders extends React.Component{
                                             <td>
                                                 {
                                                     this.state.isLoading
-                                                        ? <img src="../../../static/img/loading80px.gif" alt="" className="loading-icon"/>
+                                                        ? <img src={loadingGif} alt="" className="loading-icon"/>
                                                         : (Cookies.get('userType') === "worker"
                                                             ? "No orders have been assigned to you yet."
                                                             : "No orders have been placed.")

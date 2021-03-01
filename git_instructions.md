@@ -10,7 +10,7 @@ Open an issue ("Issues" tab at the top -> "New Issue") describing what you plan 
 
 On your local machine, check out master branch, pull the remote master branch so that you have the latest version, and then create a specific branch on your local development environment just for this issue. See git instructions below for how to create a new branch (and use git in general).  
 
-For this project, we use the branch naming convention `issue-<xx>-short_description`. For example, issue #22, time formatting issue on file upload times, would have its branch named as `issue-22-time_formatting`  
+For this project, we use the branch naming convention `iss_<xx>_short_description`. For example, issue #22, time formatting issue on file upload times, would have its branch named as `iss_22_time_formatting`  
 
 The aim of one branch per issue is to keep pull requests (PRs) small so that they can easily be compared against the code from master branch.  
 
@@ -39,6 +39,33 @@ To push your changes onto a new branch on the repository, which can be multiple 
 `$ git push origin new_feature_name`  
 
 Once you're done with the feature, go on Github and open a pull request to merge into master. If the Github says that you cannot automatically merge the branches, you need to resolve the conflicts manually (see section below). If the branches can be merged automatically, skip this section. Then, wait for someone to approve the pull request.  
+
+Once your merge request is approved, you need to 91) squash it down to 1 commit; and then (2) rebase onto lastest `master`. To do (1), first find the commit from `master` that your branch starts from:  
+`$ git log --merges -n 1`  
+
+Let's call this commit `merge_commit`. Then, do a manual "squash" of all your commits:  
+`$ git rebase -i merge_commit`  
+
+This will open your text editor and list all your commits for this branch. Change all the "picks" to "squash" (or "s" for short) except for the topmost one. Then, close your text editor and the commits will automatically be squashed. A new text editor window with the commit message to write for this new squashed commit. Please create a descriptive commit message.  
+
+Example:  
+```
+pick 4b6f25c AWS and Continuous Deployment - Frontend and Backend
+pick 2036991 Cleanup 
+pick f25gaf5 Make some more changes 
+```  
+To squash into a single commit, change "pick" in lines 2 and 3 above to "squash" (or "s").  
+
+Next, we need do step (2). To rebase onto the latest `master` commit. To do this, run `git rebase` again, but slightly differently:  
+`$ git rebase master`  
+
+If there are any conflicts, resolve them at this time, and follow the instructions to continue the rebasing process:  
+`$ git add .`  
+`$ git rebase --continue`  
+
+Finally, push your updates to Github. Use the `-f` option (for force push) since you've changed the history of your local development branch.  
+`$ git push origin branch_name`  
+
 #### -----Resolving merge conflicts-----
 Switch to master branch and get the latest version:  
 `$ git checkout master`  

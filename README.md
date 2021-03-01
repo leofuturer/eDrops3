@@ -94,14 +94,16 @@ Create the following files in `deploy/dev/` to supply environment variables to t
 `$ cd deploy/dev/`  
 `$ touch backend.dev mysql.dev ngrok.dev`  
 
-Then, initialize the database schema and add seed data. Note: the first time the MySQL container is created, the `edrop_user_management` database needs to be created, so this command will take around 2-3 minutes. Please be patient and wait until you receive a message indicating that the user `edrop` and database `edrop_user_management` has been created.  
+Then, initialize the database schema and add seed data. Note: the first time the MySQL container is created, the `edrop_db` database needs to be created, so this command will take around 2-3 minutes. Please be patient and wait until you receive a message indicating that the user `edrop` and database `edrop_db` has been created.  
 
-Windows: `$ $env:RESET_DATABASE = 'Yes'; docker-compose up -d; $env:RESET_DATABASE = ''; docker-compose logs -f`  
-*nix: `$ RESET_DATABASE=Yes docker-compose up -d && docker-compose logs -f`  
+Windows: `$ $env:RESET_DATABASE = 'Yes'; docker-compose -f docker-compose.yml -f docker-compose.dev.yml up -d; $env:RESET_DATABASE = ''; docker-compose -f docker-compose.yml -f docker-compose.dev.yml logs -f`  
+Mac/Unix: `$ RESET_DATABASE=Yes docker-compose -f docker-compose.yml -f docker-compose.dev.yml up -d && docker-compose -f docker-compose.yml -f docker-compose.dev.yml logs -f`  
 
-Then uncomment out the `edrop_backend` and `edrop_ngrok` services from `docker-compose.yml`. You are now ready to start up the backend (make sure RESET_DATABASE is **not** equal to 'Yes'):  
-Windows: `$ docker-compose down; docker-compose up -d; docker-compose logs -f`  
-*nix: `$ docker-compose down && docker-compose up -d && docker-compose logs -f`  
+The commands are long, so we recommend you make aliases.
+
+You are now ready to start up the backend (make sure RESET_DATABASE is **not** equal to 'Yes'):  
+Windows: `$ docker-compose -f docker-compose.yml -f docker-compose.dev.yml up -d; docker-compose -f docker-compose.yml -f docker-compose.dev.yml logs -f`  
+Mac/Unix: `$ docker-compose -f docker-compose.yml -f docker-compose.dev.yml up -d && docker-compose -f docker-compose.yml -f docker-compose.dev.yml logs -f`  
 
 Once you see the following messages, the backend can be accessed:
 ```
@@ -111,10 +113,10 @@ edrop_backend    | Web server listening at: http://localhost:3000
 edrop_backend    | Browse your REST API at http://localhost:3000/explorer
 ```
 
-For reference, `docker-compose up -d` starts the containers up in the background. `docker-compose logs -f` follows the logs they emit, and you can press ^C to exit from trailing the logs. Use `docker-compose down` to stop the server.
+For reference, `docker-compose up -d` starts the containers up in the background. `docker-compose logs -f` follows the logs they emit, and you can press ^C to exit from trailing the logs. Use `docker-compose down` to stop the server. When running in a development environment, you need containers from both `docker-compose.yml` and `docker-compose.dev.yml`, so we pass in both as arguments to `docker-compose`.  
 
 You can edit backend files normally and then use the following command to restart the backend with your changes:
-`$ docker-compose restart edrop_backend`
+`$ docker-compose -f docker-compose.yml -f docker-compose.dev.yml restart edrop_backend`
 
 Once the backend is running, where to find useful information:
 - localhost:3000 shows a status message about the uptime of Loopback
@@ -134,13 +136,13 @@ To create a webhook, enter the following settings:
 
 ### Steps to import seed data for development & testing
 From the top level directory, initialize the database schema and add seed data. To add or modify seed data, change the json objects in `server/db/seed-data/`. **WARNING: This will delete everything previously in the database!**  
-Windows: `$ $env:RESET_DATABASE = 'Yes'; docker-compose up -d; $env:RESET_DATABASE = ''; docker-compose logs -f`  
-*nix: `$ RESET_DATABASE=Yes docker-compose up -d && docker-compose logs -f`  
+Windows: `$ $env:RESET_DATABASE = 'Yes'; docker-compose -f docker-compose.yml -f docker-compose.dev.yml up -d; $env:RESET_DATABASE = ''; docker-compose -f docker-compose.yml -f docker-compose.dev.yml logs -f`  
+Mac/Unix: `$ RESET_DATABASE=Yes docker-compose -f docker-compose.yml -f docker-compose.dev.yml up -d && docker-compose -f docker-compose.yml -f docker-compose.dev.yml logs -f` 
 
 ### Steps to change database models
 If you change the models in server/common/models and want to update the database without deleting preexisting data, run the following command. If you are adding a new column to a table, think about what the value will be for preexisting rows in that table.  
-Windows: `$ $env:MIGRATE_DATABASE = 'Yes'; docker-compose up -d; $env:MIGRATE_DATABASE = ''; docker-compose logs -f`  
-*nix: `$ MIGRATE_DATABASE=Yes docker-compose up -d && docker-compose logs -f`  
+Windows: `$ $env:MIGRATE_DATABASE = 'Yes'; docker-compose -f docker-compose.yml -f docker-compose.dev.yml up -d; $env:MIGRATE_DATABASE = ''; docker-compose -f docker-compose.yml -f docker-compose.dev.yml logs -f`  
+Mac/Unix: `$ MIGRATE_DATABASE=Yes docker-compose -f docker-compose.yml -f docker-compose.dev.yml up -d && docker-compose -f docker-compose.yml -f docker-compose.dev.yml logs -f` 
 
 ### FAQ/Common Issues
 Q: How to enable built in Loopback debugging?  
@@ -156,7 +158,7 @@ If things aren't working, check that these are correct for your environment. Con
 |--------------------------|-----------------------------------------------------|---------------------------|
 | APP\_MYSQL\_HOST         | Hostname for MySQL database                         | "localhost"               |
 | APP\_MYSQL\_PORT         | Port number for MySQL database                      | 3306                      |
-| APP\_MYSQL\_DATABASE     | Table name for MySQL database                       | "edrop_user_management"   |
+| APP\_MYSQL\_DATABASE     | Table name for MySQL database                       | "edrop_db"                |
 | APP\_MYSQL\_USERNAME     | Username for MySQL database                         | "edrop"                   |
 | APP\_MYSQL\_PASSWORD     | Password for MySQL database                         | "12345678"                |
 | APP\_FRONTEND\_HOSTNAME  | Hostname for front end server                       | "localhost"               |
@@ -168,6 +170,8 @@ If things aren't working, check that these are correct for your environment. Con
 | SHOPIFY\_DOMAIN          | Domain for our Shopify website                      | "wqntest.myshopify.com"   |
 | SHOPIFY\_TOKEN           | Token for Shopify Storefront API                    | Contact Danning/Qining    |
 
+IP address of our AWS EC2 server: 54.241.15.160.  
+
 ### How to set environment variables
 The commands below show how to set environment variables for Windows and *nix and give an example where `APP_MYSQL_PASSWORD` is set to `password123`.
 
@@ -177,33 +181,43 @@ To do this in Windows (using Command Prompt):
 
 To do this in Windows (using Powershell):  
 Note the leading dollar sign single quotes around the value.  
-`$ $env:ENV_VAR_NAME = 'VALUE'`
+`$ $env:ENV_VAR_NAME = 'VALUE'`  
 `$ $env:APP_MYSQL_PASSWORD = 'password123'`
 
 To do so in Linux/MacOS:  
 `export ENV_VAR_NAME=env_var_value`  
 `export APP_MYSQL_PASSWORD=password123`  
 
-NOTE: Remember that setting environment variables only makes them available in that particular terminal window. If you open new windows, make sure to set them again.
+NOTE: Remember that setting environment variables only makes them available in that particular terminal window. If you open new windows, make sure to set them again.  
 
-## Useful Commands
+To set an environment variable for the backend (such as for debugging Loopback), modify your `backend.env` file in the `deploy/dev/` folder. Then restart the edrop_backend container (see above for the command to do this).  
+
+## Useful Commands  
+SSH into EC2:  
+`ssh ubuntu@edrops.org`  
+
+The server uses public-private key authentication, so ask Danning or Qining to get your public key added to the server.  
+
 Build backend image:  
 `docker build -t danningyu/edrop_backend .`  
 
+### Dev Environment  
+I recommend defining aliases for these.  
+
 Shut down backend:  
-`docker-compose down`  
+`docker-compose -f docker-compose.yml -f docker-compose.dev.yml down`  
 
 Start up all backend containers (add `-d` for detached/background mode):  
-`docker-compose up`  
+`docker-compose -f docker-compose.yml -f docker-compose.dev.yml up`  
 
 View backend logs for all containers (add `-f` to follow them):  
-`docker-compose logs`  
+`docker-compose -f docker-compose.yml -f docker-compose.dev.yml`  
 
 View backend logs for a container (`-f` option available):  
-`docker-compose logs container_name`  
+`docker logs container_name`  
 
 Restart a container (often the backend):  
-`docker-compose restart container_name`  
+`docker restart container_name`  
 
 Open a terminal window in the backend container:  
 `docker exec -it edrop_backend bash` (method 1)  
@@ -211,3 +225,28 @@ Open a terminal window in the backend container:
 
 Access the MySQL database directly to perform queries, etc.:  
 `docker exec -it edrop_mysqldb mysql -u edrop -p`  
+
+### Prod Environment  
+Note: if you try to execute these on your local machine you may run into errors. These comands are designed to be run on the AWS EC2 instance.  
+`docker-compose -f docker-compose.yml -f docker-compose.prod.yml down`  
+`docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d`  
+`docker-compose -f docker-compose.yml -f docker-compose.prod.yml logs -f`  
+
+To connect to the MySQL database running on RDS:  
+`mysql -h mysql_host -u mysql_username -p`  
+
+`mysql_host` and `mysql_username` can be found as the environment variables APP_MYSQL_HOST and APP_MYSQL_USERNAME in the production server under `/deploy/prod/backend.env` file. The database password can be found in the same folder.  
+
+## To rename database  
+If you are using MySQL 8.0 with InnoDB, do the following:  
+- Exec into the MySQL database using the `mysql` command line utility  
+- Run `CREATE DATABASE new_db_name;`  
+- (Optional, to create new user) `CREATE USER 'edrop_db_user'@'%' IDENTIFIED BY 'password_goes_here';`  
+- (Optional, to grant user privileges) `GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, RELOAD, PROCESS, REFERENCES, INDEX, ALTER, SHOW DATABASES, CREATE TEMPORARY TABLES, LOCK TABLES, EXECUTE, REPLICATION SLAVE, REPLICATION CLIENT, CREATE VIEW, SHOW VIEW, CREATE ROUTINE, ALTER ROUTINE, CREATE USER, EVENT, TRIGGER ON *.* TO 'edrop_db_user'@'%' WITH GRANT OPTION;`  
+- (Bash script to rename tables): `mysql -u dbUsername -p"dbPassword" old_db_name -Ne 'SHOW TABLES' | while read table; do mysql -u dbUsername -p"dbPassword" -Ne "RENAME TABLE old_db_name.$table TO new_db_name.$table"; done`  
+- For the above command, I recommend executing everything before the pipe first to see all the tables that will be affected  
+
+This uses the fact that we can "transfer" a table from one database to another with the following command:  
+`RENAME TABLE old_db_name.table_name TO new_db_name.table_name;`  
+
+Source: https://chartio.com/resources/tutorials/how-to-rename-a-database-in-mysql/  

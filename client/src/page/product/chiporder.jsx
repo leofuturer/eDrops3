@@ -20,6 +20,8 @@ import API from "../../api/api";
 import { ewodFabServiceId,
     ewodFabServiceVariantId } from "../../constants";
 import Shopify from '../../app.jsx';
+import loadingGif from "../../../static/img/loading80px.gif";
+import dxfComingSoon from "../../../static/img/DXFComingSoon.PNG";
 
 class ChipOrder extends React.Component {
     constructor(props) {
@@ -285,7 +287,7 @@ class ChipOrder extends React.Component {
                     <div className="shop-left-content">
                         {/* DY - replace temporary image above with a preview of the uploaded PDF */}
                         <div className="div-img">
-                            <img src="../../../static/img/DXFComingSoon.PNG" style={{width : "600px"}}/>
+                            <img src={dxfComingSoon} style={{width : "600px"}}/>
                             {/* <object id="pdfdoc" data={url} type="application/pdf" /> */}
                         </div>
                         <div className="shop-material">
@@ -340,7 +342,7 @@ class ChipOrder extends React.Component {
                             <p className="cart-btn">
                                 {
                                     this.state.isLoading
-                                    ? <img src="../../../static/img/loading80px.gif" alt="" className="loading-icon"/>
+                                    ? <img src={loadingGif} alt="" className="loading-icon"/>
                                     : <input type="button" className="btn btn-primary btn-lg btn-block"
                                         value="Add to Cart"
                                         onClick={e => this.addVariantToCart(variantId, this.state.quantity)}/>

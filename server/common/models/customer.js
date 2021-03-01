@@ -6,6 +6,7 @@ const path = require('path');
 const log = require('../../db/toolbox/log');
 const {formatBytes, currentTime} = require('../../server/toolbox/calculate') ;
 require('dotenv').config({path: path.resolve(__dirname, '.env')});
+const CONTAINER_NAME = process.env.S3_BUCKET_NAME || 'test_container';
 
 module.exports = function(Customer) {
     //validate security of password(at least 8 digits, include at least one uppercase
@@ -180,7 +181,7 @@ module.exports = function(Customer) {
         if(!options) options = {};
         //console.log(ctx.req);
         //console.log(ctx.req.query)
-        ctx.req.params.container = 'test_container'; // we may want to use username for this
+        ctx.req.params.container = CONTAINER_NAME;
         Customer.app.models.container.upload(ctx.req, ctx.result, options, function (err, fileObj) {
             if(err){
                 cb(err);
@@ -237,7 +238,7 @@ module.exports = function(Customer) {
                     cb(error);
                 } else {
                     ctx.res.set('Content-Disposition', `inline; filename="${file.fileName}"`); // this sets the file name
-                    Customer.app.models.container.download('test_container', file.containerFileName, ctx.req, ctx.res, function(err, fileData){
+                    Customer.app.models.container.download(CONTAINER_NAME, file.containerFileName, ctx.req, ctx.res, function(err, fileData){
                         if(err){
                             cb(err);
                         } else {
@@ -285,7 +286,7 @@ module.exports = function(Customer) {
                     //         console.error(`Error deleting file: ${err}`);
                     //         cb(err);
                     //     } else {
-                    //         Customer.app.models.container.removeFile('test_container', containerFileName, function(err){
+                    //         Customer.app.models.container.removeFile(CONTAINER_NAME, containerFileName, function(err){
                     //             if(err){
                     //                 cb(err);
                     //             } else {

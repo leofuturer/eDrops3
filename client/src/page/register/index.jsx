@@ -5,6 +5,7 @@ import { customerSignUp, customerCredsTaken, userSignUp } from '../../api/server
 import {constraints} from './formConstraints';
 import './register.css';
 import _ from 'lodash';
+import loadingGif from "../../../static/img/loading80px.gif";
 
 var validate = require('validate.js');
 
@@ -145,8 +146,8 @@ class Register extends React.Component {
             }
         })     
         .catch(errors => {
-            console.error(errors);
-            console.log("Displaying errors");
+            // console.error(errors);
+            // console.log("Displaying errors");
                 _.each(form.querySelectorAll("input.needValidation"), function(input) {
                     //what's the purpose of this line?
                     if(this){
@@ -635,7 +636,7 @@ class Register extends React.Component {
                                 <div className="form-group login-btn">
                                     {
                                         this.state.requestInProgress
-                                        ? <img src="../../../static/img/loading80px.gif" alt=""/>
+                                        ? <img src={loadingGif} alt=""/>
                                         : <input type="button" value="Sign Up" className="input-btn" 
                                         onClick={this.handleFormSubmit}/>
                                     }

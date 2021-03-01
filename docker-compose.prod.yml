@@ -1,0 +1,28 @@
+version: "3.7"
+
+# https://start.jcolemorrison.com/authorized-resources-and-database-migrations-with-strongloops-loopback/
+
+services:
+  edrop_backend:
+    image: danningyu/edrop_backend
+    container_name: edrop_backend
+    env_file:
+      - ./deploy/prod/backend.env
+    depends_on:
+      - edrop_caddy
+  
+  edrop_caddy:
+    image: caddy:2.3.0
+    restart: unless-stopped
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - $PWD/Caddyfile:/etc/caddy/Caddyfile
+      - $PWD/client/dist:/usr/share/caddy
+      - /home/ubuntu/caddy/data:/data
+      - /home/ubuntu/caddy/config:/config
+
+volumes:
+  caddy_data:
+  caddy_config:

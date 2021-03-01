@@ -1,0 +1,67 @@
+name: backend
+
+on:
+  # note: workflow_displatch will only work on master branch
+  workflow_dispatch: 
+  push:
+    paths:
+    # run if anything changed in client, toplevel, or deploy-related folders
+    - '.github/workflows/backend.yml'
+    - 'deploy/**' 
+    - 'server/**'
+    - '*'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [14.15.x]
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
+    - name: backend npm install, docker build, and copy image to EC2
+      run: |
+          cd server
+          docker build -t danningyu/edrop_backend .
+          docker save -o edrop_backend.tar danningyu/edrop_backend
+
+          mkdir -p ~/.ssh
+          echo "$SSH_KEY" > ~/.ssh/ec2.key
+          chmod 600 ~/.ssh/ec2.key
+          cat >> ~/.ssh/config <<END
+            Host edrop_v2_ec2
+            HostName $SSH_HOST
+            User $SSH_USER
+            IdentityFile ~/.ssh/ec2.key
+            StrictHostKeyChecking no
+          END
+
+          scp -i ~/.ssh/ec2.key -o StrictHostKeyChecking=no edrop_backend.tar $SSH_USER@$SSH_HOST:~/Edrop-v2.0.0/edrop_backend.tar
+          cd ..
+          scp -i ~/.ssh/ec2.key -o StrictHostKeyChecking=no Caddyfile *.yml LICENSE README.md CODEOWNERS $SSH_USER@$SSH_HOST:~/Edrop-v2.0.0/
+      env:
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
+        SSH_HOST: ${{ secrets.SSH_HOST }}
+        SSH_USER: ${{ secrets.SSH_USER }}
+        SSH_KEY: ${{ secrets.SSH_KEY }}
+    - name: SSH Remote Commands
+      uses: appleboy/ssh-action@v0.1.4
+      with:
+        host: ${{ secrets.SSH_HOST }}
+        username: ${{ secrets.SSH_USER }}
+        key: ${{ secrets.SSH_KEY }}
+        script_stop: true # stop after any command fails
+        script: |
+          cd ~/Edrop-v2.0.0
+          docker load -i edrop_backend.tar
+          docker-compose -f docker-compose.yml -f docker-compose.prod.yml down
+          docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d
+          # follow logs for 10 seconds to see if rollout had any issues
+          timeout 10 docker-compose -f docker-compose.yml -f docker-compose.prod.yml logs -f; echo 'Done'

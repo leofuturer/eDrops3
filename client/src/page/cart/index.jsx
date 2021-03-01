@@ -10,6 +10,7 @@ import { getCustomerCart, getProductOrders,
         modifyChipOrders,
     } from '../../api/serverConfig';
 import Cookies from "js-cookie";
+import loadingGif from "../../../static/img/loading80px.gif";
 
 class Cart extends React.Component{
     constructor(props) {
@@ -267,7 +268,7 @@ class Cart extends React.Component{
                             </div>
                             <div>
                                 { this.state.saveInProgress
-                                ? <img className="cart-loading-GIF" src="../../../static/img/loading80px.gif" alt=""/>
+                                ? <img className="cart-loading-GIF" src={loadingGif} alt=""/>
                                 : <span className="cart-save-btn">
                                     <input type="button" value="Save"
                                         className="btn btn-success"
@@ -310,7 +311,7 @@ class Cart extends React.Component{
                     </div>
                     : <div>
                         { this.state.cartLoading
-                        ? <img className="loading-GIF" src="../../../static/img/loading80px.gif" alt=""/>
+                        ? <img className="loading-GIF" src={loadingGif} alt=""/>
                         : <div className = "empty-cart">
                             {`Your cart is currently empty. You can either upload a
                                 file for a custom chip order or view our products `}

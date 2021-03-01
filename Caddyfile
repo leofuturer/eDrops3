@@ -1,0 +1,37 @@
+{
+#    debug
+   email edropwebsite@gmail.com
+#   acme_ca https://acme-staging-v02.api.letsencrypt.org/directory
+}
+
+# edrops.org, localhost:80, 54.241.15.160, ec2-54-241-15-160.us-west-1.compute.amazonaws.com {
+edrops.org {
+    log {
+        output stdout
+    }
+    encode gzip
+
+    @backendApi {
+        not {
+            path /api/*
+        }
+    }
+    
+    @try_files {
+        not path /api/*
+        file {
+            try_files {path} {path}/ /index.html
+        }
+    }
+    rewrite @try_files {http.matchers.file.relative}
+
+    reverse_proxy /api/* edrop_backend:3000
+
+    root * /usr/share/caddy
+    file_server @backendApi
+}
+
+# how to remove the www
+# www.myghost.mydomain.com {
+#    redir https://myghost.mydomain.com{uri}
+# }

@@ -14,7 +14,7 @@ import Manage from '../page/manage/index.jsx';
 import ForgetPass from '../page/forgetPass/index.jsx';
 import ChipOrder from '../page/product/chiporder.jsx';
 import CheckEmail from '../page/checkEmail/index.jsx';
-import EmailVerified from '../page/EmailVerified/index.jsx';
+import EmailVerified from '../page/emailVerified/index.jsx';
 import EmailVerifyInvalid from '../page/emailVerifyInvalid/index.jsx';
 import ResetPassword from '../page/resetPassword/index.jsx';
 import Product from '../page/product/index.jsx';

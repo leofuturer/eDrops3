@@ -1,4 +1,5 @@
 # Troubleshooting MySQL
+This file may be useful if you are running MySQL locally (not in a container).  
 
 Having issues connecting to MySQL? The following information may be helpful:  
 

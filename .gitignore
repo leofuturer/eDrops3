@@ -2,3 +2,5 @@ node_modules/
 *.DS_Store
 *.env
 permission_matrix.json
+logs.txt
+*.tar
