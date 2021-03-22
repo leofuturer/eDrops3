@@ -22,6 +22,7 @@ import { ewodFabServiceId,
 import Shopify from '../../app.jsx';
 import loadingGif from "../../../static/img/loading80px.gif";
 import dxfComingSoon from "../../../static/img/DXFComingSoon.PNG";
+import DXFPreview from './dxf_preview.jsx';
 
 class ChipOrder extends React.Component {
     constructor(props) {
@@ -33,10 +34,7 @@ class ChipOrder extends React.Component {
             materialVal: 'ITO Glass',
             quantity: 1,
             wcpb: false,
-            fileInfo: {
-                id: 0,
-                fileName: "",
-            },
+            fileInfo: this.props.location.state.fileInfo,
             isLoading: false,
         }
         this.shopifyClient = null;
@@ -45,7 +43,6 @@ class ChipOrder extends React.Component {
     }
 
     componentDidMount() {
-        // console.log(this.props);
         if(Cookies.get('access_token') === undefined){
             alert("Login required for this page");
             this.props.history.push('/login');
@@ -58,18 +55,22 @@ class ChipOrder extends React.Component {
         }
         else{
             let _this = this;
-            // TODO: instead of building client, use Shopify.getInstance("","")
+            // TODO: instead of building client, use Shopify.getInstance().getPrivateValue()
             let url = getCustomerCart.replace('id', Cookies.get('userId'));
             _this.setState({
                 fileInfo: this.props.location.state.fileInfo,
             });
-            Shopify.getInstance("","")
+            Shopify.getInstance().getPrivateValue()
             .then(instance => {
+                // console.log("hi");
                 instance.product.fetch(ewodFabServiceId) // hard coded for chip order
                 .then((product) => {
                     _this.setState({
                         product: product,
                     });
+                })
+                .catch((err) => {
+                    console.error(err);
                 });
             })
             .catch((err) => {
@@ -89,7 +90,7 @@ class ChipOrder extends React.Component {
                 else{ //no cart, need to create one
                     // create Shopify cart
                     // console.log(`No cart currently exists, so need to create one`);
-                    Shopify.getInstance("","")
+                    Shopify.getInstance().getPrivateValue()
                     .then((instance) => {
                         instance.checkout.create()
                         .then(res => {
@@ -198,7 +199,7 @@ class ChipOrder extends React.Component {
             customServerOrderAttributes += `withCoverPlateAssembled: ${wcpbVal}\n`;
             customServerOrderAttributes += `fileName: ${_this.state.fileInfo.fileName}\n`;
             const checkoutId = _this.state.shopifyClientCheckoutId;
-            Shopify.getInstance("","")
+            Shopify.getInstance().getPrivateValue()
             .then((instance) => {
                 instance.checkout.addLineItems(checkoutId, lineItemsToAdd)
                 .then(res => {
@@ -287,8 +288,11 @@ class ChipOrder extends React.Component {
                     <div className="shop-left-content">
                         {/* DY - replace temporary image above with a preview of the uploaded PDF */}
                         <div className="div-img">
-                            <img src={dxfComingSoon} style={{width : "600px"}}/>
-                            {/* <object id="pdfdoc" data={url} type="application/pdf" /> */}
+                            <DXFPreview fileInfo={this.props.location.state.fileInfo}></DXFPreview>
+                        </div>
+                        <div className="preview-disclaimer">
+                            Disclaimer: The image above is only intended as a preview and is not guaranteed to be entirely accurate.
+                            The original DXF file will be transmitted to the foundry.
                         </div>
                         <div className="shop-material">
                             <h2>Process</h2>

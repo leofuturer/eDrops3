@@ -3,6 +3,7 @@ const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const LodashModuleReplacementPlugin = require('lodash-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 const COMMIT_SHA = process.env.GITHUB_SHA ? process.env.GITHUB_SHA.slice(0,8) : "dev";
 
 module.exports = {
@@ -76,5 +77,8 @@ module.exports = {
         }),
         new webpack.optimize.ModuleConcatenationPlugin(),
         new LodashModuleReplacementPlugin,
+
+        // Add this to see bundle size
+        // new BundleAnalyzerPlugin(), 
     ],
 };

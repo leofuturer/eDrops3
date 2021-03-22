@@ -1,5 +1,4 @@
-import React, { Component } from 'react'
-
+import React from 'react';
 import Admin from './admin.jsx';
 
 export const AdminList = (props) => {

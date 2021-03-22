@@ -4,7 +4,6 @@ import './changePass.css';
 import {customerChangePass, FoundryWorkerChangePass, AdminChangePass, userChangePass} from "../../api/serverConfig";
 import API from "../../api/api";
 import Cookies from 'js-cookie';
-import _ from 'lodash';
 var validate = require('validate.js');
 
 class FormsPage extends React.Component  {
@@ -111,9 +110,8 @@ class FormsPage extends React.Component  {
     showErrors(ele, errors) {
         let _this = this;
         ele.parentNode.classList.add("has-error");
-
-        _.each(errors, function(error) {
-            _this.addError(ele, error);
+        errors.forEach((err, index) => {
+            _this.addError(ele, err);
         });
     }
 
@@ -172,10 +170,10 @@ class FormsPage extends React.Component  {
         let formToValidate = document.querySelector("form");
         let errors = validate(formToValidate, constraints) || null;
         let inputsToValidate = document.querySelectorAll(".needValidation");
-        _.each(inputsToValidate, (input) => {
+        inputsToValidate.forEach((input, index) => {
             _this.clearMessage(input);
         });
-        _.each(inputsToValidate, (input) => {
+        inputsToValidate.forEach((input, index) => {
             if (errors && errors[input.name]) {
                 _this.showErrors(input, errors[input.name]);
             } else {

@@ -8,7 +8,6 @@ import {userLogin,
 
 import API from "../../api/api";
 import Cookies from 'js-cookie';
-import _ from 'lodash';
 import $ from 'jquery';
 var validate = require('validate.js');
 import loadingGif from "../../../static/img/loading80px.gif";
@@ -44,7 +43,7 @@ class Login extends React.Component  {
         let blocks = document.querySelectorAll(".error.help-block");
         let formToValidate = document.querySelector(".input-contenth");
         formToValidate.classList.remove("has-error");
-        _.each(blocks, function(block) {
+        blocks.forEach((block, index) => {
             block.remove();
         });
         let radioDiv = document.querySelector(".radio-group");
@@ -77,9 +76,9 @@ class Login extends React.Component  {
         if (errors) {
             let inputToValidate = document.querySelectorAll(".need-validation");
             formToValidate.classList.add("has-error");
-            _.each(inputToValidate, function(input) {
+            inputToValidate.forEach((input, index) => {
                 _this.showError(input, errors && errors[input.name]);
-            })
+            });
             //validation fails
             return false;
         }

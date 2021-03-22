@@ -1,9 +1,9 @@
-import React from 'react';
-import {withRouter, useHistory} from 'react-router-dom';
-import './address.css';
-import {customerAddresses, getCustomerCart} from "../../api/serverConfig";
-import API from "../../api/api";
 import Cookies from "js-cookie";
+import React from 'react';
+import { withRouter } from 'react-router-dom';
+import API from "../../api/api";
+import { customerAddresses, getCustomerCart } from "../../api/serverConfig";
+import './address.css';
 
 class AddNewAddress extends React.Component {
     constructor(props) {

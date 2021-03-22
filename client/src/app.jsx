@@ -9,36 +9,46 @@ import "bootstrap";
 // Router components
 import {MainRouter, SubRouter} from 'router/routeMap.jsx';
 
+// Singleton pattern with async call, see adeneo's response from here:
+// https://stackoverflow.com/questions/39553201/singleton-with-async-initialization
 var Shopify = (function(){
-    var shopify_instance = null;
-    async function createInstance(token, domain){
-        if(token === "" && domain === "") return null;
-        const inst = ShopifyClient.buildClient({
-            storefrontAccessToken: token,
-            domain: domain
+    var instance;
+    function init(){
+        function privateMethod(token, domain){
+            // console.log("Building Shopify client!");
+            return ShopifyClient.buildClient({
+                storefrontAccessToken: token,
+                domain: domain
+            });
+        }
+
+        var privateAsync = new Promise(function(resolve, reject){
+            API.Request(customerGetApiToken, 'GET', {}, true)
+            .then(res => {
+                if(res.status === 200){
+                    resolve(privateMethod(res.data.info.token, res.data.info.domain));
+                }
+            })
+            .catch(err => {
+                console.error(err);
+                reject(err);
+            });
         });
-        return inst;
-    }
+
+        return {
+            getPrivateValue: function() { return privateAsync; }
+        };
+    };
+
     return {
-        getInstance: async function(token, domain){
-            if(shopify_instance === null){
-                API.Request(customerGetApiToken, 'GET', {}, true)
-                .then(res => {
-                    if(res.status === 200){
-                        shopify_instance = createInstance(res.data.info.token, res.data.info.domain);
-                        return shopify_instance;
-                    }
-                })
-                .catch(err => {
-                    console.log(err);
-                    return null;
-                });
-            } else {
-                return shopify_instance;
+        getInstance: function() {
+            if(!instance){
+                instance = init();
             }
+            return instance;
         }
     };
-}());
+})();
 
 export default Shopify;
 

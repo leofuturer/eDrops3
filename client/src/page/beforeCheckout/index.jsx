@@ -93,7 +93,7 @@ class BeforeCheckout extends React.Component  {
         _this.setState({
             preparingForCheckout: true,
         });
-        Shopify.getInstance("","")
+        Shopify.getInstance().getPrivateValue()
         .then((instance) => {
             instance.checkout.updateEmail(this.state.shopifyCheckoutId, this.state.customer.email)
             .then((res) => {
@@ -109,7 +109,7 @@ class BeforeCheckout extends React.Component  {
                     lastName: _this.state.customer.lastName,
                     phone: _this.state.customer.phoneNumber,
                 }
-                Shopify.getInstance("","")
+                Shopify.getInstance().getPrivateValue()
                 .then((instance) => {
                     instance.checkout.updateShippingAddress(this.state.shopifyCheckoutId, shippingAddr)
                     .then((res) => {

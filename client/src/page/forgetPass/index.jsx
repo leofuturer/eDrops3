@@ -2,7 +2,6 @@ import React from 'react';
 import './forgetPass.css';
 import {userForgetPass, customerResendVerifyEmail} from "../../api/serverConfig";
 import API from "../../api/api";
-import _ from 'lodash';
 
 // This page also allows for the resending of the email verification message.
 
