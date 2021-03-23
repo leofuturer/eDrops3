@@ -9,7 +9,7 @@ class NavTop extends React.Component{
         super(props);
         this.state = {
             show: false,
-            drownH: '130px'
+            drownH: '60px'
         }
     }
 
@@ -48,19 +48,13 @@ class NavTop extends React.Component{
         if(Cookies.get('userType') !== 'customer'){
             this.setState({drownH:'60px'});
         }
-        this.setState({show:!this.state.show});
+        this.setState({show: !this.state.show});
     }
 
     render() {
-        var show= this.state.show ? "block": "none";
-        var drownHeight = this.state.drownH;
         var drown = {
-            display:show
-        }
-        var drwonH = {
-            height: drownHeight
-        }
-
+            display: this.state.show ? "block": "none"
+        };
         var notLoggedIn = (Cookies.get('username') === undefined);
         return (
             //At this time the className "header-div" has no use
@@ -71,12 +65,12 @@ class NavTop extends React.Component{
                     </div>
                     <div className="">
                         <ul className="ul-nav">
-                            <li><NavLink to="/home" activeClassName="active">Home</NavLink></li>
-                            <li><NavLink to="/home" activeClassName="active">EWOD CAD</NavLink></li>
-                            <li><NavLink to="/upload" activeClassName="active">EWOD Chip Fabrication</NavLink></li>
-                            <li><NavLink to="/allItems" activeClassName="active">Products</NavLink></li>
-                            <li><NavLink to="/featureComing" activeClassName="active">Community</NavLink></li>
-                            <li><NavLink to="/featureComing" activeClassName="active">Support</NavLink></li>
+                            <li><NavLink to="/home">Home</NavLink></li>
+                            <li><NavLink to="/featureComing">EWOD CAD</NavLink></li>
+                            <li><NavLink to="/upload">EWOD Chip Fabrication</NavLink></li>
+                            <li><NavLink to="/allItems">Products</NavLink></li>
+                            <li><NavLink to="/featureComing">Community</NavLink></li>
+                            <li><NavLink to="/featureComing">Support</NavLink></li>
                             <li>
                                 { Cookies.get('userType') === 'customer'
                                     ?
@@ -109,12 +103,10 @@ class NavTop extends React.Component{
                                         {/* 4/23/2020: Only show username to avoid text that's too long, which will break the CSS */}
                                         <a onClick={()=>this.showDrowpn()}  style={{cursor:'pointer'}}>{Cookies.get('username')}</a>
                                         <div style={drown} className="div-drownup">
-                                            <ul className="list-styled" style={drwonH}>
+                                            <ul className="list-styled" style={{height:'60px'}}>
                                                 <li onClick={()=>this.handleHideDrown()}>
                                                     <i className="fa fa-dashboard" style={{paddingRight:'15px'}}></i>
-                                                    <NavLink to={Cookies.get('userType') === 'customer' ? "/manage/profile" : (Cookies.get('userType') === 'admin'
-                                                        ?"/manage/profile" : "/manage/profile")
-                                                    }>Your Dashboard</NavLink>
+                                                    <NavLink to="/manage/profile">Your Dashboard</NavLink>
                                                 </li>
                                                 {
                                                     Cookies.get('userType') == 'customer'

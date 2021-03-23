@@ -51,10 +51,10 @@ class ChipOrders extends React.Component{
     }
 
     handleDownload(e) {
-        console.log(e.target.id);
+        // console.log(e.target.id);
         let url = "";
         let fileId = Number(e.target.id.replace(/[^0-9]/ig, ''));
-        console.log(Cookies.get('userType'))
+        // console.log(Cookies.get('userType'))
         if(Cookies.get('userType') === 'customer'){
             url = downloadFileById.replace('id', Cookies.get('userId'));
         } else if(Cookies.get('userType') === 'worker'){

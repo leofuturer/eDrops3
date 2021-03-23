@@ -5,7 +5,6 @@ import {userLogin,
         customerLogin, 
         AdminLogin, 
         FoundryWorkerLogin, } from "../../api/serverConfig";
-
 import API from "../../api/api";
 import Cookies from 'js-cookie';
 import $ from 'jquery';
@@ -25,6 +24,7 @@ class Login extends React.Component  {
         this.showError = this.showError.bind(this);
         this.clearReminder = this.clearReminder.bind(this);
         this.componentDidMount = this.componentDidMount.bind(this);
+        this.showErrorMessage = this.showErrorMessage.bind(this);
     }
 
     componentDidMount() {
@@ -86,6 +86,15 @@ class Login extends React.Component  {
         return true;
     }
 
+    showErrorMessage() {
+        let block = document.createElement("p");
+        document.querySelector(".pass-field").classList.add("has-error");
+        block.classList.add("help-block");
+        block.classList.add("error");
+        block.innerHTML = "Login error. Please check login credentials and ensure email is verified.";
+        document.querySelector(".passwordError").appendChild(block);
+    }
+
     handleLogin() {
         this.setState({
           isLoading: true
@@ -129,20 +138,16 @@ class Login extends React.Component  {
                     })
                 .catch(err => {
                     console.error(err);
-                    let block = document.createElement("p");
                     if (err.response.status === 401) {
-                        document.querySelector(".pass-field").classList.add("has-error");
-                        block.classList.add("help-block");
-                        block.classList.add("error");
-                        block.innerHTML = "Login error. Please check username/email and password. Email verification is required before logging in";
-                        document.querySelector(".passwordError").appendChild(block);
+                        this.showErrorMessage();
                     }
-                    this.setState({
-                        isLoading: false
-                    });
                 });
             }).catch(err => {
                 console.error(err);
+                if (err.response.status === 401) {
+                    this.showErrorMessage();
+                }
+            }).finally(() => {
                 this.setState({
                     isLoading: false
                 });
@@ -181,7 +186,7 @@ class Login extends React.Component  {
                                     <div className="whitespace"></div>
                                     <input type="password" name="password"
                                             className="form-control pass-input need-validation"
-                                            placeholder="Password"
+                                            placeholder="Password" autoComplete="password"
                                             onChange={v => this.handleChange('password', v.target.value)} />
                                     <div className="passwordError messages"></div>
                                 </div>

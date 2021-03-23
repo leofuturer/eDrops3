@@ -3,17 +3,16 @@ import { Redirect, withRouter } from 'react-router-dom';
 
 import { uploadFile, customerFileRetrieve} from "../../api/serverConfig";
 import API from "../../api/api";
-import 'bootstrap-fileinput';
 import 'bootstrap-modal';
 import $ from 'jquery';
 import Cookies from "js-cookie";
-import notify from 'bootstrap-notify';
 
 import './fileUpload.css';
 import './fileinput/css/fileinput.css';
 import './fileinput/css/fileinput-rtl.css';
 
 import '../order/animate.css';
+import Dropzone from 'react-dropzone'
 
 class Upload extends React.Component{
     constructor(props) {
@@ -26,7 +25,8 @@ class Upload extends React.Component{
             public: 'private',
             unit: 'mm',
             checked: false,
-            originalName: ""
+            originalName: "",
+            file: undefined,
         }
         this.setCurrentIndex = this.setCurrentIndex.bind(this);
         this.setCurrentIndex1 = this.setCurrentIndex1.bind(this);
@@ -34,6 +34,9 @@ class Upload extends React.Component{
         this.handleLibrary = this.handleLibrary.bind(this);
         this.handleRename = this.handleRename.bind(this);
         this.handleCancel = this.handleCancel.bind(this);
+        this.onFileDrop = this.onFileDrop.bind(this);
+        this.onFileUpload = this.onFileUpload.bind(this);
+        this.uploadFileRequest = this.uploadFileRequest.bind(this);
     }
 
     setCurrentIndex(event) {
@@ -56,66 +59,76 @@ class Upload extends React.Component{
         this.setState({});
     }
 
-    componentDidUpdate() {
-        let _this = this;
-        const access_token = Cookies.get('access_token');
+    onFileDrop(acceptedFiles){
+        this.setState({
+            file: acceptedFiles[0]
+        });
+    }
 
-        $("#file1").fileinput({
-            uploadUrl: uploadFile.replace('id', Cookies.get('userId')) + '?access_token=' + access_token, // you must set a valid URL here, or you will get an error
-            allowedFileExtensions : ['dxf'],
-            overwriteInitial: false,
-            maxFileSize: 5000,
-            maxFilesNum: 1,
-            name: "file",
-            uploadExtraData: {
-                isPublic: this.state.public,
-                unit: this.state.unit,
-            },
-            slugCallback: function(filename) {
-                return filename.replace('(', '_').replace(']', '_');
-            }
-        }).on("fileloaded", function(event, file){
+    onFileUpload() {
+        if(this.state.file !== undefined){
+            let _this = this;
+            let file = this.state.file;
             let url = customerFileRetrieve.replace('id', Cookies.get('userId'));
             API.Request(url, 'GET', {}, true)
-            .then((res)=>{
+            .then((res) => {
+                // console.log(res);
+                var promises = [];
                 res.data.forEach((e) => {
-                    if(e.fileName === file.name && !e.isDeleted && !_this.state.checked){
-                        //alert("Duplicate in your library. Please change your file name or delete the uploaded file!!");
-                        _this.setState({originalName: file.name});
-                        $("#confirmModal").modal('show');
-                        
-                        return;
-                    }
+                    promises.push(
+                        new Promise((resolve, reject) => {
+                            if(e.fileName === file.name && !e.isDeleted && !_this.state.checked){
+                                // console.log(e);
+                                _this.setState({originalName: file.name});
+                                reject("Duplicate file found");
+                            } else {
+                                resolve();
+                            }
+                        })
+                    );
+                });
+                Promise.all(promises)
+                .then(() => {
+                    // No duplicate files found
+                    this.uploadFileRequest({
+                        isPublic: this.state.public,
+                        unit: this.state.unit,
+                    });
                 })
+                .catch(msg => {
+                    // console.error(err);
+                    $("#confirmModal").modal('show');
+                });
             })
-        })
-        .on("fileuploaded", function (event, data) {
+            .catch(err => {
+                console.error(err);
+            });
+        }
+    }
+
+    uploadFileRequest(extraFields){
+        let _this = this;
+        let uploadUrl = uploadFile.replace('id', Cookies.get('userId')); 
+        var formData = new FormData();
+        formData.append("file", this.state.file);
+        formData.append("fields", JSON.stringify(extraFields));
+        let headers = {'Content-Type': 'multipart/form-data'};
+        API.Request(uploadUrl, 'POST', formData, true, headers, true)
+        .then(res => {
+            // console.log(res);
+            $("#confirmModal").modal('hide');
             _this.setState({
-                fileInfo: data.response.fileInfo
+                fileInfo: res.data.fileInfo
             });
-            /*
-            $.notify({
-            // options
-                message: 'The file has been uploaded!'
-            },{
-                // settings
-                placement: {
-                    from: "bottom",
-                    align: "center"
-                },
-                type: 'success',
-                animate: {
-                    enter: 'animated fadeInDown',
-                    exit: 'animated fadeOutUp'
-                }
-            });
-            */
-            $('#exampleModal').modal('show');
+            $('#uploadDoneModal').modal('show');
+        })
+        .catch(err => {
+            console.error(err);
         });
     }
 
     handleShopping() {
-        $('#exampleModal').modal('hide');
+        $('#uploadDoneModal').modal('hide');
         this.props.history.push('/chipfab', {
             fileInfo: this.state.fileInfo,
         });
@@ -130,16 +143,11 @@ class Upload extends React.Component{
         let oriname = this.state.originalName;
         this.setState({checked: true});
         let date = new Date().toISOString().replace(/[^a-zA-Z0-9 ]/g, "");
-        $("#file1").fileinput('refresh', 
-            {
-                uploadExtraData:{
-                    isPublic: this.state.public,
-                    unit: this.state.unit,
-                    newName: oriname.slice(0, ind)+"("+ date +")"+oriname.slice(ind)
-                }
-            }   
-        ).fileinput('cancel');
-        $("#confirmModal").modal('hide');
+        this.uploadFileRequest({
+            isPublic: this.state.public,
+            unit: this.state.unit,
+            newName: oriname.slice(0, ind)+"("+ date +")"+oriname.slice(ind)
+        });
     }
 
     handleCancel() {
@@ -186,20 +194,30 @@ class Upload extends React.Component{
                             </ul>
                         </div>
                     </div>
-                    <div className="clear">
-                        <div className="form-group">
-                            <input type="file" name="attach-document" id="file1" className="file-loading" />
-                        </div>
-                    </div>
+                    <Dropzone onDrop={acceptedFiles => this.onFileDrop(acceptedFiles)}
+                              accept=".dxf, .DXF"
+                              maxFiles={1}
+                              maxSize={1000000} /* file size limit, in bytes */
+                             >
+                        {({getRootProps, getInputProps}) => (
+                            <div {...getRootProps()} className="file-upload-area">
+                                <input {...getInputProps()} />
+                                <p className="file-upload-insns">
+                                    Drag and drop DXF file here, or click to select file.
+                                </p>
+                                { this.state.file && <p>{this.state.file.name}</p> }
+                            </div>
+                        )}
+                    </Dropzone>
+                    <input type="button" value="Upload File" className="input-btn" onClick={this.onFileUpload}/>
                 </div>
-                <div className="hr-div-login"></div>
 
-                {/*The modal */}
-                <div className="modal fade" id="exampleModal" tabIndex="-1" role="dialog" aria-labelledby="exampleModalLabel" >
+                {/* The modal */}
+                <div className="modal fade" id="uploadDoneModal" tabIndex="-1" role="dialog" aria-labelledby="uploadDoneModalLabel" >
                     <div className="modal-dialog modal-dialog-centered" role="document">
                         <div className="modal-content">
                         <div className="modal-header">
-                            <div className="modal-title" id="exampleModalLabel">Edrop</div>
+                            <div className="modal-title" id="uploadDoneModalLabel">Edrop</div>
                             <button type="button" className="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
@@ -215,11 +233,11 @@ class Upload extends React.Component{
                     </div>
                 </div>
 
-                <div className="modal fade" id="confirmModal" tabIndex="-1" role="dialog" aria-labelledby="exampleModalLabel" >
+                <div className="modal fade" id="confirmModal" tabIndex="-1" role="dialog" aria-labelledby="confirmModalLabel" >
                     <div className="modal-dialog modal-dialog-centered" role="document">
                         <div className="modal-content">
                         <div className="modal-header">
-                            <div className="modal-title" id="exampleModalLabel">Edrop</div>
+                            <div className="modal-title" id="confirmModalLabel">Edrop</div>
                         </div>
                         <div className="modal-body">
                             Duplicate file name! Would you like to upload another file, or you still want to
@@ -234,8 +252,9 @@ class Upload extends React.Component{
                     </div>
                 </div>
             </div>
-        )
+        );
     }
 }
+
 Upload = withRouter(Upload);
 export default Upload;
