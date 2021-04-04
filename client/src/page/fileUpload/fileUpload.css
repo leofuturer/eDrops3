@@ -15,15 +15,17 @@ a:focus, a:hover {
     text-align:center;
 }
 .vu-content{
-    min-height: 60px;
+    height: 130px;
 }
 .vu-content .visibility-div{
+    height: 120px;
     float: left;
     width:50%;
     text-align: center;
 }
 
 .vu-content .nuits-div{
+    height: 120px;
     float: left;
     width:50%;
     text-align: center;
@@ -65,6 +67,10 @@ the "fade" which defines the opacity as 0 automatically, so it makes the element
 .modal-backdrop.fade.show {
     opacity: 0.5
 }
+
+.modal-body {
+    margin-left: 10px;
+}
 /*Without this, the blur background will not work because we just set 
 the opacity of .fade.show as 1, which is also applied to the backdrop ele*/
 
@@ -78,3 +84,30 @@ the opacity of .fade.show as 1, which is also applied to the backdrop ele*/
     transform: translate(0, 25%);
 }
 /*Adjust the position of the dialog box*/
+
+.file-upload-area {
+    text-align: center;
+    border-style: dashed;
+    border-color: black;
+    height: 200px;
+
+}
+
+.file-upload-insns{
+    text-align: center;
+    line-height: 120px;
+    font-size: 18px
+}
+
+.input-btn{
+    display: block;
+    margin: 10px auto;
+    width:200px;
+    height:50px;
+    color:#fff;
+    border:none;
+    background-color: #e97730;
+    border-radius: 5px;
+    font-size: 18px;
+    font-weight: 500;
+}

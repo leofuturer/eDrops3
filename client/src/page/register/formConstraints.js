@@ -6,19 +6,18 @@ export const constraints = {
     username: {
         presence: true,
         length: {
-            minimum: 8,
+            minimum: 4,
             maximum: 16
         },
         format: {
-            pattern: /^[a-z0-9_]{1,100}$/i,
+            pattern: /^[a-z0-9_]{4,16}$/i,
             message: "must only contain a-z, A-Z, 0-9 and _"
         }
     },
     password: {
         presence: true,
         length: {
-            minimum: 6,
-            maximun: 20
+            minimum: 8,
         },
         format: {
             pattern: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[^]{8,}$/,

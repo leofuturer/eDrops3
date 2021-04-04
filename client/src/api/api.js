@@ -9,8 +9,10 @@ class API {
      * @param {object} params - JSON data to accompany request
      * @param {boolean} useToken - Use login token or not
      * @param {object} [headers] - optional, headers to accompany request
+     * @param {boolean} sendDataRaw - optional, if true, send data without JSON.stringify
      */
-    async Request(url, method, data, useToken, headers = {'content-type':'application/json; charset=utf-8'}){
+    async Request(url, method, data, useToken, 
+                  headers = {'content-type':'application/json; charset=utf-8'}, sendDataRaw=false){
         try{
             if(useToken){
                 if(Cookies.get('access_token')===null || Cookies.get('access_token')===undefined){
@@ -23,9 +25,15 @@ class API {
             let options = {
                 method: method,
                 headers: headers,
-                data: JSON.stringify(data),
                 url: url
             };
+
+            if(!sendDataRaw){
+                options.data = JSON.stringify(data)
+            } else {
+                options.data = data
+            }
+
             let res = await axios(options);
             return res;
         }catch(error){

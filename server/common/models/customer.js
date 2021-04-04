@@ -179,17 +179,19 @@ module.exports = function(Customer) {
     Customer.prototype.uploadFile = function(ctx, options, cb){
         const user = this;
         if(!options) options = {};
-        //console.log(ctx.req);
-        //console.log(ctx.req.query)
+        // console.log(ctx.req);
+        // console.log(ctx.req.query)
         ctx.req.params.container = CONTAINER_NAME;
         Customer.app.models.container.upload(ctx.req, ctx.result, options, function (err, fileObj) {
             if(err){
                 cb(err);
             }
             else {
-
-                var uploadedFile = fileObj.files['attach-document'][0];
-                var uploadedFields = fileObj.fields;
+                // console.log(fileObj);
+                var uploadedFile = fileObj.files.file[0];
+                // console.log(uploadedFile);
+                var uploadedFields = fileObj.fields.fields[0];
+                // console.log(uploadedFields);
                 const FileInfoModel = app.models.fileInfo;
                 FileInfoModel.create({
                     uploadTime: currentTime(),
