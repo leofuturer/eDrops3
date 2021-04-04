@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { withRouter } from 'react-router-dom';
-import { deleteAdminById } from '../../api/serverConfig';
+import { deleteAdminById, userBaseFind, userBaseDeleteById } from '../../api/serverConfig';
 import $ from 'jquery';
 import Cookies from 'js-cookie';
 import API from '../../api/api';
@@ -11,6 +11,7 @@ class Admin extends Component {
         this.handleEdit = this.handleEdit.bind(this);
         this.handleDelete = this.handleDelete.bind(this);
     }
+    
     handleEdit(){
         let admin = this.props.admin;
         this.props.history.push('/manage/admins/editAdmin',{
@@ -18,20 +19,32 @@ class Admin extends Component {
             adminInfo: admin
         });
     }
+
     handleDelete(){
         let admin = this.props.admin;
-        let userId = Cookies.get('userId');
-        // console.log(userId);
-        if(userId === admin.id) return;
-        let url = deleteAdminById.replace('id', admin.id);
-        let classSelector = `#admin${admin.id}`;
-        API.Request(url, 'DELETE', {}, true)
-        .then(response=>{
-            // console.log(response);
-            $(classSelector).remove();
+        let url = userBaseFind + `?filter={"where": {"email": "${admin.email}"}}`
+        API.Request(url, 'GET', {}, true)
+        .then((res) => {
+            let userBaseId = res.data[0].id;
+            url = userBaseDeleteById.replace('id', userBaseId);
+            API.Request(url, 'DELETE', {}, true)
+            .then((res) => {
+                let url = deleteAdminById.replace('id', admin.id);
+                let classSelector = `#admin${admin.id}`;
+                API.Request(url, 'DELETE', {}, true)
+                .then((response) =>{
+                    $(classSelector).remove();
+                })
+                .catch((err) => {
+                    console.error(err);
+                });
+            })
+            .catch((err) => {
+                console.error(err);
+            })
         })
         .catch((err) => {
-            console.log(err);
+            console.error(err);
         });
     }
 
@@ -45,7 +58,10 @@ class Admin extends Component {
                 <td>{admin.username}</td>
                 <td>{admin.email}</td>
                 <td><i className="fa fa-edit" onClick={this.handleEdit}></i></td>
-                <td><i className="fa fa-trash" onClick={this.handleDelete}></i></td>
+                {admin.id !== parseInt(Cookies.get('userId')) && 
+                    <td><i className="fa fa-trash" onClick={this.handleDelete}></i></td>
+                }
+                
             </tr>
         );
     }

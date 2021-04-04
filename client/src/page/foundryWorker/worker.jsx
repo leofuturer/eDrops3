@@ -2,7 +2,7 @@ import React from 'react';
 import { withRouter, NavLink } from 'react-router-dom';
 
 import API from '../../api/api';
-import { editFoundryWorker } from '../../api/serverConfig';
+import { editFoundryWorker, userBaseFind, userBaseDeleteById } from '../../api/serverConfig';
 import $ from 'jquery';
 
 class Worker extends React.Component {
@@ -12,6 +12,7 @@ class Worker extends React.Component {
         this.handleEdit = this.handleEdit.bind(this);
         this.handleRetrieveFiles = this.handleRetrieveFiles.bind(this);
     }
+    
     handleRetrieveFiles() {
         let workerId = this.props.worker.id;
         this.props.history.push('/manage/admin-retrieve-user-files', {
@@ -19,6 +20,7 @@ class Worker extends React.Component {
             isCustomer: false
         });
     }
+
     handleEdit() {
         let worker = this.props.worker;
         this.props.history.push('/manage/foundryworkers/editworker', {
@@ -26,20 +28,37 @@ class Worker extends React.Component {
             workerInfo: worker
         })
     }
+
     handleDelete() {
+        // we need to delete both userBase and worker instances
         let worker = this.props.worker;
-        let data = {};
-        let url = editFoundryWorker.replace('id', worker.id);
-        let classSelector = `#worker${worker.id}`;
-        API.Request(url, 'DELETE', data, true)
+        let url = userBaseFind + `?filter={"where": {"email": "${worker.email}"}}`
+        API.Request(url, 'GET', {}, true)
         .then((res) => {
-            console.log(res);
-            $(classSelector).remove();
+            let userBaseId = res.data[0].id;
+            url = userBaseDeleteById.replace('id', userBaseId);
+            API.Request(url, 'DELETE', {}, true)
+            .then((res) => {
+                url = editFoundryWorker.replace('id', worker.id);
+                let classSelector = `#worker${worker.id}`;
+                API.Request(url, 'DELETE', {}, true)
+                .then((res) => {
+                    // console.log(res);
+                    $(classSelector).remove();
+                })
+                .catch((err) => {
+                    console.error(err);
+                })
+            })
+            .catch((err) => {
+                console.error(err);
+            });
         })
         .catch((err) => {
             console.error(err);
-        })
+        });
     }
+
     render() {
         let worker = this.props.worker;
         return (

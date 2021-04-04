@@ -1,6 +1,7 @@
 import React from 'react';
 import { Redirect, withRouter } from 'react-router-dom'
-import { updateCustomerProfile, addCustomer, userSignUp } from "../../api/serverConfig";
+import { updateCustomerProfile, addCustomer, userSignUp, 
+         updateUserBaseProfile, userBaseFind } from "../../api/serverConfig";
 import API from "../../api/api";
 import Cookies from 'js-cookie'
 
@@ -44,15 +45,32 @@ class AddOrEditUser extends React.Component {
             email: this.state.email,
         }
         if (this.props.match.path === "/manage/users/edituser") {
+            // edit both customer and userBase instances
             let customerId = this.props.location.state.customerId;
             let url = updateCustomerProfile.replace('id', customerId);
-            API.Request(url, 'PATCH', userMes, true).then(res => {
-                _this.props.history.push('/manage/users');
-            }).catch(error => {
-                console.error(error);
+            API.Request(url, 'PATCH', userMes, true)
+            .then(res => {
+                url = userBaseFind + `?filter={"where": {"email": "${userMes.email}"}}`;
+                API.Request(url, 'GET', {}, true)
+                .then((res) => {
+                    let userBaseId = res.data[0].id;
+                    url = updateUserBaseProfile.replace('id', userBaseId);
+                    API.Request(url, 'PATCH', userMes, true)
+                    .then((res) => {
+                        _this.props.history.push('/manage/users');
+                    })
+                    .catch((err) => {
+                        console.error(err);
+                    });
+                })
+                .catch((err) => {
+                    console.error(err);
+                });
+            })
+            .catch((err) => {
+                console.error(err);
             });
-        } else { //add new customer
-            let url = addCustomer;
+        } else { //add new customer (and new userBase)
             Object.assign(userMes, {
                 userType: "person",
                 password: this.state.password,
@@ -62,7 +80,7 @@ class AddOrEditUser extends React.Component {
                 alert("Error: Password and Confirm Password fields do not match");
                 return;
             }
-            API.Request(url, 'POST', userMes, true).then(res => {
+            API.Request(addCustomer, 'POST', userMes, true).then(res => {
                 let obj = {
                     username: this.state.username,
                     email: this.state.email,

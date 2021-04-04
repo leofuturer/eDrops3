@@ -19,7 +19,7 @@ import EmailVerifyInvalid from '../page/emailVerifyInvalid/index.jsx';
 import ResetPassword from '../page/resetPassword/index.jsx';
 import Product from '../page/product/index.jsx';
 import AllItems from '../page/allItems/index.jsx';
-
+import PageNotFound from '../page/pageNotFound/pageNotFound.jsx';
 import BeforeCheckout from '../page/beforeCheckout/index.jsx';
 
 import FeatureComing from '../page/featureComing/index.jsx';
@@ -51,6 +51,7 @@ export class MainRouter extends React.Component {
                     <Route path="/allItems" component={AllItems}/>
                     <Route path="/product" component={Product}/>
                     <Route path="/featureComing" component={FeatureComing}/>
+                    <Route component={PageNotFound}/>
                 </Switch>
             </Layout>
         );

@@ -131,7 +131,7 @@ class Register extends React.Component {
                     requestInProgress: false
                 });
             }
-            else if(res.data.result.emailTaken) {            
+            if(res.data.result.emailTaken) {            
                 errors.email = ["Account already exists with this email"];
                 let emailInput = document.getElementById("inputEmail");
                 this.showErrorsOrSuccessForInput(emailInput, errors.email);

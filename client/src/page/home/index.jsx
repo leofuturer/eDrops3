@@ -1,13 +1,15 @@
 import React from 'react';
-import { Link } from  'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import Cookies from "js-cookie";
 import './home.css';
 import IMG_2943 from "../../../static/img/IMG_2943.jpg";
 import IMG_2941 from "../../../static/img/IMG_2941.jpg";
 import IMG_2936 from "../../../static/img/IMG_2936.jpg";
+import { controlSysId } from '../../constants';
 
 class Home extends React.Component{
     render(){
+        let controlSysPageLink = `/product?id=${controlSysId}`;
         return (
             <div>
                 <div className="clearfix objectImg">
@@ -21,21 +23,21 @@ class Home extends React.Component{
                     </div>
                     <div className="col-md-4 foundryImg">
                         <div className="txt">
-                            <h1>Foundry service</h1>
+                            <h1>Foundry Service</h1>
                             <div className="txt-bg">
                                 {
                                     Cookies.get('userType') === 'customer'
-                                        ? <Link to="/upload">UPLOAD MASK FILE</Link>
-                                        : <Link to="/login">UPLOAD MASK FILE</Link>
+                                        ? <NavLink to="/upload">UPLOAD MASK FILE</NavLink>
+                                        : <NavLink to="/login">UPLOAD MASK FILE</NavLink>
                                 }
                             </div>
                         </div>
                     </div>
                     <div className="col-md-4 ewodImg">
                         <div className="txt">
-                            <h1>EWOD control system</h1>
+                            <h1>EWOD Control System</h1>
                             <div className="txt-bg">
-                                VIEW DETAILS
+                                <NavLink to={controlSysPageLink}>VIEW DETAILS</NavLink>
                             </div>
                         </div>
                     </div>
@@ -43,7 +45,7 @@ class Home extends React.Component{
 
                 <div className="container-content">
                     <div className="title-div">
-                        <Link to="/allItems"><h1>Products</h1></Link>
+                        <NavLink to="/allItems"><h1>Products</h1></NavLink>
                         <div className="hr-line"></div>
                     </div>
                     <div className="content-icon clearfix">
@@ -73,7 +75,6 @@ class Home extends React.Component{
                         </div>
                     </div>
                 </div>
-                {/* <div className="bottom-img-content"></div> */}
             </div>
         );
     }

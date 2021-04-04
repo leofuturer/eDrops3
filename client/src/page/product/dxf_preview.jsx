@@ -3,11 +3,15 @@ import { downloadFileById } from '../../api/serverConfig';
 import API from "../../api/api";
 import Cookies from "js-cookie";
 import './chiporder.css';
-import {Helper} from 'dxf';
+import { Helper } from 'dxf';
+import loadingGif from "../../../static/img/loading80px.gif";
 
 class DXFPreview extends React.Component {
     constructor(props){
         super(props);
+        this.state = {
+            isLoading: true,
+        };
     }
 
     componentDidMount(){
@@ -21,6 +25,7 @@ class DXFPreview extends React.Component {
             var helper = new Helper(res.data);
             // console.log(`Number of entities: ${helper.denormalised.length}`);
             const svg = helper.toSVG()
+            this.setState({isLoading: false});
             document.getElementById('svg').innerHTML = svg
             _this.rescaleSvg(svg);
         })
@@ -47,7 +52,7 @@ class DXFPreview extends React.Component {
         svgElem.style.maxHeight = `${maxHeight}px`;
         svgElem.style.maxWidth = `${maxWidth}px`; // same width as shop-left CSS
         svgElem.style.borderStyle = "solid";
-        svgElem.style.borderColor = "black"
+        svgElem.style.borderColor = "black";
     }
 
     handleChange(key, value){
@@ -58,7 +63,12 @@ class DXFPreview extends React.Component {
 
     render(){
         return (
-            <div id="svg" className="dxf-preview"></div>
+            <div style={{textAlign: 'center'}}>
+                {this.state.isLoading
+                    ? <img src={loadingGif} alt=""/>
+                    : <div id="svg" className="dxf-preview"></div>
+                }
+            </div>
         );
     }
 }

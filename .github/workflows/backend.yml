@@ -3,13 +3,17 @@ name: backend
 on:
   # note: workflow_displatch will only work on master branch
   workflow_dispatch: 
-  push:
-    paths:
-    # run if anything changed in client, toplevel, or deploy-related folders
-    - '.github/workflows/backend.yml'
-    - 'deploy/**' 
-    - 'server/**'
-    - '*'
+
+  # Only run workflow on push to master (via a PR being approved)
+  # push:
+  #   branches:
+  #     - master
+  #   paths:
+  #   # run if anything changed in client, toplevel, or deploy-related folders
+  #   - '.github/workflows/backend.yml'
+  #   - 'deploy/**' 
+  #   - 'server/**'
+  #   - '*'
 
 jobs:
   build:

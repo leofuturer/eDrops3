@@ -1,8 +1,13 @@
 import React from 'react';
 import IMG_2943 from "../../../static/img/IMG_2943.jpg";
+import IMG_2941 from "../../../static/img/IMG_2941.jpg";
+import {controlSysId, univEwodChipId} from "../../constants";
+import { NavLink } from  'react-router-dom';
 
 class FooterPage extends React.Component {
     render(){
+        let controlSysPageLink = `/product?id=${controlSysId}`;
+        let ewodChipPageLink = `/product?id=${univEwodChipId}`;
         return(
             <footer className="footer-top-level">
                 <div className="hr-div-login"></div>
@@ -43,15 +48,15 @@ class FooterPage extends React.Component {
                     <div className="top-title">
                         <h3 className="other-txt">Featured Products</h3>
                         <p className="pic-div">
-                            <span className="left-inline">EWOD Control System</span>
+                            <NavLink to={controlSysPageLink}>EWOD Control System</NavLink>
                             <img className="right-inline" 
                                 src={IMG_2943}
                                 alt="" width="30" height="30"/>
                         </p>
                         <p className="pic-div">
-                            <span className="left-inline">EWOD Chip v1</span>
+                            <NavLink to={ewodChipPageLink}>Universal EWOD Chip</NavLink>
                             <img className="right-inline" 
-                                src={IMG_2943} 
+                                src={IMG_2941} 
                                 alt="" width="30" height="30"/>
                         </p>
                     </div>

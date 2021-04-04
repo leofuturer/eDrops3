@@ -42,7 +42,22 @@ class AddOrEditAdmin extends React.Component {
             let adminId = this.props.location.state.adminId;
             let url = updateAdminProfile.replace('id', adminId);
             API.Request(url, 'PATCH', userMes, true).then(res => {
-                _this.props.history.push('/manage/admins');
+                url = userBaseFind + `?filter={"where": {"email": "${userMes.email}"}}`;
+                API.Request(url, 'GET', {}, true)
+                .then((res) => {
+                    let userBaseId = res.data[0].id;
+                    url = updateUserBaseProfile.replace('id', userBaseId);
+                    API.Request(url, 'PATCH', userMes, true)
+                    .then((res) => {
+                        _this.props.history.push('/manage/admins');
+                    })
+                    .catch((err) => {
+                        console.error(err);
+                    });
+                })
+                .catch((err) => {
+                    console.error(err);
+                });
             }).catch(error => {
                 console.error(error);
             });

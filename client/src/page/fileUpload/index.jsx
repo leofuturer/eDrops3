@@ -8,8 +8,6 @@ import $ from 'jquery';
 import Cookies from "js-cookie";
 
 import './fileUpload.css';
-import './fileinput/css/fileinput.css';
-import './fileinput/css/fileinput-rtl.css';
 
 import '../order/animate.css';
 import Dropzone from 'react-dropzone'

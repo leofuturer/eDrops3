@@ -135,7 +135,7 @@ class Login extends React.Component  {
                     Cookies.set('userType', userType );
                     Cookies.set('username', res.data.username);
                     _this.props.history.push('/home');
-                    })
+                })
                 .catch(err => {
                     console.error(err);
                     if (err.response.status === 401) {

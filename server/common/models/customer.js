@@ -73,9 +73,10 @@ module.exports = function(Customer) {
                     subject: '[Edrop] Resent Email Verification',
                     text: `Hello ${user.firstName} ${user.lastName}! Here's another email verification link that you requested.`,
                     template: path.resolve(__dirname, '../../server/views/verify.ejs'),
+                    protocol: process.env.NODE_ENV === 'production' ? 'https' : 'http',
                     host: FRONTEND_HOSTNAME,
                     port: FRONTEND_PORT,
-                    redirect: '/emailVerified'
+                    redirect: '/emailVerified',
                 };
 
                 user.verify(emailOptions);

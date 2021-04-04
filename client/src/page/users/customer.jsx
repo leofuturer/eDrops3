@@ -1,6 +1,6 @@
 import React from 'react';
 import { withRouter } from 'react-router-dom';
-import { customerDeleteById } from '../../api/serverConfig';
+import { customerDeleteById, userBaseFind, userBaseDeleteById } from '../../api/serverConfig';
 import $ from 'jquery';
 import API from '../../api/api';
 import './user.css';
@@ -28,21 +28,35 @@ class Customer extends React.Component {
             userId: customerId,
             isCustomer: true,
             username: this.props.customer.username
-        })
+        });
     }
 
     handleDelete() {
+        // we need to delete both userBase and customer instances
         let customer = this.props.customer;
-        let data = {};
-        let url = customerDeleteById.replace('id', customer.id);
-        let classSelector = `#customer${customer.id}`;
-        API.Request(url, 'DELETE', data, true)
+        let url = userBaseFind + `?filter={"where": {"email": "${customer.email}"}}`
+        API.Request(url, 'GET', {}, true)
         .then((res) => {
-            // console.log(res);
-            $(classSelector).remove();
+            let userBaseId = res.data[0].id;
+            url = userBaseDeleteById.replace('id', userBaseId);
+            API.Request(url, 'DELETE', {}, true)
+            .then((res) => {
+                url = customerDeleteById.replace('id', customer.id);
+                let classSelector = `#customer${customer.id}`;
+                API.Request(url, 'DELETE', {}, true)
+                .then((res) => {
+                    $(classSelector).remove();
+                })
+                .catch((err) => {
+                    console.error(err);
+                });
+            })
+            .catch((err) => {
+                console.error(err);
+            });
         })
         .catch((err) => {
-            console.log(err);
+            console.error(err);
         });
     }
 

@@ -5,7 +5,7 @@ class FeatureComing extends React.Component{
     render() { 
         return (       
             <div className="feature-coming">           
-                The Feature is Coming Soon.
+                This feature is coming soon.
             </div>
         );
     }

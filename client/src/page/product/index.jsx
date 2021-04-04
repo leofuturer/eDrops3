@@ -2,12 +2,12 @@ import React from 'react';
 import { withRouter, NavLink } from 'react-router-dom';
 import './product.css'
 import { univEwodChipId, 
-    univEwodChipWithCoverPlate, 
-    univEwodChipWithoutCoverPlate } from "../../constants";
+         univEwodChipWithCoverPlate, 
+         univEwodChipWithoutCoverPlate } from "../../constants";
 import Cookies from 'js-cookie';
-import {getCustomerCart, 
-        manipulateCustomerOrders,
-        addOrderProductToCart, returnOneItem} from "../../api/serverConfig";
+import { getCustomerCart, 
+         manipulateCustomerOrders,
+         addOrderProductToCart, returnOneItem} from "../../api/serverConfig";
 import API from "../../api/api";
 import Shopify from '../../app.jsx';
 import loadingGif from "../../../static/img/loading80px.gif";
@@ -29,7 +29,6 @@ class Product extends React.Component{
     }
 
     componentDidMount(){
-        // console.log(univEwodChipId);
         if(this.props.location.search === ""){
             this.props.history.push('/allItems'); //redirect if no ID provided
             return;
@@ -44,7 +43,6 @@ class Product extends React.Component{
                 },
             });
         }
-        //console.log(productId);
         let url = returnOneItem + `?productId=${productId}`;
         API.Request(url, 'GET', {}, false)
         .then( res => {
@@ -268,9 +266,6 @@ class Product extends React.Component{
     }
 
     render(){
-        // if(this.state.fetchedProduct){
-        //     var description = this.state.product.descriptionHtml;
-        // }
         const product = this.state.product;
         const desiredProductId = this.props.location.search.slice(4); //get id after id?=
         return (

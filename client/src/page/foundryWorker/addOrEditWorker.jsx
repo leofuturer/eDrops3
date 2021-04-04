@@ -1,6 +1,7 @@
 import React from 'react';
 import { Redirect, withRouter } from 'react-router-dom'
-import { addFoundryWorker, editFoundryWorker, userSignUp } from "../../api/serverConfig";
+import { addFoundryWorker, editFoundryWorker, userSignUp, 
+         updateUserBaseProfile, userBaseFind } from "../../api/serverConfig";
 import API from "../../api/api";
 import Cookies from 'js-cookie'
 
@@ -66,8 +67,7 @@ class AddOrEditWorker extends React.Component{
             userType: "person",
             username: this.state.username,
             email: this.state.email,
-            affiliation:this.state.affiliation,
-            
+            affiliation:this.state.affiliation, 
         }
 
         if(this.state.password !== ""){
@@ -101,8 +101,22 @@ class AddOrEditWorker extends React.Component{
             let url = editFoundryWorker.replace('id', workerId) 
             API.Request(url, 'PATCH', data, true)
             .then((res) => {
-                // console.log(res);
-                this.props.history.push('/manage/foundryworkers');
+                url = userBaseFind + `?filter={"where": {"email": "${data.email}"}}`;
+                API.Request(url, 'GET', {}, true)
+                .then((res) => {
+                    let userBaseId = res.data[0].id;
+                    url = updateUserBaseProfile.replace('id', userBaseId);
+                    API.Request(url, 'PATCH', userMes, true)
+                    .then((res) => {
+                        _this.props.history.push('/manage/foundryworkers');
+                    })
+                    .catch((err) => {
+                        console.error(err);
+                    });
+                })
+                .catch((err) => {
+                    console.error(err);
+                });
             })
             .catch((err) => {
                 console.error(err);
@@ -132,7 +146,6 @@ class AddOrEditWorker extends React.Component{
                     <h2>{profileContent}</h2>
                     <div className="form-div">
                         <form action="">
-                            
                             <div className="form-group">
                                 <label className="col-md-4 col-sm-4 col-xs-4 control-label">
                                     <span>First Name</span>

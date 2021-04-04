@@ -146,7 +146,7 @@ Mac/Unix: `$ MIGRATE_DATABASE=Yes docker-compose -f docker-compose.yml -f docker
 
 ### FAQ/Common Issues
 Q: How to enable built in Loopback debugging?  
-A: See [Setting debug strings](https://loopback.io/doc/en/lb3/Setting-debug-strings.html) from the Loopback documentation.  
+A: See [Setting debug strings](https://loopback.io/doc/en/lb3/Setting-debug-strings.html) from the Loopback documentation. For example, to debug ACL issues, set DEBUG=loopback:security:* 
 
 Q: Set the environment variables for connecting to the database but it doesn't work (permission denied error):  
 A: Make sure you set the environment variables in the same shell window that you run the server in. To verify the value was set correctly, use `$ echo %ENV_VAR_NAME%` for Windows and `$ echo $ENV_VAR_NAME` for Linux/MacOS.  
@@ -190,7 +190,7 @@ To do so in Linux/MacOS:
 
 NOTE: Remember that setting environment variables only makes them available in that particular terminal window. If you open new windows, make sure to set them again.  
 
-To set an environment variable for the backend (such as for debugging Loopback), modify your `backend.env` file in the `deploy/dev/` folder. Then restart the edrop_backend container (see above for the command to do this).  
+To set an environment variable for the backend container (such as for debugging Loopback), modify your `backend.env` file in the `deploy/dev/` folder. Then restart the entire docker-compose set of containers (see commands below, `docker-compose stop` and then `docker-compose start`). 
 
 ## Useful Commands  
 SSH into EC2:  
