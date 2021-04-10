@@ -5,21 +5,22 @@ import Footer from 'component/footer/index.jsx';
 
 import './index.css';
 
-class Layout extends React.Component{
-    constructor(props){
-        super(props);
-    }
-    render(){
-        return(
-            <div className = "content">
-                <div className="wrapper">
-                    <NavTop/>
-                        {this.props.children}
-                </div>
-                <Footer/>
-            </div>
-        )
-    }
+class Layout extends React.Component {
+  constructor(props) {
+    super(props);
+  }
+
+  render() {
+    return (
+      <div className="content">
+        <div className="wrapper">
+          <NavTop />
+          {this.props.children}
+        </div>
+        <Footer />
+      </div>
+    );
+  }
 }
 
 export default Layout;
