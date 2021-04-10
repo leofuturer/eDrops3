@@ -2,15 +2,13 @@
  * insert a map of seed data into database
  */
 
-'use strict';
-
 const _ = require('lodash');
 const Promise = require('bluebird');
 const server = require('../../server/server');
 const insertModelData = require('./insertModelData');
 const log = require('./log');
 
-module.exports = seedData => new Promise((resolve, reject) => {
+module.exports = (seedData) => new Promise((resolve, reject) => {
   const insertPromises = [];
 
   _.map(seedData, (modelSeedData, modelName) => {

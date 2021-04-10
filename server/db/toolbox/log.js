@@ -1,4 +1,3 @@
-'use strict';
 
 /* eslint-disable import/no-extraneous-dependencies */
 const chalk = require('chalk');

@@ -1,4 +1,3 @@
-'use strict';
 
-module.exports = function(Fileinfo) { 
+module.exports = function(Fileinfo) {
 };

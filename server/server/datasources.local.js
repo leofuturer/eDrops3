@@ -3,28 +3,27 @@
  * rather we use env vars to override values.
  */
 
-'use strict';
 const path = require('path');
 require('dotenv').config({path: path.resolve(__dirname, '.env')});
 
-if(process.env.NODE_ENV === "dev"){
+if (process.env.NODE_ENV === 'dev') {
   var storage = {
-    name: "edropFile",
-    connector: "loopback-component-storage",
-    provider: "filesystem",
-    root: "./storage",
-    maxFileSize: "10485760",
-    nameConflict: "makeUnique",
+    name: 'edropFile',
+    connector: 'loopback-component-storage',
+    provider: 'filesystem',
+    root: './storage',
+    maxFileSize: '10485760',
+    nameConflict: 'makeUnique',
   };
-} else if(process.env.NODE_ENV === "production"){
+} else if (process.env.NODE_ENV === 'production') {
   var storage = {
-    name: "edropFile",
-    connector: "loopback-component-storage",
+    name: 'edropFile',
+    connector: 'loopback-component-storage',
     provider: 'amazon',
     keyId: process.env.S3_AWS_ACCESS_KEY_ID,
     key: process.env.S3_SECRET_ACCESS_KEY,
     region: process.env.S3_AWS_DEFAULT_REGION,
-    nameConflict: "makeUnique"
+    nameConflict: 'makeUnique',
   };
 }
 
@@ -41,19 +40,19 @@ module.exports = {
   },
   edropFile: storage,
   myEmailDataSource: {
-    name: "myEmailDataSource",
-    connector: "mail",
+    name: 'myEmailDataSource',
+    connector: 'mail',
     transports: [
       {
-        type: "SMTP",
-        host: process.env.APP_EMAIL_HOST || "smtp.gmail.com",
+        type: 'SMTP',
+        host: process.env.APP_EMAIL_HOST || 'smtp.gmail.com',
         secure: true,
         port: parseInt(process.env.APP_EMAIL_PORT) || 465,
         auth: {
           user: process.env.APP_EMAIL_USERNAME,
-          pass: process.env.APP_EMAIL_PASSWORD
-        }
-      }
-    ]
+          pass: process.env.APP_EMAIL_PASSWORD,
+        },
+      },
+    ],
   },
 };
