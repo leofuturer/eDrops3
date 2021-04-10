@@ -3,11 +3,9 @@
  * that need to connect to database.
  */
 
-'use strict';
-
 const _ = require('lodash');
 
-//When we require an json file in js, the returned one is an object
+// When we require an json file in js, the returned one is an object
 const modelConfig = require('../../server/model-config.json');
 
 module.exports = () => {

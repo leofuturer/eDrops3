@@ -1,12 +1,10 @@
 /**
  * At the very start of development work, use this function to create schemas from all models.
  * Or when we alter certain properties of models, we can use this to update schemas of database
- * 
+ *
  * NOTES:
  *   You will need MySQL root privilege to execute this scripts.
  */
-
-'use strict';
 
 const getModelNames = require('./toolbox/getModelNames');
 const updateSchema = require('./toolbox/updateSchema');
