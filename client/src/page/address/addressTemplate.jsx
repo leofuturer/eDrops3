@@ -47,7 +47,6 @@ class AddressTemplate extends React.Component {
                   </div>
                 )
                 : null}
-
             </div>
             <div className="row">
               <div className="row-txt-padding">{address.street}</div>
@@ -71,7 +70,6 @@ class AddressTemplate extends React.Component {
                     {/* <span className="btn-txt-padding" onClick={this.props.onDelete}>Delete</span> */}
                   </button>
                 )}
-
             </div>
           </div>
         </div>

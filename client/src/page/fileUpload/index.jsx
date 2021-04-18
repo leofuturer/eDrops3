@@ -127,6 +127,7 @@ class Upload extends React.Component {
 
   handleShopping() {
     $('#uploadDoneModal').modal('hide');
+    console.log(this.state.fileInfo);
     this.props.history.push('/chipfab', {
       fileInfo: this.state.fileInfo,
     });
@@ -204,7 +205,7 @@ class Upload extends React.Component {
             onDrop={(acceptedFiles) => this.onFileDrop(acceptedFiles)}
             accept=".dxf, .DXF"
             maxFiles={1}
-            maxSize={1000000} // file size limit, in bytes
+            maxSize={10000000} // file size limit, in bytes
           >
             {({ getRootProps, getInputProps }) => (
               <div {...getRootProps()} className="file-upload-area">
