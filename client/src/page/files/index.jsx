@@ -119,26 +119,11 @@ class Files extends React.Component {
         if (document.getElementById(fileInfoRowId)) {
           document.getElementById(fileInfoRowId).remove();
         } else {
-          console.log('The element does not exist!');
+          console.error('The element does not exist!');
         }
       })
       .then((res) => {
         $('#confirm-delete').modal('hide');
-        $.notify({
-          // options
-          message: 'The file has been deleted!',
-        }, {
-          // settings
-          placement: {
-            from: 'bottom',
-            align: 'center',
-          },
-          type: 'success',
-          animate: {
-            enter: 'animated fadeInDown',
-            exit: 'animated fadeOutUp',
-          },
-        });
       })
       .catch((err) => {
         console.error(err);
@@ -151,7 +136,6 @@ class Files extends React.Component {
     this.setState({
       deleteId: fileId,
     });
-    console.log(fileId);
   }
 
   render() {
@@ -208,34 +192,35 @@ class Files extends React.Component {
                       }
                       <td>{item.fileSize}</td>
                       {/*
-                                                Cookies.get('userType') === "customer"
-                                                ? null
-                                                : (<td>
-                                                    <a onClick={this.showUserDropdown} style={{cursor: 'pointer'}}>{item.uploader}</a>
-                                                    <div style={{display: "none"}} className="customer-div-drownup">
-                                                        <ul className="customer-list-styled">
-                                                            <li>{userInfo.username}</li>
-                                                            <li>{userInfo.address}</li>
-                                                            <li>{userInfo.email}</li>
-                                                        </ul>
-                                                    </div>
-                                                </td>)
-                                            */
-                                            }
+                        Cookies.get('userType') === "customer"
+                        ? null
+                        : (<td>
+                            <a onClick={this.showUserDropdown} style={{cursor: 'pointer'}}>{item.uploader}</a>
+                            <div style={{display: "none"}} className="customer-div-drownup">
+                                <ul className="customer-list-styled">
+                                    <li>{userInfo.username}</li>
+                                    <li>{userInfo.address}</li>
+                                    <li>{userInfo.email}</li>
+                                </ul>
+                            </div>
+                        </td>)
+                      */
+                      }
                       {/*
-                                                Cookies.get('userType') === "worker"
-                                                ? null
-                                                : (<td>
-                                                    <a onClick={this.showUserDropdown} style={{cursor: 'pointer'}}>{item.avtoworkerName}</a>
-                                                    <div style={{display: "none"}} className="customer-div-drownup">
-                                                        <ul className="customer-list-styled">
-                                                            <li>{userInfo.username}</li>
-                                                            <li>{userInfo.address}</li>
-                                                            <li>{userInfo.email}</li>
-                                                        </ul>
-                                                    </div>
-                                                  </td>)
-                                            */}
+                        Cookies.get('userType') === "worker"
+                        ? null
+                        : (<td>
+                            <a onClick={this.showUserDropdown} style={{cursor: 'pointer'}}>{item.avtoworkerName}</a>
+                            <div style={{display: "none"}} className="customer-div-drownup">
+                                <ul className="customer-list-styled">
+                                    <li>{userInfo.username}</li>
+                                    <li>{userInfo.address}</li>
+                                    <li>{userInfo.email}</li>
+                                </ul>
+                            </div>
+                          </td>)
+                      */
+                      }
                       <td>
                         <i className="fa fa-download" id={item.id} onClick={this.handleDownload} />
                       </td>
@@ -250,35 +235,36 @@ class Files extends React.Component {
                       }
 
                       {/*
-                                                Cookies.get('userType') === "worker"
-                                                ?
-                                                    (
-                                                    <td className="worker-edit-status">
-                                                    {
-                                                        <a onClick={this.showDropdown} style={{cursor: 'pointer'}}>{item.status}</a>
-                                                        <div style={{display: "none"}} className="file-div-drownup">
-                                                            <ul className="file-list-styled">
-                                                                <li>Unassigned to Foundry</li>
-                                                                <li>Assigned to Foundry</li>
-                                                                <li>Project Started</li>
-                                                                <li>Project Completed</li>
-                                                            </ul>
-                                                        </div>
-                                                    }
-                                                        <form className="edit-status-form" method="POST" action={editFileStatus}>
-                                                            <select name="status" >
-                                                                <option value="Unassigned to Foundry">Unassigned to Foundry</option>
-                                                                <option value="Assigned to Foundry">Assigned to Foundry</option>
-                                                                <option value="Project Started">Project Started</option>
-                                                                <option value="Project Completed">Project Completed</option>
-                                                            </select>
-                                                            <input type="hidden" name="fileId" value={item.id}></input>
-                                                            <input type="submit" value="Submit Status" ></input>
-                                                        </form>
-                                                    </td>)
-                                                :
-                                                null
-                                                */}
+                        Cookies.get('userType') === "worker"
+                        ?
+                          (
+                          <td className="worker-edit-status">
+                          {
+                              <a onClick={this.showDropdown} style={{cursor: 'pointer'}}>{item.status}</a>
+                              <div style={{display: "none"}} className="file-div-drownup">
+                                  <ul className="file-list-styled">
+                                      <li>Unassigned to Foundry</li>
+                                      <li>Assigned to Foundry</li>
+                                      <li>Project Started</li>
+                                      <li>Project Completed</li>
+                                  </ul>
+                              </div>
+                          }
+                              <form className="edit-status-form" method="POST" action={editFileStatus}>
+                                  <select name="status" >
+                                      <option value="Unassigned to Foundry">Unassigned to Foundry</option>
+                                      <option value="Assigned to Foundry">Assigned to Foundry</option>
+                                      <option value="Project Started">Project Started</option>
+                                      <option value="Project Completed">Project Completed</option>
+                                  </select>
+                                  <input type="hidden" name="fileId" value={item.id}></input>
+                                  <input type="submit" value="Submit Status" ></input>
+                              </form>
+                          </td>)
+                        :
+                        null
+                        */
+                      }
                       {
                         Cookies.get('userType') === 'customer'
                           ? (

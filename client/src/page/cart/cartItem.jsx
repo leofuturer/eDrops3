@@ -12,12 +12,23 @@ class CartItem extends React.Component {
   }
 
   render() {
+    const start = "fileName: ".length;
+    let chipFabState;
+    if(this.props.info.productIdShopify === ewodFabServiceId){
+      chipFabState = {
+        fileInfo: {
+          id: this.props.info.fileInfoId, 
+          fileName: this.props.info.otherDetails.split('\n')[2].slice(start),
+        }
+      }
+    }
+    
     return (
       <div className="cart-item-card">
         <div>
           { this.props.info.productIdShopify === ewodFabServiceId
             ? (
-              <NavLink to="/chipfab">
+              <NavLink to={{pathname: "/chipfab", state: chipFabState}} >
                 <h3>{this.props.info.name}</h3>
               </NavLink>
             )

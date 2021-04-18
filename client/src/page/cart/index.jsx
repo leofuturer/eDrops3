@@ -89,7 +89,7 @@ class Cart extends React.Component {
       // https://stackoverflow.com/questions/29537299/react-how-to-update-state-item1-in-state-using-setstate
       if (itemType === 'product') {
         const items = [...this.state.productOrders];
-        const item = Object.assign({}, items[index]); // replacement for let item = {...items[index]};
+        const item = Object.assign({}, items[index]); // replacement for `let item = {...items[index]};`
         item.quantity = parseInt(e.target.value);
         items[index] = item;
         this.setState({
@@ -98,7 +98,7 @@ class Cart extends React.Component {
         });
       } else if (itemType === 'chip') {
         const items = [...this.state.chipOrders];
-        const item = Object.assign({}, items[index]); // replacement for let item = {...items[index]};
+        const item = Object.assign({}, items[index]); // replacement for `let item = {...items[index]};`
         item.quantity = e.target.value;
         items[index] = item;
         this.setState({
@@ -283,27 +283,27 @@ class Cart extends React.Component {
                       </div>
                     </div>
                     {
-                            this.state.productOrders.map((oneProduct, index) => (
-                              <CartItem
-                                key={index}
-                                info={oneProduct}
-                                onChange={(e) => this.handleQtyChange(e, 'product', index)}
-                                onDelete={() => this.handleDelete('product', index)}
-                                deleteLoading={this.state.deleteLoading}
-                              />
-                            ))
-                        }
+                      this.state.productOrders.map((oneProduct, index) => (
+                        <CartItem
+                          key={index}
+                          info={oneProduct}
+                          onChange={(e) => this.handleQtyChange(e, 'product', index)}
+                          onDelete={() => this.handleDelete('product', index)}
+                          deleteLoading={this.state.deleteLoading}
+                        />
+                      ))
+                    }
                     {
-                            this.state.chipOrders.map((oneProduct, index) => (
-                              <CartItem
-                                key={index}
-                                info={oneProduct}
-                                onChange={(e) => this.handleQtyChange(e, 'chip', index)}
-                                onDelete={() => this.handleDelete('chip', index)}
-                                deleteLoading={this.state.deleteLoading}
-                              />
-                            ))
-                        }
+                      this.state.chipOrders.map((oneProduct, index) => (
+                        <CartItem
+                          key={index}
+                          info={oneProduct}
+                          onChange={(e) => this.handleQtyChange(e, 'chip', index)}
+                          onDelete={() => this.handleDelete('chip', index)}
+                          deleteLoading={this.state.deleteLoading}
+                        />
+                      ))
+                    }
                     <div className="cart-total-price">
                       Total Price: $
                       {totalPrice.toFixed(2)}
@@ -330,7 +330,6 @@ class Cart extends React.Component {
             </div>
           )
           : null}
-
       </div>
     );
   }
