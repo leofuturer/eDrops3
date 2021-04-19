@@ -15,14 +15,12 @@ class OrderDetail extends React.Component {
   }
 
   componentDidMount() {
-    // console.log(this.state.orderId)
     const _this = this;
     let url = getOrderInfoById.replace('id', this.state.orderId);
     API.Request(url, 'GET', {}, true)
       .then((res) => {
         this.setState({
           orderDetail: res.data,
-
         });
         console.log(res.data);
         this.setState({
@@ -47,7 +45,6 @@ class OrderDetail extends React.Component {
             zipCode: res.data.ba_zip,
           },
         });
-        console.log(this.state);
         const orderInfoId = res.data.id;
         url = getProductOrders.replace('id', orderInfoId);
         API.Request(url, 'GET', {}, true)
@@ -114,11 +111,11 @@ class OrderDetail extends React.Component {
                 <OrderAddress address={this.state.billingAddress} />
               </div>
               {
-                        this.state.productOrders.map((oneProduct, index) => <OrderItem key={index} info={oneProduct} />)
-                    }
+                this.state.productOrders.map((oneProduct, index) => <OrderItem key={index} info={oneProduct} />)
+              }
               {
-                        this.state.chipOrders.map((oneProduct, index) => <OrderItem key={index} info={oneProduct} />)
-                    }
+                this.state.chipOrders.map((oneProduct, index) => <OrderItem key={index} info={oneProduct} />)
+              }
               <div className="order-taxes-and-fees-price">
                 Subtotal: $
                 {parseFloat(totalItemsPrice).toFixed(2)}

@@ -63,7 +63,7 @@ export const updateWorkerProfile = `${ApiRootUrl}/foundryWorkers/id`;
 // File management
 export const customerFileRetrieve = `${ApiRootUrl}/customers/id/customerFiles`;
 export const customerDeleteFile = `${ApiRootUrl}/customers/id/deleteFile`;
-export const workerDownloadFile = `${ApiRootUrl}/foundryWorkers/downloadFile`;
+export const workerDownloadFile = `${ApiRootUrl}/foundryWorkers/id/downloadFile`;
 export const downloadFileById = `${ApiRootUrl}/customers/id/downloadFile`;
 export const uploadFile = `${ApiRootUrl}/customers/id/uploadFile`;
 export const getAllFileInfos = `${ApiRootUrl}/fileInfos`;

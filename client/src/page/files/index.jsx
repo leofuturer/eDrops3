@@ -8,6 +8,7 @@ import {
   customerFileRetrieve,
   customerDeleteFile,
   downloadFileById,
+  adminDownloadFile,
 } from '../../api/serverConfig';
 
 import './index.css';
@@ -91,11 +92,20 @@ class Files extends React.Component {
   }
 
   handleDownload(e) {
-    // Method Two(better) ---- download the file without opening another window
-    const realFileName = e.target.parentNode.parentNode.childNodes[1].innerHTML;
-    let url = downloadFileById.replace('id', Cookies.get('userId'));
-    url += `?access_token=${Cookies.get('access_token')}&fileId=${e.target.id}`;
-    window.location = url;
+    let url = '';
+    if (this.props.match.path === '/manage/files' && Cookies.get('userType') !== 'admin') {
+      // customer downloads a file
+      url = downloadFileById.replace('id', Cookies.get('userId'));
+      url += `?access_token=${Cookies.get('access_token')}&fileId=${e.target.id}`;
+      window.location = url;
+    }
+    // Admin retrieves files for particular customer
+    else if (this.props.match.path === '/manage/admin-retrieve-user-files'
+                && Cookies.get('userType') === 'admin'
+                && this.props.location.state.isCustomer) {
+      url =  `${adminDownloadFile}?access_token=${Cookies.get('access_token')}&fileId=${e.target.id}`;
+      window.location = url;
+    }
   }
 
   handleShop(e) {

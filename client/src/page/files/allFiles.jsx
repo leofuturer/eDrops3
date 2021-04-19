@@ -19,7 +19,7 @@ class AllFiles extends React.Component {
     const fileId = file.id;
     let url = adminDownloadFile;
     url += `?access_token=${Cookies.get('access_token')}&fileId=${fileId}`;
-    console.log(url);
+    // console.log(url);
     window.location = url;
   }
 

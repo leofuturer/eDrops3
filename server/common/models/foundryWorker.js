@@ -63,36 +63,55 @@ module.exports = function(FoundryWorker) {
     returns: [{arg: 'orderChips', type: 'array'}],
   });
 
-  FoundryWorker.downloadFile = function(ctx, cb) {
-    const {fileId} = ctx.req.query;
-    if (fileId === undefined) {
-      const error = new Error('Missing fileId argument');
+  FoundryWorker.prototype.downloadFile = function(ctx, cb) {
+    // download file for a given chipOrderId
+    const { chipOrderId } = ctx.req.query;
+    const user = this;
+    if (chipOrderId === undefined || chipOrderId === "") {
+      const error = new Error('Missing chipOrderId argument');
       error.status = 400;
       cb(error);
     } else {
-      FoundryWorker.app.models.fileInfo.findById(fileId, (err, file) => {
+      console.log(chipOrderId);
+      FoundryWorker.app.models.orderChip.findById(chipOrderId, (err, chipOrder) => {
         if (err) {
-          console.error(`Error getting file: ${err}`);
+          console.error(`Error getting chipOrder: ${err}`);
           cb(err);
-        } else if (file === null) {
-          const error = new Error('File not found');
+        } else if (chipOrder === null) {
+          const error = new Error('chipOrder not found');
           error.status = 404;
           cb(error);
+        } else if (chipOrder.workerId != user.id) {
+          const error = new Error('Forbidden to access file');
+          error.status = 403;
+          cb(error);
         } else {
-          ctx.res.set('Content-Disposition', `inline; filename="${file.fileName}"`); // this sets the file name
-          FoundryWorker.app.models.container.download('test_container', file.containerFileName, ctx.req, ctx.res, (err, fileData) => {
+          // file exists and we're allowed to access it
+          FoundryWorker.app.models.fileInfo.findById(chipOrder.fileInfoId, (err, file) => {
             if (err) {
+              console.error(`Error getting file: ${err}`);
               cb(err);
+            } else if (file === null) {
+              const error = new Error('File not found');
+              error.status = 404;
+              cb(error);
             } else {
-              cb(null);
+              ctx.res.set('Content-Disposition', `inline; filename="${file.fileName}"`); // this sets the file name
+              FoundryWorker.app.models.container.download('test_container', file.containerFileName, ctx.req, ctx.res, (err, fileData) => {
+                if (err) {
+                  cb(err);
+                } else {
+                  cb(null);
+                }
+              });
             }
           });
         }
-      });
+      })
     }
   };
 
-  FoundryWorker.remoteMethod('downloadFile', {
+  FoundryWorker.remoteMethod('prototype.downloadFile', {
     description: 'CUSTOM METHOD: Download a file',
     accepts: [
       {arg: 'ctx', type: 'object', http: {source: 'context'}},

@@ -127,7 +127,6 @@ class Upload extends React.Component {
 
   handleShopping() {
     $('#uploadDoneModal').modal('hide');
-    console.log(this.state.fileInfo);
     this.props.history.push('/chipfab', {
       fileInfo: this.state.fileInfo,
     });
