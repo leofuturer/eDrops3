@@ -199,25 +199,34 @@ module.exports = function(OrderInfo) {
   };
 
   OrderInfo.beforeRemote('findById', (ctx, modelInstance, next) => {
-    console.log(ctx.req.params.id);
+    console.log(`Fetching order info with id=${ctx.req.params.id}`);
     const userbaseToken = ctx.req.headers['x-edrop-userbase'];
     OrderInfo.app.models.AccessToken.findById(userbaseToken, (err, token) => {
+      // check it's admin or customer retrieving order info
       if (err) next(err);
       else {
         OrderInfo.app.models.userBase.findById(token.userId, (err, user) => {
-          if (user.userType !== 'customer') {
-            next(errors.forbidden('only customer can retrieve order info'));
+          if (user.userType !== 'customer' && user.userType !== 'admin') {
+            next(errors.forbidden('only customer or admin can retrieve order info'));
+          } else {
+            if (user.userType === 'admin'){
+              // admin can access any orderInfo model
+              next(); 
+            } else {
+              // check customer actually owns this orderInfo
+              OrderInfo.findById(ctx.req.params.id, (err, info) => {
+                if (err) {
+                  console.error(err);
+                  next(err);
+                } else if (ctx.req.accessToken.userId !== info.customerId) {
+                  next(errors.forbidden('this order is not owned by you'));
+                } else {
+                  next();
+                }
+              });
+            }
           }
         });
-      }
-    });
-    OrderInfo.findById(ctx.req.params.id, (err, info) => {
-      if (err) {
-        next(new Error('does not exist this order info.'));
-      } else if (ctx.req.accessToken.userId !== info.customerId) {
-        next(new Error('this order is not owned by you.'));
-      } else {
-        next();
       }
     });
   });

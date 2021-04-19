@@ -35,24 +35,38 @@ module.exports = function(Admin) {
     });
   });
 
+  // TODO: fix this messy function
   Admin.getChipOrders = function(ctx, cb) {
     let allOrderChips = [];
+
+    // find all complete orderInfos with their related orderChips
     Admin.app.models.orderInfo.find({where: {orderComplete: true}})
       .then((orderInfos) => {
-        const promises = orderInfos.map((orderInfo, index) => Admin.app.models.orderChip.findOne({where: {orderId: orderInfo.id}})
-          .then((chipOrder) => {
-            // console.log(orderInfo.status);
-            // if(orderInfo.orderComplete===1){
-            chipOrder.customerId = orderInfo.customerId;
-            allOrderChips = allOrderChips.concat(chipOrder);
-            // }
+        const promises = orderInfos.map((orderInfo) => 
+          // find all orderChips related to each orderInfo
+          Admin.app.models.orderChip.find({where: {orderId: orderInfo.id}})
+          .then((chipOrders) => {
+            if(chipOrders !== null){
+              // append orderInfo.customerId to each orderChip instance
+              const promisesInner = chipOrders.map((chipOrder) => {
+                chipOrder.customerId = orderInfo.customerId;
+                allOrderChips.push(chipOrder);
+              });
+              Promise.all(promisesInner).then(() => {
+                // Done appending everything
+              });
+            }
           })
           .catch((err) => {
             console.error(err);
             cb(err);
-          }));
+          })
+        );
+
+        // `promises` will not all resolve until `promisesInner` resolves
         Promise.all(promises).then(() => {
-          const promises2 = allOrderChips.map((orderChip, index) => Admin.app.models.customer.findById(orderChip.customerId)
+          // console.log(allOrderChips);
+          const promises2 = allOrderChips.map((orderChip) => Admin.app.models.customer.findById(orderChip.customerId)
             .then((customer) => {
               orderChip.customerName = `${customer.firstName} ${customer.lastName}`;
             })
@@ -60,8 +74,10 @@ module.exports = function(Admin) {
               console.error(err);
               cb(err);
             }));
-          Promise.all(promises2).then(() => {
-            const promises3 = allOrderChips.map((orderChip, index) => Admin.app.models.foundryWorker.findById(orderChip.workerId)
+          
+            Promise.all(promises2).then(() => {
+            const promises3 = allOrderChips.map((orderChip) => 
+              Admin.app.models.foundryWorker.findById(orderChip.workerId)
               .then((worker) => {
                 if (worker) {
                   orderChip.workerName = `${worker.firstName} ${worker.lastName}`;
@@ -72,7 +88,9 @@ module.exports = function(Admin) {
               .catch((err) => {
                 console.error(err);
                 cb(err);
-              }));
+              })
+            );
+            
             Promise.all(promises3).then(() => {
               cb(null, allOrderChips);
             });
@@ -110,7 +128,7 @@ module.exports = function(Admin) {
 
   Admin.downloadFile = function(ctx, cb) {
     const {fileId} = ctx.req.query;
-    if (fileId === undefined) {
+    if (fileId === undefined || fileId === "") {
       const error = new Error('Missing fileId argument');
       error.status = 400;
       cb(error);

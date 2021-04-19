@@ -216,7 +216,7 @@ module.exports = function(Customer) {
   Customer.prototype.downloadFile = function(ctx, cb) {
     const {fileId} = ctx.req.query;
     const user = this;
-    if (fileId === undefined) {
+    if (fileId === undefined || fileId === "") {
       const error = new Error('Missing fileId argument');
       error.status = 400;
       cb(error);
@@ -251,7 +251,7 @@ module.exports = function(Customer) {
     const {fileId} = ctx.req.query;
     const user = this;
     // log(fileId);
-    if (fileId === undefined) {
+    if (fileId === undefined || fileId === "") {
       const error = new Error('Missing fileId argument');
       error.status = 400;
       cb(error);

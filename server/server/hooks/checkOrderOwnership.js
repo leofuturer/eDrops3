@@ -11,7 +11,9 @@ module.exports = (ctx, modelInstance, next, product = false) => {
     else {
       UserBase.findById(token.userId, (err, user) => {
         if (err) next(err);
-        else if (product && user.userType !== 'customer') next(errors.forbidden('only customer owns product'));
+        else if (product && user.userType !== 'customer' && user.userType !== 'admin'){
+          next(errors.forbidden('only customer or admin can access product'));
+        }
         else if (user.userType === 'customer') {
           OrderInfo.findById(ctx.req.params.id, (err, info) => {
             if (err) next(err);
@@ -22,6 +24,7 @@ module.exports = (ctx, modelInstance, next, product = false) => {
             }
           });
         } else {
+          // admin can access the product
           next();
         }
       });

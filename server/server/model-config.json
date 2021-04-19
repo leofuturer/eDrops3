@@ -158,7 +158,7 @@
           "setPassword": true,
           "changePassword": true,
 
-          "downloadFile": true,
+          "prototype.downloadFile": true,
 
           "prototype.getChipOrders": true
         }

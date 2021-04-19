@@ -39,6 +39,7 @@ class ChipOrders extends React.Component {
 
     API.Request(url, 'GET', {}, true)
       .then((res) => {
+        // console.log(res);
         this.setState({
           orderList: res.data.orderChips,
           isLoading: false,
@@ -55,17 +56,21 @@ class ChipOrders extends React.Component {
   handleDownload(e) {
     // console.log(e.target.id);
     let url = '';
-    const fileId = Number(e.target.id.replace(/[^0-9]/ig, ''));
-    // console.log(Cookies.get('userType'))
+    const itemId = Number(e.target.id.replace(/[^0-9]/ig, ''));
     if (Cookies.get('userType') === 'customer') {
+      // for customer, `id` is file ID
       url = downloadFileById.replace('id', Cookies.get('userId'));
+      url += `?access_token=${Cookies.get('access_token')}&fileId=${itemId}`;
     } else if (Cookies.get('userType') === 'worker') {
+      // for worker, `id` is chipOrder ID (associated with that file)
       url = workerDownloadFile.replace('id', Cookies.get('userId'));
+      url += `?access_token=${Cookies.get('access_token')}&chipOrderId=${itemId}`;
     } else if (Cookies.get('userType') === 'admin') {
+      // for admin, `id` is file ID
       url = adminDownloadFile;
+      url += `?access_token=${Cookies.get('access_token')}&fileId=${itemId}`;
     }
 
-    url += `?access_token=${Cookies.get('access_token')}&fileId=${fileId}`;
     window.location = url;
   }
 
@@ -108,28 +113,28 @@ class ChipOrders extends React.Component {
                   <tr>
                     <th>ID</th>
                     {
-                                            !(Cookies.get('userType') === 'customer')
-                                              ? <th>Uploader</th> // admin or worker
-                                              : null
-                                        }
+                      !(Cookies.get('userType') === 'customer')
+                        ? <th>Uploader</th> // admin or worker
+                        : null
+                    }
                     <th>Last Updated</th>
                     {
-                                            !(Cookies.get('userType') === 'worker')
-                                              ? <th>Worker Assigned</th> // customer or admin
-                                              : null
-                                        }
+                      !(Cookies.get('userType') === 'worker')
+                        ? <th>Worker</th> // customer or admin
+                        : null
+                    }
                     {
-                                            Cookies.get('userType') === 'customer'
-                                              ? <th>Process Status</th> // customer
-                                              : <th className="icon-center">Edit Status</th> // worker or admin
-                                        }
-                    <th className="icon-center">Quantity</th>
+                      Cookies.get('userType') === 'customer'
+                        ? <th>Process Status</th> // customer
+                        : <th className="icon-center">Edit Status</th> // worker or admin
+                    }
+                    <th className="icon-center">Qty</th>
                     <th className="icon-center">Mask File</th>
                     {
-                                            Cookies.get('userType') === 'admin'
-                                              ? <th className="icon-center">Assign Order</th> // admin
-                                              : null
-                                        }
+                      Cookies.get('userType') === 'admin'
+                        ? <th className="icon-center">Assign Order</th> // admin
+                        : null
+                    }
                   </tr>
                 </thead>
                 <tbody>
@@ -138,62 +143,70 @@ class ChipOrders extends React.Component {
                       <tr key={index} id={item.id}>
                         <td>{item.id}</td>
                         {
-                                                            !(Cookies.get('userType') === 'customer')
-                                                              ? <td>{item.customerName}</td>
-                                                              : null
-                                                        }
+                          (Cookies.get('userType') !== 'customer')
+                            ? <td>{item.customerName}</td>
+                            : null
+                        }
                         <td>{item.lastUpdated.substring(0, item.lastUpdated.indexOf('T'))}</td>
                         {
-                                                            !(Cookies.get('userType') === 'worker')
-                                                              ? <td>{item.workerName}</td>
-                                                              : null
-                                                        }
+                          (Cookies.get('userType') !== 'worker')
+                            ? <td>{item.workerName}</td>
+                            : null
+                        }
                         {
-                                                            Cookies.get('userType') === 'customer'
-                                                              ? <td>{item.status}</td>
-                                                              : (
-                                                                <td className="icon-center">
-                                                                  <form
-                                                                    id="edit-order-status-form"
-                                                                    className="edit-order-status-form"
-                                                                    onSubmit={this.handleSubmit}
-                                                                  >
-                                                                    <select id="status-selection" className="order-status" name="status" defaultValue={item.status}>
-                                                                      <option value="Project Started">Project Started</option>
-                                                                      <option value="Project Completed">Project Completed</option>
-                                                                    </select>
-                                                                    <input type="submit" id={`allOrder${index}`} />
-                                                                  </form>
-                                                                </td>
-                                                              )
-                                                        }
+                          Cookies.get('userType') === 'customer'
+                            ? <td>{item.status}</td>
+                            : (
+                              <td className="icon-center">
+                                <form
+                                  id="edit-order-status-form"
+                                  className="edit-order-status-form"
+                                  onSubmit={this.handleSubmit}
+                                >
+                                  <select id="status-selection" className="order-status" name="status" defaultValue={item.status}>
+                                    <option value="Fab Req Received">Fab Req Received</option>
+                                    <option value="Project Started">Project Started</option>
+                                    <option value="Project Completed">Project Completed</option>
+                                    <option value="Item Shipped">Item Shipped</option>
+                                  </select>
+                                  <input type="submit" id={`allOrder${index}`} />
+                                </form>
+                              </td>
+                            )
+                        }
                         <td className="icon-center">
                           {item.quantity}
                         </td>
                         <td className="icon-center">
-                          <i className="fa fa-download" onClick={this.handleDownload} id={`download${item.fileInfoId}`} />
+                        {
+                          Cookies.get('userType') === 'worker'
+                          ? <i className="fa fa-download" onClick={this.handleDownload} id={`download${item.id}`} />
+                          : <i className="fa fa-download" onClick={this.handleDownload} id={`download${item.fileInfoId}`} />
+
+                        }
+                          
                         </td>
                         {
-                                                            Cookies.get('userType') === 'admin'
-                                                              ? (
-                                                                <td className="icon-center">
-                                                                  <i className="fa fa-users" id={`allOrder${index}`} onClick={this.handleAssign} />
-                                                                </td>
-                                                              )
-                                                              : null
-                                                        }
+                          Cookies.get('userType') === 'admin'
+                            ? (
+                              <td className="icon-center">
+                                <i className="fa fa-users" id={`allOrder${index}`} onClick={this.handleAssign} />
+                              </td>
+                            )
+                            : null
+                        }
                       </tr>
                     ))
                     : (
                       <tr>
                         <td>
                           {
-                                                this.state.isLoading
-                                                  ? <img src={loadingGif} alt="" className="loading-icon" />
-                                                  : (Cookies.get('userType') === 'worker'
-                                                    ? 'No orders have been assigned to you yet.'
-                                                    : 'No orders have been placed.')
-                                            }
+                            this.state.isLoading
+                              ? <img src={loadingGif} alt="" className="loading-icon" />
+                              : (Cookies.get('userType') === 'worker'
+                                ? 'No orders have been assigned to you yet.'
+                                : 'No orders have been placed.')
+                          }
                         </td>
                       </tr>
                     )}

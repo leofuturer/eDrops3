@@ -206,6 +206,7 @@ class FormsPage extends React.Component {
                   name="oldPassword"
                   className="form-control needValidation"
                   placeholder="Old Password"
+                  autoComplete="current-password"
                   onChange={(v) => this.handleChange('oldPassword', v.target.value)}
                   onBlur={this.handleValidate}
                 />
@@ -218,6 +219,7 @@ class FormsPage extends React.Component {
                   name="newPassword"
                   className="form-control needValidation"
                   placeholder="New Password"
+                  autoComplete="new-password"
                   onChange={(v) => this.handleChange('newPassword', v.target.value)}
                   onBlur={this.handleValidate}
                 />
@@ -230,6 +232,7 @@ class FormsPage extends React.Component {
                   name="confirmPassword"
                   className="form-control needValidation"
                   placeholder="Confirm Password"
+                  autoComplete="new-password"
                   onChange={(v) => this.handleChange('confirmPassword', v.target.value)}
                   onBlur={this.handleValidate}
                 />
