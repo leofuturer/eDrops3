@@ -224,7 +224,7 @@ class Upload extends React.Component {
           <div className="modal-dialog modal-dialog-centered" role="document">
             <div className="modal-content">
               <div className="modal-header">
-                <div className="modal-title" id="uploadDoneModalLabel">Edrop</div>
+                <div className="modal-title" id="uploadDoneModalLabel">eDrops</div>
                 <button type="button" className="close" data-dismiss="modal" aria-label="Close">
                   <span aria-hidden="true">&times;</span>
                 </button>
@@ -244,7 +244,7 @@ class Upload extends React.Component {
           <div className="modal-dialog modal-dialog-centered" role="document">
             <div className="modal-content">
               <div className="modal-header">
-                <div className="modal-title" id="confirmModalLabel">Edrop</div>
+                <div className="modal-title" id="confirmModalLabel">eDrops</div>
               </div>
               <div className="modal-body">
                 Duplicate file name! Would you like to upload another file, or you still want to

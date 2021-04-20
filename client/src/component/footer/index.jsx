@@ -3,6 +3,7 @@ import { NavLink } from 'react-router-dom';
 import IMG_2943 from '../../../static/img/IMG_2943.jpg';
 import IMG_2941 from '../../../static/img/IMG_2941.jpg';
 import { controlSysId, univEwodChipId } from '../../constants';
+import eDropsLogo from "../../../static/img/edrop_logo.png";
 
 class FooterPage extends React.Component {
   render() {
@@ -13,21 +14,24 @@ class FooterPage extends React.Component {
         <div className="hr-div-login" />
         <div>
           <div className="top-title">
-            <h3 className="edrop-txt">EDrop</h3>
-            <p className="i-p">
+            <div>
+              <img className="website-footer-logo" src={eDropsLogo} alt="" />
+            </div>
+            <h3 className="edrop-txt">eDrops</h3>
+            {/* <p className="i-p"> */}
               {/* <i className="fa fa-twitter"></i> */}
               {/* <i className="fa fa-facebook"></i> */}
               {/* <i className="fa fa-youtube"></i> */}
-            </p>
+            {/* </p> */}
             <p>
-              &copy; EDrop 2018-2021
+              &copy; eDrops 2018-2021
             </p>
           </div>
           <div className="top-title">
             <h3 className="other-txt">Contact</h3>
             <div>
-              <div>Phone: +1 234-567-8999</div>
-              <div>Email: edropwebsite@gmail.com</div>
+              {/* <div>Phone: +1 234-567-8999</div> */}
+              <a href="mailto:edropswebsite@gmail.com">Email: edropswebsite@gmail.com</a>
             </div>
             <div style={{ marginTop: '15px' }}>
               <div>420 Westwood Plaza</div>

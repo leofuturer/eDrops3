@@ -301,7 +301,7 @@ class Files extends React.Component {
           <div className="modal-dialog">
             <div className="modal-content">
               <div className="modal-header">
-                Edrop
+                eDrops
               </div>
               <div className="modal-body">
                 Are you sure you want to delete this file?

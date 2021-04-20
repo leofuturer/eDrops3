@@ -24,7 +24,7 @@ module.exports = function(app) {
         Admin.create([
           {
             username: 'adminA',
-            email: 'edropwebsite@gmail.com',
+            email: 'edropswebsite@gmail.com',
             password: 'edropTest123',
             phoneNumber: '1-310-111-2222',
           },
@@ -39,7 +39,7 @@ module.exports = function(app) {
                 User.create([
                   {
                     username: 'adminA',
-                    email: 'edropwebsite@gmail.com',
+                    email: 'edropswebsite@gmail.com',
                     password: 'edropTest123',
                     userType: 'admin',
                     userId: 1,

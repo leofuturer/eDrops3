@@ -97,7 +97,7 @@ class AssignOrders extends React.Component {
           <div className="modal-dialog">
             <div className="modal-content">
               <div className="modal-header">
-                Edrop
+                eDrops
               </div>
               <div className="modal-body">
                 Do you want to assign the order to this worker?

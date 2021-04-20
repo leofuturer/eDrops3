@@ -5,6 +5,8 @@ import {
   customerLogout, AdminLogout, FoundryWorkerLogout, userLogout,
 } from '../../api/serverConfig';
 import API from '../../api/api';
+import eDropsLogo from "../../../static/img/edrop_logo.png";
+import eDropsLogoInverted from "../../../static/img/edrop_logo_inverted.png";
 
 class NavTop extends React.Component {
   constructor(props) {
@@ -61,11 +63,12 @@ class NavTop extends React.Component {
     return (
     // At this time the className "header-div" has no use
       <header className="header-div">
-        <nav className="container-nav">
+        <div className="container-nav">
           <div className="header-brand">
-            <a href="/home">EDrop</a>
+            <NavLink to="/home">eDrops</NavLink>
+            <NavLink to="/home"><img className="website-logo" src={eDropsLogoInverted} alt="" /></NavLink>
           </div>
-          <div className="">
+          {/* <div> */}
             <ul className="ul-nav">
               <li><NavLink to="/home">Home</NavLink></li>
               <li><NavLink to="/featureComing">EWOD CAD</NavLink></li>
@@ -81,70 +84,70 @@ class NavTop extends React.Component {
                   : null}
               </li>
               { /* Should we be using NavLink or href? NavLink prevents page reloading */ }
-              <li><a href="/featureComing"><i className="fa fa-search" /></a></li>
+              {/* <li><a href="/featureComing"><i className="fa fa-search" /></a></li> */}
               {
-                                Cookies.get('userType') === 'customer'
-                                  ? <li><a href="/upload"><i className="fa fa-upload" /></a></li>
-                                  : null
-                            }
+                Cookies.get('userType') === 'customer'
+                  ? <li><a href="/upload"><i className="fa fa-upload" /></a></li>
+                  : null
+              }
               {
-                                notLoggedIn ? null
-                                  : (Cookies.get('userType') === 'customer'
-                                    ? <li><NavLink to="/manage/files"><i className="fa fa-database" /></NavLink></li>
-                                    : (Cookies.get('userType') === 'admin'
-                                      ? <li><a href="/manage/allfiles"><i className="fa fa-database" /></a></li>
-                                      : null)
-                                  )
-                            }
+                notLoggedIn ? null
+                  : (Cookies.get('userType') === 'customer'
+                    ? <li><NavLink to="/manage/files"><i className="fa fa-database" /></NavLink></li>
+                    : (Cookies.get('userType') === 'admin'
+                      ? <li><a href="/manage/allfiles"><i className="fa fa-database" /></a></li>
+                      : null)
+                  )
+              }
               {
-                                notLoggedIn ? <li><NavLink to="/login">Login</NavLink></li>
-                                  : (
-                                    <li className="li-username">
-                                      {/* 4/23/2020: Only show username to avoid text that's too long, which will break the CSS */}
-                                      <a onClick={() => this.showDrowpn()} style={{ cursor: 'pointer' }}>{Cookies.get('username')}</a>
-                                      <div style={drown} className="div-drownup">
-                                        <ul className="list-styled" style={{ height: '60px' }}>
-                                          <li onClick={() => this.handleHideDrown()}>
-                                            <i className="fa fa-dashboard" style={{ paddingRight: '15px' }} />
-                                            <NavLink to="/manage/profile">Your Dashboard</NavLink>
-                                          </li>
-                                          {
-                                                    Cookies.get('userType') == 'customer'
-                                                      ? (
-                                                        <li onClick={() => this.handleHideDrown()}>
-                                                          <i className="fa fa-upload" style={{ paddingRight: '15px' }} />
-                                                          <NavLink to="/upload">Upload a file</NavLink>
-                                                        </li>
-                                                      )
-                                                      : null
-                                                }
-                                          {
-                                                    Cookies.get('userType') == 'customer'
-                                                      ? (
-                                                        <li onClick={() => this.handleHideDrown()}>
-                                                          <i className="fa fa-database" style={{ paddingRight: '15px' }} />
-                                                          <NavLink to="/manage/files">Your Projects</NavLink>
-                                                        </li>
-                                                      )
-                                                      : null
-                                                }
-                                          <li onClick={() => this.signout()}>
-                                            <i className="fa fa-sign-out" style={{ paddingRight: '15px' }} />
-                                            <NavLink to="/home">Logout</NavLink>
-                                          </li>
-                                        </ul>
-                                      </div>
-                                    </li>
-                                  )
-                            }
+                notLoggedIn ? <li><NavLink to="/login">Login</NavLink></li>
+                  : (
+                    <li className="li-username">
+                      {/* 4/23/2020: Only show username to avoid text that's too long, which will break the CSS */}
+                      <a onClick={() => this.showDrowpn()} style={{ cursor: 'pointer' }}>{Cookies.get('username')}</a>
+                      <div style={drown} className="div-drownup">
+                        <ul className="list-styled" style={{ height: '60px' }}>
+                          <li onClick={() => this.handleHideDrown()}>
+                            <i className="fa fa-dashboard" style={{ paddingRight: '15px' }} />
+                            <NavLink to="/manage/profile">Your Dashboard</NavLink>
+                          </li>
+                          {
+                            Cookies.get('userType') == 'customer'
+                              ? (
+                                <li onClick={() => this.handleHideDrown()}>
+                                  <i className="fa fa-upload" style={{ paddingRight: '15px' }} />
+                                  <NavLink to="/upload">Upload a file</NavLink>
+                                </li>
+                              )
+                              : null
+                          }
+                          {
+                            Cookies.get('userType') == 'customer'
+                              ? (
+                                <li onClick={() => this.handleHideDrown()}>
+                                  <i className="fa fa-database" style={{ paddingRight: '15px' }} />
+                                  <NavLink to="/manage/files">Your Projects</NavLink>
+                                </li>
+                              )
+                              : null
+                          }
+                          <li onClick={() => this.signout()}>
+                            <i className="fa fa-sign-out" style={{ paddingRight: '15px' }} />
+                            <NavLink to="/home">Logout</NavLink>
+                          </li>
+                        </ul>
+                      </div>
+                    </li>
+                  )
+              }
               {
-                                notLoggedIn
-                                  ? <li><NavLink to="/register">Sign Up</NavLink></li>
-                                  : null
-                            }
+                notLoggedIn
+                  ? <li><NavLink to="/register">Sign Up</NavLink></li>
+                  : null
+              }
             </ul>
-          </div>
-        </nav>
+          {/* </div> */}
+        </div>
       </header>
     );
   }

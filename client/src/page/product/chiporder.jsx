@@ -16,7 +16,7 @@ import React from 'react';
 import './chiporder.css';
 import Cookies from 'js-cookie';
 import {
-  getCustomerCart, manipulateCustomerOrders, addOrderChipToCart, customerGetApiToken,
+  getCustomerCart, manipulateCustomerOrders, addOrderChipToCart,
 } from '../../api/serverConfig';
 import API from '../../api/api';
 import {
@@ -25,7 +25,6 @@ import {
 } from '../../constants';
 import Shopify from '../../app.jsx';
 import loadingGif from '../../../static/img/loading80px.gif';
-import dxfComingSoon from '../../../static/img/DXFComingSoon.PNG';
 import DXFPreview from './dxf_preview.jsx';
 
 class ChipOrder extends React.Component {

@@ -21,7 +21,7 @@ class EmailVerifyInvalid extends React.Component {
           <NavLink to="/forgetPass">Resend Email Verification</NavLink>
         </div>
         <div className="link">
-          <a href="mailto:edropwebsite@gmail.com">Contact Us</a>
+          <a href="mailto:edropswebsite@gmail.com">Contact Us</a>
         </div>
         <div className="link">
           <NavLink to="/home">Home Page</NavLink>
