@@ -1,4 +1,6 @@
 
+const CONTAINER_NAME = process.env.S3_BUCKET_NAME || 'test_container';
+
 module.exports = function(FoundryWorker) {
   FoundryWorker.afterRemote('login', (ctx, tokenInstance, next) => {
     FoundryWorker.findById(tokenInstance.userId, (err, userInstance) => {
@@ -97,7 +99,7 @@ module.exports = function(FoundryWorker) {
               cb(error);
             } else {
               ctx.res.set('Content-Disposition', `inline; filename="${file.fileName}"`); // this sets the file name
-              FoundryWorker.app.models.container.download('test_container', file.containerFileName, ctx.req, ctx.res, (err, fileData) => {
+              FoundryWorker.app.models.container.download(CONTAINER_NAME, file.containerFileName, ctx.req, ctx.res, (err, fileData) => {
                 if (err) {
                   cb(err);
                 } else {
