@@ -99,7 +99,7 @@ class OrderDetail extends React.Component {
           : (
             <div>
               <div className="order-detail-title-container">
-                <h2>Edrop Order Details</h2>
+                <h2>eDrops Order Details</h2>
               </div>
               <div className="order-item-title">
                 Order Number:
@@ -129,7 +129,7 @@ class OrderDetail extends React.Component {
                 {thisOrder.orderComplete ? (parseFloat(totalItemsPrice) + parseFloat(thisOrder.fees_and_taxes)).toFixed(2) : 'N/A'}
               </div>
               <div className="order-thank-you">
-                Please contact us at edropwebsite@gmail.com for any questions. Thank you for the order!
+                Please contact us at edropswebsite@gmail.com for any questions. Thank you for the order!
               </div>
             </div>
           )}

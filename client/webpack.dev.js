@@ -26,5 +26,5 @@ module.exports = merge(common, {
                 target: "http://localhost:3000"
             }
         ]
-    }
+    },
 });

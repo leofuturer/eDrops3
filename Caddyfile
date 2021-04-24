@@ -1,6 +1,6 @@
 {
 #    debug
-   email edropwebsite@gmail.com
+   email edropswebsite@gmail.com
 #   acme_ca https://acme-staging-v02.api.letsencrypt.org/directory
 }
 

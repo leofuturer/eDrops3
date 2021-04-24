@@ -1,5 +1,7 @@
 # Edrop-v2.0.0
-The 2nd generation of Edrop web application
+The 2nd generation of eDrops web application
+
+**Important**: The website name is called eDrops, but the internal name (used in database names, etc.) is Edrop for compatability reasons.
 
 ## PROJECT OVERVIEW
 ### Project purpose
@@ -40,7 +42,7 @@ The entry of whole routing system is defined in the App.js right now which needs
 (3) Integration with Shopify  
 In the App.js we use Shopify js-buy SDK to implement the checkout and payment functionalities  
 In the /src/pages/shop/cart.js we make use of the checkout URL provided by js-buy SDK for the checkout process and order creation  
-In the Shopify development store, we make use of the webhook to send order data to our server and store the data in our server to generate order information(the orderInfo model in /common/models/orderInfos.js) for order management in the Edrop website  
+In the Shopify development store, we make use of the webhook to send order data to our server and store the data in our server to generate order information(the orderInfo model in /common/models/orderInfos.js) for order management in the eDrops website  
 Shopify Website: https://wqntest.myshopify.com/admin  
 
 **Backend**
@@ -81,7 +83,7 @@ From the home/top level directory:
 Then, to run the client (in development mode):  
 `$ npm run dev`  
 
-Navigate to localhost:8086/home to get to the home page of the Edrop application.  
+Navigate to localhost:8086/home to get to the home page of the eDrops application.  
 
 **To get the backend running:**  
 Open a new terminal window. Build the backend container and download images for MySQL and Ngrok.   
@@ -156,19 +158,19 @@ If things aren't working, check that these are correct for your environment. Con
 
 | Environment Variable     | Description                                         | Default Value             |
 |--------------------------|-----------------------------------------------------|---------------------------|
-| APP\_MYSQL\_HOST         | Hostname for MySQL database                         | "localhost"               |
-| APP\_MYSQL\_PORT         | Port number for MySQL database                      | 3306                      |
-| APP\_MYSQL\_DATABASE     | Table name for MySQL database                       | "edrop_db"                |
-| APP\_MYSQL\_USERNAME     | Username for MySQL database                         | "edrop"                   |
-| APP\_MYSQL\_PASSWORD     | Password for MySQL database                         | "12345678"                |
-| APP\_FRONTEND\_HOSTNAME  | Hostname for front end server                       | "localhost"               |
-| APP\_FRONTEND\_PORT      | Port number for front end server                    | 8086                      |
-| APP\_EMAIL\_HOST         | Hostname for email server used to send emails       | "smtp\.gmail\.com"        |
-| APP\_EMAIL\_PORT         | Port number for email server used to send emails    | 465                       |
-| APP\_EMAIL\_USERNAME     | Email address for email account used to send emails | "edropwebsite@gmail\.com" |
-| APP\_EMAIL\_PASSWORD     | Password for email account used to send emails      | Contact Danning/Qining    |
-| SHOPIFY\_DOMAIN          | Domain for our Shopify website                      | "wqntest.myshopify.com"   |
-| SHOPIFY\_TOKEN           | Token for Shopify Storefront API                    | Contact Danning/Qining    |
+| APP\_MYSQL\_HOST         | Hostname for MySQL database                         | "localhost"                |
+| APP\_MYSQL\_PORT         | Port number for MySQL database                      | 3306                       |
+| APP\_MYSQL\_DATABASE     | Table name for MySQL database                       | "edrop_db"                 |
+| APP\_MYSQL\_USERNAME     | Username for MySQL database                         | "edrop"                    |
+| APP\_MYSQL\_PASSWORD     | Password for MySQL database                         | "12345678"                 |
+| APP\_FRONTEND\_HOSTNAME  | Hostname for front end server                       | "localhost"                |
+| APP\_FRONTEND\_PORT      | Port number for front end server                    | 8086                       |
+| APP\_EMAIL\_HOST         | Hostname for email server used to send emails       | "smtp\.gmail\.com"         |
+| APP\_EMAIL\_PORT         | Port number for email server used to send emails    | 465                        |
+| APP\_EMAIL\_USERNAME     | Email address for email account used to send emails | "edropswebsite@gmail\.com" |
+| APP\_EMAIL\_PASSWORD     | Password for email account used to send emails      | Contact Danning/Qining     |
+| SHOPIFY\_DOMAIN          | Domain for our Shopify website                      | "wqntest.myshopify.com"    |
+| SHOPIFY\_TOKEN           | Token for Shopify Storefront API                    | Contact Danning/Qining     |
 
 IP address of our AWS EC2 server: 54.241.15.160.  
 

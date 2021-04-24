@@ -12,7 +12,6 @@
     background-position: center center;
     padding-top: 150px;
     padding-bottom: 150px;
-    margin-top:-15px;
 }
 .foundryImg{
     background-image: url('../../../static/img/EWOD-chip-compressed.png');
@@ -22,7 +21,6 @@
     background-position: center center;
     padding-top: 150px;
     padding-bottom: 150px;
-    margin-top:-15px;
 }
 
 .ewodImg{
@@ -33,7 +31,6 @@
     background-position: center center;
     padding-top: 150px;
     padding-bottom: 150px;
-    margin-top:-15px;
 }
 .txt{
     text-align: center;
@@ -41,12 +38,12 @@
     height: 150px;
 }
 .txt h1{
-    color:#fff;
+    color:#000000;
     font-size: 50px;
     font-weight: bold;
 }
 .txt-bg{
-    background-color: #e4c272;
+    background-color: #FFC72C;
     color: #242847;
     width: 180px;
     height: 60px;
@@ -107,6 +104,15 @@
     color:#7086c1;
     cursor: pointer;
 }
+
+.txt .txt-bg a {
+    color: #000000;
+}
+
+.txt .txt-bg a:hover {
+    color: #000000;
+}
+
 .bottom-img-content{
     width: 100%;
     height: 380px;

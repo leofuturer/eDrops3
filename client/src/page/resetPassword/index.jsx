@@ -115,7 +115,7 @@ class ResetPassword extends React.Component {
                 <NavLink to="/forgetPass">Resend Email for Password Reset or Email Verification</NavLink>
               </div>
               <div className="link">
-                <a href="mailto:edropwebsite@gmail.com">Contact Us for Help</a>
+                <a href="mailto:edropswebsite@gmail.com">Contact Us for Help</a>
               </div>
             </div>
           )

@@ -8,7 +8,6 @@ services:
     container_name: edrop_backend
     ports:
       - 3000:3000
-      - 465:465
     restart: on-failure
     environment:
       # to reset database, pass in as `RESET_DATABASE=Yes; docker-compose up`
