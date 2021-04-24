@@ -1,4 +1,3 @@
-'use strict';
 
 const Promise = require('bluebird');
 const log = require('./log');
@@ -13,11 +12,11 @@ module.exports = (models) => {
     return Promise.resolve();
   }
 
-  return Promise.each(models, model => new Promise((resolve, reject) => {
+  return Promise.each(models, (model) => new Promise((resolve, reject) => {
     dataSource.automigrate(model, (err) => {
       if (err) {
         reject(err);
-      }  else {
+      } else {
         log.success(`created schema for model ${model}.`);
         resolve();
       }

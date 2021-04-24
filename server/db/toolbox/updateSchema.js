@@ -1,8 +1,8 @@
-'use strict';
 
 const Promise = require('bluebird');
 const log = require('./log');
 const server = require('../../server/server');
+
 const dataSource = server.dataSources.mysqlDS;
 
 // define migrate function
@@ -13,7 +13,7 @@ module.exports = (models) => {
     return Promise.resolve();
   }
 
-  return Promise.each(models, model => new Promise((resolve, reject) => {
+  return Promise.each(models, (model) => new Promise((resolve, reject) => {
     dataSource.autoupdate(model, (err) => {
       if (err) reject(err);
       log.success(`updated schema for model ${model}.`);

@@ -14,5 +14,5 @@ if [[ $MIGRATE_DATABASE == "Yes" ]]; then
     exit 0
 fi
 
-echo -e 'Starting server from intialize.sh'
+echo -e 'Starting server from initialize.sh'
 node server/server.js

@@ -5,8 +5,6 @@
  *   User: require('../seed-data/users.json')
  */
 
-'use strict';
-
 const path = require('path');
 const fs = require('fs-extra');
 const getModelNames = require('./getModelNames');

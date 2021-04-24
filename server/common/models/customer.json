@@ -189,6 +189,13 @@
       "permission": "ALLOW",
       "property": "__get__customerFiles"
     },
+    {
+      "accessType": "READ",
+      "principalType": "ROLE",
+      "principalId": "admin",
+      "permission": "ALLOW",
+      "property": "__get__customerFiles"
+    },
 
     {
       "accessType": "EXECUTE",

@@ -1,240 +1,257 @@
 import React from 'react';
-import {Redirect,withRouter} from "react-router-dom";
+import { Redirect, withRouter } from 'react-router-dom';
 import './changePass.css';
-import {customerChangePass, FoundryWorkerChangePass, AdminChangePass, userChangePass} from "../../api/serverConfig";
-import API from "../../api/api";
 import Cookies from 'js-cookie';
-var validate = require('validate.js');
+import {
+  customerChangePass, FoundryWorkerChangePass, AdminChangePass, userChangePass,
+} from '../../api/serverConfig';
+import API from '../../api/api';
 
-class FormsPage extends React.Component  {
-    constructor(props) {
-        super(props);
-        this.state = {
-            oldPassword: "",
-            newPassword: "",
-            confirmPassword: ""
-        }
-        this.handleChangePass = this.handleChangePass.bind(this);
-        this.handleValidate = this.handleValidate.bind(this);
-        this.showErrors = this.showErrors.bind(this);
-        this.showSuccess = this.showSuccess.bind(this);
-        this.addError = this.addError.bind(this);
-        this.clearMessage = this.clearMessage.bind(this);
-        this.handleSubmit = this.handleSubmit.bind(this);
-    }
+const validate = require('validate.js');
 
-    handleChange(key, value) {
-        this.setState(
-            {
-                [key]: value
-            }
-        )
+class FormsPage extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      oldPassword: '',
+      newPassword: '',
+      confirmPassword: '',
+    };
+    this.handleChangePass = this.handleChangePass.bind(this);
+    this.handleValidate = this.handleValidate.bind(this);
+    this.showErrors = this.showErrors.bind(this);
+    this.showSuccess = this.showSuccess.bind(this);
+    this.addError = this.addError.bind(this);
+    this.clearMessage = this.clearMessage.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+  }
+
+  handleChange(key, value) {
+    this.setState(
+      {
+        [key]: value,
+      },
+    );
+  }
+
+  handleChangePass(e) {
+    const _this = this;
+    const data = {
+      oldPassword: this.state.oldPassword,
+      newPassword: this.state.newPassword,
+    };
+    let url = '';
+    if (Cookies.get('userType') === 'customer') {
+      url = customerChangePass;
+    } else if (Cookies.get('userType') === 'worker') {
+      url = FoundryWorkerChangePass;
+    } else if (Cookies.get('userType') === 'admin') {
+      url = AdminChangePass;
     }
-    
-    handleChangePass(e) {
-        let _this = this;
-        let data = {
-            oldPassword: this.state.oldPassword,
-            newPassword:this.state.newPassword
-        }
-        let url = "";
-        if(Cookies.get('userType') === 'customer'){
-            url = customerChangePass;
-        } else if(Cookies.get('userType') === 'worker'){
-            url = FoundryWorkerChangePass;
-        } else if(Cookies.get('userType') === 'admin'){
-            url = AdminChangePass;
-        }
-        let validateResult = _this.handleSubmit();
-        if (validateResult) {
-            API.Request(url, 'POST', data, true)
-            .then( res => {
-                const userToken = Cookies.get('access_token');
-                Cookies.remove('access_token');
-                API.Request(userChangePass, 'POST', data, true)
-                .then(res =>{
-                    alert("Password successfully changed");
-                    Cookies.set('access_token', userToken);
-                    this.props.history.push('/manage/profile');
-                }).catch(error => {
-                    console.log("reset userbase password failed.");
-                }) 
-            })
-            .catch(error => {
-                console.log(error.response.data.error.message);
-                if (error.response.data.error.message === "Invalid current password") {
-                    let ele = document.getElementsByName("oldPassword");
-                    let errors = ["The current password is incorrect!"];
-                    this.clearMessage(ele[0]);
-                    this.showErrors(ele[0], errors);
-                }
+    const validateResult = _this.handleSubmit();
+    if (validateResult) {
+      API.Request(url, 'POST', data, true)
+        .then((res) => {
+          const userToken = Cookies.get('access_token');
+          Cookies.remove('access_token');
+          API.Request(userChangePass, 'POST', data, true)
+            .then((res) => {
+              alert('Password successfully changed');
+              Cookies.set('access_token', userToken);
+              this.props.history.push('/manage/profile');
+            }).catch((error) => {
+              console.log('reset userbase password failed.');
             });
-        }
-    }
-
-    handleValidate(e) {
-        let constraints = {
-            oldPassword: {
-                presence: true
-            },
-            newPassword: {
-                presence: true,
-                length: {
-                    minimum: 6,
-                    maximun: 20
-                },
-                format: {
-                    pattern: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[^]{8,16}$/,
-                    message: "should at least contain a capital letter, a lowercase letter and a number"
-                }
-            },
-            confirmPassword: {
-                presence: true,
-                equality: {
-                    attribute: "newPassword",
-                    message: "^Two passwords do not match"
-                }
-            }
-        };
-        let formToValidate = e.target.parentNode.parentNode;
-        let errors = validate(formToValidate, constraints) || {};
-        let ele = e.target;
-        this.clearMessage(ele);
-        if (errors && errors[ele.name]) {
-            this.showErrors(ele, errors[ele.name]);
-        } else {
-            this.showSuccess(ele);
-        }
-    }
-
-    showErrors(ele, errors) {
-        let _this = this;
-        ele.parentNode.classList.add("has-error");
-        errors.forEach((err, index) => {
-            _this.addError(ele, err);
+        })
+        .catch((error) => {
+          console.log(error.response.data.error.message);
+          if (error.response.data.error.message === 'Invalid current password') {
+            const ele = document.getElementsByName('oldPassword');
+            const errors = ['The current password is incorrect!'];
+            this.clearMessage(ele[0]);
+            this.showErrors(ele[0], errors);
+          }
         });
     }
+  }
 
-    showSuccess(ele) {
-        ele.parentNode.classList.add("has-success");
-        let message = document.createElement("p");
-        let messageDiv = ele.nextSibling;
-        message.innerHTML = "Looks good!";
-        message.classList.add("text-success");
-        messageDiv.appendChild(message);
+  handleValidate(e) {
+    const constraints = {
+      oldPassword: {
+        presence: true,
+      },
+      newPassword: {
+        presence: true,
+        length: {
+          minimum: 6,
+          maximun: 20,
+        },
+        format: {
+          pattern: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[^]{8,16}$/,
+          message: 'should at least contain a capital letter, a lowercase letter and a number',
+        },
+      },
+      confirmPassword: {
+        presence: true,
+        equality: {
+          attribute: 'newPassword',
+          message: '^Two passwords do not match',
+        },
+      },
+    };
+    const formToValidate = e.target.parentNode.parentNode;
+    const errors = validate(formToValidate, constraints) || {};
+    const ele = e.target;
+    this.clearMessage(ele);
+    if (errors && errors[ele.name]) {
+      this.showErrors(ele, errors[ele.name]);
+    } else {
+      this.showSuccess(ele);
     }
+  }
 
-    addError(input, error) {
-        let block = document.createElement("p");
-        let messageDiv = input.nextSibling;
-        block.innerHTML = error;
-        block.classList.add('error');
-        block.classList.add('help-block');
-        messageDiv.appendChild(block);
-    }
+  showErrors(ele, errors) {
+    const _this = this;
+    ele.parentNode.classList.add('has-error');
+    errors.forEach((err, index) => {
+      _this.addError(ele, err);
+    });
+  }
 
-    clearMessage(ele) {
-        let formGroup = ele.parentNode;
-        formGroup.classList.remove('has-error');
-        formGroup.classList.remove('has-success');
-        let messageDiv = formGroup.querySelector(".messages-wide");
-        while (messageDiv.hasChildNodes()) {
-            messageDiv.removeChild(messageDiv.firstChild);
-        }
-    }
+  showSuccess(ele) {
+    ele.parentNode.classList.add('has-success');
+    const message = document.createElement('p');
+    const messageDiv = ele.nextSibling;
+    message.innerHTML = 'Looks good!';
+    message.classList.add('text-success');
+    messageDiv.appendChild(message);
+  }
 
-    handleSubmit(e) {
-        let _this = this;
-        let constraints = {
-            oldPassword: {
-                presence: true
-            },
-            newPassword: {
-                presence: true,
-                length: {
-                    minimum: 8
-                },
-                format: {
-                    pattern: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[^]{8,}$/,
-                    message: "should at least contain a capital letter, a lowercase letter and a number"
-                }
-            },
-            confirmPassword: {
-                presence: true,
-                equality: {
-                    attribute: "newPassword",
-                    message: "^Two passwords do not match"
-                }
-            }
-        };
-        let formToValidate = document.querySelector("form");
-        let errors = validate(formToValidate, constraints) || null;
-        let inputsToValidate = document.querySelectorAll(".needValidation");
-        inputsToValidate.forEach((input, index) => {
-            _this.clearMessage(input);
-        });
-        inputsToValidate.forEach((input, index) => {
-            if (errors && errors[input.name]) {
-                _this.showErrors(input, errors[input.name]);
-            } else {
-                _this.showSuccess(input);
-            }
-        });
-        if (errors) {
-            return false;
-        } else {
-            return true;
-        }
-    }
+  addError(input, error) {
+    const block = document.createElement('p');
+    const messageDiv = input.nextSibling;
+    block.innerHTML = error;
+    block.classList.add('error');
+    block.classList.add('help-block');
+    messageDiv.appendChild(block);
+  }
 
-    render() {
-        if(Cookies.get('userId') === undefined) {
-            return <Redirect to='/login'></Redirect>
-        }
-        return(
-            <div className="right-route-content">
-                <div className="profile-content">
-                    <h2>Change Password</h2>
-                    <div style={{marginTop:'50px'}} >
-                        <form action="">
-                            <div className="form-group">
-                                <label>Old Password</label>
-                                <input type="password"  name="oldPassword" 
-                                    className="form-control needValidation" 
-                                    placeholder="Old Password" 
-                                    onChange={v => this.handleChange('oldPassword', v.target.value)} 
-                                    onBlur={this.handleValidate}/>
-                                <div className="messages-wide"></div>
-                            </div>
-                            <div className="form-group">
-                                <label>New Password</label>
-                                <input type="password" name="newPassword" 
-                                    className="form-control needValidation" 
-                                    placeholder="New Password" 
-                                    onChange={v => this.handleChange('newPassword', v.target.value)} 
-                                    onBlur={this.handleValidate}/>
-                                <div className="messages-wide"></div>
-                            </div>
-                            <div className="form-group">
-                                <label>Confirm Password</label>
-                                <input type="password" name="confirmPassword" 
-                                    className="form-control needValidation" 
-                                    placeholder="Confirm Password"
-                                    onChange={v => this.handleChange('confirmPassword', v.target.value)} 
-                                    onBlur={this.handleValidate}/>
-                                <div className="messages-wide"></div>
-                            </div>
-                            <div className="form-group text-right" style={{marginTop:'30px'}}>
-                                <input type="button" value="Save" 
-                                    className="btn btn-success" 
-                                    onClick={this.handleChangePass}/>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        );
+  clearMessage(ele) {
+    const formGroup = ele.parentNode;
+    formGroup.classList.remove('has-error');
+    formGroup.classList.remove('has-success');
+    const messageDiv = formGroup.querySelector('.messages-wide');
+    while (messageDiv.hasChildNodes()) {
+      messageDiv.removeChild(messageDiv.firstChild);
     }
-};
-FormsPage = withRouter(FormsPage)
+  }
+
+  handleSubmit(e) {
+    const _this = this;
+    const constraints = {
+      oldPassword: {
+        presence: true,
+      },
+      newPassword: {
+        presence: true,
+        length: {
+          minimum: 8,
+        },
+        format: {
+          pattern: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[^]{8,}$/,
+          message: 'should at least contain a capital letter, a lowercase letter and a number',
+        },
+      },
+      confirmPassword: {
+        presence: true,
+        equality: {
+          attribute: 'newPassword',
+          message: '^Two passwords do not match',
+        },
+      },
+    };
+    const formToValidate = document.querySelector('form');
+    const errors = validate(formToValidate, constraints) || null;
+    const inputsToValidate = document.querySelectorAll('.needValidation');
+    inputsToValidate.forEach((input, index) => {
+      _this.clearMessage(input);
+    });
+    inputsToValidate.forEach((input, index) => {
+      if (errors && errors[input.name]) {
+        _this.showErrors(input, errors[input.name]);
+      } else {
+        _this.showSuccess(input);
+      }
+    });
+    if (errors) {
+      return false;
+    }
+    return true;
+  }
+
+  render() {
+    if (Cookies.get('userId') === undefined) {
+      return <Redirect to="/login" />;
+    }
+    return (
+      <div className="right-route-content">
+        <div className="profile-content">
+          <h2>Change Password</h2>
+          <div style={{ marginTop: '50px' }}>
+            <form action="">
+              <div className="form-group">
+                <label>Old Password</label>
+                <input
+                  type="password"
+                  name="oldPassword"
+                  className="form-control needValidation"
+                  placeholder="Old Password"
+                  autoComplete="current-password"
+                  onChange={(v) => this.handleChange('oldPassword', v.target.value)}
+                  onBlur={this.handleValidate}
+                />
+                <div className="messages-wide" />
+              </div>
+              <div className="form-group">
+                <label>New Password</label>
+                <input
+                  type="password"
+                  name="newPassword"
+                  className="form-control needValidation"
+                  placeholder="New Password"
+                  autoComplete="new-password"
+                  onChange={(v) => this.handleChange('newPassword', v.target.value)}
+                  onBlur={this.handleValidate}
+                />
+                <div className="messages-wide" />
+              </div>
+              <div className="form-group">
+                <label>Confirm Password</label>
+                <input
+                  type="password"
+                  name="confirmPassword"
+                  className="form-control needValidation"
+                  placeholder="Confirm Password"
+                  autoComplete="new-password"
+                  onChange={(v) => this.handleChange('confirmPassword', v.target.value)}
+                  onBlur={this.handleValidate}
+                />
+                <div className="messages-wide" />
+              </div>
+              <div className="form-group text-right" style={{ marginTop: '30px' }}>
+                <input
+                  type="button"
+                  value="Save"
+                  className="btn btn-success"
+                  onClick={this.handleChangePass}
+                />
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    );
+  }
+}
+FormsPage = withRouter(FormsPage);
 export default FormsPage;

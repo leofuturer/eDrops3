@@ -9,8 +9,6 @@
  *   NEVER USE THIS IN PRODUCTION.
  */
 
-'use strict';
-
 const _ = require('lodash');
 const createSchema = require('./toolbox/createSchema');
 const getModelNames = require('./toolbox/getModelNames');
@@ -27,10 +25,10 @@ dataSource.connector.execute(`
   SHOW TABLES;
 `, [], (err, results) => {
   if (err) throw err;
-  
+
   console.log(results);
 
-  const existingTableNames = results.map(tableData => tableData[_.keys(tableData)[0]]);
+  const existingTableNames = results.map((tableData) => tableData[_.keys(tableData)[0]]);
   // 'SHOW TABLES;' is just a placeholder query to prevent error.
   const dropTablesSql = existingTableNames.length === 0 ? 'SHOW TABLES;' : `
     DROP TABLE IF EXISTS ${existingTableNames.join(', ')};
@@ -40,13 +38,13 @@ dataSource.connector.execute(`
   // drop all existing tables
   dataSource.connector.execute(dropTablesSql, [], (err) => {
     if (err) {
-      console.log("what??");
+      console.log('what??');
       throw err;
     }
 
-    console.log("executing!!");
+    console.log('executing!!');
     // step 2: create schema for all models
-    const modelNames = getModelNames();  
+    const modelNames = getModelNames();
     // modelNames is an array whose elements are all string
 
     createSchema(modelNames).then(() => {
