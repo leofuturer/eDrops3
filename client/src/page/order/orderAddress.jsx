@@ -31,7 +31,6 @@ class OrderAddress extends React.Component {
             <div className="row-txt-padding">{address.zipCode}</div>
           </div>
         </div>
-
       </div>
     );
   }

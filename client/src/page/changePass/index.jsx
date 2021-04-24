@@ -6,6 +6,7 @@ import {
   customerChangePass, FoundryWorkerChangePass, AdminChangePass, userChangePass,
 } from '../../api/serverConfig';
 import API from '../../api/api';
+import loadingGif from '../../../static/img/loading80px.gif';
 
 const validate = require('validate.js');
 
@@ -16,6 +17,7 @@ class FormsPage extends React.Component {
       oldPassword: '',
       newPassword: '',
       confirmPassword: '',
+      isLoading: false,
     };
     this.handleChangePass = this.handleChangePass.bind(this);
     this.handleValidate = this.handleValidate.bind(this);
@@ -35,6 +37,9 @@ class FormsPage extends React.Component {
   }
 
   handleChangePass(e) {
+    this.setState({
+      isLoading: true
+    });
     const _this = this;
     const data = {
       oldPassword: this.state.oldPassword,
@@ -60,17 +65,24 @@ class FormsPage extends React.Component {
               Cookies.set('access_token', userToken);
               this.props.history.push('/manage/profile');
             }).catch((error) => {
-              console.log('reset userbase password failed.');
+              // Reset user base password failed
+              console.error(error);
+              this.setState({
+                isLoading: false
+              });
             });
         })
         .catch((error) => {
-          console.log(error.response.data.error.message);
+          console.error(error.response.data.error.message);
           if (error.response.data.error.message === 'Invalid current password') {
             const ele = document.getElementsByName('oldPassword');
             const errors = ['The current password is incorrect!'];
             this.clearMessage(ele[0]);
             this.showErrors(ele[0], errors);
           }
+          this.setState({
+            isLoading: false
+          });
         });
     }
   }
@@ -238,14 +250,19 @@ class FormsPage extends React.Component {
                 />
                 <div className="messages-wide" />
               </div>
-              <div className="form-group text-right" style={{ marginTop: '30px' }}>
-                <input
-                  type="button"
-                  value="Save"
-                  className="btn btn-success"
-                  onClick={this.handleChangePass}
-                />
-              </div>
+              { this.state.isLoading
+                ? <img className="loading-GIF" src={loadingGif} alt="" />
+                : (
+                  <div className="form-group text-right" style={{ marginTop: '30px' }}>
+                    <input
+                      type="button"
+                      value="Save"
+                      className="btn btn-success"
+                      onClick={this.handleChangePass}
+                    />
+                  </div>
+                  )
+              }    
             </form>
           </div>
         </div>

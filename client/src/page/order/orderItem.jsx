@@ -74,7 +74,6 @@ class OrderItem extends React.Component {
               </div>
             </div>
           )
-
           : null}
       </div>
     );

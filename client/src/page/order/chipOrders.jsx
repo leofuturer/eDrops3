@@ -19,6 +19,14 @@ class ChipOrders extends React.Component {
       orderList: [],
       isLoading: false,
     };
+    if (this.props.match.path === '/manage/admin-retrieve-worker-orders'
+            && Cookies.get('userType') === 'admin') {
+      Object.assign(this.state, {
+        workerId: this.props.location.state.workerId,
+        isCustomer: this.props.location.state.isCustomer,
+      });
+    }
+
     this.handleDownload = this.handleDownload.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleAssign = this.handleAssign.bind(this);
@@ -39,7 +47,9 @@ class ChipOrders extends React.Component {
 
     API.Request(url, 'GET', {}, true)
       .then((res) => {
-        // console.log(res);
+        if(this.state.workerId){
+          res.data.orderChips = res.data.orderChips.filter((orderChip) => orderChip.workerId === this.state.workerId)
+        }
         this.setState({
           orderList: res.data.orderChips,
           isLoading: false,
@@ -182,9 +192,7 @@ class ChipOrders extends React.Component {
                           Cookies.get('userType') === 'worker'
                           ? <i className="fa fa-download" onClick={this.handleDownload} id={`download${item.id}`} />
                           : <i className="fa fa-download" onClick={this.handleDownload} id={`download${item.fileInfoId}`} />
-
                         }
-                          
                         </td>
                         {
                           Cookies.get('userType') === 'admin'
