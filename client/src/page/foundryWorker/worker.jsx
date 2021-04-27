@@ -10,13 +10,13 @@ class Worker extends React.Component {
     super(props);
     this.handleDelete = this.handleDelete.bind(this);
     this.handleEdit = this.handleEdit.bind(this);
-    this.handleRetrieveFiles = this.handleRetrieveFiles.bind(this);
+    this.handleRetrieveChipOrders = this.handleRetrieveChipOrders.bind(this);
   }
 
-  handleRetrieveFiles() {
+  handleRetrieveChipOrders() {
     const workerId = this.props.worker.id;
-    this.props.history.push('/manage/admin-retrieve-user-files', {
-      userId: workerId,
+    this.props.history.push('/manage/admin-retrieve-worker-orders', {
+      workerId: workerId,
       isCustomer: false,
     });
   }
@@ -69,7 +69,7 @@ class Worker extends React.Component {
         <td>{worker.phoneNumber}</td>
         <td>{worker.affiliation}</td>
         <td>
-          <i className="fa fa-database" onClick={this.handleRetrieveFiles} />
+          <i className="fa fa-microchip" onClick={this.handleRetrieveChipOrders} />
         </td>
         <td><i className="fa fa-edit" onClick={this.handleEdit} /></td>
         <td><i className="fa fa-trash" onClick={this.handleDelete} /></td>

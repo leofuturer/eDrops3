@@ -40,7 +40,8 @@ module.exports = function(Admin) {
   // TODO: fix this messy function
   Admin.getChipOrders = function(ctx, cb) {
     let allOrderChips = [];
-
+    const desiredWorkerId = ctx.req.query.workerId;
+    console.log(desiredWorkerId);
     // find all complete orderInfos with their related orderChips
     Admin.app.models.orderInfo.find({where: {orderComplete: true}})
       .then((orderInfos) => {

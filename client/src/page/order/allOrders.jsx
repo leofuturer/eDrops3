@@ -65,7 +65,6 @@ class AllOrders extends React.Component {
                   <th>Status</th>
                   <th>Price</th>
                   <th className="icon-center">Details</th>
-
                 </tr>
               </thead>
               <tbody>
@@ -88,10 +87,10 @@ class AllOrders extends React.Component {
                     <tr>
                       <td>
                         {
-                                            this.state.isLoading
-                                              ? <img src={loadingGif} alt="" className="loading-icon" />
-                                              : 'No orders have been submitted yet.'
-                                        }
+                          this.state.isLoading
+                            ? <img src={loadingGif} alt="" className="loading-icon" />
+                            : 'No orders have been submitted yet.'
+                        }
                       </td>
                     </tr>
                   )}

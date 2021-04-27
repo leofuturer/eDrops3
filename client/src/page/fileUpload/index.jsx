@@ -32,7 +32,8 @@ class Upload extends React.Component {
     this.handleLibrary = this.handleLibrary.bind(this);
     this.handleRename = this.handleRename.bind(this);
     this.handleCancel = this.handleCancel.bind(this);
-    this.onFileDrop = this.onFileDrop.bind(this);
+    this.onFileAccept = this.onFileAccept.bind(this);
+    this.onFileReject = this.onFileReject.bind(this);
     this.onFileUpload = this.onFileUpload.bind(this);
     this.uploadFileRequest = this.uploadFileRequest.bind(this);
   }
@@ -57,9 +58,18 @@ class Upload extends React.Component {
     this.setState({});
   }
 
-  onFileDrop(acceptedFiles) {
+  onFileAccept(acceptedFiles) {
+    // console.log(acceptedFiles);
     this.setState({
       file: acceptedFiles[0],
+    });
+  }
+
+  onFileReject(rejectedFiles) {
+    rejectedFiles.map((rejFile) => {
+      rejFile.errors.map((err) => {
+        alert(`Upload error:\nFor file ${rejFile.file.name}: ${err.message}`);
+      });
     });
   }
 
@@ -201,10 +211,12 @@ class Upload extends React.Component {
             </div>
           </div>
           <Dropzone
-            onDrop={(acceptedFiles) => this.onFileDrop(acceptedFiles)}
+            onDropAccepted={(acceptedFiles) => this.onFileAccept(acceptedFiles)}
+            onDropRejected={(rejectedFiles) => this.onFileReject(rejectedFiles)}
             accept=".dxf, .DXF"
             maxFiles={1}
-            maxSize={10000000} // file size limit, in bytes
+            maxSize={10 * 1000 * 1000} // file size limit in bytes
+            multiple={false}
           >
             {({ getRootProps, getInputProps }) => (
               <div {...getRootProps()} className="file-upload-area">

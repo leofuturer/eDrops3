@@ -53,7 +53,7 @@ class FoundryWorker extends React.Component {
                   <th>Email</th>
                   <th>Phone</th>
                   <th>Affiliation</th>
-                  <th>Files</th>
+                  <th>Chip Orders</th>
                   <th>Edit</th>
                   <th>Delete</th>
                 </tr>

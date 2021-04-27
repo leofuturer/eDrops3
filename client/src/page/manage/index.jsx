@@ -89,10 +89,15 @@ const routes = [
     path: '/manage/allfiles',
     component: AllFiles,
   },
-  // Admin view files belongs to a certain customer/worker
+  // Admin view files belongs to a certain customer
   {
     path: '/manage/admin-retrieve-user-files',
     component: Files,
+  },
+  // Admin view chip orders for particular foundry worker
+  {
+    path: '/manage/admin-retrieve-worker-orders',
+    component: ChipOrders,
   },
   // Admin view all orders
   {
@@ -202,20 +207,20 @@ class Manage extends React.Component {
 
             {/* Forced redirections when none of the path above is matched */}
             {
-                            Cookies.get('userType') === 'customer'
-                              ? <Redirect from="/manage" to="/manage/profile" />
-                              : null
-                        }
+              Cookies.get('userType') === 'customer'
+                ? <Redirect from="/manage" to="/manage/profile" />
+                : null
+            }
             {
-                            Cookies.get('userType') === 'admin'
-                              ? <Redirect to="/manage/all-orders" />
-                              : null
-                        }
+              Cookies.get('userType') === 'admin'
+                ? <Redirect to="/manage/all-orders" />
+                : null
+            }
             {
-                            Cookies.get('userType') === 'worker'
-                              ? <Redirect from="/manage" to="/manage/chip-orders" />
-                              : null
-                        }
+              Cookies.get('userType') === 'worker'
+                ? <Redirect from="/manage" to="/manage/chip-orders" />
+                : null
+            }
           </Switch>
         </div>
         <div className="hr-div-login" />

@@ -92,7 +92,7 @@ class AssignOrders extends React.Component {
           </div>
         </div>
 
-        {/* <Model> */}
+        {/* <Modal> */}
         <div className="modal fade" id="confirm-assign" tabIndex="-1" role="dialog" aria-labelledby="assignModalLabel" aria-hidden="true">
           <div className="modal-dialog">
             <div className="modal-content">

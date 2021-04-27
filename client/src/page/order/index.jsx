@@ -73,15 +73,16 @@ class Orders extends React.Component {
         <div className="right-route-content">
           <div className="profile-content">
             {
-                          this.props.match.path === '/manage/admin-retrieve-user-orders'
-                            ? (
-                              <h2>
-                                Orders for
-                                {this.state.username}
-                              </h2>
-                            )
-                            : <h2>Orders</h2>
-                        }
+              this.props.match.path === '/manage/admin-retrieve-user-orders'
+                ? (
+                  <h2>
+                    Orders for
+                    {' '}
+                    {this.state.username}
+                  </h2>
+                )
+                : <h2>Orders</h2>
+              }
           </div>
           <div className="content-show-table row">
             <div className="table-background">
@@ -115,12 +116,12 @@ class Orders extends React.Component {
                       <tr>
                         <td>
                           {
-                                                    this.state.isLoading
-                                                      ? <img src={loadingGif} alt="" className="loading-icon" />
-                                                      : (Cookies.get('userType') === 'worker'
-                                                        ? 'No orders have been assigned to you yet.'
-                                                        : 'No orders have been placed.')
-                                                }
+                            this.state.isLoading
+                              ? <img src={loadingGif} alt="" className="loading-icon" />
+                              : (Cookies.get('userType') === 'worker'
+                                ? 'No orders have been assigned to you yet.'
+                                : 'No orders have been placed.')
+                          }
                         </td>
                       </tr>
                     )}
