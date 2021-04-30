@@ -115,25 +115,25 @@ class ResetPassword extends React.Component {
                 <NavLink to="/forgetPass">Resend Email for Password Reset or Email Verification</NavLink>
               </div>
               <div className="link">
-                <a href="mailto:edropwebsite@gmail.com">Contact Us for Help</a>
+                <a href="mailto:edropswebsite@gmail.com">Contact Us for Help</a>
               </div>
             </div>
           )
           : null}
         {
-                    this.state.passwordChanged
-                      ? (
-                        <div>
-                          <div className="help-text">
-                            Your password has successfully been reset.
-                          </div>
-                          <div className="link">
-                            <NavLink to="/login">Login to Your Account</NavLink>
-                          </div>
-                        </div>
-                      )
-                      : null
-                }
+          this.state.passwordChanged
+            ? (
+              <div>
+                <div className="help-text">
+                  Your password has successfully been reset.
+                </div>
+                <div className="link">
+                  <NavLink to="/login">Login to Your Account</NavLink>
+                </div>
+              </div>
+            )
+            : null
+        }
 
       </div>
     );

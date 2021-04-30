@@ -28,6 +28,7 @@ class Login extends React.Component {
     this.clearReminder = this.clearReminder.bind(this);
     this.componentDidMount = this.componentDidMount.bind(this);
     this.showErrorMessage = this.showErrorMessage.bind(this);
+    this.enterPressed = this.enterPressed.bind(this);
   }
 
   componentDidMount() {
@@ -96,6 +97,13 @@ class Login extends React.Component {
     block.classList.add('error');
     block.innerHTML = 'Login error. Please check login credentials and ensure email is verified.';
     document.querySelector('.passwordError').appendChild(block);
+  }
+
+  enterPressed(e){
+    let code = e.keyCode || e.which;
+    if(code === 13){ // the ENTER key
+      this.handleLogin();
+    }
   }
 
   handleLogin() {
@@ -200,6 +208,7 @@ class Login extends React.Component {
                     placeholder="Password"
                     autoComplete="password"
                     onChange={(v) => this.handleChange('password', v.target.value)}
+                    onKeyPress={(e) => this.enterPressed(e)}
                   />
                   <div className="passwordError messages" />
                 </div>
@@ -213,7 +222,8 @@ class Login extends React.Component {
                   {
                     this.state.isLoading
                       ? <img src={loadingGif} alt="" />
-                      : <input type="button" value="Login" className="input-btn" onClick={this.handleLogin} />
+                      : <input type="button" value="Login" className="input-btn" 
+                          onClick={this.handleLogin} />
                   }
                 </div>
                 <div className="form-group row">
@@ -222,19 +232,21 @@ class Login extends React.Component {
                   </div>
                 </div>
 
-                {/* <div className="form-group">
-                                    <div className="border-div-goole">
-                                        <i className="fa fa-google"></i>
-                                        <span className="span-txt-padding">Login with Google</span>
-                                    </div>
-                                    <div className="border-div-goole">
-                                        <i className="fa fa-facebook"></i>
-                                        <span className="span-txt-padding">Login with Facebook</span>
-                                    </div>
-                                </div> */}
+                {/* 
+                  <div className="form-group">
+                    <div className="border-div-goole">
+                        <i className="fa fa-google"></i>
+                        <span className="span-txt-padding">Login with Google</span>
+                    </div>
+                    <div className="border-div-goole">
+                        <i className="fa fa-facebook"></i>
+                        <span className="span-txt-padding">Login with Facebook</span>
+                    </div>
+                  </div> 
+                */}
                 <div className="form-group">
                   <span>If you have trouble logging in to your account, </span>
-                  <a href="mailto:edropwebsite@gmail.com">contact us.</a>
+                  <a href="mailto:edropswebsite@gmail.com">contact us.</a>
                 </div>
               </div>
             </form>

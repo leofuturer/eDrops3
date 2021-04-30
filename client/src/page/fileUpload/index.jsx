@@ -32,7 +32,8 @@ class Upload extends React.Component {
     this.handleLibrary = this.handleLibrary.bind(this);
     this.handleRename = this.handleRename.bind(this);
     this.handleCancel = this.handleCancel.bind(this);
-    this.onFileDrop = this.onFileDrop.bind(this);
+    this.onFileAccept = this.onFileAccept.bind(this);
+    this.onFileReject = this.onFileReject.bind(this);
     this.onFileUpload = this.onFileUpload.bind(this);
     this.uploadFileRequest = this.uploadFileRequest.bind(this);
   }
@@ -57,9 +58,18 @@ class Upload extends React.Component {
     this.setState({});
   }
 
-  onFileDrop(acceptedFiles) {
+  onFileAccept(acceptedFiles) {
+    // console.log(acceptedFiles);
     this.setState({
       file: acceptedFiles[0],
+    });
+  }
+
+  onFileReject(rejectedFiles) {
+    rejectedFiles.map((rejFile) => {
+      rejFile.errors.map((err) => {
+        alert(`Upload error:\nFor file ${rejFile.file.name}: ${err.message}`);
+      });
     });
   }
 
@@ -201,10 +211,12 @@ class Upload extends React.Component {
             </div>
           </div>
           <Dropzone
-            onDrop={(acceptedFiles) => this.onFileDrop(acceptedFiles)}
+            onDropAccepted={(acceptedFiles) => this.onFileAccept(acceptedFiles)}
+            onDropRejected={(rejectedFiles) => this.onFileReject(rejectedFiles)}
             accept=".dxf, .DXF"
             maxFiles={1}
-            maxSize={10000000} // file size limit, in bytes
+            maxSize={10 * 1000 * 1000} // file size limit in bytes
+            multiple={false}
           >
             {({ getRootProps, getInputProps }) => (
               <div {...getRootProps()} className="file-upload-area">
@@ -224,7 +236,7 @@ class Upload extends React.Component {
           <div className="modal-dialog modal-dialog-centered" role="document">
             <div className="modal-content">
               <div className="modal-header">
-                <div className="modal-title" id="uploadDoneModalLabel">Edrop</div>
+                <div className="modal-title" id="uploadDoneModalLabel">eDrops</div>
                 <button type="button" className="close" data-dismiss="modal" aria-label="Close">
                   <span aria-hidden="true">&times;</span>
                 </button>
@@ -244,7 +256,7 @@ class Upload extends React.Component {
           <div className="modal-dialog modal-dialog-centered" role="document">
             <div className="modal-content">
               <div className="modal-header">
-                <div className="modal-title" id="confirmModalLabel">Edrop</div>
+                <div className="modal-title" id="confirmModalLabel">eDrops</div>
               </div>
               <div className="modal-body">
                 Duplicate file name! Would you like to upload another file, or you still want to

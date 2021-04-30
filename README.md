@@ -1,5 +1,7 @@
 # Edrop-v2.0.0
-The 2nd generation of Edrop web application
+The 2nd generation of eDrops web application
+
+**Important**: The website name is called eDrops, but the internal name (used in database names, etc.) is Edrop for compatability reasons.
 
 ## PROJECT OVERVIEW
 ### Project purpose
@@ -40,7 +42,7 @@ The entry of whole routing system is defined in the App.js right now which needs
 (3) Integration with Shopify  
 In the App.js we use Shopify js-buy SDK to implement the checkout and payment functionalities  
 In the /src/pages/shop/cart.js we make use of the checkout URL provided by js-buy SDK for the checkout process and order creation  
-In the Shopify development store, we make use of the webhook to send order data to our server and store the data in our server to generate order information(the orderInfo model in /common/models/orderInfos.js) for order management in the Edrop website  
+In the Shopify development store, we make use of the webhook to send order data to our server and store the data in our server to generate order information(the orderInfo model in /common/models/orderInfos.js) for order management in the eDrops website  
 Shopify Website: https://wqntest.myshopify.com/admin  
 
 **Backend**
@@ -81,7 +83,7 @@ From the home/top level directory:
 Then, to run the client (in development mode):  
 `$ npm run dev`  
 
-Navigate to localhost:8086/home to get to the home page of the Edrop application.  
+Navigate to localhost:8086/home to get to the home page of the eDrops application.  
 
 **To get the backend running:**  
 Open a new terminal window. Build the backend container and download images for MySQL and Ngrok.   
@@ -156,19 +158,19 @@ If things aren't working, check that these are correct for your environment. Con
 
 | Environment Variable     | Description                                         | Default Value             |
 |--------------------------|-----------------------------------------------------|---------------------------|
-| APP\_MYSQL\_HOST         | Hostname for MySQL database                         | "localhost"               |
-| APP\_MYSQL\_PORT         | Port number for MySQL database                      | 3306                      |
-| APP\_MYSQL\_DATABASE     | Table name for MySQL database                       | "edrop_db"                |
-| APP\_MYSQL\_USERNAME     | Username for MySQL database                         | "edrop"                   |
-| APP\_MYSQL\_PASSWORD     | Password for MySQL database                         | "12345678"                |
-| APP\_FRONTEND\_HOSTNAME  | Hostname for front end server                       | "localhost"               |
-| APP\_FRONTEND\_PORT      | Port number for front end server                    | 8086                      |
-| APP\_EMAIL\_HOST         | Hostname for email server used to send emails       | "smtp\.gmail\.com"        |
-| APP\_EMAIL\_PORT         | Port number for email server used to send emails    | 465                       |
-| APP\_EMAIL\_USERNAME     | Email address for email account used to send emails | "edropwebsite@gmail\.com" |
-| APP\_EMAIL\_PASSWORD     | Password for email account used to send emails      | Contact Danning/Qining    |
-| SHOPIFY\_DOMAIN          | Domain for our Shopify website                      | "wqntest.myshopify.com"   |
-| SHOPIFY\_TOKEN           | Token for Shopify Storefront API                    | Contact Danning/Qining    |
+| APP\_MYSQL\_HOST         | Hostname for MySQL database                         | "localhost"                |
+| APP\_MYSQL\_PORT         | Port number for MySQL database                      | 3306                       |
+| APP\_MYSQL\_DATABASE     | Table name for MySQL database                       | "edrop_db"                 |
+| APP\_MYSQL\_USERNAME     | Username for MySQL database                         | "edrop"                    |
+| APP\_MYSQL\_PASSWORD     | Password for MySQL database                         | "12345678"                 |
+| APP\_FRONTEND\_HOSTNAME  | Hostname for front end server                       | "localhost"                |
+| APP\_FRONTEND\_PORT      | Port number for front end server                    | 8086                       |
+| APP\_EMAIL\_HOST         | Hostname for email server used to send emails       | "smtp\.gmail\.com"         |
+| APP\_EMAIL\_PORT         | Port number for email server used to send emails    | 465                        |
+| APP\_EMAIL\_USERNAME     | Email address for email account used to send emails | "edropswebsite@gmail\.com" |
+| APP\_EMAIL\_PASSWORD     | Password for email account used to send emails      | Contact Danning/Qining     |
+| SHOPIFY\_DOMAIN          | Domain for our Shopify website                      | "wqntest.myshopify.com"    |
+| SHOPIFY\_TOKEN           | Token for Shopify Storefront API                    | Contact Danning/Qining     |
 
 IP address of our AWS EC2 server: 54.241.15.160.  
 
@@ -180,7 +182,7 @@ To do this in Windows (using Command Prompt):
 `$ set APP_MYSQL_PASSWORD=password123`
 
 To do this in Windows (using Powershell):  
-Note the leading dollar sign single quotes around the value.  
+Note the leading dollar sign and single quotes around the value.  
 `$ $env:ENV_VAR_NAME = 'VALUE'`  
 `$ $env:APP_MYSQL_PASSWORD = 'password123'`
 
@@ -250,3 +252,6 @@ This uses the fact that we can "transfer" a table from one database to another w
 `RENAME TABLE old_db_name.table_name TO new_db_name.table_name;`  
 
 Source: https://chartio.com/resources/tutorials/how-to-rename-a-database-in-mysql/  
+
+## Allow Access to Gmail
+If you are running the app locally for the first time and try to use it to have edropswebsite@gmail.com send an email, Google will block your request. To authorize your computer, go to https://accounts.google.com/b/6/DisplayUnlockCaptcha, replacing the "6" with the # of your Google account if you are logged in to multiple. This link, which isn't published by Google for some reason, will temporarily allow accounts like eDrops backend to log in to your application. This will cause Google to remember the device in the future.

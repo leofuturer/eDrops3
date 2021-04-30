@@ -4,6 +4,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const LodashModuleReplacementPlugin = require('lodash-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+const CopyPlugin = require("copy-webpack-plugin");
 const COMMIT_SHA = process.env.GITHUB_SHA ? process.env.GITHUB_SHA.slice(0,8) : "dev";
 
 module.exports = {
@@ -62,7 +63,6 @@ module.exports = {
     plugins: [
         new HtmlWebpackPlugin({
             template: './index.html',
-            //favicon: './favicon.ico'
         }),
         // Separate the css files and name the output file as styles.css
         new ExtractTextPlugin({
@@ -76,6 +76,12 @@ module.exports = {
             filename: `js/base-${COMMIT_SHA}-[hash].js`
         }),
         new webpack.optimize.ModuleConcatenationPlugin(),
+        new CopyPlugin([
+                { from: "static/favicon/" },
+                { from: "robots.txt" },
+                { from: "sitemap.xml" },
+            ],
+        ),
         new LodashModuleReplacementPlugin,
 
         // Add this to see bundle size

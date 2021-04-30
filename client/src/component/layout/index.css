@@ -5,8 +5,10 @@ body{
     height: 100%;
 }
 .container-nav{
-    width: 1200px;
-    margin:0 auto;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: flex-start;
 }
 
 .content{
@@ -24,7 +26,7 @@ body{
 
 .header-div {
     height: 80px;
-    background-color: #242847;
+    background-color: #005587;
     width: 100%;
 }
 
@@ -43,36 +45,59 @@ body{
 .li-username{
     position: relative;
 }
+
 .header-brand a{
-    color:#fff;
+    color:#FFFFFF;
     text-decoration: none;
 }
+
+.header-brand a:hover{
+    color:#FFC72C;
+    text-decoration: none;
+}
+
+.header-brand a:focus{
+    color:#FFFFFF;
+    text-decoration: none;
+}
+
+.header-brand a:active{
+    color:#FFC72C;
+    text-decoration: none;
+}
+
+
+
 .ul-nav{
+    padding-left: 20px;
     list-style: none;
     float: left;
+    margin-bottom: 0px;
 }
 ul.ul-nav li{
     float:left;
-    padding:0 17px;
-    /* 4/23/2020: Changed from 20px: if it exceeds 17px, usernames of 16 chars 
-    long (the max) will cause the navbar to take up 2 lines */
+    padding:0 15px; /* space between each link */
     line-height: 80px;
 }
 
 ul.ul-nav li a {
     font-size:16px;
-    color:#fff;
+    color:#FFFFFF;
     text-decoration: none;
     font-weight: bold;
 }
 
 ul.ul-nav li a:hover {
-    color: #e4c272;
+    color: #FFC72C;
 }
 
-/* ul.ul-nav li a.active {
-    color: #fff;
-} */
+ul.ul-nav li a:focus{
+    color:#FFFFFF;
+}
+
+ul.ul-nav li  a:active{
+    color:#FFC72C;
+}
 
 .div-drownup{
     position: absolute;
@@ -111,14 +136,7 @@ ul.ul-nav li a:hover {
     color:#fff;
     font-weight: bold;
 }
-.navbar .nav li a:hover{
-    background-color: transparent;
-    color:#fff;
-}
-.navbar .nav li a:focus{
-    background-color: transparent;
-    color:#337ab7;
-}
+
 
 .fenge-line{
     margin:0 -20px;
@@ -205,3 +223,24 @@ ul.ul-nav li a:hover {
     clear: both;
     min-height: 50px;
 }
+
+.website-logo {
+    max-height: 50px;
+    margin-right: 10px;
+    margin-top: -15px;
+    /* If you want the logo to replace the "e" */
+    /* max-height: 30px;
+    margin-right: -2px;
+    margin-top: -13px; */
+}
+
+.website-footer-logo {
+    max-height: 50px;
+    margin-right: 10px;
+    margin-top: 25px;
+    /* If you want the logo to replace the "e" */
+    /* max-height: 30px;
+    margin-right: -2px;
+    margin-top: -13px; */
+}
+

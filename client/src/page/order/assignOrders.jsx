@@ -92,12 +92,12 @@ class AssignOrders extends React.Component {
           </div>
         </div>
 
-        {/* <Model> */}
+        {/* <Modal> */}
         <div className="modal fade" id="confirm-assign" tabIndex="-1" role="dialog" aria-labelledby="assignModalLabel" aria-hidden="true">
           <div className="modal-dialog">
             <div className="modal-content">
               <div className="modal-header">
-                Edrop
+                eDrops
               </div>
               <div className="modal-body">
                 Do you want to assign the order to this worker?

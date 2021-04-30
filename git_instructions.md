@@ -1,5 +1,5 @@
 # Github and Git Workflow
-The purpose of this document is to describe our workflow for the Edrop website. We use git for version control and Github for hosting the remote version of our respository.
+The purpose of this document is to describe our workflow for the eDrops website. We use `git` for version control and Github for hosting the remote version of our respository.
 
 ## Workflow and Guidelines
 Before starting to code, plan out what you are going to do. It may be tempting to immediately start coding, but for more involved tasks, the amount of required changes can quickly grow to an unmanageable amount. It is better to write down: (1) what you hope to achieve; (2) how you will achieve this from a high level view; and then (3) what changes at the individual file level will be required. See issue #2 for an example.  

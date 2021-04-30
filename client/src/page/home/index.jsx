@@ -15,7 +15,7 @@ class Home extends React.Component {
         <div className="clearfix objectImg">
           <div className="col-md-4 cadImg">
             <div className="txt">
-              <h1>EWOD CAD</h1>
+              <h1>EWOD<br/>CAD</h1>
               <div className="txt-bg">
                 SEE IN ACTION
               </div>
@@ -23,19 +23,19 @@ class Home extends React.Component {
           </div>
           <div className="col-md-4 foundryImg">
             <div className="txt">
-              <h1>Foundry Service</h1>
+              <h1>Foundry<br/>Service</h1>
               <div className="txt-bg">
                 {
-                                    Cookies.get('userType') === 'customer'
-                                      ? <NavLink to="/upload">UPLOAD MASK FILE</NavLink>
-                                      : <NavLink to="/login">UPLOAD MASK FILE</NavLink>
-                                }
+                  Cookies.get('userType') === 'customer'
+                    ? <NavLink to="/upload">UPLOAD MASK FILE</NavLink>
+                    : <NavLink to="/login">UPLOAD MASK FILE</NavLink>
+                }
               </div>
             </div>
           </div>
           <div className="col-md-4 ewodImg">
             <div className="txt">
-              <h1>EWOD Control System</h1>
+              <h1>EWOD Control<br/>System</h1>
               <div className="txt-bg">
                 <NavLink to={controlSysPageLink}>VIEW DETAILS</NavLink>
               </div>

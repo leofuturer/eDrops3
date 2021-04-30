@@ -17,53 +17,53 @@ class NavLeft extends React.Component {
         <h2 className="admin-h2">Account</h2>
         <ul className="list-unstyled admin-ul">
           {
-                        Cookies.get('userType') == 'admin'
-                          ? (
-                            <li>
-                              <NavLink to="/manage/foundryworkers" activeStyle={{ width: '117px', borderLeft: '3px solid #428bca', color: '#428bca' }}>
-                                <span className="icon-nav"><i className="fa fa-users" /></span>
-                                <span className="icon-txt">Foundry workers</span>
-                              </NavLink>
-                            </li>
-                          )
-                          : null
-                    }
+              Cookies.get('userType') == 'admin'
+                ? (
+                  <li>
+                    <NavLink to="/manage/foundryworkers" activeStyle={{ width: '117px', borderLeft: '3px solid #428bca', color: '#428bca' }}>
+                      <span className="icon-nav"><i className="fa fa-users" /></span>
+                      <span className="icon-txt">Foundry workers</span>
+                    </NavLink>
+                  </li>
+                )
+                : null
+          }
           {
-                        Cookies.get('userType') == 'admin'
-                          ? (
-                            <li>
-                              <NavLink to="/manage/users" activeStyle={{ width: '117px', borderLeft: '3px solid #428bca', color: '#428bca' }}>
-                                <span className="icon-nav"><i className="fa fa-address-card" /></span>
-                                <span className="icon-txt">Users</span>
-                              </NavLink>
-                            </li>
-                          )
-                          : null
-                    }
+              Cookies.get('userType') == 'admin'
+                ? (
+                  <li>
+                    <NavLink to="/manage/users" activeStyle={{ width: '117px', borderLeft: '3px solid #428bca', color: '#428bca' }}>
+                      <span className="icon-nav"><i className="fa fa-address-card" /></span>
+                      <span className="icon-txt">Users</span>
+                    </NavLink>
+                  </li>
+                )
+                : null
+          }
           {
-                        Cookies.get('userType') == 'admin'
-                          ? (
-                            <li>
-                              <NavLink to="/manage/admins" activeStyle={{ width: '117px', borderLeft: '3px solid #428bca', color: '#428bca' }}>
-                                <span className="icon-nav"><i className="fa fa-user" /></span>
-                                <span className="icon-txt">Admins</span>
-                              </NavLink>
-                            </li>
-                          )
-                          : null
-                    }
+              Cookies.get('userType') == 'admin'
+                ? (
+                  <li>
+                    <NavLink to="/manage/admins" activeStyle={{ width: '117px', borderLeft: '3px solid #428bca', color: '#428bca' }}>
+                      <span className="icon-nav"><i className="fa fa-user" /></span>
+                      <span className="icon-txt">Admins</span>
+                    </NavLink>
+                  </li>
+                )
+                : null
+          }
           {
-                        Cookies.get('userType') == 'customer'
-                          ? (
-                            <li>
-                              <NavLink to="/manage/address" activeStyle={{ width: '117px', borderLeft: '3px solid #428bca', color: '#428bca' }}>
-                                <span className="icon-nav"><i className="fa fa-address-book" /></span>
-                                <span className="icon-txt">Address Book</span>
-                              </NavLink>
-                            </li>
-                          )
-                          : null
-                    }
+              Cookies.get('userType') == 'customer'
+                ? (
+                  <li>
+                    <NavLink to="/manage/address" activeStyle={{ width: '117px', borderLeft: '3px solid #428bca', color: '#428bca' }}>
+                      <span className="icon-nav"><i className="fa fa-address-book" /></span>
+                      <span className="icon-txt">Address Book</span>
+                    </NavLink>
+                  </li>
+                )
+                : null
+          }
           {
                         // Cookies.get('userType') == 'customer'
                         //     ?
@@ -84,35 +84,35 @@ class NavLeft extends React.Component {
                     </li> */}
 
           {
-                        Cookies.get('userType') == 'admin'
-                          ? (
-                            <li>
-                              <NavLink to="/manage/profile" activeStyle={{ width: '117px', borderLeft: '3px solid #428bca', color: '#428bca' }}>
-                                <span className="icon-nav"><i className="fa fa-book" /></span>
-                                <span className="icon-txt">Profile</span>
-                              </NavLink>
-                            </li>
-                          )
-                          : (
-                            Cookies.get('userType') == 'worker'
-                              ? (
-                                <li>
-                                  <NavLink to="/manage/profile" activeStyle={{ width: '117px', borderLeft: '3px solid #428bca', color: '#428bca' }}>
-                                    <span className="icon-nav"><i className="fa fa-book" /></span>
-                                    <span className="icon-txt">Profile</span>
-                                  </NavLink>
-                                </li>
-                              )
-                              : (
-                                <li>
-                                  <NavLink to="/manage/profile" activeStyle={{ width: '117px', borderLeft: '3px solid #428bca', color: '#428bca' }}>
-                                    <span className="icon-nav"><i className="fa fa-book" /></span>
-                                    <span className="icon-txt">Profile</span>
-                                  </NavLink>
-                                </li>
-                              )
-                          )
-                    }
+            Cookies.get('userType') == 'admin'
+              ? (
+                <li>
+                  <NavLink to="/manage/profile" activeStyle={{ width: '117px', borderLeft: '3px solid #428bca', color: '#428bca' }}>
+                    <span className="icon-nav"><i className="fa fa-book" /></span>
+                    <span className="icon-txt">Profile</span>
+                  </NavLink>
+                </li>
+              )
+              : (
+                Cookies.get('userType') == 'worker'
+                  ? (
+                    <li>
+                      <NavLink to="/manage/profile" activeStyle={{ width: '117px', borderLeft: '3px solid #428bca', color: '#428bca' }}>
+                        <span className="icon-nav"><i className="fa fa-book" /></span>
+                        <span className="icon-txt">Profile</span>
+                      </NavLink>
+                    </li>
+                  )
+                  : (
+                    <li>
+                      <NavLink to="/manage/profile" activeStyle={{ width: '117px', borderLeft: '3px solid #428bca', color: '#428bca' }}>
+                        <span className="icon-nav"><i className="fa fa-book" /></span>
+                        <span className="icon-txt">Profile</span>
+                      </NavLink>
+                    </li>
+                  )
+              )
+          }
 
           <li>
             <NavLink to="/manage/changepwd" activeStyle={{ width: '117px', borderLeft: '3px solid #428bca', color: '#428bca' }}>
@@ -121,17 +121,17 @@ class NavLeft extends React.Component {
             </NavLink>
           </li>
           {
-                    Cookies.get('userType') == 'customer'
-                      ? (
-                        <li>
-                          <NavLink to="/manage/cart" activeStyle={{ width: '117px', borderLeft: '3px solid #428bca', color: '#428bca' }}>
-                            <span className="icon-nav"><i className="fa fa-shopping-cart" /></span>
-                            <span className="icon-txt">Cart</span>
-                          </NavLink>
-                        </li>
-                      )
-                      : null
-                    }
+            Cookies.get('userType') == 'customer'
+              ? (
+                <li>
+                  <NavLink to="/manage/cart" activeStyle={{ width: '117px', borderLeft: '3px solid #428bca', color: '#428bca' }}>
+                    <span className="icon-nav"><i className="fa fa-shopping-cart" /></span>
+                    <span className="icon-txt">Cart</span>
+                  </NavLink>
+                </li>
+              )
+              : null
+          }
           {
                         // Cookies.get('userType') == 'customer'
                         //     ?
@@ -172,26 +172,26 @@ class NavLeft extends React.Component {
                         //     : null
                     }
           {
-                        Cookies.get('userType') == 'customer'
-                          ? (
-                            <li>
-                              <NavLink to="/manage/customer-orders" activeStyle={{ width: '117px', borderLeft: '3px solid #428bca', color: '#428bca' }}>
-                                <span className="icon-nav"><i className="fa fa-money" /></span>
-                                <span className="icon-txt">Orders</span>
-                              </NavLink>
-                            </li>
-                          )
-                          : Cookies.get('userType') === 'admin'
-                            ? (
-                              <li>
-                                <NavLink to="/manage/all-orders" activeStyle={{ width: '117px', borderLeft: '3px solid #428bca', color: '#428bca' }}>
-                                  <span className="icon-nav"><i className="fa fa-money" /></span>
-                                  <span className="icon-txt">Orders</span>
-                                </NavLink>
-                              </li>
-                            )
-                            : null
-                }
+            Cookies.get('userType') == 'customer'
+              ? (
+                <li>
+                  <NavLink to="/manage/customer-orders" activeStyle={{ width: '117px', borderLeft: '3px solid #428bca', color: '#428bca' }}>
+                    <span className="icon-nav"><i className="fa fa-money" /></span>
+                    <span className="icon-txt">Orders</span>
+                  </NavLink>
+                </li>
+              )
+              : Cookies.get('userType') === 'admin'
+                ? (
+                  <li>
+                    <NavLink to="/manage/all-orders" activeStyle={{ width: '117px', borderLeft: '3px solid #428bca', color: '#428bca' }}>
+                      <span className="icon-nav"><i className="fa fa-money" /></span>
+                      <span className="icon-txt">Orders</span>
+                    </NavLink>
+                  </li>
+                )
+                : null
+          }
 
           {/* <li>
                         <NavLink to="#" activeStyle={{width:'117px',borderLeft:'3px solid #428bca',color:'#428bca'}}>

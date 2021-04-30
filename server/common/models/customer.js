@@ -10,6 +10,7 @@ require('dotenv').config({path: path.resolve(__dirname, '.env')});
 const CONTAINER_NAME = process.env.S3_BUCKET_NAME || 'test_container';
 
 module.exports = function(Customer) {
+
   // validate security of password(at least 8 digits, include at least one uppercase
   // one lowercase, one number)
   Customer.beforeRemote('create', passwordValidation);
@@ -70,7 +71,7 @@ module.exports = function(Customer) {
         const emailOptions = {
           type: 'email',
           from: process.env.APP_EMAIL_USERNAME,
-          subject: '[Edrop] Resent Email Verification',
+          subject: '[eDrops] Resent Email Verification',
           text: `Hello ${user.firstName} ${user.lastName}! Here's another email verification link that you requested.`,
           template: path.resolve(__dirname, '../../server/views/verify.ejs'),
           protocol: process.env.NODE_ENV === 'production' ? 'https' : 'http',

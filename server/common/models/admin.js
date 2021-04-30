@@ -7,6 +7,8 @@ const app = require('../../server/server.js');
 const adminRoleMappingCreator = require('../../server/hooks/adminRoleMappingCreator');
 require('dotenv').config({path: path.resolve(__dirname, '.env')});
 
+const CONTAINER_NAME = process.env.S3_BUCKET_NAME || 'test_container';
+
 const {ADMIN_ROLE_NAME} = Roles;
 const Client = require('shopify-buy');
 const fetch = require('node-fetch');
@@ -38,7 +40,8 @@ module.exports = function(Admin) {
   // TODO: fix this messy function
   Admin.getChipOrders = function(ctx, cb) {
     let allOrderChips = [];
-
+    const desiredWorkerId = ctx.req.query.workerId;
+    console.log(desiredWorkerId);
     // find all complete orderInfos with their related orderChips
     Admin.app.models.orderInfo.find({where: {orderComplete: true}})
       .then((orderInfos) => {
@@ -143,7 +146,7 @@ module.exports = function(Admin) {
           cb(error);
         } else {
           ctx.res.set('Content-Disposition', `inline; filename="${file.fileName}"`); // this sets the file name
-          Admin.app.models.container.download('test_container', file.containerFileName, ctx.req, ctx.res, (err, fileData) => {
+          Admin.app.models.container.download(CONTAINER_NAME, file.containerFileName, ctx.req, ctx.res, (err, fileData) => {
             if (err) {
               cb(err);
             } else {
