@@ -9,6 +9,7 @@ const {User} = require('loopback');
 
 module.exports = function(Userbase) {
   Userbase.beforeRemote('create', passwordValidation);
+
   Userbase.afterRemote('login', (ctx, tokenInstance, next) => {
     Userbase.findById(tokenInstance.userId, (err, user) => {
       if (err) next(err);
@@ -40,6 +41,7 @@ module.exports = function(Userbase) {
           Base.findOne({where: {email: instance.email}}, (err, modelInstance) => {
             if (err) console.log(err);
             else {
+              // update the password of the actual customer/worker/admin instance too
               modelInstance.updateAttribute('password', User.hashPassword(ctx.req.body.newPassword), (err, newInstance) => {
                 if (err) {
                   console.log(err);
@@ -64,14 +66,19 @@ module.exports = function(Userbase) {
                     'Sincerely,<br>' +
                     'eDrops Website<br><br>' +
                     `Need help? Contact us at ${process.env.APP_EMAIL_USERNAME}<br>`;
+    log.info(`> Sending password reset email to: ${info.email}`);
     Userbase.app.models.Email.send({
       to: info.email,
       from: process.env.APP_EMAIL_USERNAME,
       subject: '[eDrops] Password Reset Request',
       html,
     }, (err) => {
-      if (err) return console.error('> Error sending password reset email');
-      log.success('> Sending password reset email to:', info.email);
+      if (err){
+        console.error(err);
+        return console.error('> Error sending password reset email')
+      } else {
+        log.success(`> Successfully sent password reset email`);
+      }
     });
   });
 };

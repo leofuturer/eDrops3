@@ -32,34 +32,42 @@ class Product extends React.Component {
     this.handleOptionsChange = this.handleOptionsChange.bind(this);
   }
 
-  componentDidMount() {
-    if (this.props.location.search === '') {
-      this.props.history.push('/allItems'); // redirect if no ID provided
-      return;
-    }
-
-    const _this = this;
-    const productId = this.props.location.search.slice(4); // ?id=<id>
-    if (productId === univEwodChipId) {
-      this.setState({
-        otherDetails: {
-          withCoverPlateAssembled: false,
-        },
-      });
-    }
-    const url = `${returnOneItem}?productId=${productId}`;
+  fetchProductData(shopifyProductId){
+    const url = `${returnOneItem}?productId=${shopifyProductId}`;
     API.Request(url, 'GET', {}, false)
       .then((res) => {
-        _this.setState({
+        this.setState({
           product: res.data.product,
           fetchedProduct: true,
           addedToCart: true,
         });
+        if (shopifyProductId === univEwodChipId) {
+          this.setState({
+            otherDetails: {
+              withCoverPlateAssembled: false,
+            },
+          });
+        }
       }).catch((err) => {
         console.error(err);
         // redirect to all items page if product ID is invalid
         this.props.history.push('/allItems');
       });
+  }
+
+  componentDidUpdate(oldProps){
+    if(this.props.location.search !== oldProps.location.search){
+      this.fetchProductData(this.props.location.search.slice(4));
+    }
+  }
+
+  componentDidMount() {
+    if (this.props.location.search === '') {
+      this.props.history.push('/allItems'); // redirect if no ID provided
+      return;
+    } else {
+      this.fetchProductData(this.props.location.search.slice(4));
+    }
   }
 
   handleChange(key, value) {

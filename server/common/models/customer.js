@@ -10,6 +10,7 @@ require('dotenv').config({path: path.resolve(__dirname, '.env')});
 const CONTAINER_NAME = process.env.S3_BUCKET_NAME || 'test_container';
 
 module.exports = function(Customer) {
+
   // validate security of password(at least 8 digits, include at least one uppercase
   // one lowercase, one number)
   Customer.beforeRemote('create', passwordValidation);
