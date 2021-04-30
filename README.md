@@ -182,7 +182,7 @@ To do this in Windows (using Command Prompt):
 `$ set APP_MYSQL_PASSWORD=password123`
 
 To do this in Windows (using Powershell):  
-Note the leading dollar sign single quotes around the value.  
+Note the leading dollar sign and single quotes around the value.  
 `$ $env:ENV_VAR_NAME = 'VALUE'`  
 `$ $env:APP_MYSQL_PASSWORD = 'password123'`
 
@@ -252,3 +252,6 @@ This uses the fact that we can "transfer" a table from one database to another w
 `RENAME TABLE old_db_name.table_name TO new_db_name.table_name;`  
 
 Source: https://chartio.com/resources/tutorials/how-to-rename-a-database-in-mysql/  
+
+## Allow Access to Gmail
+If you are running the app locally for the first time and try to use it to have edropswebsite@gmail.com send an email, Google will block your request. To authorize your computer, go to https://accounts.google.com/b/6/DisplayUnlockCaptcha, replacing the "6" with the # of your Google account if you are logged in to multiple. This link, which isn't published by Google for some reason, will temporarily allow accounts like eDrops backend to log in to your application. This will cause Google to remember the device in the future.

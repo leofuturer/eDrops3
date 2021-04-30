@@ -121,19 +121,19 @@ class ResetPassword extends React.Component {
           )
           : null}
         {
-                    this.state.passwordChanged
-                      ? (
-                        <div>
-                          <div className="help-text">
-                            Your password has successfully been reset.
-                          </div>
-                          <div className="link">
-                            <NavLink to="/login">Login to Your Account</NavLink>
-                          </div>
-                        </div>
-                      )
-                      : null
-                }
+          this.state.passwordChanged
+            ? (
+              <div>
+                <div className="help-text">
+                  Your password has successfully been reset.
+                </div>
+                <div className="link">
+                  <NavLink to="/login">Login to Your Account</NavLink>
+                </div>
+              </div>
+            )
+            : null
+        }
 
       </div>
     );
