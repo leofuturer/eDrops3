@@ -12,5 +12,8 @@ module.exports = {
     ecmaVersion: 8,
   },
   rules: {
+    'linebreak-style': ['off'],
+    'no-param-reassign': 0,
+    'max-len': ['error', {code: 120}],
   },
 };

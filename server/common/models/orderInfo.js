@@ -208,23 +208,21 @@ module.exports = function(OrderInfo) {
         OrderInfo.app.models.userBase.findById(token.userId, (err, user) => {
           if (user.userType !== 'customer' && user.userType !== 'admin') {
             next(errors.forbidden('only customer or admin can retrieve order info'));
-          } else {
-            if (user.userType === 'admin'){
+          } else if (user.userType === 'admin'){
               // admin can access any orderInfo model
               next(); 
-            } else {
-              // check customer actually owns this orderInfo
-              OrderInfo.findById(ctx.req.params.id, (err, info) => {
-                if (err) {
-                  console.error(err);
-                  next(err);
-                } else if (ctx.req.accessToken.userId !== info.customerId) {
-                  next(errors.forbidden('this order is not owned by you'));
-                } else {
-                  next();
-                }
-              });
-            }
+          } else {
+            // check customer actually owns this orderInfo
+            OrderInfo.findById(ctx.req.params.id, (err, info) => {
+              if (err) {
+                console.error(err);
+                next(err);
+              } else if (ctx.req.accessToken.userId !== info.customerId) {
+                next(errors.forbidden('this order is not owned by you'));
+              } else {
+                next();
+              }
+            });
           }
         });
       }
