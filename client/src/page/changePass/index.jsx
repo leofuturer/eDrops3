@@ -84,6 +84,10 @@ class FormsPage extends React.Component {
             isLoading: false
           });
         });
+    } else {
+      this.setState({
+        isLoading: false
+      });
     }
   }
 
