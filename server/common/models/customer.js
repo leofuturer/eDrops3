@@ -1,16 +1,16 @@
 const path = require('path');
+require('dotenv').config({path: path.resolve(__dirname, '.env')});
+
 const customerEmailVerification = require('../../server/hooks/customerEmailVerification');
 const passwordValidation = require('../../server/hooks/passwordValidation');
 const app = require('../../server/server.js');
 const {FRONTEND_HOSTNAME, FRONTEND_PORT} = require('../../server/constants/emailconstants');
 const log = require('../../db/toolbox/log');
 const {formatBytes, currentTime} = require('../../server/toolbox/calculate');
-require('dotenv').config({path: path.resolve(__dirname, '.env')});
 
 const CONTAINER_NAME = process.env.S3_BUCKET_NAME || 'test_container';
 
 module.exports = function(Customer) {
-
   // validate security of password(at least 8 digits, include at least one uppercase
   // one lowercase, one number)
   Customer.beforeRemote('create', passwordValidation);
@@ -116,34 +116,35 @@ module.exports = function(Customer) {
       err.status = 400;
       console.error(err);
       return cb(err);
-    }
-    const result = {
-      usernameTaken: false,
-      emailTaken: false,
-    };
-    Customer.find({where: {username: body.username || ''}}, (err, models) => {
-      // querying "username": undefined actually will return results (why??)
-      // same seems to be true for email field
-      if (err) {
-        console.error(err);
-        cb(err);
-      } else if (models.length > 0) {
-        log.warning(`Username ${body.username} taken`);
-        result.usernameTaken = true;
-      }
-      Customer.find({where: {email: body.email || ''}}, (err, models2) => {
-        if (err) {
-          console.error(err);
-          cb(err);
-        } else if (models2.length > 0) {
+    } else {
+      const result = {
+        usernameTaken: false,
+        emailTaken: false,
+      };
+
+      var prom1 = Customer.find({where: {username: body.username || ''}});
+      var prom2 = Customer.find({where: {email: body.email || ''}});
+      var prom3 = Customer.app.models.userBase.find({where: {username: body.username || ''}});
+      var prom4 = Customer.app.models.userBase.find({where: {email: body.email || ''}});
+      
+      Promise.all([prom1, prom2, prom3, prom4])
+      .then((values) => {
+        if(values[0].length > 0 || values[2].length > 0){
+          log.warning(`Username ${body.username} taken`);
+          result.usernameTaken = true;
+        }
+
+        if(values[1].length > 0 || values[3].length > 0){
           log.warning(`Email ${body.email} taken`);
           result.emailTaken = true;
-          cb(null, result);
-        } else {
-          cb(null, result);
         }
+
+        cb(null, result);
+      })
+      .catch((err) => {
+        cb(err);
       });
-    });
+    }
   };
 
   Customer.remoteMethod('credsTaken', {
