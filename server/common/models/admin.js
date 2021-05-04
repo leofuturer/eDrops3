@@ -1,18 +1,18 @@
-
-// Constants
 const path = require('path');
-const Roles = require('../../server/constants/Roles');
-const app = require('../../server/server.js');
-// Remote hooks
-const adminRoleMappingCreator = require('../../server/hooks/adminRoleMappingCreator');
-require('dotenv').config({path: path.resolve(__dirname, '.env')});
-
-const CONTAINER_NAME = process.env.S3_BUCKET_NAME || 'test_container';
-
-const {ADMIN_ROLE_NAME} = Roles;
 const Client = require('shopify-buy');
 const fetch = require('node-fetch');
+
+require('dotenv').config({path: path.resolve(__dirname, '.env')});
+
 const Constants = require('../../constants');
+const Roles = require('../../server/constants/Roles');
+
+const {ADMIN_ROLE_NAME} = Roles;
+
+// Remote hooks
+const adminRoleMappingCreator = require('../../server/hooks/adminRoleMappingCreator');
+
+const CONTAINER_NAME = process.env.S3_BUCKET_NAME || 'test_container';
 
 const client = Client.buildClient({
   storefrontAccessToken: process.env.SHOPIFY_TOKEN,
@@ -39,37 +39,36 @@ module.exports = function(Admin) {
 
   // TODO: fix this messy function
   Admin.getChipOrders = function(ctx, cb) {
-    let allOrderChips = [];
+    const allOrderChips = [];
     const desiredWorkerId = ctx.req.query.workerId;
     console.log(desiredWorkerId);
     // find all complete orderInfos with their related orderChips
     Admin.app.models.orderInfo.find({where: {orderComplete: true}})
       .then((orderInfos) => {
-        const promises = orderInfos.map((orderInfo) => 
+        const promises = orderInfos.map((orderInfo) =>
           // find all orderChips related to each orderInfo
           Admin.app.models.orderChip.find({where: {orderId: orderInfo.id}})
-          .then((chipOrders) => {
-            if(chipOrders !== null){
+            .then((chipOrders) => {
+              if (chipOrders !== null) {
               // append orderInfo.customerId to each orderChip instance
-              const promisesInner = chipOrders.map((chipOrder) => {
-                chipOrder.customerId = orderInfo.customerId;
-                allOrderChips.push(chipOrder);
-              });
-              Promise.all(promisesInner).then(() => {
+                const promisesInner = chipOrders.map((chipOrder) => {
+                  chipOrder.customerId = orderInfo.customerId;
+                  allOrderChips.push(chipOrder);
+                });
+                Promise.all(promisesInner).then(() => {
                 // Done appending everything
-              });
-            }
-          })
-          .catch((err) => {
-            console.error(err);
-            cb(err);
-          })
-        );
+                });
+              }
+            })
+            .catch((err) => {
+              console.error(err);
+              cb(err);
+            }));
 
         // `promises` will not all resolve until `promisesInner` resolves
         Promise.all(promises).then(() => {
           // console.log(allOrderChips);
-          const promises2 = allOrderChips.map((orderChip) => Admin.app.models.customer.findById(orderChip.customerId)
+          const prom2 = allOrderChips.map((orderChip) => Admin.app.models.customer.findById(orderChip.customerId)
             .then((customer) => {
               orderChip.customerName = `${customer.firstName} ${customer.lastName}`;
             })
@@ -77,10 +76,9 @@ module.exports = function(Admin) {
               console.error(err);
               cb(err);
             }));
-          
-            Promise.all(promises2).then(() => {
-            const promises3 = allOrderChips.map((orderChip) => 
-              Admin.app.models.foundryWorker.findById(orderChip.workerId)
+
+          Promise.all(prom2).then(() => {
+            const prom3 = allOrderChips.map((orderChip) => Admin.app.models.foundryWorker.findById(orderChip.workerId)
               .then((worker) => {
                 if (worker) {
                   orderChip.workerName = `${worker.firstName} ${worker.lastName}`;
@@ -91,10 +89,9 @@ module.exports = function(Admin) {
               .catch((err) => {
                 console.error(err);
                 cb(err);
-              })
-            );
-            
-            Promise.all(promises3).then(() => {
+              }));
+
+            Promise.all(prom3).then(() => {
               cb(null, allOrderChips);
             });
           });
@@ -131,7 +128,7 @@ module.exports = function(Admin) {
 
   Admin.downloadFile = function(ctx, cb) {
     const {fileId} = ctx.req.query;
-    if (fileId === undefined || fileId === "") {
+    if (fileId === undefined || fileId === '') {
       const error = new Error('Missing fileId argument');
       error.status = 400;
       cb(error);

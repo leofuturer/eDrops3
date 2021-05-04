@@ -1,0 +1,41 @@
+version: "3.7"
+
+# https://start.jcolemorrison.com/authorized-resources-and-database-migrations-with-strongloops-loopback/
+
+services:  
+  edrop_mysqldb_testdb:
+    image: mysql:8.0 # max version supported by AWS RDS
+    container_name: edrop_mysqldb
+    env_file:
+      - ./deploy/test/mysql.env
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    ports:
+      - 3306:3306
+    volumes:
+      - dockerdbdev_test:/var/lib/mysql # persistent storage for DB
+
+  edrop_backend:
+    volumes:
+      - ./server/:/usr/src/app
+    env_file:
+      - ./deploy/test/backend.env
+      - ./deploy/test/backend_pwds.env
+    environment:
+      - APP_EMAIL_PASSWORD 
+      - SHOPIFY_TOKEN
+    depends_on:
+      - edrop_mysqldb_testdb # start database before backend
+
+volumes:
+  dockerdbdev_test: 
+
+# Order of env var selection:
+# Compose file
+# Shell environment variables
+# Environment file
+# Dockerfile
+# Variable is not defined
+
+# Thus, for local testing, we define APP_EMAIL_PASSWORD and SHOPIFY_TOKEN in the 
+# backend_pwds.env file. For CI testing, we define it in the shell.

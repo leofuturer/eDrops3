@@ -18,9 +18,7 @@ export const userResetPass = `${ApiRootUrl}/userBases/reset-password`;
 export const customerSignUp = `${ApiRootUrl}/customers`;
 export const customerLogin = `${ApiRootUrl}/customers/login`;
 export const customerLogout = `${ApiRootUrl}/customers/logout`;
-export const customerForgetPass = `${ApiRootUrl}/customers/reset`;
 export const customerChangePass = `${ApiRootUrl}/customers/change-password`;
-export const customerResetPass = `${ApiRootUrl}/customers/reset-password`;
 export const customerAddresses = `${ApiRootUrl}/customers/id/customerAddresses`;
 export const customerGetProfile = `${ApiRootUrl}/customers/id`;
 export const customerDeleteById = `${ApiRootUrl}/customers/id`;
@@ -33,7 +31,6 @@ export const customerGetApiToken = `${ApiRootUrl}/customers/getApi`;
 // Admin
 export const AdminLogin = `${ApiRootUrl}/admins/login`;
 export const AdminLogout = `${ApiRootUrl}/admins/logout`;
-export const AdminForgetPassword = `${ApiRootUrl}/admin-forget-password`;
 export const AdminChangePass = `${ApiRootUrl}/admins/change-password`;
 export const adminGetProfile = `${ApiRootUrl}/admins/id`;
 export const updateAdminProfile = `${ApiRootUrl}/admins/id`;
@@ -53,7 +50,6 @@ export const returnOneItem = `${ApiRootUrl}/admins/getOne`;
 // Foundry Worker
 export const FoundryWorkerLogin = `${ApiRootUrl}/foundryWorkers/login`;
 export const FoundryWorkerLogout = `${ApiRootUrl}/foundryWorkers/logout`;
-export const FoundryWorkerForgetPass = `${ApiRootUrl}/worker-forget-password`;
 export const FoundryWorkerChangePass = `${ApiRootUrl}/foundryWorkers/change-password`;
 export const foundryWorkerGetProfile = `${ApiRootUrl}/foundryWorkers/id`;
 export const editFoundryWorker = `${ApiRootUrl}/foundryWorkers/id`;

@@ -1,7 +1,4 @@
-
 const Roles = require('../constants/Roles');
-
-const {ADMIN_ROLE_NAME} = Roles;
 
 module.exports = (roleName) => (ctx, userInstance, next) => {
   const {Role, RoleMapping} = ctx.req.app.models;

@@ -1,0 +1,105 @@
+name: backend_test
+
+on:
+  push:
+    paths:
+    # run if anything changed in server, toplevel, or deploy-related folders
+    - '.github/workflows/backend_test.yml'
+    - 'deploy/**' 
+    - 'server/**'
+    - '*'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [14.15.x]
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
+    - name: Set up test environment and run tests
+      run: |
+          # install server
+          cd server
+          npm install
+          docker build -t danningyu/edrop_backend .
+          
+          # initialize server
+          cd .. 
+          touch deploy/test/backend_pwds.env
+          RESET_DATABASE=Yes docker-compose -f docker-compose.yml -f docker-compose.test.yml up -d
+          
+          # wait for database to start
+          set +e
+
+          retries=5
+          curl localhost:3306 > /dev/null
+          while [[ $? -ne 1 && $retries -ne 0 ]]; do
+            echo "Waiting for database to start, will try again in 5 seconds"
+            echo "$retries retries left"
+            sleep 5
+            retries=$(( $retries - 1 ))
+            curl localhost:3306 > /dev/null
+          done
+          
+          if [[ $retries -eq 0 ]]; then
+            echo "Test failure: database failed to start"
+            exit 1
+          else
+            echo "Database has started"
+          fi
+
+          # Wait for database to be reset
+          retries=5
+          docker-compose -f docker-compose.yml -f docker-compose.test.yml logs | grep 'Done resetting database'
+          while [[ $? -ne 0 && $retries -ne 0 ]]; do
+            echo "Waiting for database reset to occur, will try again in 5 seconds"
+            echo "$retries retries left"
+            sleep 5
+            retries=$(( $retries - 1 ))
+            docker-compose -f docker-compose.yml -f docker-compose.test.yml logs | grep 'Done resetting database'
+          done
+
+          if [[ $retries -eq 0 ]]; then
+            echo "Test failure: failed to reset database"
+            exit 1
+          else
+            echo "Database has been reset"
+          fi
+
+          # Restart backend without resetting database
+          docker-compose -f docker-compose.yml -f docker-compose.test.yml down
+          docker-compose -f docker-compose.yml -f docker-compose.test.yml up -d
+
+          # wait for backend to start
+          retries=5
+          curl localhost:3000/explorer > /dev/null
+          while [[ $? -ne 0 && $retries -ne 0 ]]; do
+            echo "Waiting for server to start, will try again in 5 seconds"
+            echo "$retries retries left"
+            sleep 5
+            retries=$(( $retries - 1 ))
+            curl localhost:3000/explorer > /dev/null
+          done
+
+          if [[ $retries -eq 0 ]]; then
+            echo "Test failure: curl could not contact server"
+            exit 1
+          else
+            echo "Server has started"
+          fi
+          set -e
+
+          docker-compose -f docker-compose.yml -f docker-compose.test.yml logs
+
+          cd server
+          npm test
+
+      env:
+        APP_EMAIL_PASSWORD: ${{ secrets.APP_EMAIL_PASSWORD }}
+        SHOPIFY_TOKEN: ${{ secrets.SHOPIFY_TOKEN }}
