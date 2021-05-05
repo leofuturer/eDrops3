@@ -16,7 +16,7 @@ module.exports = (ctx, customerInstance, next) => {
     to: email,
     from: process.env.APP_EMAIL_USERNAME,
     subject: '[eDrops] Email Verification',
-    text: `Hello ${customerInstance.username}! Thanks for registering to use Edrop. Please verify your email by clicking on the following link:`,
+    text: `Hello ${customerInstance.username}! Thanks for registering to use eDrops. Please verify your email by clicking on the following link:`,
     template: path.resolve(__dirname, '../views/verify.ejs'),
     protocol: process.env.NODE_ENV === 'production' ? 'https' : 'http',
     host: FRONTEND_HOSTNAME,
