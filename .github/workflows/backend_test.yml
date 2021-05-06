@@ -10,7 +10,7 @@ on:
     - '*'
 
 jobs:
-  build:
+  test:
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -27,6 +27,7 @@ jobs:
           # install server
           cd server
           npm install
+          npm install -g wait-on
           docker build -t danningyu/edrop_backend .
           
           # initialize server
@@ -35,26 +36,10 @@ jobs:
           RESET_DATABASE=Yes docker-compose -f docker-compose.yml -f docker-compose.test.yml up -d
           
           # wait for database to start
-          set +e
-
-          retries=5
-          curl localhost:3306 > /dev/null
-          while [[ $? -ne 1 && $retries -ne 0 ]]; do
-            echo "Waiting for database to start, will try again in 5 seconds"
-            echo "$retries retries left"
-            sleep 5
-            retries=$(( $retries - 1 ))
-            curl localhost:3306 > /dev/null
-          done
-          
-          if [[ $retries -eq 0 ]]; then
-            echo "Test failure: database failed to start"
-            exit 1
-          else
-            echo "Database has started"
-          fi
+          wait-on tcp:3306 --timeout 25000
 
           # Wait for database to be reset
+          set +e
           retries=5
           docker-compose -f docker-compose.yml -f docker-compose.test.yml logs | grep 'Done resetting database'
           while [[ $? -ne 0 && $retries -ne 0 ]]; do
@@ -72,34 +57,18 @@ jobs:
             echo "Database has been reset"
           fi
 
+          set -e
+
           # Restart backend without resetting database
           docker-compose -f docker-compose.yml -f docker-compose.test.yml down
           docker-compose -f docker-compose.yml -f docker-compose.test.yml up -d
 
-          # wait for backend to start
-          retries=5
-          curl localhost:3000/explorer > /dev/null
-          while [[ $? -ne 0 && $retries -ne 0 ]]; do
-            echo "Waiting for server to start, will try again in 5 seconds"
-            echo "$retries retries left"
-            sleep 5
-            retries=$(( $retries - 1 ))
-            curl localhost:3000/explorer > /dev/null
-          done
-
-          if [[ $retries -eq 0 ]]; then
-            echo "Test failure: curl could not contact server"
-            exit 1
-          else
-            echo "Server has started"
-          fi
-          set -e
+          wait-on http-get://localhost:3000/explorer --timeout 25000
 
           docker-compose -f docker-compose.yml -f docker-compose.test.yml logs
 
           cd server
           npm test
-
       env:
         APP_EMAIL_PASSWORD: ${{ secrets.APP_EMAIL_PASSWORD }}
         SHOPIFY_TOKEN: ${{ secrets.SHOPIFY_TOKEN }}
