@@ -67,9 +67,9 @@ module.exports = function(FoundryWorker) {
 
   FoundryWorker.prototype.downloadFile = function(ctx, cb) {
     // download file for a given chipOrderId
-    const { chipOrderId } = ctx.req.query;
+    const {chipOrderId} = ctx.req.query;
     const user = this;
-    if (chipOrderId === undefined || chipOrderId === "") {
+    if (chipOrderId === undefined || chipOrderId === '') {
       const error = new Error('Missing chipOrderId argument');
       error.status = 400;
       cb(error);
@@ -83,7 +83,7 @@ module.exports = function(FoundryWorker) {
           const error = new Error('chipOrder not found');
           error.status = 404;
           cb(error);
-        } else if (chipOrder.workerId != user.id) {
+        } else if (chipOrder.workerId !== user.id) {
           const error = new Error('Forbidden to access file');
           error.status = 403;
           cb(error);
@@ -109,7 +109,7 @@ module.exports = function(FoundryWorker) {
             }
           });
         }
-      })
+      });
     }
   };
 

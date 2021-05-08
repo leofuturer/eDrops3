@@ -81,8 +81,6 @@
           "credsTaken": true,
           "login": true,
           "logout": true,
-          "resetPassword": true,
-          "setPassword": true,
           "changePassword": true,
           "resendVerifyEmail": true,
           "confirm": true,

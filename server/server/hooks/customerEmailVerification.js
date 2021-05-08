@@ -1,8 +1,6 @@
 const path = require('path');
 const {FRONTEND_HOSTNAME, FRONTEND_PORT} = require('../constants/emailconstants');
 
-'use strict';
-
 module.exports = (ctx, customerInstance, next) => {
   const {customer} = ctx.req.app.models;
   const {email} = ctx.req.body;

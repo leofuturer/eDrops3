@@ -68,6 +68,13 @@
     {
       "accessType": "READ",
       "principalType": "ROLE",
+      "principalId": "admin",
+      "permission": "ALLOW",
+      "property": "find"
+    },
+    {
+      "accessType": "READ",
+      "principalType": "ROLE",
       "principalId": "$owner",
       "permission": "ALLOW",
       "property": "findById"
@@ -109,31 +116,11 @@
     },
     
     {
-      "accessType": "READ",
-      "principalType": "ROLE",
-      "principalId": "admin",
-      "permission": "ALLOW",
-      "property": "find"
-    },
-
-    {
       "accessType": "EXECUTE",
       "principalType": "ROLE",
       "principalId": "$everyone",
       "permission": "ALLOW",
       "property": "credsTaken"
-    },
-    {
-      "principalType": "ROLE",
-      "principalId": "$owner",
-      "permission": "ALLOW",
-      "property": "resetPassword"
-    },
-    {
-      "principalType": "ROLE",
-      "principalId": "$owner",
-      "permission": "ALLOW",
-      "property": "setPassword"
     },
     {
       "principalType": "ROLE",

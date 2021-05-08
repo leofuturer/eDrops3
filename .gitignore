@@ -1,6 +1,8 @@
 node_modules/
 *.DS_Store
-*.env
+deploy/dev/*.env
+deploy/prod/*.env
+deploy/test/backend_pwds.env
 permission_matrix.json
 logs.txt
 *.tar

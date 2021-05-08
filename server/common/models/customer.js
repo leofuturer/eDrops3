@@ -199,7 +199,7 @@ module.exports = function(Customer) {
           uploader: user.username,
           customerId: user.id,
           isDeleted: false,
-          isPublic: uploadedFields.isPublic == 'public',
+          isPublic: uploadedFields.isPublic === 'public',
           unit: uploadedFields.unit,
           fileSize: formatBytes(uploadedFile.size, 1),
         }, (err, obj) => {
@@ -218,7 +218,7 @@ module.exports = function(Customer) {
   Customer.prototype.downloadFile = function(ctx, cb) {
     const {fileId} = ctx.req.query;
     const user = this;
-    if (fileId === undefined || fileId === "") {
+    if (fileId === undefined || fileId === '') {
       const error = new Error('Missing fileId argument');
       error.status = 400;
       cb(error);
@@ -231,7 +231,7 @@ module.exports = function(Customer) {
           const error = new Error('File not found');
           error.status = 404;
           cb(error);
-        } else if (file.customerId != user.id) {
+        } else if (file.customerId !== user.id) {
           const error = new Error('Forbidden to access file');
           error.status = 403;
           cb(error);
@@ -253,7 +253,7 @@ module.exports = function(Customer) {
     const {fileId} = ctx.req.query;
     const user = this;
     // log(fileId);
-    if (fileId === undefined || fileId === "") {
+    if (fileId === undefined || fileId === '') {
       const error = new Error('Missing fileId argument');
       error.status = 400;
       cb(error);
@@ -267,7 +267,7 @@ module.exports = function(Customer) {
           const error = new Error('File not found');
           error.status = 404;
           cb(error);
-        } else if (file.customerId != user.id) {
+        } else if (file.customerId !== user.id) {
           const error = new Error('Forbidden to access file');
           error.status = 403;
           cb(error);
