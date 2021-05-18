@@ -28,7 +28,11 @@ module.exports = (ctx, customerInstance, next) => {
       customer.deleteById(customerInstance.id);
       return next(err);
     }
-    ctx.res.send({message: 'Signup successful!'});
+    
+    ctx.res.send({
+      message: 'Signup successful!', 
+      id: customerInstance.id
+    });
     // can change this in the future with some other send method:
     // https://expressjs.com/en/api.html#res.send
   });

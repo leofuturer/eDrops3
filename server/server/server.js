@@ -1,4 +1,3 @@
-
 const loopback = require('loopback');
 const boot = require('loopback-boot');
 const path = require('path');

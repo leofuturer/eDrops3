@@ -21,7 +21,7 @@ services:
     env_file:
       - ./deploy/test/backend.env
       - ./deploy/test/backend_pwds.env
-    environment:
+    environment: # Need to comment out these 3 lines for local tests...
       - APP_EMAIL_PASSWORD 
       - SHOPIFY_TOKEN
     depends_on:
