@@ -8,7 +8,7 @@
   "scripts": {
     "lint": "eslint .",
     "start": "node .",
-    "test": "jest testing/ --testTimeout=10000"
+    "test": "jest testing/ --testTimeout=10000 --verbose"
   },
   "dependencies": {
     "bluebird": "^3.5.2",

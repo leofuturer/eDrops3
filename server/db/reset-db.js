@@ -16,6 +16,7 @@ const getSeedData = require('./toolbox/getSeedData');
 const insertSeedData = require('./toolbox/insertSeedData');
 const log = require('./toolbox/log');
 const server = require('../server/server');
+const changeStartId = require('./toolbox/changeStartId');
 
 const dataSource = server.dataSources.mysqlDS;
 
@@ -47,19 +48,35 @@ dataSource.connector.execute(`
     const modelNames = getModelNames();
     // modelNames is an array whose elements are all string
 
+    // step 3: update starting value of primary indices
+    // this is to resolve authorization vulns
+    // otherwise: customer with id=1 gets same privileges as admin with id=1
     createSchema(modelNames).then(() => {
-      // step 3: insert seed data
-      const seedData = getSeedData();
+      let userModels = {
+        'admin': 1,
+        'foundryWorker': 1000,
+        'customer': 10000,
+        'userBase': 25000,
+      };
 
-      insertSeedData(seedData).then(() => {
-        log.success('reset-db success!');
+      changeStartId(userModels).then(() => {
+        // step 4: insert seed data
+        const seedData = getSeedData();
+
+        insertSeedData(seedData).then(() => {
+          log.success('reset-db success!');
+        }).catch((err) => {
+          log.error('reset-db failed.');
+          log.error(err);
+          process.exit(1);
+        }).finally(() => {
+          dataSource.disconnect();
+          process.exit(0);
+        });   
       }).catch((err) => {
-        log.error('reset-db failed.');
+        log.error('altering primary key start value failed');
         log.error(err);
         process.exit(1);
-      }).finally(() => {
-        dataSource.disconnect();
-        process.exit(0);
       });
     }).catch((err) => {
       log.error('create schema for models failed.');

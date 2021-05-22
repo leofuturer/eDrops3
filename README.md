@@ -137,7 +137,7 @@ Mac/Unix:
 `$ RESET_DATABASE=Yes docker-compose -f docker-compose.yml -f docker-compose.test.yml up -d && docker-compose -f docker-compose.yml -f docker-compose.test.yml logs -f`  
 
 Shut down the Docker stack after database resetting is done:  
-`$ docker-compose -f docker-compose.yml -f docker-compose.prod.yml down`  
+`$ docker-compose -f docker-compose.yml -f docker-compose.test.yml down`  
 
 Then, start the Docker stack without resetting the database:  
 Windows:  

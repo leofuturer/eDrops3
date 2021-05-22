@@ -71,7 +71,21 @@ jobs:
           docker-compose -f docker-compose.yml -f docker-compose.test.yml logs
 
           cd server
+
+          set +e
+          EXIT=0
           npm test
+          if [[ $? -ne 0 ]]; then
+            echo 'One or more tests failed'
+            EXIT=1
+          fi
+
+          docker logs edrop_backend
+
+          # Shut down the testing backend
+          cd ..
+          docker-compose -f docker-compose.yml -f docker-compose.test.yml down
+          exit $EXIT
       env:
         APP_EMAIL_PASSWORD: ${{ secrets.APP_EMAIL_PASSWORD }}
         SHOPIFY_TOKEN: ${{ secrets.SHOPIFY_TOKEN }}
