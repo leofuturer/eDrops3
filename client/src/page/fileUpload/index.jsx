@@ -215,7 +215,7 @@ class Upload extends React.Component {
             onDropRejected={(rejectedFiles) => this.onFileReject(rejectedFiles)}
             accept=".dxf, .DXF"
             maxFiles={1}
-            maxSize={10 * 1000 * 1000} // file size limit in bytes
+            maxSize={30 * 1000 * 1000} // file size limit in bytes (30 MB)
             multiple={false}
           >
             {({ getRootProps, getInputProps }) => (
