@@ -4,8 +4,6 @@ version: "3.7"
 
 services:
   edrop_backend:
-    image: danningyu/edrop_backend
-    container_name: edrop_backend
     env_file:
       - ./deploy/prod/backend.env
     depends_on:

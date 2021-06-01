@@ -32,10 +32,7 @@ jobs:
       run: |
           cd client
           npm install
-          ls static/img
           npm run build
-          ls dist
-          cat dist/index.html
 
           mkdir -p ~/.ssh
           echo "$SSH_KEY" > ~/.ssh/ec2.key
