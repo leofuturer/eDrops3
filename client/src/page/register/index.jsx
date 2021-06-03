@@ -170,15 +170,17 @@ class Register extends React.Component {
       zipCode: this.state.zipCode,
       isDefault: true,
     };
-    API.Request(customerSignUp, 'POST', customerData, false)
+
+    const userBaseObj = {
+      userType: 'customer',
+      username: this.state.username,
+      email: this.state.email,
+      password: this.state.password,
+    };
+
+    API.Request(userSignUp, 'POST', userBaseObj, false)
       .then((res) => {
-        const obj = {
-          userType: 'customer',
-          username: this.state.username,
-          email: this.state.email,
-          password: this.state.password,
-        };
-        API.Request(userSignUp, 'POST', obj, false)
+        API.Request(customerSignUp, 'POST', customerData, false)
           .then((res) => {
             this.props.history.push('/checkEmail');
           })

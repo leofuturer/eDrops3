@@ -103,6 +103,9 @@ Mac/Unix: `$ RESET_DATABASE=Yes docker-compose -f docker-compose.yml -f docker-c
 
 The commands are long, so we recommend you make aliases.
 
+Then, shut down the development stack:  
+`$ docker-compose -f docker-compose.yml -f docker-compose.prod.yml down`  
+
 You are now ready to start up the backend (make sure RESET_DATABASE is **not** equal to 'Yes'):  
 Windows: `$ docker-compose -f docker-compose.yml -f docker-compose.dev.yml up -d; docker-compose -f docker-compose.yml -f docker-compose.dev.yml logs -f`  
 Mac/Unix: `$ docker-compose -f docker-compose.yml -f docker-compose.dev.yml up -d && docker-compose -f docker-compose.yml -f docker-compose.dev.yml logs -f`  
@@ -125,6 +128,34 @@ Once the backend is running, where to find useful information:
 - localhost:3000/explorer shows all API entry points
 - localhost:4040 shows the Ngrok tunnel URL and interface (track incoming HTTP/S requests)
 - Uploaded files appear in the `server/storage/test_container` folder.  
+
+**To run backend tests**  
+Start up the backend using the test docker-compose stack instead, with the same procedure of resetting the database first:  
+Windows:  
+`$ $env:RESET_DATABASE = 'Yes'; docker-compose -f docker-compose.yml -f docker-compose.test.yml up -d; $env:RESET_DATABASE = ''; docker-compose -f docker-compose.yml -f docker-compose.test.yml logs -f`  
+Mac/Unix:  
+`$ RESET_DATABASE=Yes docker-compose -f docker-compose.yml -f docker-compose.test.yml up -d && docker-compose -f docker-compose.yml -f docker-compose.test.yml logs -f`  
+
+Shut down the Docker stack after database resetting is done:  
+`$ docker-compose -f docker-compose.yml -f docker-compose.test.yml down`  
+
+Then, start the Docker stack without resetting the database:  
+Windows:  
+`$ docker-compose -f docker-compose.yml -f docker-compose.test.yml up -d; docker-compose -f docker-compose.yml -f docker-compose.test.yml logs -f`  
+Mac/Unix:  
+`$ docker-compose -f docker-compose.yml -f docker-compose.test.yml up -d && docker-compose -f docker-compose.yml -f docker-compose.test.yml logs -f`  
+
+Then, run the tests:  
+`$ cd server`  
+`$ npm test`  
+
+To rerun the tests, you will need to reset the database:  
+Windows:  
+`$ docker exec edrop_backend node db/reset-db.js; docker restart edrop_backend`  
+Mac/Unix:  
+`$ docker exec edrop_backend node db/reset-db.js && docker restart edrop_backend`  
+
+This command runs `reset-db.js` to reset the database, then it restarts the backend so that a new admin user is created automatically (otherwise many API endpoints cannot be tested).  
 
 **To Use Shopify**
 To place orders via our test store, enter `1` for the credit card number, any date in the future for expiry date, and any 3 digit number for the CVV. See [Shopify's docs](https://help.shopify.com/en/partners/dashboard/managing-stores/test-orders-in-dev-stores) for more details.

@@ -12,7 +12,7 @@ if (process.env.NODE_ENV === 'dev') {
     connector: 'loopback-component-storage',
     provider: 'filesystem',
     root: './storage',
-    maxFileSize: '10485760',
+    maxFileSize: (30 * 1000 * 1000).toString(), // 30 MB
     nameConflict: 'makeUnique',
   };
 } else if (process.env.NODE_ENV === 'production') {

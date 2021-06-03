@@ -73,12 +73,11 @@ module.exports = function(Userbase) {
       subject: '[eDrops] Password Reset Request',
       html,
     }, (err) => {
-      if (err){
+      if (err) {
         console.error(err);
-        return console.error('> Error sending password reset email')
-      } else {
-        log.success(`> Successfully sent password reset email`);
+        return console.error('> Error sending password reset email');
       }
+      log.success('> Successfully sent password reset email');
     });
   });
 };
