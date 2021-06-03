@@ -11,7 +11,7 @@ edrops.org {
     }
     encode gzip
 
-    @backendApi {
+    @frontendApi {
         not {
             path /api/*
         }
@@ -28,7 +28,7 @@ edrops.org {
     reverse_proxy /api/* edrop_backend:3000
 
     root * /usr/share/caddy
-    file_server @backendApi
+    file_server @frontendApi
 }
 
 # how to remove the www
