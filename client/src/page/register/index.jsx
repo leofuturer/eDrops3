@@ -104,6 +104,26 @@ class Register extends React.Component {
     const form = this.closestParent(e.target, 'vertical-form');
     const errors = validate(form, constraints) || {};
     this.showErrorsOrSuccessForInput(ele, errors[ele.name]);
+
+    // check for duplicates
+    const data = {
+      username: `${e.target.id === 'inputUsername' && e.target.value}`,
+      email: `${e.target.id === 'inputEmail' && e.target.value}`,
+    };
+    const url = customerCredsTaken;
+    API.Request(url, 'POST', data, false)
+      .then((res) => {
+        if (res.data.result.usernameTaken) {
+          errors.username = ['Account already exists with this username'];
+          const input1 = document.getElementById('inputUsername');
+          this.showErrorsOrSuccessForInput(input1, errors.username);
+        }
+        if (res.data.result.emailTaken) {
+          errors.email = ['Account already exists with this email'];
+          const emailInput = document.getElementById('inputEmail');
+          this.showErrorsOrSuccessForInput(emailInput, errors.email);
+        }
+      });
   }
 
   handleFormSubmit(e) {
