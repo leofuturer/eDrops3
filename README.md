@@ -94,7 +94,7 @@ Open a new terminal window. Build the backend container and download images for 
 
 Create the following files in `deploy/dev/` to supply environment variables to the containers. Ask Danning or Qining for a copy of those files, as they contain sensitive information.  
 `$ cd deploy/dev/`  
-`$ touch backend.dev mysql.dev ngrok.dev`  
+`$ touch backend.env mysql.env ngrok.env`  
 
 Then, initialize the database schema and add seed data. Note: the first time the MySQL container is created, the `edrop_db` database needs to be created, so this command will take around 2-3 minutes. Please be patient and wait until you receive a message indicating that the user `edrop` and database `edrop_db` has been created.  
 
@@ -183,6 +183,19 @@ A: See [Setting debug strings](https://loopback.io/doc/en/lb3/Setting-debug-stri
 
 Q: Set the environment variables for connecting to the database but it doesn't work (permission denied error):  
 A: Make sure you set the environment variables in the same shell window that you run the server in. To verify the value was set correctly, use `$ echo %ENV_VAR_NAME%` for Windows and `$ echo $ENV_VAR_NAME` for Linux/MacOS.  
+
+## Starting Frontend/Backend
+Use this workflow after first-time setup instructions above are finished.
+Navigate to the Edrop-v2.0.0 repo and run the following commands in order
+```
+$ cd client
+$ npm install 
+$ npm run dev 
+```
+
+In another terminal window, navigate back to the Edrop-v2.0.0 repo and run:
+
+`$ docker-compose -f docker-compose.yml -f docker-compose.dev.yml up -d && docker-compose -f docker-compose.yml -f docker-compose.dev.yml logs -f`
 
 ### List of Environment Variables
 If things aren't working, check that these are correct for your environment. Contact Danning or Qining for sensitive values.
