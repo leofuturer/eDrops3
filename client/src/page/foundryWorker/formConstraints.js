@@ -33,6 +33,7 @@ const constraints = {
   },
   // Add simple phone number validation - DY 4/14/2020
   phoneNumber: {
+    presence: true,
     format: {
       pattern: /^[^a-wA-WyzYZ]{10,}$/,
       message: "must not contain letters, except 'x' for extensions. Include area code, and if outside US, also country code",
@@ -45,6 +46,9 @@ const constraints = {
     presence: true,
   },
   userType: {
+    presence: true,
+  },
+  affiliation: {
     presence: true,
   },
 };
