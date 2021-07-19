@@ -2,9 +2,11 @@ import React from 'react';
 import { withRouter } from 'react-router-dom';
 import API from '../../api/api';
 import { customerSignUp, customerCredsTaken, userSignUp } from '../../api/serverConfig';
-import { constraints } from './formConstraints';
+import constraints from './formConstraints';
 import './register.css';
 import loadingGif from '../../../static/img/loading80px.gif';
+
+import { closestParent, showErrorsOrSuccessForInput } from '../../utils/validate';
 
 const validate = require('validate.js');
 
@@ -32,9 +34,6 @@ class Register extends React.Component {
     this.handleRegister = this.handleRegister.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.handleValidateInput = this.handleValidateInput.bind(this);
-    this.closestParent = this.closestParent.bind(this);
-    this.showErrorsOrSuccessForInput = this.showErrorsOrSuccessForInput.bind(this);
-    this.addError = this.addError.bind(this);
     this.handleFormSubmit = this.handleFormSubmit.bind(this);
   }
 
@@ -46,64 +45,11 @@ class Register extends React.Component {
     );
   }
 
-  /**
-    * The method is used to display error messages adding <p>
-    * behind the input
-    */
-  addError(messages, error) {
-    const block = document.createElement('p');
-    block.classList.add('help-block');
-    block.classList.add('error');
-    block.innerHTML = error;
-    messages.appendChild(block);
-  }
-
-  closestParent(child, className) {
-    if (!child || child == document) {
-      return null;
-    }
-    if (child.classList.contains(className)) {
-      return child;
-    }
-    return this.closestParent(child.parentNode, className);
-  }
-
-  showErrorsOrSuccessForInput(input, errors) {
-    const _this = this;
-    const formGroup = this.closestParent(input.parentNode, 'form-group');
-    const messages = formGroup.querySelector('.messages');
-
-    // remove old messages and reset the classes
-    formGroup.classList.remove('has-error');
-    formGroup.classList.remove('has-success');
-    // and remove any old messages
-    formGroup.querySelectorAll('.help-block.error, .text-muted, .text-success').forEach((ele, index) => {
-      ele.remove();
-    });
-
-    if (errors) {
-      // we first mark the group has having errors
-      formGroup.classList.add('has-error');
-      // then we append all the errors
-      errors.forEach((err, index) => {
-        _this.addError(messages, err); // Attention: we must use the _this instead of this!!!
-      });
-    } else {
-      // otherwise we simply mark it as success
-      const messages2 = formGroup.querySelector('.messages');
-      formGroup.classList.add('has-success');
-      const successInfo = document.createElement('p');
-      successInfo.classList.add('text-success');
-      successInfo.innerHTML = 'Looks good!';
-      messages2.appendChild(successInfo);
-    }
-  }
-
   handleValidateInput(e) {
     const ele = e.target;
-    const form = this.closestParent(e.target, 'vertical-form');
+    const form = closestParent(e.target, 'vertical-form');
     const errors = validate(form, constraints) || {};
-    this.showErrorsOrSuccessForInput(ele, errors[ele.name]);
+    showErrorsOrSuccessForInput(ele, errors[ele.name]);
 
     // check for duplicates
     const data = {
@@ -116,12 +62,12 @@ class Register extends React.Component {
         if (res.data.result.usernameTaken) {
           errors.username = ['Account already exists with this username'];
           const input1 = document.getElementById('inputUsername');
-          this.showErrorsOrSuccessForInput(input1, errors.username);
+          showErrorsOrSuccessForInput(input1, errors.username);
         }
         if (res.data.result.emailTaken) {
           errors.email = ['Account already exists with this email'];
           const emailInput = document.getElementById('inputEmail');
-          this.showErrorsOrSuccessForInput(emailInput, errors.email);
+          showErrorsOrSuccessForInput(emailInput, errors.email);
         }
       });
   }
