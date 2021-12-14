@@ -11,6 +11,7 @@ import './fileUpload.css';
 
 import '../order/animate.css';
 import Dropzone from 'react-dropzone';
+import { ProgressBar } from 'react-bootstrap'
 
 class Upload extends React.Component {
   constructor(props) {
@@ -25,6 +26,7 @@ class Upload extends React.Component {
       checked: false,
       originalName: '',
       file: undefined,
+      percentage: 0,
     };
     this.setCurrentIndex = this.setCurrentIndex.bind(this);
     this.setCurrentIndex1 = this.setCurrentIndex1.bind(this);
@@ -129,6 +131,19 @@ class Upload extends React.Component {
           fileInfo: res.data.fileInfo,
         });
         $('#uploadDoneModal').modal('show');
+
+        for (let i = 0; i <= 100; i += 1) {
+          setTimeout(() => {
+            _this.setState({
+              percentage: i,
+            });
+          }, 10 * i);
+        }
+        setTimeout(() => {
+          _this.setState({
+            percentage: 0,
+          });
+        }, 2000);
       })
       .catch((err) => {
         console.error(err);
@@ -241,13 +256,21 @@ class Upload extends React.Component {
                   <span aria-hidden="true">&times;</span>
                 </button>
               </div>
-              <div className="modal-body">
-                The file has been uploaded to your library successfully!
-              </div>
-              <div className="modal-footer">
-                <button type="button" className="btn btn-primary" onClick={this.handleShopping}>Proceed to fabrication</button>
-                <button type="button" className="btn btn-secondary" data-dismiss="modal" onClick={this.handleLibrary}>Go to file library</button>
-              </div>
+              {this.state.percentage > 0 ? (
+                <div className="progressBar">
+                  <ProgressBar now={this.state.percentage} label={`${this.state.percentage}% completed`} />
+                </div>
+              ) : (
+                <div className="successMessage">
+                  <div className="modal-body">
+                    The file has been uploaded to your library successfully!
+                  </div>
+                  <div className="modal-footer">
+                    <button type="button" className="btn btn-primary" onClick={this.handleShopping}>Proceed to fabrication</button>
+                    <button type="button" className="btn btn-secondary" data-dismiss="modal" onClick={this.handleLibrary}>Go to file library</button>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </div>
