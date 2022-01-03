@@ -12,6 +12,7 @@ import {
 } from '../../api/serverConfig';
 import Cookies from 'js-cookie';
 import loadingGif from '../../../static/img/loading80px.gif';
+import CartContext from '../../context/CartContext'
 
 class Cart extends React.Component {
   constructor(props) {
@@ -26,6 +27,7 @@ class Cart extends React.Component {
       saveInProgress: false,
       cartLoading: true,
       deleteLoading: false,
+      numModifiedItems: 0,
     };
     this.handleQtyChange = this.handleQtyChange.bind(this);
     this.handleSave = this.handleSave.bind(this);
@@ -143,6 +145,12 @@ class Cart extends React.Component {
                 this.setState({
                   deleteLoading: false,
                 });
+
+                const prodQuantity = this.state.productOrders.reduce((prev, curr) => prev + curr.quantity, 0);
+                const chipQuantity = this.state.chipOrders.reduce((prev, curr) => prev + curr.quantity, 0);
+                this.context.setProductQuantity(prodQuantity);
+                this.context.setChipQuantity(chipQuantity);
+                this.context.setCartQuantity();
               })
               .catch((err) => {
                 console.error(err);
@@ -193,6 +201,15 @@ class Cart extends React.Component {
                 const data = { quantity: parseInt(array[i].quantity) };
                 API.Request(url, 'PATCH', data, true)
                   .then((res) => {
+                    this.setState((state) => {
+                      return {numModifiedItems: state.numModifiedItems + 1};
+                    });
+
+                    if(_this.state.numModifiedItems === _this.state.modifiedItems.size && _this.state.numModifiedItems > 0)
+                    {
+                      this.setCartItems();
+                    }
+
                     this.setState({
                       saveInProgress: false,
                     });
@@ -235,6 +252,37 @@ class Cart extends React.Component {
     });
   }
 
+  setCartItems() {
+    const _this = this;
+    const orderInfoId = _this.state.cartId;
+    let url = getProductOrders.replace('id', orderInfoId);
+    API.Request(url, 'GET', {}, true)
+      .then((res) => {
+        let quantity = res.data.reduce((prev, curr) => prev + curr.quantity, 0);
+        this.context.setProductQuantity(quantity);
+
+        url = getChipOrders.replace('id', orderInfoId);
+        API.Request(url, 'GET', {}, true)
+          .then((res) => {
+            quantity = res.data.reduce((prev, curr) => prev + curr.quantity, 0);
+            this.context.setChipQuantity(quantity);
+
+            this.context.setCartQuantity();
+
+            this.setState({
+              numModifiedItems: 0,
+              modifiedItems: new Set(),
+            })
+          })
+          .catch((err) => {
+            console.error(err);
+          });
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  }
+
   render() {
     let totalPrice = 0;
     this.state.productOrders.forEach((product) => {
@@ -243,6 +291,7 @@ class Cart extends React.Component {
     this.state.chipOrders.forEach((product) => {
       totalPrice += (product.quantity * product.price);
     });
+
     return (
       <div>
         { Cookies.get('userType') === 'customer'
@@ -335,4 +384,6 @@ class Cart extends React.Component {
   }
 }
 
+Cart.contextType = CartContext;
 export default Cart;
+
