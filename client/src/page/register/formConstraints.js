@@ -20,7 +20,7 @@ const constraints = {
       minimum: 8,
     },
     format: {
-      pattern: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[^]{8,}$/,
+      pattern: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d\S]{8,}$/,
       message: 'must at least contain a capital letter, a lowercase letter, a number, and be at least 8 characters long',
     },
   },

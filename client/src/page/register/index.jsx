@@ -29,7 +29,7 @@ class Register extends React.Component {
       password: '',
       confirmPassword: '',
       requestInProgress: false,
-
+      errorMessage: '',
     };
     this.handleRegister = this.handleRegister.bind(this);
     this.handleChange = this.handleChange.bind(this);
@@ -149,11 +149,15 @@ class Register extends React.Component {
         API.Request(customerSignUp, 'POST', customerData, false)
           .then((res) => {
             this.props.history.push('/checkEmail');
+            this.setState({
+              errorMessage: '',
+            })
           })
           .catch((error) => {
             console.error(error);
             this.setState({
               requestInProgress: false,
+              errorMessage: 'There was an error when registering your account. Please try again.',
             });
           });
       })
@@ -161,6 +165,7 @@ class Register extends React.Component {
         console.error(error);
         this.setState({
           requestInProgress: false,
+          errorMessage: 'There was an error when registering your account. Please try again.',
         });
       });
   }
@@ -449,18 +454,23 @@ class Register extends React.Component {
 
                 <div className="form-group login-btn">
                   {
-                                        this.state.requestInProgress
-                                          ? <img src={loadingGif} alt="" />
-                                          : (
-                                            <input
-                                              type="button"
-                                              value="Sign Up"
-                                              className="input-btn"
-                                              onClick={this.handleFormSubmit}
-                                            />
-                                          )
-                                    }
+                    this.state.requestInProgress
+                      ? <img src={loadingGif} alt="" />
+                      : (
+                        <input
+                          type="button"
+                          value="Sign Up"
+                          className="input-btn"
+                          onClick={this.handleFormSubmit}
+                        />
+                      )
+                  }
 
+                </div>
+                <div className="form-group">
+                  <small className="text-muted text-center text-danger w-100">
+                    {this.state.errorMessage}
+                  </small>
                 </div>
               </div>
             </form>
