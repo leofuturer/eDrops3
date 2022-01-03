@@ -33,9 +33,10 @@ class FormsPage extends React.Component {
             requestInProgress: true,
           });
         }).catch((err) => {
-          console.error(err);
+          console.error(err); // Maybe take out as attackers can view console & brute force emails
+          // Display a success message either way so attackers can't brute-force customer emails
           this.setState({
-            requestInProgress: false,
+            requestInProgress: true,
           });
         });
     } else {
@@ -46,9 +47,10 @@ class FormsPage extends React.Component {
           });
         })
         .catch((err) => {
-          console.error(err);
+          console.error(err); // Maybe take out as attackers can view console & brute force emails
+          // Display a success message either way so attackers can't brute-force customer emails
           this.setState({
-            requestInProgress: false,
+            requestInProgress: true,
           });
         });
     }
