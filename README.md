@@ -98,13 +98,14 @@ Create the following files in `deploy/dev/` to supply environment variables to t
 
 Then, initialize the database schema and add seed data. Note: the first time the MySQL container is created, the `edrop_db` database needs to be created, so this command will take around 2-3 minutes. Please be patient and wait until you receive a message indicating that the user `edrop` and database `edrop_db` has been created.  
 
+`$ cd ../..` (go back to the root directory where all the docker-compose files exist)
 Windows: `$ $env:RESET_DATABASE = 'Yes'; docker-compose -f docker-compose.yml -f docker-compose.dev.yml up -d; $env:RESET_DATABASE = ''; docker-compose -f docker-compose.yml -f docker-compose.dev.yml logs -f`  
 Mac/Unix: `$ RESET_DATABASE=Yes docker-compose -f docker-compose.yml -f docker-compose.dev.yml up -d && docker-compose -f docker-compose.yml -f docker-compose.dev.yml logs -f`  
 
 The commands are long, so we recommend you make aliases.
 
 Then, shut down the development stack:  
-`$ docker-compose -f docker-compose.yml -f docker-compose.prod.yml down`  
+`$ docker-compose -f docker-compose.yml -f docker-compose.dev.yml down`  
 
 You are now ready to start up the backend (make sure RESET_DATABASE is **not** equal to 'Yes'):  
 Windows: `$ docker-compose -f docker-compose.yml -f docker-compose.dev.yml up -d; docker-compose -f docker-compose.yml -f docker-compose.dev.yml logs -f`  
