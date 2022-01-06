@@ -17,6 +17,7 @@ import './chiporder.css';
 import Cookies from 'js-cookie';
 import {
   getCustomerCart, manipulateCustomerOrders, addOrderChipToCart,
+  getChipOrders
 } from '../../api/serverConfig';
 import API from '../../api/api';
 import {
@@ -26,6 +27,7 @@ import {
 import Shopify from '../../app.jsx';
 import loadingGif from '../../../static/img/loading80px.gif';
 import DXFPreview from './dxf_preview.jsx';
+import CartContext from '../../context/CartContext'
 
 class ChipOrder extends React.Component {
   constructor(props) {
@@ -61,7 +63,6 @@ class ChipOrder extends React.Component {
       });
       Shopify.getInstance().getPrivateValue()
         .then((instance) => {
-          // console.log("hi");
           instance.product.fetch(ewodFabServiceId) // hard coded for chip order
             .then((product) => {
               _this.setState({
@@ -227,9 +228,20 @@ class ChipOrder extends React.Component {
                 workerId: 0,
               };
               // console.log(res);
-              const url = addOrderChipToCart.replace('id', _this.state.orderInfoId);
+              let url = addOrderChipToCart.replace('id', _this.state.orderInfoId);
               API.Request(url, 'POST', data, true)
                 .then((res) => {
+                  url = getChipOrders.replace('id', _this.state.orderInfoId);
+                  API.Request(url, 'GET', {}, true)
+                    .then((res) => {
+                      const quantity = res.data.reduce((prev, curr) => prev + curr.quantity, 0);
+                      this.context.setChipQuantity(quantity);
+                      this.context.setCartQuantity();
+                      this.props.history.push('/manage/cart');
+                    })
+                    .catch((err) => {
+                      console.error(err);
+                    });
                   this.setState({
                     isLoading: false,
                   });
@@ -340,7 +352,7 @@ class ChipOrder extends React.Component {
                       type="number"
                       className="input-quantity"
                       value={this.state.quantity}
-                      onChange={(v) => this.handleChange('quantity', v.target.value)}
+                      onChange={(v) => this.handleChange('quantity', parseInt(v.target.value))}
                     />
                     {' '}
                     X $
@@ -379,4 +391,5 @@ class ChipOrder extends React.Component {
   }
 }
 
+ChipOrder.contextType = CartContext;
 export default ChipOrder;
