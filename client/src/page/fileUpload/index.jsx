@@ -236,10 +236,24 @@ class Upload extends React.Component {
             {({ getRootProps, getInputProps }) => (
               <div {...getRootProps()} className="file-upload-area">
                 <input {...getInputProps()} />
-                <p className="file-upload-insns">
-                  Drag and drop DXF file here, or click to select file.
-                </p>
-                { this.state.file && <p>{this.state.file.name}</p> }
+                {this.state.percentage > 0 ? (
+                  <div className="progressBar">
+                    <h3>{this.state.percentage < 100 ? 'Uploading...' : 'Completed!'}</h3>
+                    <div className="progress">
+                      <ProgressBar striped now={this.state.percentage}/>
+                    </div>
+                  </div>
+                  
+                )
+                  : (
+                    <div className="fileUpload">
+                      <p className="file-upload-insns">
+                        Drag and drop DXF file here, or click to select file.
+                      </p>
+                      { this.state.file && <p>{this.state.file.name}</p> }
+                    </div>
+                  )
+                }
               </div>
             )}
           </Dropzone>
@@ -256,21 +270,15 @@ class Upload extends React.Component {
                   <span aria-hidden="true">&times;</span>
                 </button>
               </div>
-              {this.state.percentage > 0 ? (
-                <div className="progressBar">
-                  <ProgressBar now={this.state.percentage} label={`${this.state.percentage}% completed`} />
+              <div className="successMessage">
+                <div className="modal-body">
+                  The file has been uploaded to your library successfully!
                 </div>
-              ) : (
-                <div className="successMessage">
-                  <div className="modal-body">
-                    The file has been uploaded to your library successfully!
-                  </div>
-                  <div className="modal-footer">
-                    <button type="button" className="btn btn-primary" onClick={this.handleShopping}>Proceed to fabrication</button>
-                    <button type="button" className="btn btn-secondary" data-dismiss="modal" onClick={this.handleLibrary}>Go to file library</button>
-                  </div>
+                <div className="modal-footer">
+                  <button type="button" className="btn btn-primary" onClick={this.handleShopping}>Proceed to fabrication</button>
+                  <button type="button" className="btn btn-secondary" data-dismiss="modal" onClick={this.handleLibrary}>Go to file library</button>
                 </div>
-              )}
+              </div>
             </div>
           </div>
         </div>
