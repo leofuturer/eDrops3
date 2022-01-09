@@ -118,7 +118,8 @@ the opacity of .fade.show as 1, which is also applied to the backdrop ele*/
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    padding: 20px;
 }
 .progress{
-    width:90%;
+    width:100%;
 }

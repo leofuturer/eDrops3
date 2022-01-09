@@ -240,7 +240,7 @@ class Upload extends React.Component {
                   <div className="progressBar">
                     <h3>{this.state.percentage < 100 ? 'Uploading...' : 'Completed!'}</h3>
                     <div className="progress">
-                      <ProgressBar striped now={this.state.percentage}/>
+                      <ProgressBar striped variant="info" now={this.state.percentage}/>
                     </div>
                   </div>
                   
