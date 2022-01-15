@@ -117,6 +117,13 @@ class Upload extends React.Component {
   }
 
   uploadFileRequest(extraFields) {
+    for (let i = 0; i <= 70; i += 1) {
+      setTimeout(() => {
+        _this.setState({
+          percentage: i,
+        });
+      }, 10 * i);
+    }
     const _this = this;
     const uploadUrl = uploadFile.replace('id', Cookies.get('userId'));
     const formData = new FormData();
@@ -130,9 +137,7 @@ class Upload extends React.Component {
         _this.setState({
           fileInfo: res.data.fileInfo,
         });
-        $('#uploadDoneModal').modal('show');
-
-        for (let i = 0; i <= 100; i += 1) {
+        for (let i = 70; i <= 100; i += 1) {
           setTimeout(() => {
             _this.setState({
               percentage: i,
@@ -143,8 +148,10 @@ class Upload extends React.Component {
           _this.setState({
             percentage: 0,
           });
+          $('#uploadDoneModal').modal('show');
         }, 2000);
       })
+      
       .catch((err) => {
         console.error(err);
       });
