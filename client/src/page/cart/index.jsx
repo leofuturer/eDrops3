@@ -98,8 +98,7 @@ class Cart extends React.Component {
         this.setState({
           productOrders: items,
           modifiedItems: new Set(this.state.modifiedItems).add(item.variantIdShopify),
-        });
-        this.updateTotalModified();
+        }, () => { this.updateTotalModified() });
       } else if (itemType === 'chip') {
         const items = [...this.state.chipOrders];
         const item = Object.assign({}, items[index]); // replacement for `let item = {...items[index]};`
@@ -108,8 +107,7 @@ class Cart extends React.Component {
         this.setState({
           chipOrders: items,
           modifiedItems: new Set(this.state.modifiedItems).add(item.variantIdShopify),
-        });
-        this.updateTotalModified();
+        }, () => { this.updateTotalModified() });
       }
     }
   }
@@ -291,17 +289,15 @@ class Cart extends React.Component {
       });
   }
 
-  updateTotalModified() {
-    const _this = this;
-    
-    if(_this.state.chipOrders.length > 0 && _this.state.modifiedItems.has(_this.state.chipOrders[0].variantIdShopify)) {
-      const num = (_this.state.modifiedItems.size - 1) + _this.state.chipOrders.length;
+  updateTotalModified() {    
+    if(this.state.chipOrders.length > 0 && this.state.modifiedItems.has(this.state.chipOrders[0].variantIdShopify)) {
+      const num = (this.state.modifiedItems.size - 1) + this.state.chipOrders.length;
       this.setState({
         totalModifiedItems: num
       });
     }
     else {
-      const num = _this.state.modifiedItems.size;
+      const num = this.state.modifiedItems.size;
       this.setState({
         totalModifiedItems: num
       });
