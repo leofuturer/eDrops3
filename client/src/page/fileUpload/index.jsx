@@ -11,7 +11,7 @@ import './fileUpload.css';
 
 import '../order/animate.css';
 import Dropzone from 'react-dropzone';
-import { ProgressBar } from 'react-bootstrap'
+import { Progress } from './progress.jsx';
 
 class Upload extends React.Component {
   constructor(props) {
@@ -116,15 +116,15 @@ class Upload extends React.Component {
     }
   }
 
-  uploadFileRequest(extraFields) {
+uploadFileRequest(extraFields) {
+    const _this = this;
     for (let i = 0; i <= 70; i += 1) {
       setTimeout(() => {
         _this.setState({
           percentage: i,
         });
-      }, 10 * i);
+      }, i * 10);
     }
-    const _this = this;
     const uploadUrl = uploadFile.replace('id', Cookies.get('userId'));
     const formData = new FormData();
     formData.append('file', this.state.file);
@@ -137,21 +137,31 @@ class Upload extends React.Component {
         _this.setState({
           fileInfo: res.data.fileInfo,
         });
-        for (let i = 70; i <= 100; i += 1) {
-          setTimeout(() => {
-            _this.setState({
-              percentage: i,
-            });
-          }, 10 * i);
+        for (let i = 70; i <= 101; i += 1) {
+          if (i <= 100) {
+            setTimeout(() => {
+              _this.setState({
+                percentage: i,
+              });
+            }, 10 * i);
+          } else {
+            setTimeout(() => {
+              _this.setState({ percentage: 101 }, () => {
+                setTimeout(() => {
+                  _this.setState({ percentage: 0 });
+                  $('#uploadDoneModal').modal('show');
+                }, 1000);
+              });
+            }, 10 * i + 1000);
+          }
         }
-        setTimeout(() => {
-          _this.setState({
-            percentage: 0,
-          });
-          $('#uploadDoneModal').modal('show');
-        }, 2000);
+        // setTimeout(() => {
+        //   _this.setState({
+        //     percentage: 0,
+        //   });
+        //   $('#uploadDoneModal').modal('show');
+        // }, 2000);
       })
-      
       .catch((err) => {
         console.error(err);
       });
@@ -244,13 +254,12 @@ class Upload extends React.Component {
               <div {...getRootProps()} className="file-upload-area">
                 <input {...getInputProps()} />
                 {this.state.percentage > 0 ? (
-                  <div className="progressBar">
-                    <h3>{this.state.percentage < 100 ? 'Uploading...' : 'Completed!'}</h3>
-                    <div className="progress">
-                      <ProgressBar striped variant="info" now={this.state.percentage}/>
-                    </div>
+                  <div className="progressContainer">
+                    <h3>{this.state.percentage < 101 ? 'Uploading...' : 'Completed!'}</h3>
+                      <div className="uploadProgressBar">
+                        <Progress now={this.state.percentage}/>
+                      </div>
                   </div>
-                  
                 )
                   : (
                     <div className="fileUpload">
@@ -315,3 +324,4 @@ class Upload extends React.Component {
 
 Upload = withRouter(Upload);
 export default Upload;
+

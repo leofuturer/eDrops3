@@ -111,15 +111,15 @@ the opacity of .fade.show as 1, which is also applied to the backdrop ele*/
     font-weight: 500;
 }
 
-.progressBar{
-    width:100%;
+.progressContainer{
     height:100%;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    padding: 20px;
-}
-.progress{
-    width:100%;
-}
+ }
+  
+ .uploadProgressBar {
+    width: 95%;
+ }
+ 
