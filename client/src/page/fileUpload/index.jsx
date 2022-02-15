@@ -11,6 +11,7 @@ import './fileUpload.css';
 
 import '../order/animate.css';
 import Dropzone from 'react-dropzone';
+import { Progress } from './progress.jsx';
 
 class Upload extends React.Component {
   constructor(props) {
@@ -25,6 +26,7 @@ class Upload extends React.Component {
       checked: false,
       originalName: '',
       file: undefined,
+      percentage: 0,
     };
     this.setCurrentIndex = this.setCurrentIndex.bind(this);
     this.setCurrentIndex1 = this.setCurrentIndex1.bind(this);
@@ -114,8 +116,15 @@ class Upload extends React.Component {
     }
   }
 
-  uploadFileRequest(extraFields) {
+uploadFileRequest(extraFields) {
     const _this = this;
+    for (let i = 0; i <= 70; i += 1) {
+      setTimeout(() => {
+        _this.setState({
+          percentage: i,
+        });
+      }, i * 10);
+    }
     const uploadUrl = uploadFile.replace('id', Cookies.get('userId'));
     const formData = new FormData();
     formData.append('file', this.state.file);
@@ -128,7 +137,30 @@ class Upload extends React.Component {
         _this.setState({
           fileInfo: res.data.fileInfo,
         });
-        $('#uploadDoneModal').modal('show');
+        for (let i = 70; i <= 101; i += 1) {
+          if (i <= 100) {
+            setTimeout(() => {
+              _this.setState({
+                percentage: i,
+              });
+            }, 10 * i);
+          } else {
+            setTimeout(() => {
+              _this.setState({ percentage: 101 }, () => {
+                setTimeout(() => {
+                  _this.setState({ percentage: 0 });
+                  $('#uploadDoneModal').modal('show');
+                }, 1000);
+              });
+            }, 10 * i + 1000);
+          }
+        }
+        // setTimeout(() => {
+        //   _this.setState({
+        //     percentage: 0,
+        //   });
+        //   $('#uploadDoneModal').modal('show');
+        // }, 2000);
       })
       .catch((err) => {
         console.error(err);
@@ -221,10 +253,23 @@ class Upload extends React.Component {
             {({ getRootProps, getInputProps }) => (
               <div {...getRootProps()} className="file-upload-area">
                 <input {...getInputProps()} />
-                <p className="file-upload-insns">
-                  Drag and drop DXF file here, or click to select file.
-                </p>
-                { this.state.file && <p>{this.state.file.name}</p> }
+                {this.state.percentage > 0 ? (
+                  <div className="progressContainer">
+                    <h3>{this.state.percentage < 101 ? 'Uploading...' : 'Completed!'}</h3>
+                      <div className="uploadProgressBar">
+                        <Progress now={this.state.percentage}/>
+                      </div>
+                  </div>
+                )
+                  : (
+                    <div className="fileUpload">
+                      <p className="file-upload-insns">
+                        Drag and drop DXF file here, or click to select file.
+                      </p>
+                      { this.state.file && <p>{this.state.file.name}</p> }
+                    </div>
+                  )
+                }
               </div>
             )}
           </Dropzone>
@@ -241,12 +286,14 @@ class Upload extends React.Component {
                   <span aria-hidden="true">&times;</span>
                 </button>
               </div>
-              <div className="modal-body">
-                The file has been uploaded to your library successfully!
-              </div>
-              <div className="modal-footer">
-                <button type="button" className="btn btn-primary" onClick={this.handleShopping}>Proceed to fabrication</button>
-                <button type="button" className="btn btn-secondary" data-dismiss="modal" onClick={this.handleLibrary}>Go to file library</button>
+              <div className="successMessage">
+                <div className="modal-body">
+                  The file has been uploaded to your library successfully!
+                </div>
+                <div className="modal-footer">
+                  <button type="button" className="btn btn-primary" onClick={this.handleShopping}>Proceed to fabrication</button>
+                  <button type="button" className="btn btn-secondary" data-dismiss="modal" onClick={this.handleLibrary}>Go to file library</button>
+                </div>
               </div>
             </div>
           </div>
@@ -277,3 +324,4 @@ class Upload extends React.Component {
 
 Upload = withRouter(Upload);
 export default Upload;
+

@@ -63,6 +63,9 @@ module.exports = function(Customer) {
       if (err) {
         console.error(err);
         cb(err);
+      } else if (users.length === 0){
+        const err = new Error('No account associated with that email');
+        cb(err);
       } else if (users.length > 1) {
         const err = new Error('more than one user found with that email');
         cb(err);

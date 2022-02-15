@@ -2,20 +2,44 @@ import React from 'react';
 
 import NavTop from 'component/nav-top/index.jsx';
 import Footer from 'component/footer/index.jsx';
+// import { CartProvider } from '../../context/CartProvider.jsx'
+import CartContext from '../../context/CartContext'
 
 import './index.css';
 
 class Layout extends React.Component {
+
   constructor(props) {
     super(props);
+    this.state = {
+      cartItems: 0,
+      productItems: 0,
+      chipItems: 0,
+    };
   }
 
   render() {
     return (
       <div className="content">
         <div className="wrapper">
-          <NavTop />
-          {this.props.children}
+          <CartContext.Provider
+            value = {{
+              items: this.state.cartItems,
+              setCartQuantity: () => {
+                  const quantity = this.state.productItems + this.state.chipItems;
+                  this.setState({cartItems: quantity});
+              },
+              setProductQuantity: (quantity) => {
+                this.setState({productItems: quantity})
+              },
+              setChipQuantity: (quantity) => {
+                this.setState({chipItems: quantity})
+              }
+            }}
+          >
+            <NavTop />
+            {this.props.children}
+          </CartContext.Provider>
         </div>
         <Footer />
       </div>

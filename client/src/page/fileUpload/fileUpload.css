@@ -90,7 +90,6 @@ the opacity of .fade.show as 1, which is also applied to the backdrop ele*/
     border-style: dashed;
     border-color: black;
     height: 200px;
-
 }
 
 .file-upload-insns{
@@ -111,3 +110,16 @@ the opacity of .fade.show as 1, which is also applied to the backdrop ele*/
     font-size: 18px;
     font-weight: 500;
 }
+
+.progressContainer{
+    height:100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+ }
+  
+ .uploadProgressBar {
+    width: 95%;
+ }
+ 

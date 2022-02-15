@@ -2,7 +2,7 @@
 const errors = require('../../server/toolbox/errors');
 const passwordValidation = require('../../server/hooks/passwordValidation');
 
-const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/;
+const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d\S]{8,}$/;
 const log = require('../../db/toolbox/log');
 const {FRONTEND_HOSTNAME, FRONTEND_PORT} = require('../../server/constants/emailconstants');
 const {User} = require('loopback');
