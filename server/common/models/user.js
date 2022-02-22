@@ -59,6 +59,13 @@ module.exports = function(Userbase) {
   Userbase.on('resetPasswordRequest', (info) => {
     // from https://loopback.io/doc/en/lb3/Logging-in-users.html
     const url = `http://${FRONTEND_HOSTNAME}:${FRONTEND_PORT}/resetPassword`;
+    const text = 'Hello user,\n\n' +
+    `You've requested a password reset. Please visit ${url}?access_token=` +
+    `${info.accessToken.id} to reset your password. ` +
+    'This link will expire in 15 minutes.\n\n' +
+    'Sincerely,\n' +
+    'eDrops Website\n\n' +
+    `Need help? Contact us at ${process.env.APP_EMAIL_USERNAME}\n`;
     const html = 'Hello user,<br><br>' +
                     `You've requested a password reset. Please click <a href="${url}?access_token=` +
                     `${info.accessToken.id}">here</a> to reset your password. ` +
@@ -67,12 +74,15 @@ module.exports = function(Userbase) {
                     'eDrops Website<br><br>' +
                     `Need help? Contact us at ${process.env.APP_EMAIL_USERNAME}<br>`;
     log.info(`> Sending password reset email to: ${info.email}`);
-    Userbase.app.models.Email.send({
+
+    const msg = {
       to: info.email,
       from: process.env.APP_EMAIL_USERNAME,
       subject: '[eDrops] Password Reset Request',
+      text,
       html,
-    }, (err) => {
+    };
+    Userbase.app.models.Email.send(msg, (err) => {
       if (err) {
         console.error(err);
         return console.error('> Error sending password reset email');
