@@ -180,14 +180,8 @@ module.exports = function (Admin) {
   Admin.returnAllItems = function (cb) {
     const productIds = [
       Constants.CONTROLSYSID,
-      Constants.CONTROLSYSID5,
-      Constants.CONTROLSYSID10,
       Constants.TESTBOARDID,
-      Constants.TESTBOARDID5,
-      Constants.TESTBOARDID10,
       Constants.UNIVEWODCHIPID,
-      Constants.UNIVEWODCHIPID5,
-      Constants.UNIVEWODCHIPID10,
     ];
     console.log(productIds);
     client.product.fetchMultiple(productIds)

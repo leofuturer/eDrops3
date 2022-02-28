@@ -14,6 +14,42 @@ export const univEwodChipWithCoverPlate = 'Z2lkOi8vc2hvcGlmeS9Qcm9kdWN0VmFyaWFud
 export const univEwodChipWithoutCoverPlate = 'Z2lkOi8vc2hvcGlmeS9Qcm9kdWN0VmFyaWFudC80MTIzMzA5MjgzNzU1Mg==';
 
 export const productIds = [controlSysId, controlSysId5, controlSysId10, testBoardId, testBoardId5, testBoardId10, univEwodChipId, univEwodChipId5, univEwodChipId10];
+export const productIdsJson = {
+    'CONTROLSYSID': {
+        '1': controlSysId,
+        '5': controlSysId5,
+        '10': controlSysId10,
+    },
+    'TESTBOARDID': {
+        '1': testBoardId,
+        '5': testBoardId5,
+        '10': testBoardId10,
+    },
+    'UNIVEWODCHIPID': {
+        '1': univEwodChipId,
+        '5': univEwodChipId5,
+        '10': univEwodChipId10,
+    }
+}
+
+export function getProductType(id) {
+    switch (id) {
+        case controlSysId:
+        case controlSysId5:
+        case controlSysId10:
+            return 'CONTROLSYSID';
+        case testBoardId:
+        case testBoardId5:
+        case testBoardId10:
+            return 'TESTBOARDID';
+        case univEwodChipId:
+        case univEwodChipId5:
+        case univEwodChipId10:
+            return 'UNIVEWODCHIPID';
+        default:
+            return '';
+    }
+}
 
 // chip IDs
 export const ewodFabServiceId = 'Z2lkOi8vc2hvcGlmeS9Qcm9kdWN0LzcwMTE4ODI1NjU4MDg=';

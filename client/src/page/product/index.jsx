@@ -6,6 +6,8 @@ import {
   univEwodChipId,
   univEwodChipWithCoverPlate,
   univEwodChipWithoutCoverPlate,
+  productIdsJson,
+  getProductType
 } from '../../constants';
 import {
   getCustomerCart,
@@ -32,7 +34,7 @@ class Product extends React.Component {
     this.handleOptionsChange = this.handleOptionsChange.bind(this);
   }
 
-  fetchProductData(shopifyProductId){
+  fetchProductData(shopifyProductId) {
     const url = `${returnOneItem}?productId=${shopifyProductId}`;
     API.Request(url, 'GET', {}, false)
       .then((res) => {
@@ -55,8 +57,8 @@ class Product extends React.Component {
       });
   }
 
-  componentDidUpdate(oldProps){
-    if(this.props.location.search !== oldProps.location.search){
+  componentDidUpdate(oldProps) {
+    if (this.props.location.search !== oldProps.location.search) {
       this.fetchProductData(this.props.location.search.slice(4));
     }
   }
@@ -76,7 +78,13 @@ class Product extends React.Component {
         [key]: value,
       },
     );
+    if (key === 'bundleSize') {
+      let productType = getProductType(this.state.product.id);
+      this.fetchProductData(productIdsJson[productType][value]);
+    }
+    console.log(this.state)
   }
+
 
   handleOptionsChange(key, value) {
     const newData = {
@@ -241,7 +249,7 @@ class Product extends React.Component {
               name: _this.state.product.title,
               otherDetails: customServerOrderAttributes,
             };
-            // console.log(data);
+            console.log(data);
             const url = addOrderProductToCart.replace('id', orderInfoId);
             API.Request(url, 'POST', data, true)
               .then((res) => {
@@ -278,7 +286,7 @@ class Product extends React.Component {
     return (
       <div className="order-container">
         <div className="shop-main-content">
-          { this.state.fetchedProduct
+          {this.state.fetchedProduct
             ? (
               <div>
                 <div className="shop-left-content">
@@ -287,54 +295,71 @@ class Product extends React.Component {
                   </div>
                 </div>
                 <div className="shop-right-content">
-                  <NavLink to="/allItems">{'<< Return to all products'}</NavLink>
-                  <div><h2>{product.title}</h2></div>
-                  <div
-                    className="product-description"
-                    dangerouslySetInnerHTML={{ __html: product.descriptionHtml }}
-                  />
-                  { desiredProductId === univEwodChipId
-                    ? (
-                      <div className="chip-config">
-                        <h3>Item Options</h3>
-                        <div className="config-items">
-                          <input type="checkbox" onChange={(v) => this.handleOptionsChange('withCoverPlateAssembled', v.target.checked)} />
-                          <span className="option-detail">With Cover Plate Assembled</span>
+                  <div className="shop-right-top-content">
+                    <NavLink to="/allItems">{'<< Return to all products'}</NavLink>
+                    <div><h2>{product.title}</h2></div>
+                    <div
+                      className="product-description"
+                      dangerouslySetInnerHTML={{ __html: product.descriptionHtml }}
+                    />
+                  </div>
+                  <div className="shop-right-bottom-content">
+                    <div>
+                      {desiredProductId === univEwodChipId
+                        ? (
+                          <div className="chip-config">
+                            <h3>Item Options</h3>
+                            <div className="config-items">
+                              <input type="checkbox" onChange={(v) => this.handleOptionsChange('withCoverPlateAssembled', v.target.checked)} />
+                              <span className="option-detail">With Cover Plate Assembled</span>
+                            </div>
+                          </div>
+                        )
+                        : null}
+
+                      <div className="div-price-quantity">
+                        <div className="div-product-price">
+                          Price: $
+                          {product.variants[0].price}
+                        </div>
+                        <div className="div-product-selection">
+                          <div className="div-product-quantity">
+                            Quantity:&nbsp;
+                            <input
+                              type="number"
+                              className="input-quantity"
+                              value={this.state.quantity}
+                              onChange={(v) => this.handleChange('quantity', v.target.value)}
+                            />
+                          </div>
+                          <div className="div-product-bundlesize">
+                            Bundle Size:&nbsp;
+                            <select id="bundlesize" name="bundlesize" onChange={(v) => this.handleChange('bundleSize', v.target.value)}>
+                              <option value="1">1</option>
+                              <option value="5">5</option>
+                              <option value="10">10</option>
+                            </select>
+                          </div>
                         </div>
                       </div>
-                    )
-                    : null}
+                      <div>
+                        {this.state.addedToCart
+                          ? (
+                            <div className="cart-btn">
+                              <input
+                                type="button"
+                                value="Add to Cart"
+                                className="btn btn-primary btn-lg btn-block"
+                                onClick={(e) => this.handleGetCart()}
+                              />
+                            </div>
+                          )
+                          : <img className="loading-GIF" src={loadingGif} alt="" />}
 
-                  <div className="div-price-quantity">
-                    <div className="div-product-price">
-                      Price: $
-                      {product.variants[0].price}
-                    </div>
-                    <div className="div-product-quantity">
-                      Quantity:&nbsp;
-                      <input
-                        type="number"
-                        className="input-quantity"
-                        value={this.state.quantity}
-                        onChange={(v) => this.handleChange('quantity', v.target.value)}
-                      />
+                        <div className="tax-info">Note: Price excludes sales tax</div>
+                      </div>
                     </div>
                   </div>
-                  { this.state.addedToCart
-                    ? (
-                      <div className="cart-btn">
-                        <input
-                          type="button"
-                          value="Add to Cart"
-                          className="btn btn-primary btn-lg btn-block"
-                          onClick={(e) => this.handleGetCart()}
-                        />
-                      </div>
-                    )
-                    : <img className="loading-GIF" src={loadingGif} alt="" />}
-
-                  <div className="tax-info">Note: Price excludes sales tax</div>
-
                 </div>
               </div>
             )
