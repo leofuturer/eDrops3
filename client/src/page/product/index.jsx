@@ -83,7 +83,7 @@ class Product extends React.Component {
       let productType = getProductType(this.state.product.id);
       this.fetchProductData(productIdsJson[productType][value]);
     }
-    console.log(this.state)
+    // console.log(this.state)
   }
 
 
