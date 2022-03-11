@@ -5,6 +5,8 @@ import ItemCard from './itemCard.jsx';
 import { returnAllItems } from '../../api/serverConfig';
 import API from '../../api/api';
 import loadingGif from '../../../static/img/loading80px.gif';
+import SEO from '../../component/header/seo.jsx';
+import { metadata } from './metadata.jsx';
 
 class AllItems extends React.Component {
   constructor(props) {
@@ -31,6 +33,9 @@ class AllItems extends React.Component {
   render() {
     return (
       <div className="all-items">
+        <SEO title="eDrops | Products"
+              description="" 
+              metadata={ metadata }/>
         <h3>Products</h3>
         <div className="border-h3" />
         <div className="all-products">

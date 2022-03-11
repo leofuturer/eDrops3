@@ -41,7 +41,7 @@ const SEO = ({ title, description, metadata = [] }) => {
       <title>{title}</title>
       <meta name="description" content={description} />
       {metadata.map(({ name, content }) => (
-        <meta name={name} content={content} />
+        <meta name={name} content={content} key={name} />
       ))}
     </Helmet>
   );

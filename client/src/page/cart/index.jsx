@@ -12,6 +12,8 @@ import {
 } from '../../api/serverConfig';
 import Cookies from 'js-cookie';
 import loadingGif from '../../../static/img/loading80px.gif';
+import { metadata } from './metadata.jsx';
+import SEO from '../../component/header/seo.jsx';
 
 class Cart extends React.Component {
   constructor(props) {
@@ -245,6 +247,9 @@ class Cart extends React.Component {
     });
     return (
       <div>
+        <SEO title="eDrops | Cart" 
+            description=""
+            metadata={metadata} />
         { Cookies.get('userType') === 'customer'
           ? (
             <div className="right-route-content">
