@@ -12,6 +12,11 @@ export const univEwodChipId10 = 'Z2lkOi8vc2hvcGlmeS9Qcm9kdWN0LzcwNDA3NzU1ODU5Njg
 // product variant IDs
 export const univEwodChipWithCoverPlate = 'Z2lkOi8vc2hvcGlmeS9Qcm9kdWN0VmFyaWFudC80MTIzMzA5MjgwNDc4NA==';
 export const univEwodChipWithoutCoverPlate = 'Z2lkOi8vc2hvcGlmeS9Qcm9kdWN0VmFyaWFudC80MTIzMzA5MjgzNzU1Mg==';
+export const univEwodChipWithCoverPlate5 = 'Z2lkOi8vc2hvcGlmeS9Qcm9kdWN0VmFyaWFudC80MTM2NjUwOTY4Mjg2NA==';
+export const univEwodChipWithoutCoverPlate5 = 'Z2lkOi8vc2hvcGlmeS9Qcm9kdWN0VmFyaWFudC80MTM2NjUwOTcxNTYzMg==';
+export const univEwodChipWithCoverPlate10 = 'Z2lkOi8vc2hvcGlmeS9Qcm9kdWN0VmFyaWFudC80MTM2NjUxMDA3NjA4MA==';
+export const univEwodChipWithoutCoverPlate10 = 'Z2lkOi8vc2hvcGlmeS9Qcm9kdWN0VmFyaWFudC80MTM2NjUxMDEwODg0OA==';
+
 
 export const productIds = [controlSysId, controlSysId5, controlSysId10, testBoardId, testBoardId5, testBoardId10, univEwodChipId, univEwodChipId5, univEwodChipId10];
 export const productIdsJson = {
@@ -29,6 +34,16 @@ export const productIdsJson = {
         '1': univEwodChipId,
         '5': univEwodChipId5,
         '10': univEwodChipId10,
+    },
+    'UNIVEWODCHIPWITHCOVERPLATE': {
+        '1': univEwodChipWithCoverPlate,
+        '5': univEwodChipWithCoverPlate5,
+        '10': univEwodChipWithCoverPlate10,
+    },
+    'UNIVEWODCHIPWITHOUTCOVERPLATE': {
+        '1': univEwodChipWithoutCoverPlate,
+        '5': univEwodChipWithoutCoverPlate5,
+        '10': univEwodChipWithoutCoverPlate10,
     }
 }
 

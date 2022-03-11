@@ -27,6 +27,7 @@ class Product extends React.Component {
       orderInfoId: undefined,
       shopifyClientCheckoutId: undefined,
       quantity: 1,
+      bundleSize: '1',
       otherDetails: {},
     };
     this.handleGetCart = this.handleGetCart.bind(this);
@@ -215,11 +216,11 @@ class Product extends React.Component {
         customServerOrderAttributes += `${k}: ${v}\n`;
       }
     }
-    const variantId = _this.state.product.id !== univEwodChipId
+    const variantId = _this.state.product.id !== productIdsJson['UNIVEWODCHIPID'][_this.state.bundleSize]
       ? _this.state.product.variants[0].id
-      : _this.state.otherDetails.withCoverPlateAssembled
-        ? univEwodChipWithCoverPlate
-        : univEwodChipWithoutCoverPlate;
+      : (_this.state.otherDetails.withCoverPlateAssembled
+      ? productIdsJson['UNIVEWODCHIPWITHCOVERPLATE'][_this.state.bundleSize]
+      : productIdsJson['UNIVEWODCHIPWITHOUTCOVERPLATE'][_this.state.bundleSize]);
     // console.log(variantId);
     const lineItemsToAdd = [{
       variantId,
@@ -234,7 +235,7 @@ class Product extends React.Component {
             for (let i = 0; i < res.lineItems.length; i++) {
               if (res.lineItems[i].variant.id === variantId) {
                 lineItemId = res.lineItems[i].id;
-                // console.log(lineItemId);
+                // console.log('lineItemId:', lineItemId);
                 break;
               }
             }
@@ -249,7 +250,7 @@ class Product extends React.Component {
               name: _this.state.product.title,
               otherDetails: customServerOrderAttributes,
             };
-            console.log(data);
+            // console.log(data);
             const url = addOrderProductToCart.replace('id', orderInfoId);
             API.Request(url, 'POST', data, true)
               .then((res) => {
