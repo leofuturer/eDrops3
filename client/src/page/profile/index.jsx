@@ -12,6 +12,8 @@ import {
   updateAdminProfile,
 } from '../../api/serverConfig';
 import API from '../../api/api';
+import SEO from '../../component/header/seo.jsx';
+import { metadata } from './metadata.jsx';
 
 class Profile extends React.Component {
   constructor(props) {
@@ -228,6 +230,9 @@ class Profile extends React.Component {
     }
     return (
       <div className="right-route-content">
+        <SEO title="eDrops | Profile"
+              description="" 
+              metadata={ metadata }/>
         <div className="profile-content">
           <h2>{profileContent}</h2>
           <div className="form-div">

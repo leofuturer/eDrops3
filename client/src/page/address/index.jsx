@@ -7,6 +7,9 @@ import { customerAddresses } from '../../api/serverConfig';
 import AddressTemplate from './addressTemplate.jsx';
 import loadingGif from '../../../static/img/loading80px.gif';
 
+import SEO from '../../component/header/seo.jsx';
+import { metadata } from './metadata.jsx';
+
 class Address extends React.Component {
   constructor(props) {
     super(props);
@@ -106,6 +109,9 @@ class Address extends React.Component {
   render() {
     return (
       <div className="right-route-content">
+        <SEO title="eDrops | Addresses"
+              description="" 
+              metadata={ metadata }/>
         <div className="profile-content">
           <h2>Address Book</h2>
         </div>

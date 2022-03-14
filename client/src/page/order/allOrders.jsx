@@ -51,7 +51,7 @@ class AllOrders extends React.Component {
       return <Redirect to="/login" />;
     }
     return (
-      <div className="right-route-cnotent">
+      <div className="right-route-content">
         <div className="profile-content">
           <h2>All Orders</h2>
         </div>
