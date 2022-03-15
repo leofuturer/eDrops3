@@ -11,10 +11,13 @@ import {
   getCustomerCart,
   manipulateCustomerOrders,
   addOrderProductToCart, returnOneItem,
+  getProductOrders
 } from '../../api/serverConfig';
 import API from '../../api/api';
 import Shopify from '../../app.jsx';
 import loadingGif from '../../../static/img/loading80px.gif';
+import CartContext from '../../context/CartContext';
+import hoistNonReactStatics from 'hoist-non-react-statics';
 
 class Product extends React.Component {
   constructor(props) {
@@ -111,7 +114,7 @@ class Product extends React.Component {
       API.Request(url, 'GET', {}, true)
         .then((res) => {
           if (res.data.id) {
-            // console.log(`Have cart already with ID ${res.data.id}`);
+            // console.log(`Have cart already with ID ${res.data.id}`); console.log(res);
             _this.setState({
               orderInfoId: res.data.id,
               shopifyClientCheckoutId: res.data.checkoutIdClient,
@@ -242,10 +245,20 @@ class Product extends React.Component {
               otherDetails: customServerOrderAttributes,
             };
             // console.log(data);
-            const url = addOrderProductToCart.replace('id', orderInfoId);
+            let url = addOrderProductToCart.replace('id', orderInfoId);
             API.Request(url, 'POST', data, true)
               .then((res) => {
-                // console.log(res);
+                url = getProductOrders.replace('id', orderInfoId);
+                API.Request(url, 'GET', {}, true)
+                  .then((res) => {
+                    const quantity = res.data.reduce((prev, curr) => prev + curr.quantity, 0);
+                    this.context.setProductQuantity(quantity);
+                    this.context.setCartQuantity();
+                    this.props.history.push('/manage/cart');
+                  })
+                  .catch((err) => {
+                    console.error(err);
+                  });
                 _this.setState({
                   addedToCart: true,
                 });
@@ -345,5 +358,6 @@ class Product extends React.Component {
   }
 }
 
-Product = withRouter(Product);
-export default Product;
+// Product = withRouter(Product);
+Product.contextType = CartContext;
+export default hoistNonReactStatics( Product, withRouter (Product));
