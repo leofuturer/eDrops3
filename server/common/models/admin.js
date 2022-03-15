@@ -2,12 +2,12 @@ const path = require('path');
 const Client = require('shopify-buy');
 const fetch = require('node-fetch');
 
-require('dotenv').config({path: path.resolve(__dirname, '.env')});
+require('dotenv').config({ path: path.resolve(__dirname, '.env') });
 
 const Constants = require('../../constants');
 const Roles = require('../../server/constants/Roles');
 
-const {ADMIN_ROLE_NAME} = Roles;
+const { ADMIN_ROLE_NAME } = Roles;
 
 // Remote hooks
 const adminRoleMappingCreator = require('../../server/hooks/adminRoleMappingCreator');
@@ -21,7 +21,7 @@ const client = Client.buildClient({
 
 global.fetch = fetch;
 
-module.exports = function(Admin) {
+module.exports = function (Admin) {
   // create a RoleMapping entry in the database
   // so that new admin user gets the right admin permissions
   Admin.afterRemote('create', adminRoleMappingCreator(ADMIN_ROLE_NAME));
@@ -38,25 +38,25 @@ module.exports = function(Admin) {
   });
 
   // TODO: fix this messy function
-  Admin.getChipOrders = function(ctx, cb) {
+  Admin.getChipOrders = function (ctx, cb) {
     const allOrderChips = [];
     const desiredWorkerId = ctx.req.query.workerId;
     console.log(desiredWorkerId);
     // find all complete orderInfos with their related orderChips
-    Admin.app.models.orderInfo.find({where: {orderComplete: true}})
+    Admin.app.models.orderInfo.find({ where: { orderComplete: true } })
       .then((orderInfos) => {
         const promises = orderInfos.map((orderInfo) =>
           // find all orderChips related to each orderInfo
-          Admin.app.models.orderChip.find({where: {orderId: orderInfo.id}})
+          Admin.app.models.orderChip.find({ where: { orderId: orderInfo.id } })
             .then((chipOrders) => {
               if (chipOrders !== null) {
-              // append orderInfo.customerId to each orderChip instance
+                // append orderInfo.customerId to each orderChip instance
                 const promisesInner = chipOrders.map((chipOrder) => {
                   chipOrder.customerId = orderInfo.customerId;
                   allOrderChips.push(chipOrder);
                 });
                 Promise.all(promisesInner).then(() => {
-                // Done appending everything
+                  // Done appending everything
                 });
               }
             })
@@ -105,10 +105,10 @@ module.exports = function(Admin) {
   Admin.remoteMethod('getChipOrders', {
     description: 'CUSTOM METHOD: Get all chip orders',
     accepts: [
-      {arg: 'ctx', type: 'object', http: {source: 'context'}},
+      { arg: 'ctx', type: 'object', http: { source: 'context' } },
     ],
-    http: {path: '/orderChips', verb: 'get'},
-    returns: [{arg: 'orderChips', type: 'array'}],
+    http: { path: '/orderChips', verb: 'get' },
+    returns: [{ arg: 'orderChips', type: 'array' }],
   });
 
   // Admin retrieve all orders
@@ -126,8 +126,8 @@ module.exports = function(Admin) {
   // Using: GET /customers/{id}/customerHasFiles
   // Frontend needs to pass customer id to backend
 
-  Admin.downloadFile = function(ctx, cb) {
-    const {fileId} = ctx.req.query;
+  Admin.downloadFile = function (ctx, cb) {
+    const { fileId } = ctx.req.query;
     if (fileId === undefined || fileId === '') {
       const error = new Error('Missing fileId argument');
       error.status = 400;
@@ -158,13 +158,13 @@ module.exports = function(Admin) {
   Admin.remoteMethod('downloadFile', {
     description: 'CUSTOM METHOD: Download a file',
     accepts: [
-      {arg: 'ctx', type: 'object', http: {source: 'context'}},
+      { arg: 'ctx', type: 'object', http: { source: 'context' } },
     ],
-    http: {path: '/downloadFile', verb: 'get'},
+    http: { path: '/downloadFile', verb: 'get' },
     returns: [],
   });
 
-  Admin.getApiToken = function(cb) {
+  Admin.getApiToken = function (cb) {
     cb(null, {
       token: process.env.SHOPIFY_TOKEN,
       domain: process.env.SHOPIFY_DOMAIN,
@@ -173,29 +173,31 @@ module.exports = function(Admin) {
 
   Admin.remoteMethod('getApiToken', {
     description: 'CUSTOM METHOD: get Api key and domain',
-    http: {path: '/getApi', verb: 'get'},
-    returns: [{arg: 'info', type: 'object'}],
+    http: { path: '/getApi', verb: 'get' },
+    returns: [{ arg: 'info', type: 'object' }],
   });
 
-  Admin.returnAllItems = function(cb) {
+  Admin.returnAllItems = function (cb) {
     const productIds = [
       Constants.CONTROLSYSID,
       Constants.TESTBOARDID,
       Constants.UNIVEWODCHIPID,
     ];
+    console.log(productIds);
     client.product.fetchMultiple(productIds)
       .then((res) => {
+        
         cb(null, res);
       }).catch((err) => console.log(err));
   };
 
   Admin.remoteMethod('returnAllItems', {
     description: 'Custom Method: get all products',
-    http: {path: '/getItems', verb: 'get'},
-    returns: [{arg: 'products', type: 'array'}],
+    http: { path: '/getItems', verb: 'get' },
+    returns: [{ arg: 'products', type: 'array' }],
   });
 
-  Admin.returnOneItem = function(productId, cb) {
+  Admin.returnOneItem = function (productId, cb) {
     client.product.fetch(productId)
       .then((res) => {
         cb(null, res);
@@ -204,8 +206,8 @@ module.exports = function(Admin) {
 
   Admin.remoteMethod('returnOneItem', {
     description: 'Custom Method: get one product',
-    http: {path: '/getOne', verb: 'get'},
-    accepts: {arg: 'productId', type: 'string'},
-    returns: [{arg: 'product', type: 'object'}],
+    http: { path: '/getOne', verb: 'get' },
+    accepts: { arg: 'productId', type: 'string' },
+    returns: [{ arg: 'product', type: 'object' }],
   });
 };
