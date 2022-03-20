@@ -22,7 +22,7 @@ services:
       - ./deploy/test/backend.env
       - ./deploy/test/backend_pwds.env
     environment: # Need to comment out these 3 lines for local tests...
-      - APP_EMAIL_PASSWORD 
+      - APP_EMAIL_API_KEY
       - SHOPIFY_TOKEN
     depends_on:
       - edrop_mysqldb_testdb # start database before backend

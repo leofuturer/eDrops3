@@ -87,5 +87,5 @@ jobs:
           docker-compose -f docker-compose.yml -f docker-compose.test.yml down
           exit $EXIT
       env:
-        APP_EMAIL_PASSWORD: ${{ secrets.APP_EMAIL_PASSWORD }}
+        APP_EMAIL_API_KEY: ${{ secrets.APP_EMAIL_API_KEY }}
         SHOPIFY_TOKEN: ${{ secrets.SHOPIFY_TOKEN }}
