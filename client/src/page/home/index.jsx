@@ -22,7 +22,9 @@ class Home extends React.Component {
             <div className="txt">
               <h1>EWOD<br/>CAD</h1>
               <div className="txt-bg">
-                SEE IN ACTION
+                <a href="http://cad.edrops.org" target="_blank" rel="noopener noreferrer">
+                DESIGN CHIP
+                </a>
               </div>
             </div>
           </div>
