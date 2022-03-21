@@ -12,6 +12,9 @@ import {
 import API from '../../api/api';
 import loadingGif from '../../../static/img/loading80px.gif';
 
+import SEO from '../../component/header/seo.jsx';
+import { metadata } from './metadata.jsx';
+
 const validate = require('validate.js');
 
 class Login extends React.Component {
@@ -176,6 +179,9 @@ class Login extends React.Component {
   render() {
     return (
       <div>
+        <SEO title="eDrops | Login"
+              description="" 
+              metadata={ metadata }/>
         <div className="login-input">
           <div className="div-login-contenth">
             <h3>Login</h3>

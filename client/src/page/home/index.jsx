@@ -6,12 +6,17 @@ import IMG_2943 from '../../../static/img/IMG_2943.jpg';
 import IMG_2941 from '../../../static/img/IMG_2941.jpg';
 import IMG_2936 from '../../../static/img/IMG_2936.jpg';
 import { controlSysId } from '../../constants';
+import SEO from '../../component/header/seo.jsx';
+import { metadata } from './metadata.jsx';
 
 class Home extends React.Component {
   render() {
     const controlSysPageLink = `/product?id=${controlSysId}`;
     return (
       <div>
+        <SEO title="eDrops | Home"
+              description="" 
+              metadata={ metadata }/>
         <div className="clearfix objectImg">
           <div className="col-md-4 cadImg">
             <div className="txt">

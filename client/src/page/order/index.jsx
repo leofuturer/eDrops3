@@ -8,6 +8,8 @@ import {
   from '../../api/serverConfig';
 import './animate.css';
 import loadingGif from '../../../static/img/loading80px.gif';
+import SEO from '../../component/header/seo.jsx';
+import { metadata } from './metadata.jsx';
 
 // The order list page for both customer and worker
 class Orders extends React.Component {
@@ -19,7 +21,7 @@ class Orders extends React.Component {
       isLoading: false,
     };
     if (this.props.match.path === '/manage/admin-retrieve-user-orders'
-            && Cookies.get('userType') === 'admin') {
+      && Cookies.get('userType') === 'admin') {
       Object.assign(this.state, {
         custId: this.props.location.state.userId,
         isCustomer: this.props.location.state.isCustomer,
@@ -70,6 +72,9 @@ class Orders extends React.Component {
   render() {
     return (
       <div>
+        <SEO title="eDrops | Orders"
+          description=""
+          metadata={metadata} />
         <div className="right-route-content">
           <div className="profile-content">
             {
@@ -82,7 +87,7 @@ class Orders extends React.Component {
                   </h2>
                 )
                 : <h2>Orders</h2>
-              }
+            }
           </div>
           <div className="content-show-table row">
             <div className="table-background">

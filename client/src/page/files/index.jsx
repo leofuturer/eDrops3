@@ -12,6 +12,8 @@ import {
 } from '../../api/serverConfig';
 
 import './index.css';
+import SEO from '../../component/header/seo.jsx';
+import { metadata } from './metadata.jsx';
 
 function padZeroes(time) {
   /**
@@ -151,6 +153,9 @@ class Files extends React.Component {
   render() {
     return (
       <div className="right-route-content">
+       <SEO title="eDrops | Files"
+              description="" 
+              metadata={ metadata }/>
         <div className="profile-content">
           { this.props.match.path === '/manage/admin-retrieve-user-files'
             ? (

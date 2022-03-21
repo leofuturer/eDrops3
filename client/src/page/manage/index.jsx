@@ -36,6 +36,8 @@ import Cart from 'page/cart/index.jsx';
 
 import Cookies from 'js-cookie';
 import Shopify from '../../app.jsx';
+import SEO from '../../component/header/seo.jsx';
+import { metadata } from './metadata.jsx';
 
 const routes = [
   // Pages for Admin:
@@ -182,6 +184,9 @@ class Manage extends React.Component {
     }
     return (
       <div className="manage">
+        <SEO title="eDrops | Dashboard"
+              description="" 
+              metadata={ metadata }/>
         <div className="left-nav">
           <NavLeft />
         </div>

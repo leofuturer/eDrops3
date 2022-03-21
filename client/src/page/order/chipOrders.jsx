@@ -11,6 +11,9 @@ import {
   from '../../api/serverConfig';
 import loadingGif from '../../../static/img/loading80px.gif';
 
+import SEO from '../../component/header/seo.jsx';
+import { metadata } from './metadata.jsx';
+
 // List all chip orders for all user types
 class ChipOrders extends React.Component {
   constructor(props) {
@@ -112,6 +115,9 @@ class ChipOrders extends React.Component {
   render() {
     return (
       <div>
+        <SEO title="eDrops | Chip Orders"
+              description="" 
+              metadata={ metadata }/>
         <div className="right-route-content">
           <div className="profile-content">
             <h2>Chip Orders</h2>

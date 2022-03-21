@@ -13,6 +13,9 @@ import '../order/animate.css';
 import Dropzone from 'react-dropzone';
 import { Progress } from './progress.jsx';
 
+import SEO from '../../component/header/seo.jsx';
+import { metadata } from './metadata.jsx';
+
 class Upload extends React.Component {
   constructor(props) {
     super(props);
@@ -116,7 +119,7 @@ class Upload extends React.Component {
     }
   }
 
-uploadFileRequest(extraFields) {
+  uploadFileRequest(extraFields) {
     const _this = this;
     for (let i = 0; i <= 70; i += 1) {
       setTimeout(() => {
@@ -222,6 +225,9 @@ uploadFileRequest(extraFields) {
     return (
       <div>
         <div className="foundry-content">
+          <SEO title="eDrops | Upload" 
+            description=""
+            metadata={metadata} />
           <h1>File Upload</h1>
           <h3>We accept DXF file as mask file</h3>
           <div className="vu-content">
@@ -256,9 +262,9 @@ uploadFileRequest(extraFields) {
                 {this.state.percentage > 0 ? (
                   <div className="progressContainer">
                     <h3>{this.state.percentage < 101 ? 'Uploading...' : 'Completed!'}</h3>
-                      <div className="uploadProgressBar">
-                        <Progress now={this.state.percentage}/>
-                      </div>
+                    <div className="uploadProgressBar">
+                      <Progress now={this.state.percentage} />
+                    </div>
                   </div>
                 )
                   : (
@@ -266,7 +272,7 @@ uploadFileRequest(extraFields) {
                       <p className="file-upload-insns">
                         Drag and drop DXF file here, or click to select file.
                       </p>
-                      { this.state.file && <p>{this.state.file.name}</p> }
+                      {this.state.file && <p>{this.state.file.name}</p>}
                     </div>
                   )
                 }
