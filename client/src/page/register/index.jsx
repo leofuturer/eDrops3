@@ -8,6 +8,9 @@ import loadingGif from '../../../static/img/loading80px.gif';
 
 import { closestParent, showErrorsOrSuccessForInput } from '../../utils/validate';
 
+import SEO from '../../component/header/seo.jsx';
+import { metadata } from './metadata.jsx';
+
 const validate = require('validate.js');
 
 class Register extends React.Component {
@@ -173,6 +176,9 @@ class Register extends React.Component {
   render() {
     return (
       <div>
+        <SEO title="eDrops | Register"
+              description="" 
+              metadata={ metadata }/>
         <div className="login-input">
           <div className="register-login-content">
             <h3>Sign Up</h3>

@@ -6,6 +6,8 @@ import Footer from 'component/footer/index.jsx';
 import CartContext from '../../context/CartContext'
 
 import './index.css';
+import SEO from '../header/seo.jsx';
+import { metadata } from './metadata.jsx';
 
 class Layout extends React.Component {
 
@@ -21,6 +23,9 @@ class Layout extends React.Component {
   render() {
     return (
       <div className="content">
+        <SEO title="eDrops"
+          description=""
+          metadata={metadata} />
         <div className="wrapper">
           <CartContext.Provider
             value = {{
