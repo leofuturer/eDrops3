@@ -91,7 +91,7 @@ class Register extends React.Component {
         if (res.data.result.usernameTaken) {
           errors.username = ['Account already exists with this username'];
           const input1 = document.querySelector('#inputUsername');
-          this.showErrorsOrSuccessForInput(input1, errors.username);
+          showErrorsOrSuccessForInput(input1, errors.username);
           this.setState({
             requestInProgress: false,
           });
@@ -99,7 +99,7 @@ class Register extends React.Component {
         if (res.data.result.emailTaken) {
           errors.email = ['Account already exists with this email'];
           const emailInput = document.getElementById('inputEmail');
-          this.showErrorsOrSuccessForInput(emailInput, errors.email);
+          showErrorsOrSuccessForInput(emailInput, errors.email);
           this.setState({
             requestInProgress: false,
           });
@@ -110,7 +110,7 @@ class Register extends React.Component {
       .catch((errors) => {
         form.querySelectorAll('input.needValidation').forEach((input, index) => {
           if (this) {
-            this.showErrorsOrSuccessForInput(input, errors && errors[input.name]);
+            showErrorsOrSuccessForInput(input, errors && errors[input.name]);
           }
         });
         this.setState({
