@@ -37,22 +37,12 @@ module.exports = {
     port: parseInt(process.env.APP_MYSQL_PORT) || 3306,
     username: process.env.APP_MYSQL_USERNAME,
     password: process.env.APP_MYSQL_PASSWORD,
+    connectTimeout: 20000,
+    acquireTimeout: 20000
   },
   edropFile: storage,
-  myEmailDataSource: {
-    name: 'myEmailDataSource',
-    connector: 'mail',
-    transports: [
-      {
-        type: 'SMTP',
-        host: process.env.APP_EMAIL_HOST || 'smtp.gmail.com',
-        secure: true,
-        port: parseInt(process.env.APP_EMAIL_PORT) || 465,
-        auth: {
-          user: process.env.APP_EMAIL_USERNAME,
-          pass: process.env.APP_EMAIL_PASSWORD,
-        },
-      },
-    ],
-  },
+  sendgrid: {
+    connector: 'loopback-connector-sendgrid',
+    api_key: process.env.APP_EMAIL_API_KEY,
+  }
 };

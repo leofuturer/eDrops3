@@ -34,7 +34,7 @@
     "public": false
   },
   "Email": {
-    "dataSource": "myEmailDataSource",
+    "dataSource": "sendgrid",
     "public": false
   },
   "orderItemBase": {
