@@ -31,11 +31,9 @@ class FormsPage extends React.Component {
   }
 
   handleValidateInput(e) {
-    console.log('handle validate input');
     const ele = e.target;
     const form = closestParent(e.target, 'vertical-form');
     const errors = validate(form, constraints) || {};
-    console.log(errors[ele.name]);
     showErrorsOrSuccessForInput(ele, errors[ele.name]);
   }
 

@@ -40,7 +40,6 @@ class Login extends React.Component {
   }
 
   handleChange(key, value) {
-    // console.log("I am called!");
     this.setState({
       [key]: value,
     });

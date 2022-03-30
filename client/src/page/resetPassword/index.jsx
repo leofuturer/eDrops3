@@ -53,7 +53,6 @@ class ResetPassword extends React.Component {
     let resetToken = '';
     if (queryString !== '') {
       resetToken = queryString.slice(queryString.indexOf('=') + 1);
-      console.log(resetToken);
     }
     // possible errors: empty reset token, passwords not matching,
     // password not satisfying the minimum requirement
