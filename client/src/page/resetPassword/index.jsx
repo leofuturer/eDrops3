@@ -37,7 +37,6 @@ class ResetPassword extends React.Component {
     const ele = e.target;
     const form = closestParent(e.target, 'vertical-form');
     const errors = validate(form, constraints) || {};
-    console.log(ele)
     showErrorsOrSuccessForInput(ele, errors[ele.name]);
   }
 
@@ -103,9 +102,9 @@ class ResetPassword extends React.Component {
         </div>
         <div className="input-content">
           <form className="vertical-form" action="">
-            <div className="form-group row text-left">
+            <div className="form-group text-left">
               <label className="control-label">
-                <span>New Password*</span>
+                <span>New Password</span>
               </label>
               <input
                 type="password"
@@ -121,9 +120,9 @@ class ResetPassword extends React.Component {
                 </p>
               </div>
             </div>
-            <div className="form-group row text-left">
+            <div className="form-group text-left">
               <label className="control-label">
-                <span>Confirm New Password*</span>
+                <span>Confirm New Password</span>
               </label>
               <input
                 type="password"
