@@ -252,7 +252,7 @@ class Login extends React.Component {
                 */}
                 <div className="form-group">
                   <span>If you have trouble logging in to your account, </span>
-                  <a href="mailto:edropswebsite@gmail.com">contact us.</a>
+                  <a href="mailto:service@edrops.org">contact us.</a>
                 </div>
               </div>
             </form>

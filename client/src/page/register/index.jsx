@@ -37,6 +37,7 @@ class Register extends React.Component {
     this.handleRegister = this.handleRegister.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.handleValidateInput = this.handleValidateInput.bind(this);
+    this.handleCheckConfirmPassword = this.handleCheckConfirmPassword.bind(this);
     this.handleFormSubmit = this.handleFormSubmit.bind(this);
   }
 
@@ -120,6 +121,14 @@ class Register extends React.Component {
           requestInProgress: false,
         });
       });
+  }
+
+  handleCheckConfirmPassword() {
+    if (this.state.confirmPassword !== '') {
+      const conf = document.getElementsByTagName('input')[3];
+      conf.focus();
+      conf.blur();
+    }
   }
 
   handleRegister(e) {
@@ -240,7 +249,9 @@ class Register extends React.Component {
                       placeholder="Password"
                       autoComplete="new-password"
                       onChange={(v) => this.handleChange('password', v.target.value)}
-                      onBlur={this.handleValidateInput}
+                      onBlur={(e) => { this.handleValidateInput(e); 
+                        this.handleCheckConfirmPassword(); 
+                      }}
                     />
                   </div>
                   <div className="col-md-4 col-sm-4 col-xs-4 messages">
