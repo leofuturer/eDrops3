@@ -74,6 +74,7 @@ class Register extends React.Component {
           showErrorsOrSuccessForInput(emailInput, errors.email);
         }
       });
+    console.log('here');
   }
 
   handleFormSubmit(e) {
@@ -92,6 +93,7 @@ class Register extends React.Component {
         return API.Request(url, 'POST', data, false);
       })
       .then((res) => {
+        console.log('here');
         if (res.data.result.usernameTaken) {
           errors.username = ['Account already exists with this username'];
           const input1 = document.querySelector('#inputUsername');
@@ -180,6 +182,8 @@ class Register extends React.Component {
           errorMessage: 'There was an error when registering your account. Please try again.',
         });
       });
+
+    console.log('here')
   }
 
   render() {

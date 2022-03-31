@@ -3,7 +3,7 @@ import './forgetPass.css';
 import { userForgetPass, customerResendVerifyEmail } from '../../api/serverConfig';
 import API from '../../api/api';
 import loadingGif from '../../../static/img/loading80px.gif';
-import constraints from '../register/formConstraints';
+import constraints from './formConstraints';
 
 import { closestParent, showErrorsOrSuccessForInput } from '../../utils/validate';
 
@@ -38,7 +38,7 @@ class FormsPage extends React.Component {
   }
 
   handleHelp(e) {
-    const helpType = e.target.id;
+    const helpType = e;
     const data = {
       email: this.state.email,
     };
@@ -90,6 +90,28 @@ class FormsPage extends React.Component {
     }
   }
 
+  handleFormSubmit(e) {
+    const v = e.target.id;
+    const form = document.querySelector('.vertical-form');
+    const errors = {};
+    this.setState({
+      requestInProgress: true,
+    });
+    validate.async(form, constraints, { cleanAttributes: false })
+      .then((success) => {
+        // console.log(v.target.id);
+        this.handleHelp(v);
+      })
+      .catch((errors) => {
+        form.querySelectorAll('input.needValidation').forEach((input, index) => {
+          if (this) {
+            showErrorsOrSuccessForInput(input, errors && errors[input.name]);
+          }
+        });
+      });
+  }
+
+
   render() {
     return (
       <div>
@@ -107,9 +129,9 @@ class FormsPage extends React.Component {
               <div className="form-group text-left">
                 <input
                   type="text"
-                  name="usernameOrEmail"
-                  className="form-control"
-                  placeholder="Username or Email"
+                  name="email"
+                  className="form-control needValidation"
+                  placeholder="Email"
                   onChange={(v) => this.handleChange('email', v.target.value)}
                   onBlur={this.handleValidateInput}
                 />
@@ -126,7 +148,7 @@ class FormsPage extends React.Component {
                         id="resetPassword"
                         value="Reset Password"
                         className="input-btn"
-                        onClick={(e) => this.handleHelp(e)}
+                        onClick={(e) => this.handleFormSubmit(e)}
                       />
                     )
                 }
@@ -141,7 +163,7 @@ class FormsPage extends React.Component {
                         id="resendVerifyEmail"
                         value="Resend Verification Email"
                         className="input-btn"
-                        onClick={(e) => this.handleHelp(e)}
+                        onClick={(e) => this.handleFormSubmit(e)}
                       />
                     )
                 }
@@ -151,7 +173,7 @@ class FormsPage extends React.Component {
           {this.state.successMessage
             ? (
               <div className="help-text">
-                If there is an account associated with that username or email, an email has been sent to the email address of that account. Please check
+                If there is an account associated with that email, the requested link has been sent. Please check
                 your email for further instructions.
               </div>
             )

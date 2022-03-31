@@ -14,9 +14,6 @@ const constraints = {
       message: 'must only contain a-z, A-Z, 0-9 and _',
     },
   },
-  usernameOrEmail: {
-    presence: true,
-  },
   password: {
     presence: true,
     length: {
