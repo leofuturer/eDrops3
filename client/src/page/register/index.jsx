@@ -177,8 +177,8 @@ class Register extends React.Component {
     return (
       <div>
         <SEO title="eDrops | Register"
-              description="" 
-              metadata={ metadata }/>
+          description=""
+          metadata={metadata} />
         <div className="login-input">
           <div className="register-login-content">
             <h3>Sign Up</h3>
