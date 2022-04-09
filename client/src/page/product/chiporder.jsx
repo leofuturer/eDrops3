@@ -17,7 +17,7 @@ import './chiporder.css';
 import Cookies from 'js-cookie';
 import {
   getCustomerCart, manipulateCustomerOrders, addOrderChipToCart,
-  getChipOrders
+  getChipOrders, getAllFoundryWorkers
 } from '../../api/serverConfig';
 import API from '../../api/api';
 import {
@@ -28,6 +28,7 @@ import Shopify from '../../app.jsx';
 import loadingGif from '../../../static/img/loading80px.gif';
 import DXFPreview from './dxf_preview.jsx';
 import CartContext from '../../context/CartContext'
+
 
 class ChipOrder extends React.Component {
   constructor(props) {
@@ -41,6 +42,9 @@ class ChipOrder extends React.Component {
       wcpb: false,
       fileInfo: this.props.location.state.fileInfo,
       isLoading: false,
+      GLASSID: 0,
+      PAPERID: 0,
+      PCBID: 0,
     };
     this.shopifyClient = null;
     this.setCurrentIndex = this.setCurrentIndex.bind(this);
@@ -48,6 +52,39 @@ class ChipOrder extends React.Component {
   }
 
   componentDidMount() {
+    // usernames of default foundry workers
+    const GLASSFW = "GLASS-EWOD-Foundry";
+    const PAPERFW = "PAPER-EWOD-Foundry";
+    const PCBFW = "PCB-EWOD-Foundry";
+    // fetch IDs of default foundry workers
+    API.Request(`${getAllFoundryWorkers}?filter={"where": {"username": "${GLASSFW}"}}`, 'GET', {}, true)
+      .then((res) => {
+        this.setState({
+          GLASSID: res.data[0].id,
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+    API.Request(`${getAllFoundryWorkers}?filter={"where": {"username": "${PAPERFW}"}}`, 'GET', {}, true)
+      .then((res) => {
+        this.setState({
+          PAPERID: res.data[0].id,
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+    API.Request(`${getAllFoundryWorkers}?filter={"where": {"username": "${PCBFW}"}}`, 'GET', {}, true)
+      .then((res) => {
+        this.setState({
+          PCBID: res.data[0].id,
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+
     if (Cookies.get('access_token') === undefined) {
       alert('Login required for this page');
       this.props.history.push('/login');
@@ -210,6 +247,21 @@ class ChipOrder extends React.Component {
                   break;
                 }
               }
+              // select default foundry worker based on material
+              let materialSpecificWorkerId = 0;
+              switch(this.materialVal) {
+                case "ITO Glass":
+                  worker = this.state.GLASSID;
+                  break;
+                case "Paper":
+                  worker = this.state.PAPERID;
+                  break;
+                case "PCB":
+                  worker = this.state.PCBID;
+                  break;
+                default:
+              }
+
               // create our own chip order here...
               const data = {
                 orderInfoId: _this.state.orderInfoId,
@@ -225,7 +277,7 @@ class ChipOrder extends React.Component {
                 coverPlate: wcpbVal,
                 lastUpdated: Date.now(),
                 fileInfoId: this.state.fileInfo.id,
-                workerId: 0,
+                workerId: materialSpecificWorkerId,
               };
               // console.log(res);
               let url = addOrderChipToCart.replace('id', _this.state.orderInfoId);
