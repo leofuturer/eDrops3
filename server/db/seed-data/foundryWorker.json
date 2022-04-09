@@ -30,5 +30,53 @@
         "password": "edropTest123",
         "email": "testfwB@gmail.com",
         "emailVerified": false
+    },
+    {
+        "street": "",
+        "streetLine2": "",
+        "firstName": "edrops",
+        "lastName": "glassfab",
+        "phoneNumber": "3102896978",
+        "country": "US",
+        "state": "CA",
+        "city": "Los Angeles",
+        "zipCode": "90095",
+        "affiliation": "UCLA Nano Lab",
+        "username": "Glass-EWOD-Foundry",
+        "password": "edropTest123",
+        "email": "edrops.glassfab@gmail.com",
+        "emailVerified": true
+    },
+    {
+        "street": "",
+        "streetLine2": "",
+        "firstName": "edrops",
+        "lastName": "pcbfab",
+        "phoneNumber": "3102896978",
+        "country": "",
+        "state": "",
+        "city": "",
+        "zipCode": "",
+        "affiliation": "UCLA Nano Lab",
+        "username": "PCB-EWOD-Foundry",
+        "password": "edropTest123",
+        "email": "edrops.pcbfab@gmail.com",
+        "emailVerified": true
+    },
+    {
+        "street": "",
+        "streetLine2": "",
+        "firstName": "edrops",
+        "lastName": "paperfab",
+        "phoneNumber": "3102896978",
+        "country": "",
+        "state": "",
+        "city": "",
+        "zipCode": "",
+        "affiliation": "UCLA Nano Lab",
+        "username": "Paper-EWOD-Foundry",
+        "password": "edropTest123",
+        "email": "edrops.paperfab@gmail.com",
+        "emailVerified": true
     }
 ]
