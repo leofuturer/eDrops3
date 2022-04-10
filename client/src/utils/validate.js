@@ -28,7 +28,7 @@ const showErrorsOrSuccessForInput = (input, errors) => {
   formGroup.classList.remove('has-error');
   formGroup.classList.remove('has-success');
   // and remove any old messages
-  formGroup.querySelectorAll('.help-block.error, .text-muted, .text-success').forEach((ele, index) => {
+  formGroup.querySelectorAll('.help-block.error, .text-muted, .text-success, .info').forEach((ele, index) => {
     ele.remove();
   });
 

@@ -37,6 +37,7 @@ class Register extends React.Component {
     this.handleRegister = this.handleRegister.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.handleValidateInput = this.handleValidateInput.bind(this);
+    this.handleCheckConfirmPassword = this.handleCheckConfirmPassword.bind(this);
     this.handleFormSubmit = this.handleFormSubmit.bind(this);
   }
 
@@ -73,6 +74,7 @@ class Register extends React.Component {
           showErrorsOrSuccessForInput(emailInput, errors.email);
         }
       });
+    console.log('here');
   }
 
   handleFormSubmit(e) {
@@ -91,10 +93,11 @@ class Register extends React.Component {
         return API.Request(url, 'POST', data, false);
       })
       .then((res) => {
+        console.log('here');
         if (res.data.result.usernameTaken) {
           errors.username = ['Account already exists with this username'];
           const input1 = document.querySelector('#inputUsername');
-          this.showErrorsOrSuccessForInput(input1, errors.username);
+          showErrorsOrSuccessForInput(input1, errors.username);
           this.setState({
             requestInProgress: false,
           });
@@ -102,7 +105,7 @@ class Register extends React.Component {
         if (res.data.result.emailTaken) {
           errors.email = ['Account already exists with this email'];
           const emailInput = document.getElementById('inputEmail');
-          this.showErrorsOrSuccessForInput(emailInput, errors.email);
+          showErrorsOrSuccessForInput(emailInput, errors.email);
           this.setState({
             requestInProgress: false,
           });
@@ -113,13 +116,21 @@ class Register extends React.Component {
       .catch((errors) => {
         form.querySelectorAll('input.needValidation').forEach((input, index) => {
           if (this) {
-            this.showErrorsOrSuccessForInput(input, errors && errors[input.name]);
+            showErrorsOrSuccessForInput(input, errors && errors[input.name]);
           }
         });
         this.setState({
           requestInProgress: false,
         });
       });
+  }
+
+  handleCheckConfirmPassword() {
+    if (this.state.confirmPassword !== '') {
+      const conf = document.getElementsByTagName('input')[3];
+      conf.focus();
+      conf.blur();
+    }
   }
 
   handleRegister(e) {
@@ -171,6 +182,8 @@ class Register extends React.Component {
           errorMessage: 'There was an error when registering your account. Please try again.',
         });
       });
+
+    console.log('here')
   }
 
   render() {
@@ -240,7 +253,9 @@ class Register extends React.Component {
                       placeholder="Password"
                       autoComplete="new-password"
                       onChange={(v) => this.handleChange('password', v.target.value)}
-                      onBlur={this.handleValidateInput}
+                      onBlur={(e) => { this.handleValidateInput(e); 
+                        this.handleCheckConfirmPassword(); 
+                      }}
                     />
                   </div>
                   <div className="col-md-4 col-sm-4 col-xs-4 messages">
