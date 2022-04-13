@@ -7,6 +7,7 @@ import {
 import API from '../../api/api';
 import constraints from './formConstraints';
 import { closestParent, showErrorsOrSuccessForInput } from '../../utils/validate';
+import './admin.css';
 
 const validate = require('validate.js');
 
@@ -154,7 +155,7 @@ class AddOrEditAdmin extends React.Component {
                   </div>
                   <div className="form-group row">
                     <label className="col-md-2 col-sm-2 col-xs-2 control-label">
-                      <span>Phone Number</span>
+                      <span>Phone Number*</span>
                     </label>
                     <div className="col-md-6 col-sm-6 col-xs-6 text-left">
                       <input
@@ -183,7 +184,7 @@ class AddOrEditAdmin extends React.Component {
                         onBlur={this.handleValidateInput} />
                     </div>
                     <div className="col-md-4 col-sm-4 col-xs-4 messages">
-                      <small className="text-muted"></small>
+                      <small className="text-muted">(Optional)</small>
                     </div>
                   </div>
                   <div className="form-group row">

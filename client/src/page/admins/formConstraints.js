@@ -25,6 +25,7 @@ const constraints = {
     },
   },
   password: {
+    presence: true,
     length: {
       minimum: 8,
     },
@@ -34,6 +35,7 @@ const constraints = {
     },
   },
   confirmPassword: {
+    presence: true,
     equality: {
       attribute: 'password',
       message: '^Two passwords do not match',
