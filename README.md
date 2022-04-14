@@ -210,6 +210,16 @@ a. `$ git merge [branch to merge from]`
 b. `$ git cherry-pick [commits]`
 You can get the commit references from `$ git log`
 
+4) `$ git reset --hard origin/testing` (resets the local testing branch to the remote testing branch)
+
+Do this when you want to test a different feature and merge different changes.
+
+Note that it isn't generally recommended to merge changes back from the testing branch to your development branch, but it is possible. You should ideally be making major changes to your development branch and then merging them into the testing branch.
+
+Below is a rough overview of the workflow for testing. This isn't completely accurate but it should give you an idea of how it works.
+
+![Testing branch workflow](/testing-branch-workflow.png)
+
 Make sure you don't actually push any changes to testing so testing always mirrors the stage branch. Testing will be synced with stage regularly.
 
 Now you can use Shopify's bogus payment gateway to test the checkout feature as explained in the section above.
