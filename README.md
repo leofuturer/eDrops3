@@ -20,7 +20,7 @@ To achieve a functional EWOD cloud manufacturing website by **improving** the mo
 API request to server: axios (a javascript package) & fetch() (conventional way is AJAX but is not popular any more)
 * /component  
 Some components shared by different pages, like: navigation bar, footer, layout(React-Router)
-* / page  
+* /page  
 pages as well as corresponding .CSS files
 * /router  
 routing: React-router  
@@ -50,7 +50,7 @@ Prerequisites:
 
 ### Steps to run the code on localhost (For the first time)
 Download this repository:  
-`$ git clone https://github.com/danningyu/Edrop-v2.0.0.git`  
+`$ git clone https://github.com/leofuturer/Edrop-v2.0.0.git`  
 `$ cd Edrop-v2.0.0`  
 
 For development purposes, there are 3 containers to run for the backend:  
@@ -60,7 +60,7 @@ For development purposes, there are 3 containers to run for the backend:
 
 The frontend is run without a container to enable easy hot-reloading.  
 
-When we deploy, we deploy the backed as a container and the frontend as a static HTML/CSS/JS bundle.  
+When we deploy, we deploy the backend as a container and the frontend as a static HTML/CSS/JS bundle.  
 
 #### To get the frontend running  
 From the home/top level directory:  
@@ -80,13 +80,15 @@ Open a new terminal window. Build the backend container and download images for 
 `$ docker pull mysql:8.0`  
 `$ docker pull wernight/ngrok:latest`  
 
-Create the following files in `deploy/dev/` to supply environment variables to the containers. Ask Danning or Qining for a copy of those files, as they contain sensitive information.  
+Create the following files in `deploy/dev/` to supply environment variables to the containers. Ask Leo for a copy of those files, as they contain sensitive information.  
 `$ cd deploy/dev/`  
 `$ touch backend.env mysql.env ngrok.env`  
 
 Then, go back to the top directory /Edrop-v2.0.0 and initialize the database schema and add seed data:
 `$ cd ../..` (go back to the root directory where all the docker-compose files exist)
-Windows: `$ $env:RESET_DATABASE = 'Yes'; docker-compose -f docker-compose.yml -f docker-compose.dev.yml up -d; $env:RESET_DATABASE = ''; docker-compose -f docker-compose.yml -f docker-compose.dev.yml logs -f`  
+
+Windows: `$ $env:RESET_DATABASE = 'Yes'; docker-compose -f docker-compose.yml -f docker-compose.dev.yml up -d; $env:RESET_DATABASE = ''; docker-compose -f docker-compose.yml -f docker-compose.dev.yml logs -f` 
+
 Mac/Unix: `$ RESET_DATABASE=Yes docker-compose -f docker-compose.yml -f docker-compose.dev.yml up -d && docker-compose -f docker-compose.yml -f docker-compose.dev.yml logs -f`  
 
 Note: the first time the MySQL container is created, the database needs to be created, so this command will take around 2-3 minutes. Please be patient and wait until you receive the message:
@@ -97,7 +99,7 @@ edrop_backend  | Done resetting database
 edrop_backend exited with code 0
 ```
 
-Then, press Ctrl + C to exit from trailing the logs and run the follow command to shut down all containers for the development stack:
+Then, press Ctrl + C to exit the logs and run the follow command to shut down all containers for the development stack:
 `$ docker-compose -f docker-compose.yml -f docker-compose.dev.yml down`  
 
 You are now ready to start up the backend (make sure RESET_DATABASE is **not** equal to 'Yes'):  
@@ -150,7 +152,7 @@ function Edrop-Docker-Restart{
 }
 Set-Alias edroprestart Edrop-Docker-Restart
 ```
-This creates three aliases named "edroprun", "edropstop", and "edropreset" that point to the run, stop, and reset commands for the docker backend respectively.
+This creates four aliases named "edroprun", "edropstop", "edropreset", and "edroprestart" that point to the run, stop, reset, and restart commands for the docker backend respectively.
 
 Note you may change the names of these aliases if you would like by modifying the `Set-Alias` line using the format `Set-Alias [alias name] [function name]`.
 
@@ -159,7 +161,7 @@ Note you may change the names of these aliases if you would like by modifying th
 Check what shell you are using by running `echo $0` or `echo $SHELL`.
 
 If the shell is **zsh** (default shell on Mac), edit/create the `.zshrc` file in the home directory using `nano ~/.zshrc`.
-If the shell is **bash**, edit/create the `.bash_profile` file in the home directory using `nano ~/.zshrc`.
+If the shell is **bash** , edit/create the `.bash_profile` file in the home directory using `nano ~/.zshrc`.
 
 For either shell, add the following aliases:
 ```
@@ -179,6 +181,8 @@ Either restart your terminal or refresh your shell profile using `source ~/.zshr
 
 
 #### To connect the backend with Shopify
+*Note that since migration to the production Shopify store, you must follow the instructions in the section below to test with the old development store*
+
 Go to https://wqntest.myshopify.com/admin -> Settings (bottom left) -> Notifications, scroll down to the bottom, and update the webhook URLs for order creation with the URL generated by Ngrok. This URL can be found by navigating to localhost:4040 or viewing the Ngrok container's logs.  If you have the server running at this point, you can send a test notification to confirm that everything works.  
 
 To create a webhook, enter the following settings:  
@@ -187,6 +191,28 @@ To create a webhook, enter the following settings:
 - URL: https://your_ngrok_address_hash.ngrok.io/api/orderInfos/newOrderCreated
 
 To test the checkout feature: In the checkout page: enter `1` for the credit card number, any date in the future for expiry date, and any 3 digit number for the CVV. See [Shopify's docs](https://help.shopify.com/en/partners/dashboard/managing-stores/test-orders-in-dev-stores) for more details.
+
+#### To test Shopify transactions
+1) Change the Shopify environmental variables in deploy/dev/backend.env to 
+
+```
+SHOPIFY_DOMAIN=wqntest.myshopify.com
+SHOPIFY_TOKEN=[*Token for dev store here*]
+```
+Contact codeowners if you need the token.
+
+It is suggested you have three files: backend.env, backend_edrops.env, and backend_wqntest.env, in which you have the production Shopify env variables in backend_edrops.env and the testing ones in backend_wqntest.env, so when you switch between the testing branch and other branches you can just copy the necessary file to backend.env.
+
+2) `$ git switch testing` (checks out the testing branch from remote)
+
+3) Apply any commits/changes you made to the local testing branch. Can be done through either:
+a. `$ git merge [branch to merge from]`
+b. `$ git cherry-pick [commits]`
+You can get the commit references from `$ git log`
+
+Make sure you don't actually push any changes to testing so testing always mirrors the stage branch. Testing will be synced with stage regularly.
+
+Now you can use Shopify's bogus payment gateway to test the checkout feature as explained in the section above.
 
 ### Starting Frontend/Backend
 Use this workflow after first-time setup instructions above are finished.
@@ -200,13 +226,17 @@ $ npm run dev
 In another terminal window, navigate back to the /Edrop-v2.0.0 directory and run:
 `$ docker-compose -f docker-compose.yml -f docker-compose.dev.yml up -d && docker-compose -f docker-compose.yml -f docker-compose.dev.yml logs -f`
 
+or if you setup aliases for the docker commands, you can run: `$ edroprun`
+
 To test Shopify related functions, follow the instruction above to connect the backend with Shopify
 
 ### To run Backend tests  
 Start up the backend using the test docker-compose stack instead, with the same procedure of resetting the database first:  
+
 Windows:  
-`$ $env:RESET_DATABASE = 'Yes'; docker-compose -f docker-compose.yml -f docker-compose.test.yml up -d; $env:RESET_DATABASE = ''; docker-compose -f docker-compose.yml -f docker-compose.test.yml logs -f`  
-Mac/Unix:  
+`$ $env:RESET_DATABASE = 'Yes'; docker-compose -f docker-compose.yml -f docker-compose.test.yml up -d; $env:RESET_DATABASE = ''; docker-compose -f docker-compose.yml -f docker-compose.test.yml logs -f`
+
+Mac/Unix:
 `$ RESET_DATABASE=Yes docker-compose -f docker-compose.yml -f docker-compose.test.yml up -d && docker-compose -f docker-compose.yml -f docker-compose.test.yml logs -f`  
 
 Shut down the Docker stack after database resetting is done:  
@@ -222,17 +252,23 @@ Then, run the tests:
 `$ cd server`  
 `$ npm test`  
 
-To rerun the tests, you will need to reset the database:  
+To rerun the tests, you will need to reset the database:
+
 Windows:  
-`$ docker exec edrop_backend node db/reset-db.js; docker restart edrop_backend`  
+`$ docker exec edrop_backend node db/reset-db.js; docker restart edrop_backend`
+
 Mac/Unix:  
 `$ docker exec edrop_backend node db/reset-db.js && docker restart edrop_backend`  
 
 This command runs `reset-db.js` to reset the database, then it restarts the backend so that a new admin user is created automatically (otherwise many API endpoints cannot be tested).  
 
 ### Steps to import seed data for development & testing
-From the top level directory, initialize the database schema and add seed data. To add or modify seed data, change the json objects in `server/db/seed-data/`. **WARNING: This will delete everything previously in the database!**  
-Windows: `$ $env:RESET_DATABASE = 'Yes'; docker-compose -f docker-compose.yml -f docker-compose.dev.yml up -d; $env:RESET_DATABASE = ''; docker-compose -f docker-compose.yml -f docker-compose.dev.yml logs -f`  
+From the top level directory, initialize the database schema and add seed data. To add or modify seed data, change the json objects in `server/db/seed-data/`.
+
+**WARNING: This will delete everything previously in the database!** 
+
+Windows: `$ $env:RESET_DATABASE = 'Yes'; docker-compose -f docker-compose.yml -f docker-compose.dev.yml up -d; $env:RESET_DATABASE = ''; docker-compose -f docker-compose.yml -f docker-compose.dev.yml logs -f`
+
 Mac/Unix: `$ RESET_DATABASE=Yes docker-compose -f docker-compose.yml -f docker-compose.dev.yml up -d && docker-compose -f docker-compose.yml -f docker-compose.dev.yml logs -f` 
 
 ### Steps to change database models
@@ -245,7 +281,7 @@ Mac/Unix: `$ MIGRATE_DATABASE=Yes docker-compose -f docker-compose.yml -f docker
 Please read this section and follow the instructions before creating a **Pull Request**.
 
 1. If you have any branches based on `master` branch that you want to create a PR, rebase off the `stage` branch and resolve all conflicts.
-2. When opening a new PR, be sure to choose the target branch as `stage`, otherwise github workflow will remind you that you shouldn't PR to `master`
+2. When opening a new PR, be sure to choose the target branch as `stage`, otherwise GitHub workflow will remind you that you shouldn't PR to `master`
 3. Make your changes at a granular level. That means, try to have each PR concerned with only one feature/bug fix. Always try to keep the git diff small for the convenience of code reviewers, and refrain from committing unrelated changes (i.e. yarn.lock commit when no packages are added/removed/updated).
 4. Make sure your change passes all ESLint rules.
 5. After opening a PR, link it to an existing issue if there is one, and request reviews from codeowners and other contributors if necessary.
@@ -253,10 +289,10 @@ Please read this section and follow the instructions before creating a **Pull Re
 
 ## FAQ/Common Issues
 **Q: How to enable built in Loopback debugging?**
-A: See [Setting debug strings](https://loopback.io/doc/en/lb3/Setting-debug-strings.html) from the Loopback documentation. For example, to debug ACL issues, set DEBUG=loopback:security:* 
+**A:** See [Setting debug strings](https://loopback.io/doc/en/lb3/Setting-debug-strings.html) from the Loopback documentation. For example, to debug ACL issues, set DEBUG=loopback:security:* 
 
 **Q: How to rename database?**  
-If you are using MySQL 8.0 with InnoDB, do the following:  
+**A:** If you are using MySQL 8.0 with InnoDB, do the following:  
 - Exec into the MySQL database using the `mysql` command line utility  
 - Run `CREATE DATABASE new_db_name;`  
 - (Optional, to create new user) `CREATE USER 'edrop_db_user'@'%' IDENTIFIED BY 'password_goes_here';`  
@@ -269,14 +305,12 @@ This uses the fact that we can "transfer" a table from one database to another w
 
 Source: https://chartio.com/resources/tutorials/how-to-rename-a-database-in-mysql/  
 
-**Q: How to allow Access to Gmail?**
-If you are running the app locally for the first time and try to use it to have edropswebsite@gmail.com send an email, Google will block your request. To authorize your computer, go to https://accounts.google.com/b/6/DisplayUnlockCaptcha, replacing the "6" with the # of your Google account if you are logged in to multiple. This link, which isn't published by Google for some reason, will temporarily allow accounts like eDrops backend to log in to your application. This will cause Google to remember the device in the future.
 
 **Issue: Set the environment variables for connecting to the database but it doesn't work (permission denied error):**
 A: Make sure you set the environment variables in the same shell window that you run the server in. To verify the value was set correctly, use `$ echo %ENV_VAR_NAME%` for Windows and `$ echo $ENV_VAR_NAME` for Linux/MacOS.  
 
 ## Environment Variables
-If things aren't working, check that these are correct for your environment. Contact Danning or Qining for sensitive values.
+If things aren't working, check that these are correct for your environment. Contact Leo for sensitive values.
 
 ### List of environment variables 
 | Environment Variable     | Description                                         | Default Value             |
@@ -290,10 +324,10 @@ If things aren't working, check that these are correct for your environment. Con
 | APP\_FRONTEND\_PORT      | Port number for front end server                    | 8086                       |
 | APP\_EMAIL\_HOST         | Hostname for email server used to send emails       | "smtp\.gmail\.com"         |
 | APP\_EMAIL\_PORT         | Port number for email server used to send emails    | 465                        |
-| APP\_EMAIL\_USERNAME     | Email address for email account used to send emails | "edropswebsite@gmail\.com" |
-| APP\_EMAIL\_PASSWORD     | Password for email account used to send emails      | Contact Danning/Qining     |
-| SHOPIFY\_DOMAIN          | Domain for our Shopify website                      | "wqntest.myshopify.com"    |
-| SHOPIFY\_TOKEN           | Token for Shopify Storefront API                    | Contact Danning/Qining     |
+| APP\_EMAIL\_USERNAME     | Email address for email account used to send emails | "service@edrops\.org" |
+| APP\_EMAIL\_API\_KEY     | Key for SendGrid API used to send emails      | Contact Leo     |
+| SHOPIFY\_DOMAIN          | Domain for our Shopify website                      | "edrops-store.myshopify.com"    |
+| SHOPIFY\_TOKEN           | Token for Shopify Storefront API                    | Contact Leo     |
 
 IP address of our AWS EC2 server: 54.241.15.160.  
 
@@ -321,7 +355,7 @@ To set an environment variable for the backend container (such as for debugging 
 SSH into EC2:  
 `ssh ubuntu@edrops.org`  
 
-The server uses public-private key authentication, so ask Danning or Qining to get your public key added to the server.  
+The server uses public-private key authentication, so ask Leo to get your public key added to the server.  
 
 Build backend image:  
 `docker build -t danningyu/edrop_backend .`  
