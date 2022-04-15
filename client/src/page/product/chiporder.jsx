@@ -249,15 +249,15 @@ class ChipOrder extends React.Component {
               }
               // select default foundry worker based on material
               let materialSpecificWorkerId = 0;
-              switch(this.materialVal) {
+              switch(this.state.materialVal) {
                 case "ITO Glass":
-                  worker = this.state.GLASSID;
+                  materialSpecificWorkerId = this.state.GLASSID;
                   break;
                 case "Paper":
-                  worker = this.state.PAPERID;
+                  materialSpecificWorkerId = this.state.PAPERID;
                   break;
                 case "PCB":
-                  worker = this.state.PCBID;
+                  materialSpecificWorkerId = this.state.PCBID;
                   break;
                 default:
               }
