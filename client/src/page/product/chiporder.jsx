@@ -53,9 +53,9 @@ class ChipOrder extends React.Component {
 
   componentDidMount() {
     // usernames of default foundry workers
-    const GLASSFW = "GLASS-EWOD-Foundry";
-    const PAPERFW = "PAPER-EWOD-Foundry";
-    const PCBFW = "PCB-EWOD-Foundry";
+    const GLASSFW = "glassfab";
+    const PAPERFW = "paperfab";
+    const PCBFW = "pcbfab";
     // fetch IDs of default foundry workers
     API.Request(`${getAllFoundryWorkers}?filter={"where": {"username": "${GLASSFW}"}}`, 'GET', {}, true)
       .then((res) => {
