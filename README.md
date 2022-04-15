@@ -315,9 +315,18 @@ This uses the fact that we can "transfer" a table from one database to another w
 
 Source: https://chartio.com/resources/tutorials/how-to-rename-a-database-in-mysql/  
 
-
 **Issue: Set the environment variables for connecting to the database but it doesn't work (permission denied error):**
-A: Make sure you set the environment variables in the same shell window that you run the server in. To verify the value was set correctly, use `$ echo %ENV_VAR_NAME%` for Windows and `$ echo $ENV_VAR_NAME` for Linux/MacOS.  
+A: Make sure you set the environment variables in the same shell window that you run the server in. To verify the value was set correctly, use `$ echo %ENV_VAR_NAME%` for Windows and `$ echo $ENV_VAR_NAME` for Linux/MacOS.
+
+**Issue: Running the dev server results in an error**
+A: Check to see if you have all packages installed with `$ npm i`. Additionally, check if there are any issues with dependencies. Note that MacOS 12.3 removes Python 2 binaries so any packages that depend on Python 2 will likely not work (e.g. node-sass and sass-loader). You may remove dependencies if they are not necessary. Future updates to eDrops will remove deprecated dependencies and upgrade existing dependencies.
+
+**Issue: Frontend is not synced with backend**
+A: If you made changes to the backend and are encountering errors, make sure you do the following:
+1) Log out of the account if you were logged in
+2) Clear cookies (for localhost)
+3) Restart backend
+Often there will be an issue where the user ID stored in a cookie does not correctly reflect a user ID in the backend, especially if you are running the frontend, then reset the database in the backend.
 
 ## Environment Variables
 If things aren't working, check that these are correct for your environment. Contact Leo for sensitive values.
