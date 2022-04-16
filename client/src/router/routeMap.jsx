@@ -11,7 +11,7 @@ import Login from '../page/login/index.jsx';
 import Register from '../page/register/index.jsx';
 import Upload from '../page/fileUpload/index.jsx';
 import Project from '../page/project/index.jsx';
-import Manage from '../page/manage/index.jsx';
+import Manage from './manage/index.jsx';
 // import Profile from "page/profile/index.jsx";
 import ForgetPass from '../page/forgetPass/index.jsx';
 import ChipOrder from '../page/product/chiporder.jsx';
