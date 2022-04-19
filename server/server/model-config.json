@@ -119,6 +119,7 @@
           "prototype.replaceById": true,
           "find": true,
 
+          "credsTaken": true,
           "login": true,
           "logout": true,
           "resetPassword": true,

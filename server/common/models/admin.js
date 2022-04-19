@@ -4,6 +4,8 @@ const fetch = require('node-fetch');
 
 require('dotenv').config({ path: path.resolve(__dirname, '.env') });
 
+const log = require('../../db/toolbox/log');
+
 const Constants = require('../../constants');
 const Roles = require('../../server/constants/Roles');
 
@@ -175,6 +177,54 @@ module.exports = function (Admin) {
     description: 'CUSTOM METHOD: get Api key and domain',
     http: { path: '/getApi', verb: 'get' },
     returns: [{ arg: 'info', type: 'object' }],
+  });
+
+  Admin.credsTaken = function(body, cb) {
+    if (!body.username && !body.email) {
+      const err = new Error('Missing username and/or email keys');
+      err.status = 400;
+      console.error(err);
+      return cb(err);
+    } else {
+      const result = {
+        usernameTaken: false,
+        emailTaken: false,
+      };
+
+      var prom1 = Admin.find({where: {username: body.username || ''}});
+      var prom2 = Admin.find({where: {email: body.email || ''}});
+      var prom3 = Admin.app.models.userBase.find({where: {username: body.username || '', userType: 'admin'}});
+      var prom4 = Admin.app.models.userBase.find({where: {email: body.email || '', userType: 'admin'}});
+      
+      Promise.all([prom1, prom2, prom3, prom4])
+      .then((values) => {
+        if(values[0].length > 0 || values[2].length > 0){
+          log.warning(`Username ${body.username} taken`);
+          result.usernameTaken = true;
+        }
+
+        if(values[1].length > 0 || values[3].length > 0){
+          log.warning(`Email ${body.email} taken`);
+          result.emailTaken = true;
+        }
+
+        cb(null, result);
+      })
+      .catch((err) => {
+        cb(err);
+      });
+    }
+  };
+
+  Admin.remoteMethod('credsTaken', {
+    description: 'CUSTOM METHOD: Check if username and/or email are taken',
+    accepts: [
+      {arg: 'body', type: 'object', http: {source: 'body'}},
+    ],
+    http: {path: '/credsTaken', verb: 'post'},
+    returns: [
+      {arg: 'result', type: 'object'},
+    ],
   });
 
   Admin.returnAllItems = function (cb) {

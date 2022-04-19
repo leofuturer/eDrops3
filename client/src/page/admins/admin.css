@@ -6,8 +6,15 @@ td .fa:hover {
     color: #23527c;
 }
 
+.form-div {
+    width: 70%;
+}
 
-.input-content-register{
+.vertical-form {
+    width: 100%;
+}
+
+.input-content-register {
     width: 100%;
     margin: auto;
     position: relative;
@@ -15,11 +22,11 @@ td .fa:hover {
     margin-bottom: 20px;
 }
 
-.register-login-content{
+.register-login-content {
     width: 1000px;
     box-shadow: 0 0 6px rgba(0, 0, 0, 0.1);
     margin: 0 auto;
-    margin-top:30px;
+    margin-top: 30px;
     display: flex;
     flex-direction: column;
     align-items: center;
