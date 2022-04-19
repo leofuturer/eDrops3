@@ -20,6 +20,10 @@ class Admin extends Component {
     });
   }
 
+  handleDeletePopup() {
+    
+  }
+
   handleDelete() {
     const { admin } = this.props;
     let url = `${userBaseFind}?filter={"where": {"email": "${admin.email}"}}`;
