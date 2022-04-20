@@ -1,22 +1,28 @@
-import React from 'react'
+import React, { useCallback } from 'react'
+import './deletePopup.css'
 
-function DeletePopup() {
+const DeletePopup = (props) => {
+
+  const onDelete = useCallback(() => {
+    props.onDelete()
+  }, [props.onDelete])
+
   return (
-    <div class="modal" tabindex="-1" role="dialog">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title">Modal title</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+    <div className="modal fade" id="deleteModal" tabIndex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+      <div className="modal-dialog modal-dialog-centered" role="document">
+        <div className="modal-content">
+          <div className="modal-header">
+            <h3 className="modal-title">Confirm Delete</h3>
+            <button type="button" className="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
-          <div class="modal-body">
-            <p>Modal body text goes here.</p>
+          <div className="modal-body">
+            <p>Are you sure you want to delete this item?</p>
           </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-primary">Save changes</button>
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <div className="modal-footer">
+            <button type="button" className="btn btn-secondary" data-dismiss="modal">Cancel</button>
+            <button type="button" className="btn btn-danger" data-dismiss="modal" onClick={onDelete}>Delete</button>
           </div>
         </div>
       </div>

@@ -4,6 +4,8 @@ import $ from 'jquery';
 import Cookies from 'js-cookie';
 import { deleteAdminById, userBaseFind, userBaseDeleteById } from '../../api/serverConfig';
 import API from '../../api/api';
+import DeletePopup from '../../component/popup/deletePopup.jsx';
+import './admin.css';
 
 class Admin extends Component {
   constructor(props) {
@@ -18,10 +20,6 @@ class Admin extends Component {
       adminId: admin.id,
       adminInfo: admin,
     });
-  }
-
-  handleDeletePopup() {
-    
   }
 
   handleDelete() {
@@ -61,10 +59,19 @@ class Admin extends Component {
         <td>{admin.realm == null ? 'Null' : admin.realm}</td>
         <td>{admin.username}</td>
         <td>{admin.email}</td>
-        <td><i className="fa fa-edit" onClick={this.handleEdit} /></td>
+        <td>
+          <button type="button" className="btn" onClick={this.handleEdit}>
+            <i className="fa fa-edit" />
+          </button>
+        </td>
         {admin.id !== parseInt(Cookies.get('userId'))
-                    && <td><i className="fa fa-trash" onClick={this.handleDelete} /></td>}
-
+          &&
+          <td>
+            <button type="button" className="btn" data-toggle="modal" data-target="#deleteModal">
+              <i className="fa fa-trash" />
+            </button>
+            <DeletePopup onDelete={this.handleDelete} />
+          </td>}
       </tr>
     );
   }

@@ -4,6 +4,7 @@ import { withRouter, NavLink } from 'react-router-dom';
 import $ from 'jquery';
 import API from '../../api/api';
 import { editFoundryWorker, userBaseFind, userBaseDeleteById } from '../../api/serverConfig';
+import DeletePopup from '../../component/popup/deletePopup.jsx';
 
 class Worker extends React.Component {
   constructor(props) {
@@ -71,8 +72,17 @@ class Worker extends React.Component {
         <td>
           <i className="fa fa-microchip" onClick={this.handleRetrieveChipOrders} />
         </td>
-        <td><i className="fa fa-edit" onClick={this.handleEdit} /></td>
-        <td><i className="fa fa-trash" onClick={this.handleDelete} /></td>
+        <td>
+          <button type="button" className="btn" onClick={this.handleEdit}>
+            <i className="fa fa-edit" />
+          </button>
+        </td>
+        <td>
+          <button type="button" className="btn" data-toggle="modal" data-target="#deleteModal">
+            <i className="fa fa-trash" />
+          </button>
+          <DeletePopup onDelete={this.handleDelete} />
+        </td>
       </tr>
     );
   }

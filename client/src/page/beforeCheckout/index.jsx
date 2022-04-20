@@ -4,7 +4,6 @@ import { withRouter } from 'react-router-dom';
 import { customerGetProfile, customerAddresses } from '../../api/serverConfig';
 import API from '../../api/api';
 import SingleAddress from './singleAddress.jsx';
-import 'bootstrap-modal';
 import './beforeCheckout.css';
 import AddNewAddress from '../address/addNewAddress.jsx';
 import Shopify from '../../app.jsx';

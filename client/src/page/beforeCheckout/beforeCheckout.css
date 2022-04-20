@@ -37,10 +37,10 @@
     margin: 0 auto;
     display: block;
 }
-
+/* 
 .modal-body{
     padding: 0;
-}
+} */
 
 .profile-content{
     margin-top: 0;
@@ -51,6 +51,10 @@
     margin-right: 10px;
 }
 
-.modal-header{
+/* .modal-header{
     padding: 10px;
+} */
+
+.modal .form-div {
+    width: 100%;
 }
