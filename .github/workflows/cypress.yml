@@ -69,14 +69,15 @@ jobs:
                   docker-compose -f docker-compose.yml -f docker-compose.test.yml logs
 
                   docker logs edrop_backend
+              env:
+                  APP_EMAIL_API_KEY: ${{ secrets.APP_EMAIL_API_KEY }}
+                  SHOPIFY_TOKEN: ${{ secrets.SHOPIFY_TOKEN }}
             - name: Cypress E2E tests
               uses: cypress-io/github-action@v2
             - name: Stop backend
-            - run: |
+              run: |
                   # Shut down the testing backend
                   cd ..
                   docker-compose -f docker-compose.yml -f docker-compose.test.yml down
                   exit $EXIT
-              env:
-                  APP_EMAIL_API_KEY: ${{ secrets.APP_EMAIL_API_KEY }}
-                  SHOPIFY_TOKEN: ${{ secrets.SHOPIFY_TOKEN }}
+              
