@@ -28,12 +28,14 @@ describe('Login page tests', () => {
     })
 
     it('Forgot password redirect', () => {
-        cy.get('.forget-pass').click();
+        cy.get('#forget-pass').click();
 
         cy.url().should('include', '/forgetPass');
     })
 
     it('Signup redirect', () => {
-        cy.get('.signup-btn').click();
+        cy.get('#sign-up').click();
+
+        cy.url().should('include', '/register');
     })
 })
