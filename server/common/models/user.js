@@ -58,7 +58,10 @@ module.exports = function(Userbase) {
 
   Userbase.on('resetPasswordRequest', (info) => {
     // from https://loopback.io/doc/en/lb3/Logging-in-users.html
-    const url = `http://${FRONTEND_HOSTNAME}:${FRONTEND_PORT}/resetPassword`;
+    const url = (process.env.NODE_ENV === 'production') ?
+      `http://${FRONTEND_HOSTNAME}/resetPassword` :
+      `http://${FRONTEND_HOSTNAME}:${FRONTEND_PORT}/resetPassword`;
+
     const text = 'Hello user,\n\n' +
     `You've requested a password reset. Please visit ${url}?access_token=` +
     `${info.accessToken.id} to reset your password. ` +

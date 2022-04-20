@@ -2,6 +2,12 @@ import React from 'react';
 import './forgetPass.css';
 import { userForgetPass, customerResendVerifyEmail } from '../../api/serverConfig';
 import API from '../../api/api';
+import loadingGif from '../../../static/img/loading80px.gif';
+import constraints from './formConstraints';
+
+import { closestParent, showErrorsOrSuccessForInput } from '../../utils/validate';
+
+const validate = require('validate.js');
 
 // This page also allows for the resending of the email verification message.
 
@@ -10,9 +16,12 @@ class FormsPage extends React.Component {
     super(props);
     this.state = {
       email: '',
-      requestInProgress: false,
+      requestInProgressReset: false,
+      requestInProgressResend: false,
+      successMessage: false,
     };
     this.handleHelp = this.handleHelp.bind(this);
+    this.handleValidateInput = this.handleValidateInput.bind(this);
   }
 
   handleChange(key, value) {
@@ -21,40 +30,87 @@ class FormsPage extends React.Component {
     });
   }
 
+  handleValidateInput(e) {
+    const ele = e.target;
+    const form = closestParent(e.target, 'vertical-form');
+    const errors = validate(form, constraints) || {};
+    showErrorsOrSuccessForInput(ele, errors[ele.name]);
+  }
+
   handleHelp(e) {
-    const helpType = e.target.id;
+    const helpType = e;
     const data = {
       email: this.state.email,
     };
-    if (helpType === 'resetPassword') {
-      API.Request(userForgetPass, 'POST', data, false)
-        .then((res) => {
-          this.setState({
-            requestInProgress: true,
-          });
-        }).catch((err) => {
-          console.error(err); // Maybe take out as attackers can view console & brute force emails
-          // Display a success message either way so attackers can't brute-force customer emails
-          this.setState({
-            requestInProgress: true,
-          });
+    if(this.state.email !== '') {
+      if (helpType === 'resetPassword') {
+        this.setState({
+          requestInProgressReset: true,
+          successMessage: false,
         });
-    } else {
-      API.Request(customerResendVerifyEmail, 'POST', data, false)
-        .then((res) => {
-          this.setState({
-            requestInProgress: true,
+        API.Request(userForgetPass, 'POST', data, false)
+          .then((res) => {
+            this.setState({
+              requestInProgressReset: false,
+              successMessage: true,
+            });
+          }).catch((err) => {
+            if (process.env.NODE_ENV === 'dev') {
+              console.error(err); // Maybe take out as attackers can view console & brute force emails
+            }
+            // Display a success message either way so attackers can't brute-force customer emails
+            this.setState({
+              requestInProgressReset: false,
+              successMessage: true,
+            });
           });
-        })
-        .catch((err) => {
-          console.error(err); // Maybe take out as attackers can view console & brute force emails
-          // Display a success message either way so attackers can't brute-force customer emails
-          this.setState({
-            requestInProgress: true,
-          });
+      } else {
+        this.setState({
+          requestInProgressResend: true,
+          successMessage: false,
         });
+        API.Request(customerResendVerifyEmail, 'POST', data, false)
+          .then((res) => {
+            this.setState({
+              requestInProgressResend: false,
+              successMessage: true,
+            });
+          })
+          .catch((err) => {
+            if (process.env.NODE_ENV === 'dev') {
+              console.error(err); // Maybe take out as attackers can view console & brute force emails
+            }
+            // Display a success message either way so attackers can't brute-force customer emails
+            this.setState({
+              requestInProgressResend: false,
+              successMessage: true,
+            });
+          });
+      }
     }
   }
+
+  handleFormSubmit(e) {
+    const v = e.target.id;
+    const form = document.querySelector('.vertical-form');
+    const errors = {};
+    this.setState({
+      requestInProgress: true,
+    });
+    validate.async(form, constraints, { cleanAttributes: false })
+      .then((success) => {
+        // console.log(v.target.id);
+        this.handleHelp(v);
+      })
+      .catch((errors) => {
+        form.querySelectorAll('input.needValidation').forEach((input, index) => {
+          if (this) {
+            showErrorsOrSuccessForInput(input, errors && errors[input.name]);
+          }
+        });
+      });
+  }
+
 
   render() {
     return (
@@ -69,39 +125,55 @@ class FormsPage extends React.Component {
             correctly.
           </div>
           <div className="input-content">
-            <form action="">
-              <div className="form-group">
+            <form className="vertical-form" action="">
+              <div className="form-group text-left">
                 <input
                   type="text"
-                  className="form-control"
-                  placeholder="Username or Email"
+                  name="email"
+                  className="form-control needValidation"
+                  placeholder="Email"
                   onChange={(v) => this.handleChange('email', v.target.value)}
+                  onBlur={this.handleValidateInput}
                 />
+                <div className="messages pad">
+                </div>
               </div>
               <div className="form-group login-btn">
-                <input
-                  type="button"
-                  id="resetPassword"
-                  value="Reset Password"
-                  className="input-btn"
-                  onClick={(e) => this.handleHelp(e)}
-                />
+                {
+                  this.state.requestInProgressReset
+                    ? <img src={loadingGif} alt="" />
+                    : (
+                      <input
+                        type="button"
+                        id="resetPassword"
+                        value="Reset Password"
+                        className="input-btn"
+                        onClick={(e) => this.handleFormSubmit(e)}
+                      />
+                    )
+                }
               </div>
               <div className="form-group login-btn">
-                <input
-                  type="button"
-                  id="resendVerifyEmail"
-                  value="Resend Verification Email"
-                  className="input-btn"
-                  onClick={(e) => this.handleHelp(e)}
-                />
+                {
+                  this.state.requestInProgressResend
+                    ? <img src={loadingGif} alt="" />
+                    : (
+                      <input
+                        type="button"
+                        id="resendVerifyEmail"
+                        value="Resend Verification Email"
+                        className="input-btn"
+                        onClick={(e) => this.handleFormSubmit(e)}
+                      />
+                    )
+                }
               </div>
             </form>
           </div>
-          {this.state.requestInProgress
+          {this.state.successMessage
             ? (
               <div className="help-text">
-                The request was successfully submitted. Please check
+                If there is an account associated with that email, the requested link has been sent. Please check
                 your email for further instructions.
               </div>
             )

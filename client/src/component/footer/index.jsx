@@ -31,7 +31,7 @@ class FooterPage extends React.Component {
             <h3 className="other-txt">Contact</h3>
             <div>
               {/* <div>Phone: +1 234-567-8999</div> */}
-              <a href="mailto:edropswebsite@gmail.com">Email: edropswebsite@gmail.com</a>
+              <a href="mailto:service@edrops.org">Email: service@edrops.org</a>
             </div>
             <div style={{ marginTop: '15px' }}>
               <div>420 Westwood Plaza</div>
