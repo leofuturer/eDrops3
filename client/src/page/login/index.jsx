@@ -190,7 +190,7 @@ class Login extends React.Component {
                 <div className="form-group">
                   <div>
                     <span>Don't have an account? </span>
-                    <NavLink to="/register">Register now</NavLink>
+                    <NavLink to="/register" id="sign-up">Register now</NavLink>
                   </div>
                 </div>
                 <div className="form-group name-field">
@@ -233,7 +233,7 @@ class Login extends React.Component {
                 </div>
                 <div className="form-group row">
                   <div className="forget-pass col" style={{ marginLeft: '30px' }}>
-                    <NavLink to="/forgetPass">Forgot Password?</NavLink>
+                    <NavLink to="/forgetPass" id="forget-pass">Forgot Password?</NavLink>
                   </div>
                 </div>
 
