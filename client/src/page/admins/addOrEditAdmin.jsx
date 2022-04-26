@@ -41,6 +41,13 @@ class AddOrEditAdmin extends React.Component {
         username: adminInfo.username,
         email: adminInfo.email,
         constraints: editConstraints,
+        initialInfo: {
+          phoneNumber: adminInfo.phoneNumber,
+          realm: adminInfo.realm,
+          username: adminInfo.username,
+          email: adminInfo.email,
+          constraints: editConstraints,
+        }
       });
     }
   }
@@ -53,18 +60,22 @@ class AddOrEditAdmin extends React.Component {
       requestInProgress: true,
     });
     console.log('request in progress')
-    console.log(this.state)
+    const username = this.state.username;
     validate.async(form, this.state.constraints, { cleanAttributes: false })
       .then((success) => {
-        console.log('success validate');
-        if (this.props.match.path === '/manage/admins/addNewAdmin') { // check for duplicates if we are adding a new admin
-          const data = {
-            username: document.getElementById('inputUsername').value,
-            email: document.getElementById('inputEmail').value,
-          };
-          const url = adminCredsTaken;
-          API.Request(url, 'POST', data, true).then((res) => {
-            console.log('successful add')
+        const isAddNewAdmin = this.props.match.path === '/manage/admins/addNewAdmin';
+        const data = {
+          username: document.getElementById('inputUsername').value,
+        }
+        if (isAddNewAdmin) {
+          data.email = document.getElementById('inputEmail').value;
+        }
+        const url = adminCredsTaken;
+        API.Request(url, 'POST', data, true).then((res) => {
+          console.log('successful add')
+          console.log(data);
+          console.log(this.state);
+          if (isAddNewAdmin) {
             if (res.data.result.usernameTaken) {
               errors.username = ['Account already exists with this username'];
               const input1 = document.getElementById('inputUsername');
@@ -83,22 +94,34 @@ class AddOrEditAdmin extends React.Component {
             } else if (!res.data.result.emailTaken && !res.data.result.usernameTaken) {
               this.handleSave(e);
             }
-          }).catch((err) => {
-            form.querySelectorAll('input.needValidation').forEach((input, index) => {
-              if (this) {
-                showErrorsOrSuccessForInput(input, errors && errors[input.name]);
-              }
-            });
-            this.setState({
-              requestInProgress: false,
-            });
+          }
+          else {
+            if (this.state.username !== this.state.initialInfo.username && res.data.result.usernameTaken) {
+              errors.username = ['Account already exists with this username'];
+              const input1 = document.getElementById('inputUsername');
+              showErrorsOrSuccessForInput(input1, errors.username);
+              this.setState({
+                requestInProgress: false,
+              });
+            }
+            else {
+              this.handleSave(e);
+            }
+          }
+
+        }).catch((err) => {
+          form.querySelectorAll('input.needValidation').forEach((input, index) => {
+            if (this) {
+              showErrorsOrSuccessForInput(input, errors && errors[input.name]);
+            }
           });
-        }
-        else {
-          this.handleSave(e);
-        }
+          this.setState({
+            requestInProgress: false,
+          });
+        });
       })
       .catch((errors) => {
+        console.log(errors);
         console.log('failed validate')
         form.querySelectorAll('input.needValidation').forEach((input, index) => {
           if (this) {
@@ -186,14 +209,19 @@ class AddOrEditAdmin extends React.Component {
     showErrorsOrSuccessForInput(ele, errors[ele.name]);
 
     // check for duplicates
-    if (this.props.match.path === '/manage/admins/addNewAdmin') {
-      const data = {
-        username: `${e.target.id === 'inputUsername' && e.target.value}`,
-        email: `${e.target.id === 'inputEmail' && e.target.value}`,
-      };
-      const url = adminCredsTaken;
-      API.Request(url, 'POST', data, true)
-        .then((res) => {
+    const isAddNewAdmin = this.props.match.path === '/manage/admins/addNewAdmin';
+    const data = {
+      username: `${e.target.id === 'inputUsername' && e.target.value}`,
+    };
+    if (isAddNewAdmin) {
+      data.email = `${e.target.id === 'inputEmail' && e.target.value}`;
+    }
+    console.log(data);
+    console.log(this.state);
+    const url = adminCredsTaken;
+    API.Request(url, 'POST', data, true)
+      .then((res) => {
+        if (isAddNewAdmin) {
           if (res.data.result.usernameTaken) {
             errors.username = ['Account already exists with this username'];
             const input1 = document.getElementById('inputUsername');
@@ -204,8 +232,13 @@ class AddOrEditAdmin extends React.Component {
             const emailInput = document.getElementById('inputEmail');
             showErrorsOrSuccessForInput(emailInput, errors.email);
           }
-        });
-    }
+        }
+        else if (this.state.username !== this.state.initialInfo.username && res.data.result.usernameTaken) {
+          errors.username = ['Account already exists with this username'];
+          const input1 = document.getElementById('inputUsername');
+          showErrorsOrSuccessForInput(input1, errors.username);
+        }
+      });
   }
 
   render() {

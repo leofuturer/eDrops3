@@ -193,8 +193,8 @@ module.exports = function (Admin) {
 
       var prom1 = Admin.find({where: {username: body.username || ''}});
       var prom2 = Admin.find({where: {email: body.email || ''}});
-      var prom3 = Admin.app.models.userBase.find({where: {username: body.username || '', userType: 'admin'}});
-      var prom4 = Admin.app.models.userBase.find({where: {email: body.email || '', userType: 'admin'}});
+      var prom3 = Admin.app.models.userBase.find({where: {username: body.username || ''}});
+      var prom4 = Admin.app.models.userBase.find({where: {email: body.email || ''}});
       
       Promise.all([prom1, prom2, prom3, prom4])
       .then((values) => {

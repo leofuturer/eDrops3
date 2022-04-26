@@ -127,8 +127,8 @@ module.exports = function(Customer) {
 
       var prom1 = Customer.find({where: {username: body.username || ''}});
       var prom2 = Customer.find({where: {email: body.email || ''}});
-      var prom3 = Customer.app.models.userBase.find({where: {username: body.username || '', userType: 'customer'}});
-      var prom4 = Customer.app.models.userBase.find({where: {email: body.email || '', userType: 'customer'}});
+      var prom3 = Customer.app.models.userBase.find({where: {username: body.username || ''}});
+      var prom4 = Customer.app.models.userBase.find({where: {email: body.email || ''}});
       
       Promise.all([prom1, prom2, prom3, prom4])
       .then((values) => {
