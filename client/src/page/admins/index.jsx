@@ -1,7 +1,10 @@
 import React, { Component } from 'react';
-import { findAdminByWhere } from '../../api/serverConfig';
+import { withRouter } from 'react-router-dom';
+import { deleteAdminById, userBaseFind, userBaseDeleteById, findAdminByWhere } from '../../api/serverConfig';
 import API from '../../api/api';
-import { AdminList } from './adminList.jsx';
+import $ from 'jquery';
+import DeletePopup from '../../component/popup/deletePopup.jsx';
+import Cookies from 'js-cookie';
 
 class Admins extends Component {
   constructor(props) {
@@ -11,6 +14,9 @@ class Admins extends Component {
     };
     this.handleAddAdmin = this.handleAddAdmin.bind(this);
     this.componentDidMount = this.componentDidMount.bind(this);
+    this.handleEditAdmin = this.handleEditAdmin.bind(this);
+    this.handleDeleteAdmin = this.handleDeleteAdmin.bind(this);
+    this.handleDelete = this.handleDelete.bind(this);
   }
 
   handleAddAdmin() {
@@ -25,6 +31,47 @@ class Admins extends Component {
         this.setState({ adminList: response.data });
       })
       .catch((err) => console.log(err));
+  }
+
+  handleEditAdmin(e) {
+    const admin = JSON.parse(e.target.getAttribute('admin'));
+    this.props.history.push('/manage/admins/editAdmin', {
+      adminId: admin.id,
+      adminInfo: admin,
+    });
+  }
+
+  handleDeleteAdmin(e) {
+    const admin = e.target.getAttribute('admin');
+    this.setState({ deleteAdmin: JSON.parse(admin) });
+  }
+
+  handleDelete(e) {
+    const admin = this.state.deleteAdmin;
+    let url = `${userBaseFind}?filter={"where": {"email": "${admin.email}"}}`;
+    API.Request(url, 'GET', {}, true)
+      .then((res) => {
+        const userBaseId = res.data[0].id;
+        url = userBaseDeleteById.replace('id', userBaseId);
+        API.Request(url, 'DELETE', {}, true)
+          .then((res) => {
+            const url = deleteAdminById.replace('id', admin.id);
+            const classSelector = `#admin${admin.id}`;
+            API.Request(url, 'DELETE', {}, true)
+              .then((response) => {
+                $(classSelector).remove();
+              })
+              .catch((err) => {
+                console.error(err);
+              });
+          })
+          .catch((err) => {
+            console.error(err);
+          });
+      })
+      .catch((err) => {
+        console.error(err);
+      });
   }
 
   render() {
@@ -51,14 +98,31 @@ class Admins extends Component {
                 </tr>
               </thead>
               <tbody>
-                <AdminList adminArray={this.state.adminList} />
+                {this.state.adminList.map((admin) =>
+                  <tr id={`admin${admin.id}`} key={admin.id}>
+                    <td>{admin.id}</td>
+                    <td>{admin.phoneNumber}</td>
+                    <td>{admin.realm == null ? 'Null' : admin.realm}</td>
+                    <td>{admin.username}</td>
+                    <td>{admin.email}</td>
+                    <td>
+                      <i className="fa fa-edit" admin={JSON.stringify(admin)} onClick={this.handleEditAdmin} />
+                    </td>
+                    {admin.id !== parseInt(Cookies.get('userId'))
+                      &&
+                      <td>
+                        <i className="fa fa-trash" admin={JSON.stringify(admin)} data-toggle="modal" data-target="#deleteModal" onClick={this.handleDeleteAdmin} />
+                      </td>}
+                  </tr>)}
               </tbody>
             </table>
           </div>
         </div>
+        <DeletePopup onDelete={this.handleDelete} />
       </div>
     );
   }
 }
 
+Admins = withRouter(Admins);
 export default Admins;
