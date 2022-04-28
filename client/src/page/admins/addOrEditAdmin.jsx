@@ -53,13 +53,11 @@ class AddOrEditAdmin extends React.Component {
   }
 
   handleFormSubmit(e) {
-    console.log('form submit')
     const form = document.querySelector('.vertical-form');
     const errors = {};
     this.setState({
       requestInProgress: true,
     });
-    console.log('request in progress')
     const username = this.state.username;
     validate.async(form, this.state.constraints, { cleanAttributes: false })
       .then((success) => {
@@ -72,9 +70,6 @@ class AddOrEditAdmin extends React.Component {
         }
         const url = adminCredsTaken;
         API.Request(url, 'POST', data, true).then((res) => {
-          console.log('successful add')
-          console.log(data);
-          console.log(this.state);
           if (isAddNewAdmin) {
             if (res.data.result.usernameTaken) {
               errors.username = ['Account already exists with this username'];
@@ -108,7 +103,6 @@ class AddOrEditAdmin extends React.Component {
               this.handleSave(e);
             }
           }
-
         }).catch((err) => {
           form.querySelectorAll('input.needValidation').forEach((input, index) => {
             if (this) {
@@ -121,8 +115,6 @@ class AddOrEditAdmin extends React.Component {
         });
       })
       .catch((errors) => {
-        console.log(errors);
-        console.log('failed validate')
         form.querySelectorAll('input.needValidation').forEach((input, index) => {
           if (this) {
             showErrorsOrSuccessForInput(input, errors && errors[input.name]);
@@ -135,7 +127,6 @@ class AddOrEditAdmin extends React.Component {
   }
 
   handleSave() {
-    console.log('handle save')
     const _this = this;
     const userMes = {
       phoneNumber: formatPhoneNumber(this.state.phoneNumber),
@@ -216,8 +207,6 @@ class AddOrEditAdmin extends React.Component {
     if (isAddNewAdmin) {
       data.email = `${e.target.id === 'inputEmail' && e.target.value}`;
     }
-    console.log(data);
-    console.log(this.state);
     const url = adminCredsTaken;
     API.Request(url, 'POST', data, true)
       .then((res) => {
@@ -253,152 +242,150 @@ class AddOrEditAdmin extends React.Component {
     return (
       <div className="right-route-content">
         <div className="profile-content">
-          <div className="register-login-content">
-            <h3>{profileContent}</h3>
-            <div className="border-h3" />
-            <div className="form-div">
-              <form action="" className="vertical-form" noValidate>
-                <div className="input-content-register">
-                  <div className="text-left reminder">
-                    <small className="text-muted">Fields with * are required</small>
-                  </div>
-                  <div className="form-group row">
-                    <label className="col-md-2 col-sm-2 col-xs-2 control-label">
-                      <span>Phone Number*</span>
-                    </label>
-                    <div className="col-md-6 col-sm-6 col-xs-6 text-left">
-                      <input
-                        type="text"
-                        name="phoneNumber"
-                        value={this.state.phoneNumber}
-                        className="form-control needValidation"
-                        onChange={(v) => this.handleChange('phoneNumber', v.target.value)}
-                        onBlur={this.handleValidateInput} />
-                    </div>
-                    <div className="col-md-4 col-sm-4 col-xs-4 messages">
-                      <small className="text-muted">Valid phone number required</small>
-                    </div>
-                  </div>
-                  <div className="form-group row">
-                    <label className="col-md-2 col-sm-2 col-xs-2 control-label">
-                      <span>Realm</span>
-                    </label>
-                    <div className="col-md-6 col-sm-6 col-xs-6 text-left">
-                      <input
-                        type="text"
-                        name="realm"
-                        value={this.state.realm}
-                        className="form-control"
-                        onChange={(v) => this.handleChange('realm', v.target.value)}
-                        onBlur={this.handleValidateInput} />
-                    </div>
-                    <div className="col-md-4 col-sm-4 col-xs-4 messages">
-                      <small className="text-muted">(Optional)</small>
-                    </div>
-                  </div>
-                  <div className="form-group row">
-                    <label className="col-md-2 col-sm-2 col-xs-2 control-label">
-                      <span>Username*</span>
-                    </label>
-                    <div className="col-md-6 col-sm-6 col-xs-6 text-left">
-                      <input
-                        type="text"
-                        name="username"
-                        id="inputUsername"
-                        value={this.state.username}
-                        className="form-control needValidation"
-                        onChange={(v) => this.handleChange('username', v.target.value)}
-                        onBlur={this.handleValidateInput} />
-                    </div>
-                    <div className="col-md-4 col-sm-4 col-xs-4 messages">
-                      <small className="text-muted">Username must be at least 4 characters and only contain a-zA-Z0-9_</small>
-                    </div>
-                  </div>
-                  {
-                    this.props.match.path === '/manage/admins/addNewAdmin'
-                      ? (
-                        <div>
-                          <div className="form-group row">
-                            <label className="col-md-2 col-sm-2 col-xs-2 control-label">
-                              <span>Email*</span>
-                            </label>
-                            <div className="col-md-6 col-sm-6 col-xs-6 text-left">
-                              <input
-                                type="text"
-                                name="email"
-                                id="inputEmail"
-                                value={this.state.email}
-                                className="form-control needValidation"
-                                onChange={(v) => this.handleChange('email', v.target.value)}
-                                onBlur={this.handleValidateInput} />
-                            </div>
-                            <div className="col-md-4 col-sm-4 col-xs-4 messages">
-                              <small className="text-muted">Valid Email Required</small>
-                            </div>
-                          </div>
-                          <div className="form-group row">
-                            <label className="col-md-2 col-sm-2 col-xs-2 control-label">
-                              <span>Password*</span>
-                            </label>
-                            <div className="col-md-6 col-sm-6 col-xs-6 text-left">
-                              <input
-                                type="password"
-                                name="password"
-                                className="form-control needValidation"
-                                onChange={(v) => this.handleChange('password', v.target.value)}
-                                onBlur={this.handleValidateInput} />
-                            </div>
-                            <div className="col-md-4 col-sm-4 col-xs-4 messages">
-                              <small className="text-muted">
-                                Password must contain at least a number, capital
-                                letter and lowercase letter, and at least 8 characters
-                              </small>
-                            </div>
-                          </div>
-                          <div className="form-group row">
-                            <label className="col-md-2 col-sm-2 col-xs-2 control-label">
-                              <span>Confirm Password*</span>
-                            </label>
-                            <div className="col-md-6 col-sm-6 col-xs-6 text-left">
-                              <input
-                                type="password"
-                                name="confirmPassword"
-                                className="form-control needValidation"
-                                onChange={(v) => this.handleChange('confirmPassword', v.target.value)}
-                                onBlur={this.handleValidateInput} />
-                            </div>
-                            <div className="col-md-4 col-sm-4 col-xs-4 messages">
-                              <small className="text-muted">Please retype your password</small>
-                            </div>
-                          </div>
-                        </div>
-                      )
-                      : null
-                  }
-
-                  <div className="form-group login-btn">
-                    {
-                      this.state.requestInProgress
-                        ? <img src={loadingGif} alt="" />
-                        : (
-                          <input
-                            type="button"
-                            value="Save"
-                            className="input-btn"
-                            onClick={this.handleFormSubmit}
-                          />
-                        )
-                    }
-                  </div>
-                  <div className="form-group">
-                    <small className="text-muted text-center text-danger w-100">
-                      {this.state.errorMessage}
-                    </small>
-                  </div>
+          <h2>{profileContent}</h2>
+          <form id="main" action="" className="vertical-form" noValidate>
+            <div className="input-content-register">
+              <div className="text-left reminder">
+                <small className="text-muted">Fields with * are required</small>
+              </div>
+              <div className="form-group row">
+                <label className="col-md-2 col-sm-2 col-xs-2 control-label">
+                  <span>Phone Number*</span>
+                </label>
+                <div className="col-md-6 col-sm-6 col-xs-6 text-left">
+                  <input
+                    type="text"
+                    name="phoneNumber"
+                    value={this.state.phoneNumber}
+                    className="form-control needValidation"
+                    onChange={(v) => this.handleChange('phoneNumber', v.target.value)}
+                    onBlur={this.handleValidateInput} />
                 </div>
-              </form>
+                <div className="col-md-4 col-sm-4 col-xs-4 messages">
+                  <small className="text-muted">Valid phone number required</small>
+                </div>
+              </div>
+              <div className="form-group row">
+                <label className="col-md-2 col-sm-2 col-xs-2 control-label">
+                  <span>Realm</span>
+                </label>
+                <div className="col-md-6 col-sm-6 col-xs-6 text-left">
+                  <input
+                    type="text"
+                    name="realm"
+                    value={this.state.realm}
+                    className="form-control"
+                    onChange={(v) => this.handleChange('realm', v.target.value)}
+                    onBlur={this.handleValidateInput} />
+                </div>
+                <div className="col-md-4 col-sm-4 col-xs-4 messages">
+                  <small className="text-muted">(Optional)</small>
+                </div>
+              </div>
+              <div className="form-group row">
+                <label className="col-md-2 col-sm-2 col-xs-2 control-label">
+                  <span>Username*</span>
+                </label>
+                <div className="col-md-6 col-sm-6 col-xs-6 text-left">
+                  <input
+                    type="text"
+                    name="username"
+                    id="inputUsername"
+                    value={this.state.username}
+                    className="form-control needValidation"
+                    onChange={(v) => this.handleChange('username', v.target.value)}
+                    onBlur={this.handleValidateInput} />
+                </div>
+                <div className="col-md-4 col-sm-4 col-xs-4 messages">
+                  <small className="text-muted">Username must be at least 4 characters and only contain a-zA-Z0-9_</small>
+                </div>
+              </div>
+              {
+                this.props.match.path === '/manage/admins/addNewAdmin'
+                  ? (
+                    <div>
+                      <div className="form-group row">
+                        <label className="col-md-2 col-sm-2 col-xs-2 control-label">
+                          <span>Email*</span>
+                        </label>
+                        <div className="col-md-6 col-sm-6 col-xs-6 text-left">
+                          <input
+                            type="text"
+                            name="email"
+                            id="inputEmail"
+                            value={this.state.email}
+                            className="form-control needValidation"
+                            onChange={(v) => this.handleChange('email', v.target.value)}
+                            onBlur={this.handleValidateInput} />
+                        </div>
+                        <div className="col-md-4 col-sm-4 col-xs-4 messages">
+                          <small className="text-muted">Valid Email Required</small>
+                        </div>
+                      </div>
+                      <div className="form-group row">
+                        <label className="col-md-2 col-sm-2 col-xs-2 control-label">
+                          <span>Password*</span>
+                        </label>
+                        <div className="col-md-6 col-sm-6 col-xs-6 text-left">
+                          <input
+                            type="password"
+                            name="password"
+                            className="form-control needValidation"
+                            onChange={(v) => this.handleChange('password', v.target.value)}
+                            onBlur={this.handleValidateInput} />
+                        </div>
+                        <div className="col-md-4 col-sm-4 col-xs-4 messages">
+                          <small className="text-muted">
+                            Password must contain at least a number, capital
+                            letter and lowercase letter, and at least 8 characters
+                          </small>
+                        </div>
+                      </div>
+                      <div className="form-group row">
+                        <label className="col-md-2 col-sm-2 col-xs-2 control-label">
+                          <span>Confirm Password*</span>
+                        </label>
+                        <div className="col-md-6 col-sm-6 col-xs-6 text-left">
+                          <input
+                            type="password"
+                            name="confirmPassword"
+                            className="form-control needValidation"
+                            onChange={(v) => this.handleChange('confirmPassword', v.target.value)}
+                            onBlur={this.handleValidateInput} />
+                        </div>
+                        <div className="col-md-4 col-sm-4 col-xs-4 messages">
+                          <small className="text-muted">Please retype your password</small>
+                        </div>
+                      </div>
+                    </div>
+                  )
+                  : null
+              }
+
+              <div className="form-group login-btn">
+                <div className="col-md-10 col-sd-10 col-xs-10" />
+                <div className="btn-group col-md-2 col-sd-2 col-xs-2 text-right" role="group" aria-label="...">
+                  {
+                    this.state.requestInProgress
+                      ? <img src={loadingGif} alt="" />
+                      : (
+                        <input
+                          type="button"
+                          value="Save"
+                          className="btn btn-success"
+                          onClick={this.handleFormSubmit}
+                        />
+                      )
+                  }
+                </div>
+                <div className="form-group">
+                  <small className="text-muted text-center text-danger w-100">
+                    {this.state.errorMessage}
+                  </small>
+                </div>
+              </div>
             </div>
-          </div>
+          </form>
         </div>
       </div>
     );
