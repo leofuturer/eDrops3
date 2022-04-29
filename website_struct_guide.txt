@@ -66,7 +66,7 @@ server/
         storage/  
             container1/  
 
-How the frotn end communicates with backend:
+How the front end communicates with backend:
 
 Let's use changing/updating address as an example:
 All files are in the folder client/src/component/page/address.

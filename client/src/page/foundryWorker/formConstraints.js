@@ -20,7 +20,7 @@ const constraints = {
       minimum: 8,
     },
     format: {
-      pattern: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[^]{8,}$/,
+      pattern: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d\S]{8,}$/,
       message: 'must at least contain a capital letter, a lowercase letter, a number, and be at least 8 characters long',
     },
   },
@@ -35,7 +35,7 @@ const constraints = {
   phoneNumber: {
     presence: true,
     format: {
-      pattern: /^[^a-wA-WyzYZ]{10,}$/,
+      pattern: /^\+?(\d{1,2})?\s??1?\-?\.?\s?\(?(\d{3})\)?[\s.-]?(\d{3})[\s.-]?(\d{4})$/,
       message: "must not contain letters, except 'x' for extensions. Include area code, and if outside US, also country code",
     },
   },

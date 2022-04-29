@@ -35,6 +35,7 @@ export const AdminChangePass = `${ApiRootUrl}/admins/change-password`;
 export const adminGetProfile = `${ApiRootUrl}/admins/id`;
 export const updateAdminProfile = `${ApiRootUrl}/admins/id`;
 export const adminDownloadFile = `${ApiRootUrl}/admins/downloadFile`;
+export const adminCredsTaken = `${ApiRootUrl}/admins/credsTaken`;
 
 export const addFoundryWorker = `${ApiRootUrl}/foundryWorkers`;
 export const addCustomer = `${ApiRootUrl}/customers`;

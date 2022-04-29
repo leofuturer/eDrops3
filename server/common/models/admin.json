@@ -80,7 +80,13 @@
       "permission": "ALLOW",
       "property": "changePassword"
     },
-
+    {
+      "accessType": "EXECUTE",
+      "principalType": "ROLE",
+      "principalId": "admin",
+      "permission": "ALLOW",
+      "property": "credsTaken"
+    },
     {
       "principalType": "ROLE",
       "principalId": "$authenticated",
