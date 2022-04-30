@@ -5,6 +5,7 @@ import $ from 'jquery';
 import API from '../../api/api';
 import { customerAddresses } from '../../api/serverConfig';
 import AddressTemplate from './addressTemplate.jsx';
+import DeletePopup from '../../component/popup/deletePopup.jsx';
 import loadingGif from '../../../static/img/loading80px.gif';
 
 import SEO from '../../component/header/seo.jsx';
@@ -19,6 +20,8 @@ class Address extends React.Component {
     };
     this.handleAddNewAddress = this.handleAddNewAddress.bind(this);
     this.handleUpdateAddress = this.handleUpdateAddress.bind(this);
+    this.handleDelete = this.handleDelete.bind(this);
+    this.handleDeleteAddress = this.handleDeleteAddress.bind(this);
     this.componentDidMount = this.componentDidMount.bind(this);
   }
 
@@ -32,11 +35,17 @@ class Address extends React.Component {
     _this.props.history.push('/manage/address/updateAddress');
   }
 
+
   handleDeleteAddress(addrIndex) {
+    this.setState({ addrIndex: addrIndex });
+    $('#deleteModal').modal('show');
+  }
+
+  handleDelete() {
     // console.log(this.state.addressList);
     // console.log(addrIndex);
     const _this = this;
-    const address = _this.state.addressList[addrIndex];
+    const address = _this.state.addressList[_this.state.addrIndex];
     const addressId = address.id;
     let url = customerAddresses.replace('id', Cookies.get('userId'));
     url += `/${addressId}`;
@@ -144,6 +153,7 @@ class Address extends React.Component {
                 </div>
           )}
         </div>
+        <DeletePopup onDelete={this.handleDelete}/>
       </div>
     );
   }
