@@ -3,5 +3,5 @@ The 2nd generation of the eDrops web application.
 
 ## Documentation
 
-See the [GitBook documentation](https://edrops-website.gitbook.io/edrops/) (https://edrops-website.gitbook.io/edrops/) for comprehensive documentation.
+See the [GitBook](https://edrops-website.gitbook.io/edrops/) (https://edrops-website.gitbook.io/edrops/) for comprehensive documentation.
 
