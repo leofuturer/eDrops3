@@ -158,7 +158,8 @@
 
           "prototype.downloadFile": true,
 
-          "prototype.getChipOrders": true
+          "prototype.getChipOrders": true,
+          "getWorkerID": true
         }
       }
     }
