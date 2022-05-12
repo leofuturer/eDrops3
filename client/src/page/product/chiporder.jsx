@@ -23,6 +23,7 @@ import API from '../../api/api';
 import {
   ewodFabServiceId,
   ewodFabServiceVariantId,
+  getWorkerId
 } from '../../constants';
 import Shopify from '../../app.jsx';
 import loadingGif from '../../../static/img/loading80px.gif';
@@ -57,28 +58,28 @@ class ChipOrder extends React.Component {
     const PAPERFW = "paperfab";
     const PCBFW = "pcbfab";
     // fetch IDs of default foundry workers
-    API.Request(`${getAllFoundryWorkers}?filter={"where": {"username": "${GLASSFW}"}}`, 'GET', {}, true)
+    API.Request(getWorkerId, 'POST', { username: GLASSFW }, true)
       .then((res) => {
         this.setState({
-          GLASSID: res.data[0].id,
+          GLASSID: res.workerId,
         });
       })
       .catch((err) => {
         console.log(err);
       });
-    API.Request(`${getAllFoundryWorkers}?filter={"where": {"username": "${PAPERFW}"}}`, 'GET', {}, true)
+    API.Request(getWorkerId, 'POST', { username: PAPERFW }, true)
       .then((res) => {
         this.setState({
-          PAPERID: res.data[0].id,
+          PAPERID: res.workerId,
         });
       })
       .catch((err) => {
         console.log(err);
       });
-    API.Request(`${getAllFoundryWorkers}?filter={"where": {"username": "${PCBFW}"}}`, 'GET', {}, true)
+    API.Request(getWorkerId, 'POST', { username: PCBFW }, true)
       .then((res) => {
         this.setState({
-          PCBID: res.data[0].id,
+          PCBID: res.workerId,
         });
       })
       .catch((err) => {
