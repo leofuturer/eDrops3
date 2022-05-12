@@ -124,15 +124,15 @@ module.exports = function(FoundryWorker) {
 
   FoundryWorker.getWorkerID = function(body, cb) {
     if (!body.username) {
-      const error = new Error('Missing username argument');
-      error.status = 400;
-      cb(error);
-    } else {
-      FoundryWorker.find({where: {username: body.username}})
-        .then((worker) => {
-          cb(null, worker.id);
-        }).catch((err) => console.log(err));
+      const err = new Error('Missing username');
+      err.status = 400;
+      console.error(err);
+      return cb(err);
     }
+    return FoundryWorker.find({where: {username: body.username}})
+      .then((res) => {
+        cb(null, res[0].id);
+      }).catch((err) => console.log(err));
   };
 
   FoundryWorker.remoteMethod('getWorkerID', {
@@ -140,7 +140,7 @@ module.exports = function(FoundryWorker) {
     accepts: [
       {arg: 'body', type: 'object', http: {source: 'body'}},
     ],
-    http: {path: '/getWorkerID', verb: 'get'},
+    http: {path: '/getWorkerID', verb: 'post'},
     returns: [
       {arg: 'workerId', type: 'number'},
     ],
