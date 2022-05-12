@@ -55,6 +55,7 @@ export const foundryWorkerGetProfile = `${ApiRootUrl}/foundryWorkers/id`;
 export const editFoundryWorker = `${ApiRootUrl}/foundryWorkers/id`;
 export const FoundryWorkerChangeProfile = `${ApiRootUrl}/foundryWorkers/id`;
 export const updateWorkerProfile = `${ApiRootUrl}/foundryWorkers/id`;
+export const getWorkerId = `${ApiRootUrl}/foundryWorkers/getWorkerId`;
 
 // File management
 export const customerFileRetrieve = `${ApiRootUrl}/customers/id/customerFiles`;
