@@ -42,11 +42,11 @@ class Admins extends Component {
   }
 
   handleDeleteAdmin(e) {
-    const admin = e.target.getAttribute('admin');
-    this.setState({ deleteAdmin: JSON.parse(admin) });
+    const admin = JSON.parse(e.target.getAttribute('admin'));
+    this.setState({ deleteAdmin: admin });
   }
 
-  handleDelete(e) {
+  handleDelete() {
     const admin = this.state.deleteAdmin;
     let url = `${userBaseFind}?filter={"where": {"email": "${admin.email}"}}`;
     API.Request(url, 'GET', {}, true)

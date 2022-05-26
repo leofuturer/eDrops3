@@ -42,8 +42,8 @@ class FoundryWorker extends React.Component {
   }
 
   handleDeleteWorker(e) {
-    const worker = e.target.getAttribute('worker');
-    this.setState({ deleteWorker: JSON.parse(worker) });
+    const worker = JSON.parse(e.target.getAttribute('worker'));
+    this.setState({ deleteWorker: worker });
   }
 
   handleDelete() {
