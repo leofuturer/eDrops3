@@ -17,13 +17,12 @@ import './chiporder.css';
 import Cookies from 'js-cookie';
 import {
   getCustomerCart, manipulateCustomerOrders, addOrderChipToCart,
-  getChipOrders, getAllFoundryWorkers
+  getChipOrders, getWorkerId
 } from '../../api/serverConfig';
 import API from '../../api/api';
 import {
   ewodFabServiceId,
   ewodFabServiceVariantId,
-  getWorkerId
 } from '../../constants';
 import Shopify from '../../app.jsx';
 import loadingGif from '../../../static/img/loading80px.gif';
@@ -61,7 +60,7 @@ class ChipOrder extends React.Component {
     API.Request(getWorkerId, 'POST', { username: GLASSFW }, true)
       .then((res) => {
         this.setState({
-          GLASSID: res.workerId,
+          GLASSID: res.data.workerId,
         });
       })
       .catch((err) => {
@@ -70,7 +69,7 @@ class ChipOrder extends React.Component {
     API.Request(getWorkerId, 'POST', { username: PAPERFW }, true)
       .then((res) => {
         this.setState({
-          PAPERID: res.workerId,
+          PAPERID: res.data.workerId,
         });
       })
       .catch((err) => {
@@ -79,7 +78,7 @@ class ChipOrder extends React.Component {
     API.Request(getWorkerId, 'POST', { username: PCBFW }, true)
       .then((res) => {
         this.setState({
-          PCBID: res.workerId,
+          PCBID: res.data.workerId,
         });
       })
       .catch((err) => {
