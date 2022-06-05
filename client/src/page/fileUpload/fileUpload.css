@@ -68,9 +68,29 @@ the "fade" which defines the opacity as 0 automatically, so it makes the element
     opacity: 0.5
 }
 
-.modal-body {
-    margin-left: 10px;
+.modal button .close {
+    position: absolute;
+    right: 10px;
+    top: 5px;
+    padding: 0;
+    color: #fff;
+    opacity: 1;
 }
+
+.modal-header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.modal-header::before {
+    content: none;
+}
+
+.modal-header::after {
+    content: none;
+}
+
 /*Without this, the blur background will not work because we just set 
 the opacity of .fade.show as 1, which is also applied to the backdrop ele*/
 

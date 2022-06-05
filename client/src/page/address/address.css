@@ -41,3 +41,9 @@
 .row-add-new{
     line-height: 220px;
 }
+
+div .add-button {
+    display: flex;
+    flex-direction: row;
+    justify-content: end;
+}
