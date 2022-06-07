@@ -1,7 +1,7 @@
 /**
  * Backend API entry points
  */
-const ApiRootUrl = '/api';
+const ApiRootUrl = process.env.APP_API_ROOTURL || '/api';
 
 // Overall User
 export const userSignUp = `${ApiRootUrl}/userBases`;
