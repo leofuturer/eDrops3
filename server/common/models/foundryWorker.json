@@ -119,7 +119,7 @@
     {
       "accessType": "READ",
       "principalType": "ROLE",
-      "principalId": "admin",
+      "principalId": "$authenticated",
       "permission": "ALLOW",
       "property": "find"
     },
@@ -164,6 +164,13 @@
       "principalId": "admin",
       "permission": "ALLOW",
       "property": "getChipOrders"
+    },
+    {
+      "accessType": "EXECUTE",
+      "principalType": "ROLE",
+      "principalId": "$authenticated",
+      "permission": "ALLOW",
+      "property": "getWorkerID"
     }
   ],
   "methods": {}

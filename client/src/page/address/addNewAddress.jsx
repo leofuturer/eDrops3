@@ -140,11 +140,8 @@ class AddNewAddress extends React.Component {
                 <input type="text" className="form-control" onChange={(v) => this.handleChange('country', v.target.value)} />
               </div>
             </div>
-            <div className="form-group">
-              <div className="col-md-10 col-sd-10 col-xs-10" />
-              <div className="btn-group col-md-2 col-sd-2 col-xs-2 text-right" role="group" aria-label="...">
+            <div className="form-group add-button">
                 <button type="button" className="btn btn-success" onClick={this.handleSaveAddress}>Add Address</button>
-              </div>
             </div>
           </form>
         </div>

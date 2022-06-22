@@ -11,3 +11,11 @@
     margin-left: 10px;
     margin-right: 20px;
 }
+
+td .fa {
+    color: #337ab7;
+}
+
+td .fa:hover {
+    color: #23527c;
+}

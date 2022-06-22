@@ -14,6 +14,7 @@ import {
 import './index.css';
 import SEO from '../../component/header/seo.jsx';
 import { metadata } from './metadata.jsx';
+import DeletePopup from '../../component/popup/deletePopup.jsx';
 
 function padZeroes(time) {
   /**
@@ -135,7 +136,7 @@ class Files extends React.Component {
         }
       })
       .then((res) => {
-        $('#confirm-delete').modal('hide');
+        $('#deleteModal').modal('hide');
       })
       .catch((err) => {
         console.error(err);
@@ -284,7 +285,7 @@ class Files extends React.Component {
                         Cookies.get('userType') === 'customer'
                           ? (
                             <td>
-                              <i className="fa fa-trash" id={`file${item.id}`} data-toggle="modal" data-target="#confirm-delete" onClick={this.handleDeleteId} />
+                              <i className="fa fa-trash" id={`file${item.id}`} data-toggle="modal" data-target="#deleteModal" onClick={this.handleDeleteId} />
                             </td>
                           )
                           : null
@@ -302,22 +303,7 @@ class Files extends React.Component {
         </div>
 
         {/* Modal */}
-        <div className="modal fade" id="confirm-delete" tabIndex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
-          <div className="modal-dialog">
-            <div className="modal-content">
-              <div className="modal-header">
-                eDrops
-              </div>
-              <div className="modal-body">
-                Are you sure you want to delete this file?
-              </div>
-              <div className="modal-footer">
-                <button type="button" className="btn btn-default" data-dismiss="modal">Cancel</button>
-                <a className="btn btn-danger btn-ok" onClick={this.handleDelete}>Delete</a>
-              </div>
-            </div>
-          </div>
-        </div>
+        <DeletePopup onDelete={this.handleDelete} />
       </div>
     );
   }
