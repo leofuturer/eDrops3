@@ -3,8 +3,8 @@ Helper script that lists who has permission to access what API endpoints.
 """
 import json
 
-model_config = "./server/server/model-config.json"
-model_prefix = "./server/common/models/"
+model_config = "./server/model-config.json"
+model_prefix = "./common/models/"
 
 with open(model_config, 'r') as f:
     info = json.load(f)
