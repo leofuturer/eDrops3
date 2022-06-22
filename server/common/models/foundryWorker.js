@@ -121,4 +121,28 @@ module.exports = function(FoundryWorker) {
     http: {path: '/downloadFile', verb: 'get'},
     returns: [],
   });
+
+  FoundryWorker.getWorkerID = function(body, cb) {
+    if (!body.username) {
+      const err = new Error('Missing username');
+      err.status = 400;
+      console.error(err);
+      return cb(err);
+    }
+    return FoundryWorker.find({where: {username: body.username}})
+      .then((res) => {
+        cb(null, res[0].id);
+      }).catch((err) => console.log(err));
+  };
+
+  FoundryWorker.remoteMethod('getWorkerID', {
+    description: 'CUSTOM METHOD: Get workerID',
+    accepts: [
+      {arg: 'body', type: 'object', http: {source: 'body'}},
+    ],
+    http: {path: '/getWorkerID', verb: 'post'},
+    returns: [
+      {arg: 'workerId', type: 'number'},
+    ],
+  });
 };
