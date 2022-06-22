@@ -40,17 +40,17 @@ boot(app, __dirname, (err) => {
   if (require.main === module) app.start();
 });
 
-app.get('remoting').errorHandler = {
-  handler(err, req, res, defaultHandler) {
-    // err = app.buildError(err); //if we want custom error msgs/codes
-    if (err.code === 'INVALID_TOKEN') {
-      console.log(err);
-      res.redirect('/emailVerifyInvalid');
-    } else {
-      defaultHandler(err);
-    }
-  },
-};
+// app.get('remoting').errorHandler = {
+//   handler(err, req, res, defaultHandler) {
+//     // err = app.buildError(err); //if we want custom error msgs/codes
+//     if (err.code === 'INVALID_TOKEN') {
+//       console.log(err);
+//       res.redirect('/emailVerifyInvalid');
+//     } else {
+//       defaultHandler(err);
+//     }
+//   },
+// };
 
 // app.buildError = function(err) {
 //   err.message = '123 Custom message: ' + err.message;
