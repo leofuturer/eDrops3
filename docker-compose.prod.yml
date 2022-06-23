@@ -17,7 +17,7 @@ services:
       - 443:443
     volumes:
       - $PWD/Caddyfile:/etc/caddy/Caddyfile
-      - $PWD/www/dist:/usr/share/caddy/www
+      - $PWD/client/dist:/usr/share/caddy/www
       - $PWD/community/dist:/usr/share/caddy/community
       - /home/ubuntu/caddy/data:/data
       - /home/ubuntu/caddy/config:/config

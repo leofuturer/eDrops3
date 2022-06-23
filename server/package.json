@@ -79,6 +79,7 @@
     "uuid": "^8.3.2"
   },
   "devDependencies": {
+    "@faker-js/faker": "^7.3.0",
     "@loopback/build": "^9.0.1",
     "@loopback/eslint-config": "^13.0.1",
     "@loopback/testlab": "^5.0.1",
