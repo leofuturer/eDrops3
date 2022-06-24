@@ -1,4 +1,4 @@
-name: backend_test
+name: Backend Test
 
 on:
   push:
