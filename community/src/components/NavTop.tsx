@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import logo from "../../static/img/edrop_logo_inverted.png";
 import { NavLink, useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
@@ -7,7 +7,7 @@ import { signout } from "../lib/auth";
 
 function NavTop() {
   const navigate = useNavigate();
-  const [dropdown, setDropdown] = React.useState(false);
+  const [dropdown, setDropdown] = useState(false);
 
   function handleLogout() {
     signout().then(() => navigate("/home"));
@@ -36,10 +36,13 @@ function NavTop() {
             </>
           ) : (
             <>
-              <UserIcon
-                className="h-5 w-5"
-                onClick={(e) => setDropdown(!dropdown)}
-              />
+              <button
+                onClick={() => setDropdown(!dropdown)}
+                className="flex flex-row space-x-2"
+              >
+                <UserIcon className="h-5 w-5" />
+                <p>{Cookies.get("username")}</p>
+              </button>
               {dropdown && (
                 <div className="absolute top-24 right-4 flex flex-col bg-sky-800 text-white p-4 rounded-lg shadow-lg">
                   <NavLink to="/profile">Profile</NavLink>

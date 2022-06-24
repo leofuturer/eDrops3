@@ -4,6 +4,11 @@
 // const ApiRootUrl = process.env.APP_API_ROOTURL || '/api';
 const ApiRootUrl = '/api';
 
+export const forums = `${ApiRootUrl}/forums`;
+export const forum = `${ApiRootUrl}/forums/id`;
+export const projects = `${ApiRootUrl}/projects`;
+export const project = `${ApiRootUrl}/projects/id`;
+
 // Overall User
 export const userSignUp = `${ApiRootUrl}/userBases`;
 export const userBaseFind = `${ApiRootUrl}/userBases`;

@@ -45,7 +45,6 @@ async function login(username: string, password: string): Promise<void> {
             // this.showErrorMessage();
           }
         });
-      console.log("end");
     })
     .catch((err) => {
       console.error(err);

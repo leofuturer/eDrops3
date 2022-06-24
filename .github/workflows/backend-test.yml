@@ -4,7 +4,7 @@ on:
   push:
     paths:
     # run if anything changed in server, toplevel, or deploy-related folders
-    - '.github/workflows/backend_test.yml'
+    - '.github/workflows/backend-test.yml'
     - 'deploy/**' 
     - 'server/**'
     - '*'

@@ -10,7 +10,7 @@ import {ServiceMixin} from '@loopback/service-proxy';
 import path from 'path';
 import {MySequence} from './sequence';
 import {Lb3AppBooterComponent} from '@loopback/booter-lb3app';
-import { ForumRepository, ProjectRepository } from './repositories';
+import {ForumRepository, ProjectRepository} from './repositories';
 
 export {ApplicationConfig};
 
@@ -54,12 +54,12 @@ export class EdropsBackendApplication extends BootMixin(
     // 2. Make further changes. When creating predefined model instances,
     // handle the case when these instances already exist.
     const forumRepo = await this.getRepository(ForumRepository);
-    for(let i = 0; i < 10; i++) {
+    for (let i = 0; i < 10; i++) {
       await forumRepo.create(createForum());
-    }        
+    }
 
     const projectRepo = await this.getRepository(ProjectRepository);
-    for(let i = 0; i < 10; i++) {
+    for (let i = 0; i < 10; i++) {
       await projectRepo.create(createProject());
     }
   }
