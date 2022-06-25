@@ -73,7 +73,6 @@ export class ProjectController {
   async find(
     @param.filter(Project) filter?: Filter<Project>,
   ): Promise<Project[]> {
-    console.log(filter);
     return this.projectRepository.find(filter);
   }
 

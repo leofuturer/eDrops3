@@ -38,9 +38,6 @@ export class EdropsBackendApplication extends BootMixin(
     this.projectRoot = __dirname;
     // Customize @loopback/boot Booter Conventions here
     this.bootOptions = {
-      lb3app: {
-        restApiRoot: '/',
-      },
       controllers: {
         // Customize ControllerBooter Conventions here
         dirs: ['controllers'],

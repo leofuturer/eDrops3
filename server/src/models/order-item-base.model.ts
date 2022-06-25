@@ -2,7 +2,6 @@ import {Entity, model, property} from '@loopback/repository';
 
 @model({
   settings: {
-    strict: false,
     validateUpsert: true,
     plural: 'orderItemBase',
     idInjection: true

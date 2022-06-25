@@ -2,7 +2,6 @@ import {Entity, model, property} from '@loopback/repository';
 
 @model({
   settings: {
-    strict: false,
     caseSensitiveEmail: true,
     hidden: ['password', 'verificationToken'],
     maxTTL: 31556926,

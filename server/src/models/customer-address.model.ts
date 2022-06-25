@@ -1,6 +1,6 @@
 import {Entity, model, property} from '@loopback/repository';
 
-@model({settings: {strict: false, validateUpsert: true, idInjection: true}})
+@model({settings: {validateUpsert: true, idInjection: true}})
 export class CustomerAddress extends Entity {
   @property({
     type: 'number',
@@ -18,7 +18,7 @@ export class CustomerAddress extends Entity {
 
   @property({
     type: 'string',
-    default: ,
+    default: '',
   })
   streetLine2?: string;
 

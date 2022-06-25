@@ -2,7 +2,6 @@ import {Entity, model, property} from '@loopback/repository';
 
 @model({
   settings: {
-    strict: false,
     validateUpsert: true,
     idInjection: true,
     remoting: {sharedMethods: {'*': false, find: true}}
@@ -70,7 +69,7 @@ export class FileInfo extends Entity {
   @property({
     type: 'string',
     required: true,
-    default: mm,
+    default: 'mm',
   })
   unit: string;
 

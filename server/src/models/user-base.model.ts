@@ -3,7 +3,6 @@ import {User} from '.';
 
 @model({
   settings: {
-    strict: false,
     validateUpsert: true,
     idInjection: true,
     remoting: {

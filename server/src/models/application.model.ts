@@ -1,6 +1,6 @@
 import {Entity, model, property} from '@loopback/repository';
 
-@model({settings: {strict: false, forceId: false}})
+@model({settings: {forceId: false}})
 export class Application extends Entity {
   @property({
     type: 'string',
@@ -98,12 +98,12 @@ export class Application extends Entity {
   })
   masterKey?: string;
 
-  @property({
-    type: 'AnonymousModel_0',
-    apns: {production: {type: 'boolean', description: '['Production or development mode. It denotes what default APNS', 'servers to be used to send notifications.', 'See API documentation for more details.']}, certData: {type: 'string', description: 'The certificate data loaded from the cert.pem file'}, keyData: {type: 'string', description: 'The key data loaded from the key.pem file'}, pushOptions: {type: {gateway: 'string', port: 'number'}}, feedbackOptions: {type: {gateway: 'string', port: 'number', batchFeedback: 'boolean', interval: 'number'}}}',
-    gcm: {serverApiKey: 'string'},
-  })
-  pushSettings?: AnonymousModel_0;
+  // @property({
+  //   type: 'AnonymousModel_0',
+  //   apns: {production: {type: 'boolean', description: 'Production or development mode. It denotes what default APNS servers to be used to send notifications. See API documentation for more details.' }, certData: {type: 'string', description: 'The certificate data loaded from the cert.pem file'}, keyData: {type: 'string', description: 'The key data loaded from the key.pem file'}, pushOptions: {type: {gateway: 'string', port: 'number'}}, feedbackOptions: {type: {gateway: 'string', port: 'number', batchFeedback: 'boolean', interval: 'number'}}},
+  //   gcm: {serverApiKey: 'string'},
+  // })
+  // pushSettings?: AnonymousModel_0;
 
   @property({
     type: 'boolean',
@@ -118,7 +118,7 @@ export class Application extends Entity {
   anonymousAllowed?: boolean;
 
   @property({
-    0: {scheme: {type: 'string', description: ''See the API docs for the list of supported values.'}, credential: {type: 'object', description: 'Scheme-specific credentials'}}',
+    0: {scheme: {type: 'string', description: 'See the API docs for the list of supported values.'}, credential: {type: 'object', description: 'Scheme-specific credentials'}},
     type: 'array',
     itemType: 'AnonymousModel_5',
   })
@@ -126,20 +126,20 @@ export class Application extends Entity {
 
   @property({
     type: 'string',
-    default: sandbox,
+    default: 'sandbox',
     description: 'Status of the application, production/sandbox/disabled',
   })
   status?: string;
 
   @property({
     type: 'date',
-    defaultFn: now,
+    defaultFn: Date.now(),
   })
   created?: string;
 
   @property({
     type: 'date',
-    defaultFn: now,
+    defaultFn: Date.now(),
   })
   modified?: string;
 

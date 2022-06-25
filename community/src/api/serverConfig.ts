@@ -2,12 +2,14 @@
  * Backend API entry points
  */
 // const ApiRootUrl = process.env.APP_API_ROOTURL || '/api';
-const ApiRootUrl = '/api';
 
-export const forums = `${ApiRootUrl}/forums`;
-export const forum = `${ApiRootUrl}/forums/id`;
-export const projects = `${ApiRootUrl}/projects`;
-export const project = `${ApiRootUrl}/projects/id`;
+const ApiRootUrl = '/api/api';
+const newApiRootUrl = '/api';
+
+export const forums = `${newApiRootUrl}/forums`;
+export const forum = `${newApiRootUrl}/forums/id`;
+export const projects = `${newApiRootUrl}/projects`;
+export const project = `${newApiRootUrl}/projects/id`;
 
 // Overall User
 export const userSignUp = `${ApiRootUrl}/userBases`;

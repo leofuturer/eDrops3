@@ -3,7 +3,6 @@ import {OrderItemBase} from '.';
 
 @model({
   settings: {
-    strict: false,
     plural: 'orderChips',
     remoting: {
       sharedMethods: {

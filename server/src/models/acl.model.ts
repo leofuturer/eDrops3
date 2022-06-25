@@ -1,7 +1,7 @@
 import {Entity, model, property} from '@loopback/repository';
 
-@model({settings: {strict: false}})
-export class Acl extends Entity {
+@model({settings: {}})
+export class ACL extends Entity {
   @property({
     type: 'number',
     id: 1,
@@ -48,7 +48,7 @@ export class Acl extends Entity {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [prop: string]: any;
 
-  constructor(data?: Partial<Acl>) {
+  constructor(data?: Partial<ACL>) {
     super(data);
   }
 }
@@ -57,4 +57,4 @@ export interface AclRelations {
   // describe navigational properties here
 }
 
-export type AclWithRelations = Acl & AclRelations;
+export type AclWithRelations = ACL & AclRelations;

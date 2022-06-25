@@ -1,6 +1,6 @@
 import {Entity, model, property} from '@loopback/repository';
 
-@model({settings: {strict: false, description: 'Map principals to roles'}})
+@model({settings: {description: 'Map principals to roles'}})
 export class RoleMapping extends Entity {
   @property({
     type: 'number',

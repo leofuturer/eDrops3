@@ -2,7 +2,6 @@ import {Entity, model, property} from '@loopback/repository';
 
 @model({
   settings: {
-    strict: false,
     validateUpsert: true,
     plural: 'orderInfos',
     idInjection: true,
@@ -85,7 +84,7 @@ export class OrderInfo extends Entity {
   @property({
     type: 'string',
     required: true,
-    default: Order in progress,
+    default: 'Order in progress',
   })
   status: string;
 

@@ -1,9 +1,8 @@
 import {model, property} from '@loopback/repository';
-import {orderItemBase} from '.';
+import {OrderItemBase} from '.';
 
 @model({
   settings: {
-    strict: false,
     plural: 'orderProducts',
     remoting: {
       sharedMethods: {
@@ -15,7 +14,7 @@ import {orderItemBase} from '.';
     }
   }
 })
-export class OrderProduct extends orderItemBase {
+export class OrderProduct extends OrderItemBase {
   // Define well-known properties here
 
   // Indexer property to allow additional data

@@ -3,7 +3,6 @@ import {User} from '.';
 
 @model({
   settings: {
-    strict: false,
     emailVerificationRequired: true,
     validateUpsert: true,
     idInjection: true,
@@ -60,7 +59,7 @@ export class Customer extends User {
   @property({
     type: 'string',
     required: true,
-    default: person,
+    default: 'person',
   })
   userType: string;
 
