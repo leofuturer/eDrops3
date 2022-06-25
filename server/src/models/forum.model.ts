@@ -56,7 +56,6 @@ export class Forum extends Entity {
   })
   likes: number;
 
-
   constructor(data?: Partial<Forum>) {
     super(data);
   }

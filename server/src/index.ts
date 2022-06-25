@@ -1,3 +1,4 @@
+import {SchemaMigrationOptions} from '@loopback/repository';
 import {ApplicationConfig, EdropsBackendApplication} from './application';
 
 export * from './application';

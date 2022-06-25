@@ -1,20 +1,11 @@
 import {Entity, model, property} from '@loopback/repository';
 
-@model()
+@model({
+  settings: {
+    allowExtendedOperators: true
+  }
+})
 export class Project extends Entity {
-  @property({
-    type: 'number',
-    id: true,
-    generated: true,
-  })
-  id?: number;
-
-  @property({
-    type: 'string',
-    required: true,
-  })
-  author: string;
-
   @property({
     type: 'string',
     required: true,
@@ -32,11 +23,29 @@ export class Project extends Entity {
     mysql: {
       index: {
         kind: 'FULLTEXT'
+      }
+    },
+  })
+  author: string;
+
+  @property({
+    type: 'string',
+    required: true,
+    mysql: {
+      index: {
+        kind: 'FULLTEXT'
       },
       dataType: 'LONGTEXT'
     },
   })
   content: string;
+
+  @property({
+    type: 'number',
+    id: true,
+    generated: true,
+  })
+  id?: number;
 
   @property({
     type: 'date',
@@ -48,7 +57,13 @@ export class Project extends Entity {
     type: 'number',
     required: true,
   })
-  likes: number;
+  likes: number
+
+  @property({
+    type: 'number',
+    required: false,
+  })
+  dislikes: number;
 
   constructor(data?: Partial<Project>) {
     super(data);

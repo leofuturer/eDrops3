@@ -49,10 +49,14 @@ export class EdropsBackendApplication extends BootMixin(
 
   async migrateSchema(options?: SchemaMigrationOptions) {
     // 1. Run migration scripts provided by connectors
+    console.log("Migrating schema...");
+    console.log("Options:", options);
     await super.migrateSchema(options);
+    console.log('Schema migration complete');
 
     // 2. Make further changes. When creating predefined model instances,
     // handle the case when these instances already exist.
+    console.log("Creating predefined model instances...");
     const forumRepo = await this.getRepository(ForumRepository);
     for (let i = 0; i < 10; i++) {
       await forumRepo.create(createForum());
@@ -62,6 +66,7 @@ export class EdropsBackendApplication extends BootMixin(
     for (let i = 0; i < 10; i++) {
       await projectRepo.create(createProject());
     }
+    console.log('Predefined model instances created');
   }
 }
 
@@ -75,6 +80,7 @@ function createProject(): Project {
     content: faker.lorem.paragraphs(),
     datetime: faker.date.past().toISOString(),
     likes: Math.random() * 100,
+    dislikes: Math.random() * 100,
   } as Project;
 }
 
