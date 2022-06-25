@@ -10,7 +10,7 @@ if (process.env.NODE_ENV === 'dev')
     name: 'edropFile',
     connector: 'loopback-component-storage',
     provider: 'filesystem',
-    root: './storage',
+    root: '/home/node/app/storage',
     maxFileSize: (30 * 1000 * 1000).toString(), // 30 MB
     nameConflict: 'makeUnique',
   };

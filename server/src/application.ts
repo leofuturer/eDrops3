@@ -38,6 +38,9 @@ export class EdropsBackendApplication extends BootMixin(
     this.projectRoot = __dirname;
     // Customize @loopback/boot Booter Conventions here
     this.bootOptions = {
+      lb3app: {
+        restApiRoot: '/',
+      },
       controllers: {
         // Customize ControllerBooter Conventions here
         dirs: ['controllers'],
@@ -49,14 +52,14 @@ export class EdropsBackendApplication extends BootMixin(
 
   async migrateSchema(options?: SchemaMigrationOptions) {
     // 1. Run migration scripts provided by connectors
-    console.log("Migrating schema...");
-    console.log("Options:", options);
+    console.log('Migrating schema...');
+    console.log('Options:', options);
     await super.migrateSchema(options);
     console.log('Schema migration complete');
 
     // 2. Make further changes. When creating predefined model instances,
     // handle the case when these instances already exist.
-    console.log("Creating predefined model instances...");
+    console.log('Creating predefined model instances...');
     const forumRepo = await this.getRepository(ForumRepository);
     for (let i = 0; i < 10; i++) {
       await forumRepo.create(createForum());
