@@ -10,13 +10,15 @@ import {ServiceMixin} from '@loopback/service-proxy';
 import path from 'path';
 import {MySequence} from './sequence';
 import {Lb3AppBooterComponent} from '@loopback/booter-lb3app';
-import {ForumRepository, ProjectRepository} from './repositories';
+import {clearDb, seedDb} from './lib/seed';
 
 export {ApplicationConfig};
 
 export class EdropsBackendApplication extends BootMixin(
   ServiceMixin(RepositoryMixin(RestApplication)),
 ) {
+  seedDb: (this: any) => Promise<void>;
+  clearDb: (this: any) => Promise<void>;
   constructor(options: ApplicationConfig = {}) {
     super(options);
 
@@ -48,49 +50,30 @@ export class EdropsBackendApplication extends BootMixin(
   }
 
   async migrateSchema(options?: SchemaMigrationOptions) {
-    // 1. Run migration scripts provided by connectors
-    console.log('Migrating schema...');
-    console.log('Options:', options);
-    await super.migrateSchema(options);
-    console.log('Schema migration complete');
-
-    // 2. Make further changes. When creating predefined model instances,
-    // handle the case when these instances already exist.
-    console.log('Creating predefined model instances...');
-    const forumRepo = await this.getRepository(ForumRepository);
-    for (let i = 0; i < 10; i++) {
-      await forumRepo.create(createForum());
+    // Run default migraiton scripts
+    if (process.env.MIGRATE_DATABASE) {
+      console.log('Migrating schema...');
+      // console.log('Options:', options);
+      await super.migrateSchema(options);
+      // console.log('Schema migration complete');
     }
 
-    const projectRepo = await this.getRepository(ProjectRepository);
-    for (let i = 0; i < 10; i++) {
-      await projectRepo.create(createProject());
+    // Seed database if environmental variable is set
+    if (
+      process.env.RESET_DATABASE == 'Yes' &&
+      process.env.NODE_ENV != 'production'
+    ) {
+      console.log('Clearing database...');
+      this.clearDb = clearDb.bind(this);
+      await this.clearDb()
+        .then(() => {
+          console.log('Seeding database...');
+          this.seedDb = seedDb.bind(this);
+          this.seedDb();
+        })
+        .catch(err => {
+          console.log('Error seeding database:', err);
+        });
     }
-    console.log('Predefined model instances created');
   }
-}
-
-import {Project, Forum} from './models';
-import {faker} from '@faker-js/faker';
-
-function createProject(): Project {
-  return {
-    author: faker.name.findName(),
-    title: faker.lorem.sentence(),
-    content: faker.lorem.paragraphs(),
-    datetime: faker.date.past().toISOString(),
-    likes: Math.random() * 100,
-    dislikes: Math.random() * 100,
-  } as Project;
-}
-
-function createForum(): Forum {
-  return {
-    parentId: 0,
-    author: faker.name.findName(),
-    title: faker.lorem.sentence(),
-    content: faker.lorem.paragraphs(),
-    datetime: faker.date.past().toISOString(),
-    likes: Math.random() * 100,
-  } as Forum;
 }

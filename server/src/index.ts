@@ -6,7 +6,7 @@ export * from './application';
 export async function main(options: ApplicationConfig = {}) {
   const app = new EdropsBackendApplication(options);
   await app.boot();
-  await app.migrateSchema(); // Migrate most recent schema to database
+  await app.migrateSchema(); // Checks env variables for migrating or seeding database
   await app.start();
 
   const url = app.restServer.url;
