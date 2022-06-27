@@ -51,6 +51,10 @@ export class OrderChip extends OrderItemBase {
   })
   workerId?: number;
 
+  @property({
+    type: 'number',
+  })
+  orderId?: number;
   // Define well-known properties here
 
   // Indexer property to allow additional data

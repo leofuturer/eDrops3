@@ -1,5 +1,6 @@
-import {model, property} from '@loopback/repository';
+import {model, property, hasMany} from '@loopback/repository';
 import {User} from '.';
+import {OrderChip} from './order-chip.model';
 
 @model({
   settings: {
@@ -82,6 +83,8 @@ export class FoundryWorker extends User {
   })
   affiliation: string;
 
+  @hasMany(() => OrderChip, {keyTo: 'workerId'})
+  orderChips: OrderChip[];
   // Define well-known properties here
 
   // Indexer property to allow additional data

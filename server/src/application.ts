@@ -29,13 +29,15 @@ export class EdropsBackendApplication extends BootMixin(
     this.static('/', path.join(__dirname, '../public'));
 
     // Customize @loopback/rest-explorer configuration here
-    this.configure(RestExplorerBindings.COMPONENT).to({
-      path: '/explorer',
-    });
-    this.component(RestExplorerComponent);
+    if (process.env.NODE_ENV != 'production') {
+      this.configure(RestExplorerBindings.COMPONENT).to({
+        path: '/explorer',
+      });
+      this.component(RestExplorerComponent);
+    }
 
     // Loopback 3 booter component
-    this.component(Lb3AppBooterComponent);
+    // this.component(Lb3AppBooterComponent);
 
     this.projectRoot = __dirname;
     // Customize @loopback/boot Booter Conventions here

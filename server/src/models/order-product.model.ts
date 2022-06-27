@@ -16,6 +16,11 @@ import {OrderItemBase} from '.';
   }
 })
 export class OrderProduct extends OrderItemBase {
+
+  @property({
+    type: 'number',
+  })
+  orderId?: number;
   // Define well-known properties here
 
   // Indexer property to allow additional data
