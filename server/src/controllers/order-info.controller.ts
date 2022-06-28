@@ -29,6 +29,9 @@ export interface CustomRequest extends Request {
   'headers': {
     'x-shopify-hmac-sha256': string;
     'x-edrop-userbase': string;
+  },
+  'accessToken': {
+    'userId': number;
   }
 }
 

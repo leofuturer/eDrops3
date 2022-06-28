@@ -1,3 +1,4 @@
+import { inject } from '@loopback/core';
 import {
   Count,
   CountSchema,
@@ -14,16 +15,20 @@ import {
   patch,
   post,
   requestBody,
+  Request,
+  RestBindings
 } from '@loopback/rest';
 import {
   OrderInfo,
   OrderProduct,
 } from '../models';
 import {OrderInfoRepository} from '../repositories';
+import { CustomRequest } from './order-info.controller';
 
 export class OrderInfoOrderProductController {
   constructor(
     @repository(OrderInfoRepository) protected orderInfoRepository: OrderInfoRepository,
+    @inject(RestBindings.Http.REQUEST) private request: Request,
   ) { }
 
   @get('/orderInfos/{id}/orderProducts', {
@@ -66,7 +71,7 @@ export class OrderInfoOrderProductController {
         },
       },
     }) orderProduct: Omit<OrderProduct, 'id'>,
-  ): Promise<OrderProduct> {
-    return this.orderInfoRepository.addOrderChipToCart(id, orderProduct);
+  ): Promise<void> {
+    return this.orderInfoRepository.addOrderChipToCart(orderProduct, this.request as CustomRequest);
   }
 }

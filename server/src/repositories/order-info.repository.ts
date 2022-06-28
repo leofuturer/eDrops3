@@ -21,10 +21,10 @@ import {
   RequestContext,
 } from '@loopback/rest';
 import {reject} from 'lodash';
-import { IncomingHttpHeaders } from 'http';
-import { CustomHeaders } from '../controllers/order-info.controller';
-import { AccessTokenRepository } from './access-token.repository';
-import { UserBaseRepository } from './user-base.repository';
+import {IncomingHttpHeaders} from 'http';
+import {CustomRequest} from '../controllers/order-info.controller';
+import {AccessTokenRepository} from './access-token.repository';
+import {UserBaseRepository} from './user-base.repository';
 
 export class OrderInfoRepository extends DefaultCrudRepository<
   OrderInfo,
@@ -47,11 +47,11 @@ export class OrderInfoRepository extends DefaultCrudRepository<
     protected orderProductRepositoryGetter: Getter<OrderProductRepository>,
     @repository.getter('OrderChipRepository')
     protected orderChipRepositoryGetter: Getter<OrderChipRepository>,
-    @repository.getter('AccessTokenRepository') 
-    private accessTokenRepositoryGetter : Getter<AccessTokenRepository>,
-    @repository.getter('UserBaseRepository') 
-    private userBaseRepositoryGetter : Getter<UserBaseRepository>,
-    ) {
+    @repository.getter('AccessTokenRepository')
+    private accessTokenRepositoryGetter: Getter<AccessTokenRepository>,
+    @repository.getter('UserBaseRepository')
+    private userBaseRepositoryGetter: Getter<UserBaseRepository>,
+  ) {
     super(OrderInfo, dataSource);
     this.orderChips = this.createHasManyRepositoryFactoryFor(
       'orderChips',
@@ -71,64 +71,85 @@ export class OrderInfoRepository extends DefaultCrudRepository<
     );
   }
 
-  async addOrderChipToCart (body: Omit<OrderInfo, "id">, req: CustomHeaders) {
+  async addOrderChipToCart(body: Omit<OrderInfo, 'id'>, req: CustomRequest) {
     // console.log(body);
     // Find the specified orderInfo (top level)
     const accessTokenRepository = await this.accessTokenRepositoryGetter();
     const userBaseRepository = await this.userBaseRepositoryGetter();
-    this.findById(body.orderInfoId).then(orderInfo => {
-      // console.log(orderInfo);
+    const orderChipRepository = await this.orderChipRepositoryGetter();
+    this.findById(body.orderInfoId)
+      .then(orderInfo => {
+        // console.log(orderInfo);
         // Then see if product order already created, if we need to create one
-        accessTokenRepository.findById(req?.headers['x-edrop-userbase']).then(token =>  {
-            userBaseRepository.findById(token.userId).then(user => {
-              if (user.userType !== 'customer') {
-                console.log('only customer can add chip to cart');
-              }
-              }).catch(err => console.log(err));
-            }).catch(err => console.log(err))
+        accessTokenRepository
+          .findById(req?.headers['x-edrop-userbase'])
+          .then(token => {
+            userBaseRepository
+              .findById(token.userId)
+              .then(user => {
+                if (user.userType !== 'customer') {
+                  console.log('only customer can add chip to cart');
+                }
+              })
+              .catch(err => console.log(err));
+          })
+          .catch(err => console.log(err));
         if (orderInfo.customerId !== req.accessToken.userId) {
           console.log('customer and order info does not match');
-        }
-        else {
-          this.orderChips({where: {variantIdShopify: body.variantIdShopify, otherDetails: body.otherDetails}}).then((err, orderChips) => {
-            // variant ID should uniquely identify it
-            // console.log(orderProducts);
-            if (err || orderChips.length > 1) {
-              console.error('Error occurred or more than one entry for product');
-              console.error(err);
-              cb(err);
-            }
-            // not present, need to create a new one
-            else if (orderChips.length === 0) {
-              orderInfo.orderChips.create(body, (err, orderChip) => {
-                // console.log(orderProduct);
-                if (err) {
-                  console.error(err);
-                  cb(err);
-                } else {
-                  console.log(`Created orderChips with product order id ${orderChip.id}, product ${orderChip.description}`);
-                  cb(null);
-                }
-              });
-            } else if (orderChips.length === 1) { // already exists
-              const newQtyData = {
-                quantity: orderChips[0].quantity + body.quantity,
-              };
-              orderChips[0].updateAttributes(newQtyData).then(orderChip => {
-                console.log(`Updated quantity to ${orderChip.quantity} for product order ID: ${orderChip.id}, product ${orderChip.description}`);
+        } else {
+          orderChipRepository
+            .find({
+              where: {
+                variantIdShopify: body.variantIdShopify,
+                otherDetails: body.otherDetails,
+              },
+            })
+            .then(orderChips => {
+              // variant ID should uniquely identify it
+              // console.log(orderProducts);
+              if (orderChips.length > 1) {
+                console.error('More than one entry for product');
               }
-              ).catch(err => 
-                  console.error(err)
-              );
-            }
-          });
+              // not present, need to create a new one
+              else if (orderChips.length === 0) {
+                orderChipRepository
+                  .create(body)
+                  .then(orderChip => {
+                    // console.log(orderProduct);
+                    console.log(
+                      `Created orderChips with product order id ${orderChip.id}, product ${orderChip.description}`,
+                    );
+                  })
+                  .catch(err => console.log(err));
+              } else if (orderChips.length === 1) {
+                // already exists
+                const newQtyData = {
+                  quantity: orderChips[0].quantity + body.quantity,
+                };
+                orderChips[0]
+                  .updateAttributes(newQtyData)
+                  .then(
+                    (orderChip: {quantity: any; id: any; description: any}) => {
+                      console.log(
+                        `Updated quantity to ${orderChip.quantity} for product order ID: ${orderChip.id}, product ${orderChip.description}`,
+                      );
+                    },
+                  )
+                  .catch((err: any) => console.error(err));
+              }
+            })
+            .catch(err => console.log(err));
         }
-    }).catch(err => console.log(err));
-  };
+      })
+      .catch(err => console.log(err));
+  }
 
-  async newOrderCreated(body: Omit<OrderInfo, "id">, req: CustomRequest ): Promise<void> {
+  async newOrderCreated(
+    body: Omit<OrderInfo, 'id'>,
+    req: CustomRequest,
+  ): Promise<void> {
     console.log(
-      `Shopify order creation webhook token: ${req?.headers?.['x-shopify-hmac-sha256']}`
+      `Shopify order creation webhook token: ${req?.headers?.['x-shopify-hmac-sha256']}`,
     );
     // console.log(body);
     console.log(
