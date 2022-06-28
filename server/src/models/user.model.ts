@@ -5,7 +5,8 @@ import {Entity, model, property} from '@loopback/repository';
     caseSensitiveEmail: true,
     hidden: ['password', 'verificationToken'],
     maxTTL: 31556926,
-    ttl: 1209600
+    ttl: 1209600,
+    mysql: {table: 'User'}
   }
 })
 export class User extends Entity {

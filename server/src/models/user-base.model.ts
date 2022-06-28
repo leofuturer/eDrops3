@@ -20,7 +20,8 @@ import {User} from '.';
         setPassword: true,
         changePassword: true
       }
-    }
+    },
+    mysql: {table: 'userBase'}
   }
 })
 export class UserBase extends User {

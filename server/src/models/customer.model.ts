@@ -35,7 +35,8 @@ import {User} from '.';
         'prototype.__destroyById__customerAddresses': true,
         'prototype.__updateById__customerAddresses': true
       }
-    }
+    },
+    mysql: {table: 'customer'}
   }
 })
 export class Customer extends User {

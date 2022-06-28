@@ -23,7 +23,8 @@ import {User} from '.';
         'prototype.getChipOrders': true,
         getWorkerID: true
       }
-    }
+    },
+    mysql: {table: 'foundryWorker'}
   }
 })
 export class FoundryWorker extends User {

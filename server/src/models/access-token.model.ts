@@ -1,6 +1,6 @@
 import {Entity, model, property} from '@loopback/repository';
 
-@model({settings: { forceId: false}})
+@model({settings: {forceId: false, mysql: {table: 'AccessToken'}}})
 export class AccessToken extends Entity {
   @property({
     type: 'string',

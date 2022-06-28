@@ -51,7 +51,7 @@ export class EdropsBackendApplication extends BootMixin(
 
   async migrateSchema(options?: SchemaMigrationOptions) {
     // Run default migraiton scripts
-    if (process.env.MIGRATE_DATABASE) {
+    if (process.env.MIGRATE_DATABASE == 'Yes') {
       console.log('Migrating schema...');
       // console.log('Options:', options);
       await super.migrateSchema(options);

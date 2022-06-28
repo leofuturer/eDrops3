@@ -16,7 +16,8 @@ import {Entity, model, property} from '@loopback/repository';
         'prototype.__get__orderProducts': true,
         'prototype.__get__orderChips': true
       }
-    }
+    },
+    mysql: {table: 'orderInfo'}
   }
 })
 export class OrderInfo extends Entity {

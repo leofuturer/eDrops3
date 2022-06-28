@@ -4,7 +4,8 @@ import {Entity, model, property} from '@loopback/repository';
   settings: {
     validateUpsert: true,
     idInjection: true,
-    remoting: {sharedMethods: {'*': false, find: true}}
+    remoting: {sharedMethods: {'*': false, find: true}},
+    mysql: {table: 'fileInfo'}
   }
 })
 export class FileInfo extends Entity {

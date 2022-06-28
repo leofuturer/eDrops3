@@ -11,7 +11,8 @@ import {OrderItemBase} from '.';
         'prototype.patchAttributes': true,
         'prototype.replaceById': true
       }
-    }
+    },
+    mysql: {table: 'orderChip'}
   }
 })
 export class OrderChip extends OrderItemBase {
