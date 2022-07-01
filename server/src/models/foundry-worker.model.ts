@@ -1,4 +1,4 @@
-import {model, property, hasMany} from '@loopback/repository';
+import {model, property, hasMany, belongsTo, Entity} from '@loopback/repository';
 import {User} from '.';
 import {OrderChip} from './order-chip.model';
 
@@ -28,7 +28,15 @@ import {OrderChip} from './order-chip.model';
     mysql: {table: 'foundryWorker'}
   }
 })
-export class FoundryWorker extends User {
+export class FoundryWorker extends Entity {
+  @property({
+    type: 'number',
+    id: 1,
+    generated: true,
+    updateOnly: true,
+  })
+  id?: number;
+  
   @property({
     type: 'string',
   })
@@ -85,6 +93,9 @@ export class FoundryWorker extends User {
 
   @hasMany(() => OrderChip, {keyTo: 'workerId'})
   orderChips: OrderChip[];
+
+  @belongsTo(() => User)
+  userId: number;
   // Define well-known properties here
 
   // Indexer property to allow additional data

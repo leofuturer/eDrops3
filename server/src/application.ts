@@ -11,6 +11,19 @@ import path from 'path';
 import {MySequence} from './sequence';
 import {Lb3AppBooterComponent} from '@loopback/booter-lb3app';
 import {clearDb, seedDb} from './lib/seed';
+import {AuthenticationComponent} from '@loopback/authentication';
+// import {
+//   JWTAuthenticationComponent,
+//   SECURITY_SCHEME_SPEC,
+//   UserServiceBindings,
+// } from '@loopback/authentication-jwt';
+import {
+  JWTAuthenticationComponent,
+  SECURITY_SCHEME_SPEC,
+} from './components/jwt-authentication';
+// import {AuthorizationComponent} from '@loopback/authorization';
+// import {CasbinAuthorizationComponent} from './components/casbin-authorization';
+import {MysqlDsDataSource} from './datasources';
 
 export {ApplicationConfig};
 
@@ -28,6 +41,8 @@ export class EdropsBackendApplication extends BootMixin(
     // Set up default home page
     this.static('/', path.join(__dirname, '../public'));
 
+    this.addSecuritySpec();
+
     // Customize @loopback/rest-explorer configuration here
     if (process.env.NODE_ENV != 'production') {
       this.configure(RestExplorerBindings.COMPONENT).to({
@@ -37,7 +52,7 @@ export class EdropsBackendApplication extends BootMixin(
     }
 
     // Loopback 3 booter component
-    // this.component(Lb3AppBooterComponent);
+    this.component(Lb3AppBooterComponent);
 
     this.projectRoot = __dirname;
     // Customize @loopback/boot Booter Conventions here
@@ -49,6 +64,31 @@ export class EdropsBackendApplication extends BootMixin(
         nested: true,
       },
     };
+
+    // Mount authentication system
+    this.component(AuthenticationComponent);
+    // Mount jwt component
+    this.component(JWTAuthenticationComponent);
+    // // Bind datasource
+    // this.dataSource(MysqlDsDataSource, UserServiceBindings.DATASOURCE_NAME);
+  }
+
+  addSecuritySpec(): void {
+    this.api({
+      openapi: '3.0.0',
+      info: {
+        title: 'access-control-example',
+        version: require('.././package.json').version,
+      },
+      paths: {},
+      components: {securitySchemes: SECURITY_SCHEME_SPEC},
+      security: [
+        {
+          jwt: [],
+        },
+      ],
+      servers: [{url: '/'}],
+    });
   }
 
   async migrateSchema(options?: SchemaMigrationOptions) {

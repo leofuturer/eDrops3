@@ -1,4 +1,4 @@
-export const defaultUserBases = [
+export const defaultUsers = [
     {
         "userType": "customer",
         "username": "customerA",

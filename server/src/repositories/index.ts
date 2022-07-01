@@ -15,5 +15,4 @@ export * from './order-product.repository';
 export * from './role-mapping.repository';
 export * from './role.repository';
 export * from './scope.repository';
-export * from './user-base.repository';
 export * from './user.repository';

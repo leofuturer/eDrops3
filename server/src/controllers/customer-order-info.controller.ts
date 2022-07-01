@@ -26,7 +26,7 @@ export class CustomerOrderInfoController {
     @repository(CustomerRepository) protected customerRepository: CustomerRepository,
   ) { }
 
-  @get('/customers/{id}/order-infos', {
+  @get('/customers/{id}/orderInfos', {
     responses: {
       '200': {
         description: 'Array of Customer has many OrderInfo',
@@ -45,7 +45,7 @@ export class CustomerOrderInfoController {
     return this.customerRepository.orderInfos(id).find(filter);
   }
 
-  @post('/customers/{id}/order-infos', {
+  @post('/customers/{id}/orderInfos', {
     responses: {
       '200': {
         description: 'Customer model instance',
@@ -70,7 +70,7 @@ export class CustomerOrderInfoController {
     return this.customerRepository.orderInfos(id).create(orderInfo);
   }
 
-  @patch('/customers/{id}/order-infos', {
+  @patch('/customers/{id}/orderInfos', {
     responses: {
       '200': {
         description: 'Customer.OrderInfo PATCH success count',
@@ -93,7 +93,7 @@ export class CustomerOrderInfoController {
     return this.customerRepository.orderInfos(id).patch(orderInfo, where);
   }
 
-  @del('/customers/{id}/order-infos', {
+  @del('/customers/{id}/orderInfos', {
     responses: {
       '200': {
         description: 'Customer.OrderInfo DELETE success count',
