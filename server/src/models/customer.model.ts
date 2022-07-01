@@ -1,4 +1,4 @@
-import {model, property, hasMany} from '@loopback/repository';
+import {model, property, hasMany, belongsTo, Entity} from '@loopback/repository';
 import {User} from '.';
 import {CustomerAddress} from './customer-address.model';
 import {FileInfo} from './file-info.model';
@@ -42,7 +42,15 @@ import {OrderInfo} from './order-info.model';
     mysql: {table: 'customer'}
   }
 })
-export class Customer extends User {
+export class Customer extends Entity {
+  @property({
+    type: 'number',
+    id: 1,
+    generated: true,
+    updateOnly: true,
+  })
+  id?: number;
+  
   @property({
     type: 'string',
     required: true,
@@ -65,7 +73,7 @@ export class Customer extends User {
     required: true,
     default: 'person',
   })
-  userType: string;
+  customerType: string;
 
   @hasMany(() => CustomerAddress)
   customerAddresses: CustomerAddress[];
@@ -75,6 +83,9 @@ export class Customer extends User {
 
   @hasMany(() => OrderInfo)
   orderInfos: OrderInfo[];
+
+  @belongsTo(() => User)
+  userId: number;
   // Define well-known properties here
 
   // Indexer property to allow additional data

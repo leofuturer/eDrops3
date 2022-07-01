@@ -24,7 +24,7 @@ import {reject} from 'lodash';
 import {IncomingHttpHeaders} from 'http';
 import {CustomRequest} from '../controllers/order-info.controller';
 import {AccessTokenRepository} from './access-token.repository';
-import {UserBaseRepository} from './user-base.repository';
+import {UserRepository} from './user.repository';
 
 export class OrderInfoRepository extends DefaultCrudRepository<
   OrderInfo,
@@ -49,8 +49,8 @@ export class OrderInfoRepository extends DefaultCrudRepository<
     protected orderChipRepositoryGetter: Getter<OrderChipRepository>,
     @repository.getter('AccessTokenRepository')
     private accessTokenRepositoryGetter: Getter<AccessTokenRepository>,
-    @repository.getter('UserBaseRepository')
-    private userBaseRepositoryGetter: Getter<UserBaseRepository>,
+    @repository.getter('UserRepository')
+    private userRepositoryGetter: Getter<UserRepository>,
   ) {
     super(OrderInfo, dataSource);
     this.orderChips = this.createHasManyRepositoryFactoryFor(
@@ -75,7 +75,7 @@ export class OrderInfoRepository extends DefaultCrudRepository<
     // console.log(body);
     // Find the specified orderInfo (top level)
     const accessTokenRepository = await this.accessTokenRepositoryGetter();
-    const userBaseRepository = await this.userBaseRepositoryGetter();
+    const userRepository = await this.userRepositoryGetter();
     const orderChipRepository = await this.orderChipRepositoryGetter();
     this.findById(body.orderInfoId)
       .then(orderInfo => {
@@ -84,7 +84,7 @@ export class OrderInfoRepository extends DefaultCrudRepository<
         accessTokenRepository
           .findById(req?.headers['x-edrop-userbase'])
           .then(token => {
-            userBaseRepository
+            userRepository
               .findById(token.userId)
               .then(user => {
                 if (user.userType !== 'customer') {

@@ -1,4 +1,4 @@
-import {model, property} from '@loopback/repository';
+import {model, property, belongsTo, Entity} from '@loopback/repository';
 import {User} from '.';
 
 @model({
@@ -30,12 +30,22 @@ import {User} from '.';
     mysql: {table: 'admin'}
   }
 })
-export class Admin extends User {
+export class Admin extends Entity {
+  @property({
+    type: 'number',
+    id: 1,
+    generated: true,
+    updateOnly: true,
+  })
+  id?: number;
+  
   @property({
     type: 'string',
   })
   phoneNumber?: string;
 
+  @belongsTo(() => User)
+  userId: number;
   // Define well-known properties here
 
   // Indexer property to allow additional data
