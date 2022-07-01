@@ -4,17 +4,15 @@ import {
   Customer,
   CustomerAddress,
   FoundryWorker,
-  User,
-  Admin,
+  UserBase,
 } from '../models';
 import {
   CustomerAddressRepository,
   CustomerRepository,
-  UserRepository,
+  UserBaseRepository,
   FoundryWorkerRepository,
   ForumRepository,
   ProjectRepository,
-  AdminRepository,
 } from '../repositories';
 import {CrudRepository, CrudRepositoryImpl} from '@loopback/repository';
 import {
@@ -23,8 +21,7 @@ import {
   defaultCustomers,
   defaultCustomerAddresses,
   defaultFoundryWorkers,
-  defaultUsers,
-  defaultAdmins,
+  defaultUserBases,
 } from './data/index';
 
 export async function clearDb(this: any): Promise<void> {
@@ -39,12 +36,6 @@ export async function clearDb(this: any): Promise<void> {
         await this.getRepository(ProjectRepository);
       await projectRepo.deleteAll();
       await projectRepo.execute('ALTER TABLE Project AUTO_INCREMENT = ?', [1]);
-      const adminRepo: CrudRepositoryImpl<Customer, 1> =
-        await this.getRepository(CustomerRepository);
-      await adminRepo.deleteAll();
-      await adminRepo.execute('ALTER TABLE admin AUTO_INCREMENT = ?', [
-        1,
-      ]);
       const customerRepo: CrudRepositoryImpl<Customer, 1> =
         await this.getRepository(CustomerRepository);
       await customerRepo.deleteAll();
@@ -65,10 +56,10 @@ export async function clearDb(this: any): Promise<void> {
         'ALTER TABLE foundryWorker AUTO_INCREMENT = ?',
         [1],
       );
-      const userRepo: CrudRepositoryImpl<User, 1> =
-        await this.getRepository(UserRepository);
-      await userRepo.deleteAll();
-      await userRepo.execute('ALTER TABLE User AUTO_INCREMENT = ?', [
+      const userBaseRepo: CrudRepositoryImpl<UserBase, 1> =
+        await this.getRepository(UserBaseRepository);
+      await userBaseRepo.deleteAll();
+      await userBaseRepo.execute('ALTER TABLE userBase AUTO_INCREMENT = ?', [
         1,
       ]);
 
@@ -95,34 +86,28 @@ export async function seedDb(this: any): Promise<void> {
       for (const project of defaultProjects) {
         await projectRepo.create(project);
       }
-      const adminRepo: AdminRepository = await this.getRepository(
-        AdminRepository,
-      );
-      for (const admin of defaultAdmins) {
-        await adminRepo.createAdmin(admin as Admin & User);
-      }
-      const customerRepo: CustomerRepository = await this.getRepository(
+      const customerRepo: CrudRepository<Customer> = await this.getRepository(
         CustomerRepository,
       );
       for (const customer of defaultCustomers) {
-        await customerRepo.createCustomer(customer as Customer & User);
+        await customerRepo.create(customer);
       }
       const customerAddressRepo: CrudRepository<CustomerAddress> =
         await this.getRepository(CustomerAddressRepository);
       for (const customerAddress of defaultCustomerAddresses) {
         await customerAddressRepo.create(customerAddress);
       }
-      const foundryWorkerRepo: FoundryWorkerRepository =
+      const foundryWorkerRepo: CrudRepository<FoundryWorker> =
         await this.getRepository(FoundryWorkerRepository);
       for (const foundryWorker of defaultFoundryWorkers) {
-        await foundryWorkerRepo.createFoundryWorker(foundryWorker as FoundryWorker & User);
+        await foundryWorkerRepo.create(foundryWorker);
       }
-      // const userRepo: CrudRepository<UserBase> = await this.getRepository(
-      //   UserRepository,
-      // );
-      // for (const user of defaultUsers) {
-      //   await userRepo.create(user);
-      // }
+      const userBaseRepo: CrudRepository<UserBase> = await this.getRepository(
+        UserBaseRepository,
+      );
+      for (const userBase of defaultUserBases) {
+        await userBaseRepo.create(userBase);
+      }
       resolve();
     } catch (err) {
       console.error(err);

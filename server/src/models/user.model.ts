@@ -33,8 +33,6 @@ export class User extends Entity {
     required: true,
   })
   password: string;
-  // @hasOne(() => UserCredentials)
-  // userCredentials: UserCredentials;
 
   @property({
     type: 'string',
@@ -53,13 +51,6 @@ export class User extends Entity {
   verificationToken?: string;
 
   // Define well-known properties here
-
-  @property({
-    type: 'string',
-    required: true,
-    default: 'customer',
-  })
-  userType: string;
 
   // Indexer property to allow additional data
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

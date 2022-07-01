@@ -8,6 +8,7 @@ export * from './role.model';
 export * from './acl.model';
 export * from './scope.model';
 export * from './order-item-base.model';
+export * from './user-base.model';
 export * from './customer.model';
 export * from './admin.model';
 export * from './foundry-worker.model';

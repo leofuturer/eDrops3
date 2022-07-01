@@ -14,27 +14,23 @@ import {User} from '.';
         'prototype.patchAttributes': true,
         'prototype.replaceById': true,
         find: true,
-        credsTaken: true,
         login: true,
         logout: true,
         resetPassword: true,
         setPassword: true,
-        changePassword: true,
-        getApiToken: true,
-        returnAllItems: true,
-        returnOneItem: true,
-        downloadFile: true,
-        getChipOrders: true
+        changePassword: true
       }
     },
-    mysql: {table: 'admin'}
+    mysql: {table: 'userBase'}
   }
 })
-export class Admin extends User {
+export class UserBase extends User {
   @property({
     type: 'string',
+    required: true,
+    default: 'customer',
   })
-  phoneNumber?: string;
+  userType: string;
 
   // Define well-known properties here
 
@@ -42,13 +38,13 @@ export class Admin extends User {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [prop: string]: any;
 
-  constructor(data?: Partial<Admin>) {
+  constructor(data?: Partial<UserBase>) {
     super(data);
   }
 }
 
-export interface AdminRelations {
+export interface UserBaseRelations {
   // describe navigational properties here
 }
 
-export type AdminWithRelations = Admin & AdminRelations;
+export type UserBaseWithRelations = UserBase & UserBaseRelations;
