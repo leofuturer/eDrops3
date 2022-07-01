@@ -77,7 +77,7 @@ export class EdropsBackendApplication extends BootMixin(
     this.api({
       openapi: '3.0.0',
       info: {
-        title: 'access-control-example',
+        title: 'eDrops v3 backend',
         version: require('.././package.json').version,
       },
       paths: {},
