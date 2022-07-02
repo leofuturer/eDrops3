@@ -44,7 +44,7 @@ export class CustomerRepository extends DefaultCrudRepository<
       realm: customer.realm,
       username: customer.username,
       password: hashedPassword,
-      userType: customer.userType,
+      userType: 'customer',
       email: customer.email,
       emailVerified: customer.emailVerified,
       verificationToken: customer.verificationToken,

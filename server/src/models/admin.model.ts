@@ -45,7 +45,7 @@ export class Admin extends Entity {
   phoneNumber?: string;
 
   @belongsTo(() => User)
-  userId: number;
+  userId: string;
   // Define well-known properties here
 
   // Indexer property to allow additional data

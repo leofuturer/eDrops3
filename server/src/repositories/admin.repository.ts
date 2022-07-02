@@ -30,7 +30,7 @@ export class AdminRepository extends DefaultCrudRepository<
       realm: admin.realm,
       username: admin.username,
       password: hashedPassword,
-      userType: admin.userType,
+      userType: 'admin',
       email: admin.email,
       emailVerified: admin.emailVerified,
       verificationToken: admin.verificationToken,

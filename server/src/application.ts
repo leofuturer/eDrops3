@@ -52,7 +52,7 @@ export class EdropsBackendApplication extends BootMixin(
     }
 
     // Loopback 3 booter component
-    this.component(Lb3AppBooterComponent);
+    // this.component(Lb3AppBooterComponent);
 
     this.projectRoot = __dirname;
     // Customize @loopback/boot Booter Conventions here
@@ -92,7 +92,7 @@ export class EdropsBackendApplication extends BootMixin(
   }
 
   async migrateSchema(options?: SchemaMigrationOptions) {
-    // Run default migraiton scripts
+    // Run default migration scripts
     if (process.env.MIGRATE_DATABASE == 'Yes') {
       console.log('Migrating schema...');
       // console.log('Options:', options);

@@ -85,7 +85,7 @@ export class Customer extends Entity {
   orderInfos: OrderInfo[];
 
   @belongsTo(() => User)
-  userId: number;
+  userId: string;
   // Define well-known properties here
 
   // Indexer property to allow additional data

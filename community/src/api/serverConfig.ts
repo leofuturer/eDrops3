@@ -12,15 +12,15 @@ export const projects = `${newApiRootUrl}/projects`;
 export const project = `${newApiRootUrl}/projects/id`;
 
 // Overall User
-export const userSignUp = `${ApiRootUrl}/userBases`;
-export const userBaseFind = `${ApiRootUrl}/userBases`;
-export const userBaseDeleteById = `${ApiRootUrl}/userBases/id`;
-export const updateUserBaseProfile = `${ApiRootUrl}/userBases/id`;
-export const userLogin = `${ApiRootUrl}/userBases/login`;
-export const userLogout = `${ApiRootUrl}/userBases/logout`;
-export const userForgetPass = `${ApiRootUrl}/userBases/reset`;
-export const userChangePass = `${ApiRootUrl}/userBases/change-password`;
-export const userResetPass = `${ApiRootUrl}/userBases/reset-password`;
+export const userSignUp = `${ApiRootUrl}/users`;
+export const userBaseFind = `${ApiRootUrl}/users`;
+export const userBaseDeleteById = `${ApiRootUrl}/users/id`;
+export const updateUserBaseProfile = `${ApiRootUrl}/users/id`;
+export const userLogin = `${ApiRootUrl}/users/login`;
+export const userLogout = `${ApiRootUrl}/users/logout`;
+export const userForgetPass = `${ApiRootUrl}/users/reset`;
+export const userChangePass = `${ApiRootUrl}/users/change-password`;
+export const userResetPass = `${ApiRootUrl}/users/reset-password`;
 
 // Customer
 export const customerSignUp = `${ApiRootUrl}/customers`;

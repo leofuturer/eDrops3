@@ -68,9 +68,9 @@ export async function clearDb(this: any): Promise<void> {
       const userRepo: CrudRepositoryImpl<User, 1> =
         await this.getRepository(UserRepository);
       await userRepo.deleteAll();
-      await userRepo.execute('ALTER TABLE User AUTO_INCREMENT = ?', [
-        1,
-      ]);
+      // await userRepo.execute('ALTER TABLE User AUTO_INCREMENT = ?', [
+      //   1,
+      // ]);
 
       resolve();
     } catch (err) {

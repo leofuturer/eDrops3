@@ -7,9 +7,9 @@ import * as casbin from 'casbin';
 import path from 'path';
 
 const POLICY_PATHS = {
-  admin: './../../../../fixtures/casbin/rbac_policy.admin.csv',
-  owner: './../../../../fixtures/casbin/rbac_policy.owner.csv',
-  team: './../../../../fixtures/casbin/rbac_policy.team_member.csv',
+  admin: './../rbac_policy.admin.csv',
+  owner: './../rbac_policy.owner.csv',
+  team: './../rbac_policy.team_member.csv',
 };
 
 export async function getCasbinEnforcerByName(
@@ -30,7 +30,7 @@ export async function createEnforcerByRole(
 ): Promise<casbin.Enforcer> {
   const conf = path.resolve(
     __dirname,
-    './../../../../fixtures/casbin/rbac_model.conf',
+    './../rbac_model.conf',
   );
   const policy = path.resolve(__dirname, policyPath);
   return casbin.newEnforcer(conf, policy);

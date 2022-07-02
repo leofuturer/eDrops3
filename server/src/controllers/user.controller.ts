@@ -4,7 +4,7 @@ import {
   UserServiceBindings,
   JWTService,
   MyUserService,
-  JWTAuthenticationStrategy
+  JWTAuthenticationStrategy,
 } from '../components/jwt-authentication';
 import {SecurityBindings, securityId, UserProfile} from '@loopback/security';
 import {inject} from '@loopback/core';
@@ -26,21 +26,13 @@ import {
   del,
   requestBody,
   response,
-  SchemaObject
+  SchemaObject,
 } from '@loopback/rest';
 import {genSalt, hash} from 'bcryptjs';
 import _ from 'lodash';
-import { User } from '../models';
-import { UserRepository } from '../repositories';
-import { authenticate } from '@loopback/authentication';
-
-export class NewUserRequest extends User {
-  @property({
-    type: 'string',
-    required: true,
-  })
-  password: string;
-}
+import {User} from '../models';
+import {UserRepository} from '../repositories';
+import {authenticate} from '@loopback/authentication';
 
 const CredentialsSchema: SchemaObject = {
   type: 'object',
@@ -65,7 +57,6 @@ export const CredentialsRequestBody = {
   },
 };
 
-
 export class UserController {
   constructor(
     @inject(TokenServiceBindings.TOKEN_SERVICE)
@@ -86,20 +77,25 @@ export class UserController {
     @requestBody({
       content: {
         'application/json': {
-          schema: getModelSchemaRef(NewUserRequest, {
+          schema: getModelSchemaRef(User, {
             title: 'NewUser',
           }),
         },
       },
     })
-    newUserRequest: NewUserRequest,
+    newUser: User,
   ): Promise<User> {
-    const password = await hash(newUserRequest.password, await genSalt());
-    const savedUser = await this.userRepository.create(
-      _.omit(newUserRequest, 'password'),
-    );
+    const hashedPassword = await hash(newUser.password, await genSalt());
 
-    await this.userRepository.create({password});
+    const savedUser = await this.userRepository.create({
+      realm: newUser.realm,
+      username: newUser.username,
+      password: hashedPassword,
+      email: newUser.email,
+      emailVerified: newUser.emailVerified,
+      verificationToken: newUser.verificationToken,
+      userType: newUser.userType,
+    });
 
     return savedUser;
   }
@@ -116,9 +112,7 @@ export class UserController {
       },
     },
   })
-  async find(
-    @param.filter(User) filter?: Filter<User>,
-  ): Promise<User[]> {
+  async find(@param.filter(User) filter?: Filter<User>): Promise<User[]> {
     return this.userRepository.find(filter);
   }
 
@@ -132,8 +126,8 @@ export class UserController {
     },
   })
   async findById(
-    @param.path.string('id') id: number,
-    @param.filter(User, {exclude: 'where'}) filter?: FilterExcludingWhere<User>
+    @param.path.string('id') id: string,
+    @param.filter(User, {exclude: 'where'}) filter?: FilterExcludingWhere<User>,
   ): Promise<User> {
     return this.userRepository.findById(id, filter);
   }
@@ -142,7 +136,7 @@ export class UserController {
   @response(204, {
     description: 'User DELETE success',
   })
-  async deleteById(@param.path.number('id') id: number): Promise<void> {
+  async deleteById(@param.path.string('id') id: string): Promise<void> {
     await this.userRepository.deleteById(id);
   }
 
@@ -151,7 +145,7 @@ export class UserController {
     description: 'User PATCH success',
   })
   async updateById(
-    @param.path.number('id') id: number,
+    @param.path.string('id') id: string,
     @requestBody({
       content: {
         'application/json': {

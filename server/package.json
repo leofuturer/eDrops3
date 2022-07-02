@@ -79,8 +79,7 @@
     "serve-favicon": "^2.5.0",
     "shopify-buy": "^2.15.1",
     "strong-error-handler": "^4.0.0",
-    "tslib": "^2.0.0",
-    "uuid": "^8.3.2"
+    "tslib": "^2.0.0"
   },
   "devDependencies": {
     "@faker-js/faker": "^7.3.0",
