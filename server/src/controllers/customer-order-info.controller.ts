@@ -39,7 +39,7 @@ export class CustomerOrderInfoController {
     },
   })
   async find(
-    @param.path.number('id') id: number,
+    @param.path.string('id') id: string,
     @param.query.object('filter') filter?: Filter<OrderInfo>,
   ): Promise<OrderInfo[]> {
     return this.customerRepository.orderInfos(id).find(filter);
@@ -79,7 +79,7 @@ export class CustomerOrderInfoController {
     },
   })
   async patch(
-    @param.path.number('id') id: number,
+    @param.path.string('id') id: string,
     @requestBody({
       content: {
         'application/json': {
@@ -102,7 +102,7 @@ export class CustomerOrderInfoController {
     },
   })
   async delete(
-    @param.path.number('id') id: number,
+    @param.path.string('id') id: string,
     @param.query.object('where', getWhereSchemaFor(OrderInfo)) where?: Where<OrderInfo>,
   ): Promise<Count> {
     return this.customerRepository.orderInfos(id).delete(where);

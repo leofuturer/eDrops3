@@ -17,12 +17,12 @@ export class AdminRepository extends DefaultCrudRepository<
     @inject('datasources.mysqlDS') dataSource: MysqlDsDataSource, @repository.getter('UserRepository') protected userRepositoryGetter: Getter<UserRepository>,
   ) {
     super(Admin, dataSource);
-    this.user = this.createBelongsToAccessorFor('user', userRepositoryGetter,);
-    this.registerInclusionResolver('user', this.user.inclusionResolver);
+    // this.user = this.createBelongsToAccessorFor('user', userRepositoryGetter,);
+    // this.registerInclusionResolver('user', this.user.inclusionResolver);
   }
 
   async createAdmin(
-    admin: Admin & User
+    admin: Omit<Admin & User, 'id'>
   ) : Promise<Admin> {
     // Create user first
     const hashedPassword = await hash(admin.password, await genSalt())
@@ -39,8 +39,9 @@ export class AdminRepository extends DefaultCrudRepository<
     const userInstance = await userRepository.create(userData);
     // Create admin with relation to user
     const adminData = {
+      ...userInstance,
       phoneNumber: admin.phoneNumber,
-      userId: userInstance.id,
+      // userId: userInstance.id,
     }
     const adminInstance = await this.create(adminData);
     return adminInstance;

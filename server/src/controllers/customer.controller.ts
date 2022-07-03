@@ -1,3 +1,4 @@
+import { intercept } from '@loopback/core';
 import {
   Count,
   CountSchema,
@@ -17,7 +18,8 @@ import {
   requestBody,
   response,
 } from '@loopback/rest';
-import {Customer} from '../models';
+import { CustomerCreateInterceptor } from '../interceptors';
+import {Customer, User} from '../models';
 import {CustomerRepository} from '../repositories';
 
 export class CustomerController {
@@ -26,6 +28,7 @@ export class CustomerController {
     public customerRepository : CustomerRepository,
   ) {}
 
+  @intercept(CustomerCreateInterceptor.BINDING_KEY)
   @post('/customers')
   @response(200, {
     description: 'Customer model instance',
@@ -38,13 +41,14 @@ export class CustomerController {
           schema: getModelSchemaRef(Customer, {
             title: 'NewCustomer',
             exclude: ['id'],
+            includeRelations: true,
           }),
         },
       },
     })
-    customer: Omit<Customer, 'id'>,
+    customer: Omit<Customer & User, 'id'>,
   ): Promise<Customer> {
-    return this.customerRepository.create(customer);
+    return this.customerRepository.createCustomer(customer);
   }
 
   @get('/customers')
@@ -75,7 +79,7 @@ export class CustomerController {
     },
   })
   async findById(
-    @param.path.number('id') id: number,
+    @param.path.string('id') id: string,
     @param.filter(Customer, {exclude: 'where'}) filter?: FilterExcludingWhere<Customer>
   ): Promise<Customer> {
     return this.customerRepository.findById(id, filter);
@@ -85,7 +89,7 @@ export class CustomerController {
   @response(204, {
     description: 'Customer DELETE success',
   })
-  async deleteById(@param.path.number('id') id: number): Promise<void> {
+  async deleteById(@param.path.number('string') id: string): Promise<void> {
     await this.customerRepository.deleteById(id);
   }
   
@@ -94,7 +98,7 @@ export class CustomerController {
     description: 'Customer PATCH success',
   })
   async updateById(
-    @param.path.number('id') id: number,
+    @param.path.string('id') id: string,
     @requestBody({
       content: {
         'application/json': {

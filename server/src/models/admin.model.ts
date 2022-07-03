@@ -30,22 +30,22 @@ import {User} from '.';
     mysql: {table: 'admin'}
   }
 })
-export class Admin extends Entity {
-  @property({
-    type: 'number',
-    id: 1,
-    generated: true,
-    updateOnly: true,
-  })
-  id?: number;
+export class Admin extends User {
+  // @property({
+  //   type: 'number',
+  //   id: 1,
+  //   generated: true,
+  //   updateOnly: true,
+  // })
+  // id?: number;
   
   @property({
     type: 'string',
   })
   phoneNumber?: string;
 
-  @belongsTo(() => User)
-  userId: string;
+  // @belongsTo(() => User)
+  // userId: string;
   // Define well-known properties here
 
   // Indexer property to allow additional data

@@ -1,4 +1,6 @@
-export const defaultFoundryWorkers = [
+import { FoundryWorker } from "../../models";
+
+export const defaultFoundryWorkers: Partial<FoundryWorker>[] = [
     {
         "street": "1400 Midware Ave",
         "streetLine2": "Apt 216",

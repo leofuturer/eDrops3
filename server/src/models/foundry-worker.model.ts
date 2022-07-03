@@ -28,14 +28,14 @@ import {OrderChip} from './order-chip.model';
     mysql: {table: 'foundryWorker'}
   }
 })
-export class FoundryWorker extends Entity {
-  @property({
-    type: 'number',
-    id: 1,
-    generated: true,
-    updateOnly: true,
-  })
-  id?: number;
+export class FoundryWorker extends User {
+  // @property({
+  //   type: 'number',
+  //   id: 1,
+  //   generated: true,
+  //   updateOnly: true,
+  // })
+  // id?: number;
   
   @property({
     type: 'string',
@@ -94,8 +94,8 @@ export class FoundryWorker extends Entity {
   @hasMany(() => OrderChip, {keyTo: 'workerId'})
   orderChips: OrderChip[];
 
-  @belongsTo(() => User)
-  userId: string;
+  // @belongsTo(() => User)
+  // userId: string;
   // Define well-known properties here
 
   // Indexer property to allow additional data

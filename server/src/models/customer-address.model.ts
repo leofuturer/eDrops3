@@ -52,9 +52,9 @@ export class CustomerAddress extends Entity {
   isDefault: boolean;
 
   @property({
-    type: 'number',
+    type: 'string',
   })
-  customerId?: number;
+  customerId?: string;
 
   // Define well-known properties here
 

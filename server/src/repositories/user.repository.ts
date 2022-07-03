@@ -13,11 +13,4 @@ export class UserRepository extends DefaultCrudRepository<
   ) {
     super(User, dataSource);
   }
-
-  async createUser(
-    user: typeof User
-  ) : Promise<User> {
-    const userInstance = await this.create(user);
-    return userInstance;
-  }
 }

@@ -1,4 +1,6 @@
-export const defaultAdmins = [
+import { Admin } from "../../models";
+
+export const defaultAdmins : Partial<Admin>[] = [
   {
     "username": "adminA",
     "email": "edropswebsite@gmail.com",

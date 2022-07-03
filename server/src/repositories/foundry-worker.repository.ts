@@ -20,14 +20,14 @@ export class FoundryWorkerRepository extends DefaultCrudRepository<
     @inject('datasources.mysqlDS') dataSource: MysqlDsDataSource, @repository.getter('OrderChipRepository') protected orderChipRepositoryGetter: Getter<OrderChipRepository>, @repository.getter('UserRepository') protected userRepositoryGetter: Getter<UserRepository>,
   ) {
     super(FoundryWorker, dataSource);
-    this.user = this.createBelongsToAccessorFor('user', userRepositoryGetter,);
-    this.registerInclusionResolver('user', this.user.inclusionResolver);
+    // this.user = this.createBelongsToAccessorFor('user', userRepositoryGetter,);
+    // this.registerInclusionResolver('user', this.user.inclusionResolver);
     this.orderChips = this.createHasManyRepositoryFactoryFor('orderChips', orderChipRepositoryGetter,);
     this.registerInclusionResolver('orderChips', this.orderChips.inclusionResolver);
   }
 
   async createFoundryWorker(
-    foundryWorker: FoundryWorker
+    foundryWorker: Omit<FoundryWorker & User, 'id'>
   ) : Promise<FoundryWorker> {
     const hashedPassword = await hash(foundryWorker.password, await genSalt())
     const userData = {
@@ -42,6 +42,7 @@ export class FoundryWorkerRepository extends DefaultCrudRepository<
     const userRepository = await this.userRepositoryGetter();
     const userInstance = await userRepository.create(userData);
     const foundryWorkerData = {
+      ...userInstance,
       street: foundryWorker.street,
       streetLine2: foundryWorker.streetLine2,
       firstName: foundryWorker.firstName,
@@ -52,7 +53,7 @@ export class FoundryWorkerRepository extends DefaultCrudRepository<
       city: foundryWorker.city,
       zipCode: foundryWorker.zipCode,
       affiliation: foundryWorker.affiliation,
-      userId: userInstance.id,
+      // userId: userInstance.id,
     }
     const foundryWorkerInstance = await this.create(foundryWorkerData);
     return foundryWorkerInstance;

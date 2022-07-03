@@ -39,7 +39,7 @@ export class FoundryWorkerOrderChipController {
     },
   })
   async find(
-    @param.path.number('id') id: number,
+    @param.path.string('id') id: string,
     @param.query.object('filter') filter?: Filter<OrderChip>,
   ): Promise<OrderChip[]> {
     return this.foundryWorkerRepository.orderChips(id).find(filter);

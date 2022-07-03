@@ -17,13 +17,13 @@ import {
   requestBody,
   response,
 } from '@loopback/rest';
-import {Admin} from '../models';
+import {Admin, User} from '../models';
 import {AdminRepository} from '../repositories';
 
 export class AdminController {
   constructor(
     @repository(AdminRepository)
-    public adminRepository : AdminRepository,
+    public adminRepository: AdminRepository,
   ) {}
 
   @post('/admins')
@@ -42,9 +42,9 @@ export class AdminController {
         },
       },
     })
-    admin: Omit<Admin, 'id'>,
+    admin: Omit<Admin & User, 'id'>,
   ): Promise<Admin> {
-    return this.adminRepository.create(admin);
+    return this.adminRepository.createAdmin(admin);
   }
 
   @get('/admins/count')
@@ -52,9 +52,7 @@ export class AdminController {
     description: 'Admin model count',
     content: {'application/json': {schema: CountSchema}},
   })
-  async count(
-    @param.where(Admin) where?: Where<Admin>,
-  ): Promise<Count> {
+  async count(@param.where(Admin) where?: Where<Admin>): Promise<Count> {
     return this.adminRepository.count(where);
   }
 
@@ -70,9 +68,7 @@ export class AdminController {
       },
     },
   })
-  async find(
-    @param.filter(Admin) filter?: Filter<Admin>,
-  ): Promise<Admin[]> {
+  async find(@param.filter(Admin) filter?: Filter<Admin>): Promise<Admin[]> {
     return this.adminRepository.find(filter);
   }
 
@@ -105,8 +101,9 @@ export class AdminController {
     },
   })
   async findById(
-    @param.path.number('id') id: number,
-    @param.filter(Admin, {exclude: 'where'}) filter?: FilterExcludingWhere<Admin>
+    @param.path.string('id') id: string,
+    @param.filter(Admin, {exclude: 'where'})
+    filter?: FilterExcludingWhere<Admin>,
   ): Promise<Admin> {
     return this.adminRepository.findById(id, filter);
   }
@@ -116,7 +113,7 @@ export class AdminController {
     description: 'Admin PATCH success',
   })
   async updateById(
-    @param.path.number('id') id: number,
+    @param.path.string('id') id: string,
     @requestBody({
       content: {
         'application/json': {
@@ -134,7 +131,7 @@ export class AdminController {
     description: 'Admin PUT success',
   })
   async replaceById(
-    @param.path.number('id') id: number,
+    @param.path.string('id') id: string,
     @requestBody() admin: Admin,
   ): Promise<void> {
     await this.adminRepository.replaceById(id, admin);
@@ -144,7 +141,7 @@ export class AdminController {
   @response(204, {
     description: 'Admin DELETE success',
   })
-  async deleteById(@param.path.number('id') id: number): Promise<void> {
+  async deleteById(@param.path.string('id') id: string): Promise<void> {
     await this.adminRepository.deleteById(id);
   }
 }

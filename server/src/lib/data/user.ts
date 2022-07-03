@@ -1,4 +1,6 @@
-export const defaultUsers = [
+import { User } from "../../models";
+
+export const defaultUsers: Partial<User>[] = [
     {
         "userType": "customer",
         "username": "customerA",

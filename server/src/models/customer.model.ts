@@ -42,15 +42,7 @@ import {OrderInfo} from './order-info.model';
     mysql: {table: 'customer'}
   }
 })
-export class Customer extends Entity {
-  @property({
-    type: 'number',
-    id: 1,
-    generated: true,
-    updateOnly: true,
-  })
-  id?: number;
-  
+export class Customer extends User {
   @property({
     type: 'string',
     required: true,
@@ -84,8 +76,8 @@ export class Customer extends Entity {
   @hasMany(() => OrderInfo)
   orderInfos: OrderInfo[];
 
-  @belongsTo(() => User)
-  userId: string;
+  // @belongsTo(() => User)
+  // userId: string;
   // Define well-known properties here
 
   // Indexer property to allow additional data

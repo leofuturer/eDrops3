@@ -39,7 +39,7 @@ export class CustomerFileInfoController {
     },
   })
   async find(
-    @param.path.number('id') id: number,
+    @param.path.string('id') id: string,
     @param.query.object('filter') filter?: Filter<FileInfo>,
   ): Promise<FileInfo[]> {
     return this.customerRepository.fileInfos(id).find(filter);
@@ -79,7 +79,7 @@ export class CustomerFileInfoController {
     },
   })
   async patch(
-    @param.path.number('id') id: number,
+    @param.path.string('id') id: string,
     @requestBody({
       content: {
         'application/json': {
@@ -102,7 +102,7 @@ export class CustomerFileInfoController {
     },
   })
   async delete(
-    @param.path.number('id') id: number,
+    @param.path.string('id') id: string,
     @param.query.object('where', getWhereSchemaFor(FileInfo)) where?: Where<FileInfo>,
   ): Promise<Count> {
     return this.customerRepository.fileInfos(id).delete(where);

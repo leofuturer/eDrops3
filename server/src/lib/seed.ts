@@ -39,8 +39,8 @@ export async function clearDb(this: any): Promise<void> {
         await this.getRepository(ProjectRepository);
       await projectRepo.deleteAll();
       await projectRepo.execute('ALTER TABLE Project AUTO_INCREMENT = ?', [1]);
-      const adminRepo: CrudRepositoryImpl<Customer, 1> =
-        await this.getRepository(CustomerRepository);
+      const adminRepo: CrudRepositoryImpl<Admin, 1> =
+        await this.getRepository(AdminRepository);
       await adminRepo.deleteAll();
       await adminRepo.execute('ALTER TABLE admin AUTO_INCREMENT = ?', [
         1,

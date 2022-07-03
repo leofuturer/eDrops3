@@ -56,10 +56,10 @@ export class User extends Entity {
 
   @property({
     type: 'string',
-    required: true,
+    required: false,
     default: 'customer',
   })
-  userType: string;
+  userType?: string;
 
   // Indexer property to allow additional data
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

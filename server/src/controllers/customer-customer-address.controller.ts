@@ -39,7 +39,7 @@ export class CustomerCustomerAddressController {
     },
   })
   async find(
-    @param.path.number('id') id: number,
+    @param.path.string('id') id: string,
     @param.query.object('filter') filter?: Filter<CustomerAddress>,
   ): Promise<CustomerAddress[]> {
     return this.customerRepository.customerAddresses(id).find(filter);
@@ -79,7 +79,7 @@ export class CustomerCustomerAddressController {
     },
   })
   async patch(
-    @param.path.number('id') id: number,
+    @param.path.string('id') id: string,
     @requestBody({
       content: {
         'application/json': {
@@ -102,7 +102,7 @@ export class CustomerCustomerAddressController {
     },
   })
   async delete(
-    @param.path.number('id') id: number,
+    @param.path.string('id') id: string,
     @param.query.object('where', getWhereSchemaFor(CustomerAddress)) where?: Where<CustomerAddress>,
   ): Promise<Count> {
     return this.customerRepository.customerAddresses(id).delete(where);

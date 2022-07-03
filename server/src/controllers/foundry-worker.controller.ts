@@ -17,7 +17,7 @@ import {
   requestBody,
   response,
 } from '@loopback/rest';
-import {FoundryWorker} from '../models';
+import {FoundryWorker, User} from '../models';
 import {FoundryWorkerRepository} from '../repositories';
 
 export class FoundryWorkerController {
@@ -42,9 +42,9 @@ export class FoundryWorkerController {
         },
       },
     })
-    foundryWorker: Omit<FoundryWorker, 'id'>,
+    foundryWorker: Omit<FoundryWorker & User, 'id'>,
   ): Promise<FoundryWorker> {
-    return this.foundryWorkerRepository.create(foundryWorker);
+    return this.foundryWorkerRepository.createFoundryWorker(foundryWorker);
   }
 
   @get('/foundryWorkers')
@@ -75,7 +75,7 @@ export class FoundryWorkerController {
     },
   })
   async findById(
-    @param.path.number('id') id: number,
+    @param.path.string('id') id: string,
     @param.filter(FoundryWorker, {exclude: 'where'}) filter?: FilterExcludingWhere<FoundryWorker>
   ): Promise<FoundryWorker> {
     return this.foundryWorkerRepository.findById(id, filter);
@@ -85,7 +85,7 @@ export class FoundryWorkerController {
   @response(204, {
     description: 'FoundryWorker DELETE success',
   })
-  async deleteById(@param.path.number('id') id: number): Promise<void> {
+  async deleteById(@param.path.string('id') id: string): Promise<void> {
     await this.foundryWorkerRepository.deleteById(id);
   }
 
@@ -94,7 +94,7 @@ export class FoundryWorkerController {
     description: 'FoundryWorker PATCH success',
   })
   async updateById(
-    @param.path.number('id') id: number,
+    @param.path.string('id') id: string,
     @requestBody({
       content: {
         'application/json': {
@@ -217,7 +217,7 @@ export class FoundryWorkerController {
     description: 'FoundryWorker DOWNLOAD FILE success',
   })
   async downloadFile(
-    @param.path.number('id') id: number,
+    @param.path.string('id') id: string,
     @param.query.string('fileName') fileName: string,
   ): Promise<void> {
     return;
