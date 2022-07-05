@@ -26,10 +26,10 @@ export class CustomerFileInfoController {
     @repository(CustomerRepository) protected customerRepository: CustomerRepository,
   ) { }
 
-  @get('/customers/{id}/file-infos', {
+  @get('/customers/{id}/customerFiles', {
     responses: {
       '200': {
-        description: 'Array of Customer has many FileInfo',
+        description: 'Retrieve all customer files',
         content: {
           'application/json': {
             schema: {type: 'array', items: getModelSchemaRef(FileInfo)},
@@ -45,10 +45,10 @@ export class CustomerFileInfoController {
     return this.customerRepository.fileInfos(id).find(filter);
   }
 
-  @post('/customers/{id}/file-infos', {
+  @post('/customers/{id}/uploadFile', {
     responses: {
       '200': {
-        description: 'Customer model instance',
+        description: 'Upload a file',
         content: {'application/json': {schema: getModelSchemaRef(FileInfo)}},
       },
     },
@@ -70,30 +70,26 @@ export class CustomerFileInfoController {
     return this.customerRepository.fileInfos(id).create(fileInfo);
   }
 
-  @patch('/customers/{id}/file-infos', {
+  @get('/customers/{id}/downloadFile', {
     responses: {
       '200': {
-        description: 'Customer.FileInfo PATCH success count',
-        content: {'application/json': {schema: CountSchema}},
+        description: 'Download a file',
+        content: {
+          'application/json': {
+            schema: {type: 'array', items: getModelSchemaRef(FileInfo)},
+          },
+        },
       },
     },
   })
-  async patch(
+  async downloadFile(
     @param.path.string('id') id: string,
-    @requestBody({
-      content: {
-        'application/json': {
-          schema: getModelSchemaRef(FileInfo, {partial: true}),
-        },
-      },
-    })
-    fileInfo: Partial<FileInfo>,
-    @param.query.object('where', getWhereSchemaFor(FileInfo)) where?: Where<FileInfo>,
-  ): Promise<Count> {
-    return this.customerRepository.fileInfos(id).patch(fileInfo, where);
+    @param.query.object('filter') filter?: Filter<FileInfo>,
+  ): Promise<FileInfo[]> {
+    return this.customerRepository.fileInfos(id).find(filter);
   }
-
-  @del('/customers/{id}/file-infos', {
+  
+  @del('/customers/{id}/deleteFile', {
     responses: {
       '200': {
         description: 'Customer.FileInfo DELETE success count',

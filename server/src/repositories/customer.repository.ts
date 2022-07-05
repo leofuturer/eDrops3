@@ -20,6 +20,15 @@ import {OrderInfoRepository} from './order-info.repository';
 import {UserRepository} from './user.repository';
 import {genSalt, hash} from 'bcryptjs';
 import {createHash} from 'crypto';
+import SendGrid from '../services/send-grid.service';
+import {verifyHTML} from '../lib/views/verify';
+import ejs from 'ejs';
+import {
+  EMAIL_HOSTNAME,
+  EMAIL_PORT,
+  EMAIL_SENDER,
+} from '../lib/constants/emailConstants';
+import { exit } from 'process';
 
 export class CustomerRepository extends DefaultCrudRepository<
   Customer,
@@ -53,6 +62,8 @@ export class CustomerRepository extends DefaultCrudRepository<
     protected orderInfoRepositoryGetter: Getter<OrderInfoRepository>,
     @repository.getter('UserRepository')
     protected userRepositoryGetter: Getter<UserRepository>,
+    @inject('services.SendGrid')
+    public sendGrid: SendGrid,
   ) {
     super(Customer, dataSource);
     // this.user = this.createBelongsToAccessorFor('user', userRepositoryGetter,);
@@ -117,6 +128,67 @@ export class CustomerRepository extends DefaultCrudRepository<
     return this.updateById(customerId, {
       verificationToken: verificationTokenHash,
     }).then(() => verificationTokenHash);
+  }
+
+  async sendVerificationEmail(customer: Customer): Promise<void> {
+    const verificationTokenHash = await this.createVerificationToken(
+      customer.id as string,
+    );
+
+    // uncomment the next two lines to skip email verification
+    // this.verifyEmail(customer.id as string, verificationTokenHash);
+    // exit(0);
+
+    const baseURL =
+      process.env.NODE_ENV == 'production'
+        ? `https://${EMAIL_HOSTNAME}`
+        : `http://${EMAIL_HOSTNAME}:${EMAIL_PORT}`;
+
+    const EMAIL_TEMPLATE = ejs.render(
+      verifyHTML,
+      {
+        text: `Hello ${customer.username}! Thanks for registering to use eDrops. Please verify your email by clicking on the following link:`,
+        email: EMAIL_SENDER,
+        verifyHref:
+          baseURL +
+          `/api/customer/verify?customerId=${customer.id}&token=${verificationTokenHash}`,
+      },
+      {},
+    );
+    // console.log(EMAIL_TEMPLATE);
+    const sendGridOptions = {
+      personalizations: [
+        {
+          from: {
+            email: EMAIL_SENDER,
+          },
+          to: [
+            {
+              email: customer.email,
+              name: customer.username,
+            },
+          ],
+          subject: '[eDrops] Email Verification',
+        },
+      ],
+      from: {
+        email: EMAIL_SENDER,
+      },
+      reply_to: {
+        email: EMAIL_SENDER,
+      },
+      content: [
+        {
+          type: 'text/html',
+          value: EMAIL_TEMPLATE,
+        },
+      ],
+    };
+
+    this.sendGrid.send(
+      process.env.APP_EMAIL_API_KEY as string,
+      sendGridOptions,
+    );
   }
 
   async verifyEmail(

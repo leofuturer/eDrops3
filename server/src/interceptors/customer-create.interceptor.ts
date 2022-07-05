@@ -21,8 +21,6 @@ import {
   EMAIL_PORT,
   EMAIL_SENDER,
 } from '../lib/constants/emailConstants';
-import SendGrid from '../services/send-grid.service';
-import ejs from 'ejs';
 import { verifyHTML } from '../lib/views/verify';
 
 /**
@@ -37,8 +35,6 @@ export class CustomerCreateInterceptor implements Provider<Interceptor> {
     @inject(RestBindings.Http.REQUEST) private request: Request,
     @repository(CustomerRepository)
     public customerRepository: CustomerRepository,
-    @inject('services.SendGrid')
-    public sendGrid: SendGrid,
   ) {}
 
   /**
@@ -86,65 +82,7 @@ export class CustomerCreateInterceptor implements Provider<Interceptor> {
         .customerAddresses(result?.id)
         .create(addressData)
         .then(async() => {
-          // create verification token
-          const verificationTokenHash = await this.customerRepository.createVerificationToken(result?.id as string);
-
-          // next: send verification email
-          // uncomment line below to bypass email verification (DOESN'T WORK as of LB4 migration)
-          // customerInstance.updateAttribute('emailVerified', 1);
-
-          // console.log(ctx.req);
-
-          // const options = {
-          //   type: 'email',
-          //   to: this.request.body.email,
-          //   from: process.env.APP_EMAIL_USERNAME || 'service@edrops.org',
-          //   subject: '[eDrops] Email Verification',
-          //   text: `Hello ${this.request.body.username}! Thanks for registering to use eDrops. Please verify your email by clicking on the following link:`,
-          //   template: path.resolve(__dirname, '../views/verify.ejs'),
-          //   protocol: process.env.NODE_ENV === 'production' ? 'https' : 'http',
-          //   host: FRONTEND_HOSTNAME,
-          //   port: FRONTEND_PORT,
-          //   redirect: '/emailVerified',
-          // };
-
-          const baseURL = process.env.NODE_ENV == 'production' ? `https://${EMAIL_HOSTNAME}` :
-            `http://${EMAIL_HOSTNAME}:${EMAIL_PORT}`;
-          
-          const EMAIL_TEMPLATE = ejs.render(verifyHTML, {
-            text: `Hello ${this.request.body.username}! Thanks for registering to use eDrops. Please verify your email by clicking on the following link:`,
-            email: EMAIL_SENDER,
-            verifyHref: baseURL + `/api/customer/verify?customerId=${result?.id}&token=${verificationTokenHash}`,
-          }, {});
-          // console.log(EMAIL_TEMPLATE);
-          const sendGridOptions = {
-            personalizations: [
-              {
-                from: {
-                  email: EMAIL_SENDER
-                },
-                to: [
-                  {
-                    email: this.request.body.email,
-                    name: this.request.body.username,
-                  }
-                ],
-                subject: '[eDrops] Email Verification',
-              },
-            ],
-            from: {
-              email: EMAIL_SENDER
-            },
-            reply_to: {
-                email: EMAIL_SENDER
-            },
-            content: [{
-              type: 'text/html',
-              value: EMAIL_TEMPLATE,
-            }],
-          }
-
-          this.sendGrid.send(process.env.APP_EMAIL_API_KEY as string, sendGridOptions);
+          this.customerRepository.sendVerificationEmail(result);
         })
         .catch(err => {
           // roll back the customer creation

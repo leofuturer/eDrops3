@@ -149,7 +149,7 @@ export class FoundryWorkerController {
     // return this.foundryWorkerRepository.logout();
   }
 
-  @post('/api/foundryWorkers/reset')
+  @post('/foundryWorkers/reset')
   @response(200, {
     description: 'FoundryWorker RESET success',
   })

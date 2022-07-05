@@ -17,22 +17,24 @@ import {
 } from '@loopback/rest';
 import {
   Customer,
+  OrderChip,
   OrderInfo,
 } from '../models';
-import {CustomerRepository} from '../repositories';
+import {CustomerRepository, OrderInfoRepository} from '../repositories';
 
 export class CustomerOrderInfoController {
   constructor(
     @repository(CustomerRepository) protected customerRepository: CustomerRepository,
+    @repository(OrderInfoRepository) protected orderInfoRepository: OrderInfoRepository,
   ) { }
 
-  @get('/customers/{id}/orderInfos', {
+  @get('/customers/{id}/orderChips', {
     responses: {
       '200': {
-        description: 'Array of Customer has many OrderInfo',
+        description: 'Get all chip orders of a customer',
         content: {
           'application/json': {
-            schema: {type: 'array', items: getModelSchemaRef(OrderInfo)},
+            schema: {type: 'array', items: getModelSchemaRef(OrderChip)},
           },
         },
       },
@@ -41,70 +43,13 @@ export class CustomerOrderInfoController {
   async find(
     @param.path.string('id') id: string,
     @param.query.object('filter') filter?: Filter<OrderInfo>,
-  ): Promise<OrderInfo[]> {
-    return this.customerRepository.orderInfos(id).find(filter);
-  }
-
-  @post('/customers/{id}/orderInfos', {
-    responses: {
-      '200': {
-        description: 'Customer model instance',
-        content: {'application/json': {schema: getModelSchemaRef(OrderInfo)}},
-      },
-    },
-  })
-  async create(
-    @param.path.number('id') id: typeof Customer.prototype.id,
-    @requestBody({
-      content: {
-        'application/json': {
-          schema: getModelSchemaRef(OrderInfo, {
-            title: 'NewOrderInfoInCustomer',
-            exclude: ['id'],
-            optional: ['customerId']
-          }),
-        },
-      },
-    }) orderInfo: Omit<OrderInfo, 'id'>,
-  ): Promise<OrderInfo> {
-    return this.customerRepository.orderInfos(id).create(orderInfo);
-  }
-
-  @patch('/customers/{id}/orderInfos', {
-    responses: {
-      '200': {
-        description: 'Customer.OrderInfo PATCH success count',
-        content: {'application/json': {schema: CountSchema}},
-      },
-    },
-  })
-  async patch(
-    @param.path.string('id') id: string,
-    @requestBody({
-      content: {
-        'application/json': {
-          schema: getModelSchemaRef(OrderInfo, {partial: true}),
-        },
-      },
-    })
-    orderInfo: Partial<OrderInfo>,
-    @param.query.object('where', getWhereSchemaFor(OrderInfo)) where?: Where<OrderInfo>,
-  ): Promise<Count> {
-    return this.customerRepository.orderInfos(id).patch(orderInfo, where);
-  }
-
-  @del('/customers/{id}/orderInfos', {
-    responses: {
-      '200': {
-        description: 'Customer.OrderInfo DELETE success count',
-        content: {'application/json': {schema: CountSchema}},
-      },
-    },
-  })
-  async delete(
-    @param.path.string('id') id: string,
-    @param.query.object('where', getWhereSchemaFor(OrderInfo)) where?: Where<OrderInfo>,
-  ): Promise<Count> {
-    return this.customerRepository.orderInfos(id).delete(where);
+  ): Promise<OrderChip[]> {
+    let allOrderChips : OrderChip[] = [];
+    const orderInfos = await this.customerRepository.orderInfos(id).find(filter);
+    for(const orderInfo of orderInfos) {
+      const tmpOrderChips = await this.orderInfoRepository.orderChips(orderInfo.id).find();
+      allOrderChips = allOrderChips.concat(tmpOrderChips);
+    }
+    return allOrderChips;
   }
 }
