@@ -31,7 +31,7 @@ export interface CustomRequest extends Request {
     'x-edrop-userbase': string;
   },
   'accessToken': {
-    'userId': number;
+    'userId': string;
   }
 }
 

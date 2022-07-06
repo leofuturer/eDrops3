@@ -75,9 +75,9 @@ export class FileInfo extends Entity {
   unit: string;
 
   @property({
-    type: 'number',
+    type: 'string',
   })
-  customerId?: number;
+  customerId?: string;
 
   // Define well-known properties here
 

@@ -189,9 +189,9 @@ export class OrderInfo extends Entity {
   otherDetails?: string;
 
   @property({
-    type: 'number',
+    type: 'string',
   })
-  customerId?: number;
+  customerId?: string;
 
   @hasMany(() => OrderProduct, {keyTo: 'orderId'})
   orderProducts: OrderProduct[];
