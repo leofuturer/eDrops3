@@ -131,33 +131,13 @@ class Login extends React.Component {
     if (nameEmailResult) {
       API.Request(userLogin, 'POST', data, false)
         .then((res) => {
-          Cookies.set('base_access_token', res.data.id);
-          const { userType } = res.data;
-          if (userType === 'customer') {
-            url = customerLogin;
-          } else if (userType === 'admin') {
-            url = AdminLogin;
-          } else if (userType === 'worker') {
-            url = FoundryWorkerLogin;
-          } else {
-            console.error('Invalid user type');
-            return;
-          }
-          API.Request(url, 'POST', data, false)
-            .then((res) => {
-              // 4/23/2020: Always have cookies and local storage
-              Cookies.set('access_token', res.data.id);
-              Cookies.set('userId', res.data.userId);
-              Cookies.set('userType', userType);
-              Cookies.set('username', res.data.username);
-              _this.props.history.push('/home');
-            })
-            .catch((err) => {
-              console.error(err);
-              if (err.response.status === 401) {
-                this.showErrorMessage();
-              }
-            });
+          console.log(res);
+          Cookies.set('base_access_token', res.data.token);
+          Cookies.set('access_token', res.data.id);
+          Cookies.set('userId', res.data.userId);
+          Cookies.set('userType', res.data.userType);
+          Cookies.set('username', res.data.username);
+          _this.props.history.push('/home');
         }).catch((err) => {
           console.error(err);
           if (err.response.status === 401) {

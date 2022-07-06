@@ -15,10 +15,19 @@ import {UserRepository} from '../../../repositories/user.repository';
  * A pre-defined type for user credentials. It assumes a user logs in
  * using the email and password. You can modify it if your app has different credential fields
  */
-export type Credentials = {
-  email: string;
+type UsernameCredentials = {
+  email: never;
+  username: string;
   password: string;
 };
+
+type EmailCredentials = {
+  email: string;
+  username: never;
+  password: string;
+};
+
+export type Credentials = UsernameCredentials | EmailCredentials;
 
 export class MyUserService implements UserService<User, Credentials> {
   constructor(
@@ -26,11 +35,21 @@ export class MyUserService implements UserService<User, Credentials> {
   ) {}
 
   async verifyCredentials(credentials: Credentials): Promise<User> {
-    const invalidCredentialsError = 'Invalid email or password.';
+    const invalidCredentialsError = 'Invalid credentials';
 
-    const foundUser = await this.userRepository.findOne({
-      where: {email: credentials.email},
-    });
+    let foundUser;
+    if (credentials.hasOwnProperty('email')) {
+      foundUser = await this.userRepository.findOne({
+        where: {email: credentials.email},
+      });
+    } else if (credentials.hasOwnProperty('username')) {
+      foundUser = await this.userRepository.findOne({
+        where: {username: credentials.username},
+      });
+    }
+    else {
+      throw new HttpErrors.Unauthorized(invalidCredentialsError);
+    }
     if (!foundUser) {
       throw new HttpErrors.Unauthorized(invalidCredentialsError);
     }
@@ -53,6 +72,7 @@ export class MyUserService implements UserService<User, Credentials> {
       name: user.username,
       id: user.id,
       email: user.email,
+      userType: user.userType,
     };
   }
 }

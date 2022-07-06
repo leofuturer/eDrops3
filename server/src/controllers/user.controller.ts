@@ -36,17 +36,24 @@ import {authenticate} from '@loopback/authentication';
 
 const CredentialsSchema: SchemaObject = {
   type: 'object',
-  required: ['email', 'password'],
-  properties: {
-    email: {
-      type: 'string',
-      format: 'email',
+  oneOf: [
+    {
+      type: 'object',
+      required: ['username', 'password'],
+      properties: {
+        username: {type: 'string', minLength: 4},
+        password: {type: 'string', minLength: 8},
+      },
     },
-    password: {
-      type: 'string',
-      minLength: 8,
+    {
+      type: 'object',
+      required: ['email', 'password'],
+      properties: {
+        email: {type: 'string', format: 'email'},
+        password: {type: 'string', minLength: 8},
+      },
     },
-  },
+  ],
 };
 
 export const CredentialsRequestBody = {
@@ -164,7 +171,7 @@ export class UserController {
   })
   async login(
     @requestBody(CredentialsRequestBody) credentials: Credentials,
-  ): Promise<{token: string}> {
+  ): Promise<{token: string, username: string, userId: string, userType: string}> {
     // ensure the user exists, and the password is correct
     const user = await this.userService.verifyCredentials(credentials);
 
@@ -174,7 +181,7 @@ export class UserController {
     // create a JSON Web Token based on the user profile
     const token = await this.jwtService.generateToken(userProfile);
 
-    return {token};
+    return {token, username: userProfile.name as string, userId: userProfile.id, userType: userProfile.userType};
   }
 
   @authenticate('jwt')

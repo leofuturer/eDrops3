@@ -24,6 +24,9 @@ import {
 // import {AuthorizationComponent} from '@loopback/authorization';
 // import {CasbinAuthorizationComponent} from './components/casbin-authorization';
 import {MysqlDsDataSource} from './datasources';
+import { FILE_UPLOAD_SERVICE, STORAGE_DIRECTORY } from './services';
+import multer from 'multer';
+import { CasbinAuthorizationComponent } from './components/casbin-authorization';
 
 export {ApplicationConfig};
 
@@ -54,6 +57,8 @@ export class EdropsBackendApplication extends BootMixin(
     // Loopback 3 booter component
     // this.component(Lb3AppBooterComponent);
 
+    this.configureFileUpload(options.fileStorageDirectory);
+
     this.projectRoot = __dirname;
     // Customize @loopback/boot Booter Conventions here
     this.bootOptions = {
@@ -71,6 +76,9 @@ export class EdropsBackendApplication extends BootMixin(
     this.component(JWTAuthenticationComponent);
     // // Bind datasource
     // this.dataSource(MysqlDsDataSource, UserServiceBindings.DATASOURCE_NAME);
+    // Mount casbin authorization component
+    this.component(CasbinAuthorizationComponent);
+
   }
 
   addSecuritySpec(): void {
@@ -120,5 +128,25 @@ export class EdropsBackendApplication extends BootMixin(
           console.log('Error seeding database:', err);
         });
     }
+  }
+  
+  /**
+   * Configure `multer` options for file upload
+   */
+  protected configureFileUpload(destination?: string) {
+    // Upload files to `dist/storage` by default
+    destination = destination ?? path.join(__dirname, '../storage');
+    this.bind(STORAGE_DIRECTORY).to(destination);
+    const multerOptions: multer.Options = {
+      storage: multer.diskStorage({
+        destination,
+        // Use the original file name as is
+        filename: (req, file, cb) => {
+          cb(null, file.originalname);
+        },
+      }),
+    };
+    // Configure the file upload service with multer options
+    this.configure(FILE_UPLOAD_SERVICE).to(multerOptions);
   }
 }
