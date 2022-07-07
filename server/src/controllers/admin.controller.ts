@@ -17,13 +17,26 @@ import {
   requestBody,
   response,
 } from '@loopback/rest';
-import {Admin, User} from '../models';
-import {AdminRepository} from '../repositories';
+import {Admin, OrderProduct, User} from '../models';
+import {AdminRepository, OrderProductRepository} from '../repositories';
+import Products from '../lib/constants/productConstants';
+import Client from 'shopify-buy';
+import fetch from 'node-fetch';
+
+// @ts-ignore
+global.fetch = fetch;
+
+const client = Client.buildClient({
+  storefrontAccessToken: process.env.SHOPIFY_TOKEN as string,
+  domain: process.env.SHOPIFY_DOMAIN as string,
+});
 
 export class AdminController {
   constructor(
     @repository(AdminRepository)
     public adminRepository: AdminRepository,
+    @repository(OrderProductRepository)
+    public orderProduct: OrderProductRepository,
   ) {}
 
   @post('/admins')
@@ -143,5 +156,57 @@ export class AdminController {
   })
   async deleteById(@param.path.string('id') id: string): Promise<void> {
     await this.adminRepository.deleteById(id);
+  }
+
+  @get('/admins/getItems')
+  @response(200, {
+    description: 'Retrieve items',
+    content: {
+      'application/json': {
+        schema: {
+          type: 'array',
+        },
+      },
+    },
+  })
+  async returnAllItems(): Promise<object[]> {
+    const productIds = [
+      Products.CONTROLSYSID,
+      Products.TESTBOARDID,
+      Products.UNIVEWODCHIPID,
+    ];
+    console.log(productIds);
+    return client.product
+      .fetchMultiple(productIds)
+      .then((res: object[]) => {
+        return res;
+      })
+      .catch((err: Error) => {
+        console.log(err);
+        return [];
+      });
+  }
+
+  @get('/admins/getOne')
+  @response(200, {
+    description: 'Retrieve one item',
+    content: {
+      'application/json': {
+        schema: {
+          type: 'object',
+        },
+      },
+    },
+  })
+  async returnOneItem(productId: string): Promise<object> {
+    return client.product
+      .fetch(productId)
+      .then((res: object) => {
+        return res
+      })
+      .catch((err: Error) => {
+        console.log(err);
+        return {};
+      });
   }
 }

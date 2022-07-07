@@ -13,20 +13,22 @@ import {
   param,
   patch,
   post,
+  put,
   requestBody,
 } from '@loopback/rest';
 import {
   Customer,
   CustomerAddress,
 } from '../models';
-import {CustomerRepository} from '../repositories';
+import {CustomerAddressRepository, CustomerRepository} from '../repositories';
 
 export class CustomerCustomerAddressController {
   constructor(
     @repository(CustomerRepository) protected customerRepository: CustomerRepository,
+    @repository(CustomerAddressRepository) protected customerAddressRepository: CustomerAddressRepository,
   ) { }
 
-  @get('/customers/{id}/customer-addresses', {
+  @get('/customers/{id}/customerAddresses', {
     responses: {
       '200': {
         description: 'Array of Customer has many CustomerAddress',
@@ -39,13 +41,13 @@ export class CustomerCustomerAddressController {
     },
   })
   async find(
-    @param.path.string('id') id: string,
+    @param.path.string('id') id: typeof Customer.prototype.id,
     @param.query.object('filter') filter?: Filter<CustomerAddress>,
   ): Promise<CustomerAddress[]> {
     return this.customerRepository.customerAddresses(id).find(filter);
   }
 
-  @post('/customers/{id}/customer-addresses', {
+  @post('/customers/{id}/customerAddresses', {
     responses: {
       '200': {
         description: 'Customer model instance',
@@ -54,7 +56,7 @@ export class CustomerCustomerAddressController {
     },
   })
   async create(
-    @param.path.number('id') id: typeof Customer.prototype.id,
+    @param.path.string('id') id: typeof Customer.prototype.id,
     @requestBody({
       content: {
         'application/json': {
@@ -70,7 +72,7 @@ export class CustomerCustomerAddressController {
     return this.customerRepository.customerAddresses(id).create(customerAddress);
   }
 
-  @patch('/customers/{id}/customer-addresses', {
+  @patch('/customers/{id}/customerAddresses/{customerAddressId}', {
     responses: {
       '200': {
         description: 'Customer.CustomerAddress PATCH success count',
@@ -79,7 +81,8 @@ export class CustomerCustomerAddressController {
     },
   })
   async patch(
-    @param.path.string('id') id: string,
+    @param.path.string('id') id: typeof Customer.prototype.id,
+    @param.path.number('customerAddressId') customerAddressId: typeof CustomerAddress.prototype.id,
     @requestBody({
       content: {
         'application/json': {
@@ -88,12 +91,11 @@ export class CustomerCustomerAddressController {
       },
     })
     customerAddress: Partial<CustomerAddress>,
-    @param.query.object('where', getWhereSchemaFor(CustomerAddress)) where?: Where<CustomerAddress>,
   ): Promise<Count> {
-    return this.customerRepository.customerAddresses(id).patch(customerAddress, where);
+    return this.customerRepository.customerAddresses(id).patch(customerAddress, {id: customerAddressId});
   }
 
-  @del('/customers/{id}/customer-addresses', {
+  @del('/customers/{id}/customerAddresses', {
     responses: {
       '200': {
         description: 'Customer.CustomerAddress DELETE success count',
@@ -102,7 +104,7 @@ export class CustomerCustomerAddressController {
     },
   })
   async delete(
-    @param.path.string('id') id: string,
+    @param.path.string('id') id: typeof Customer.prototype.id,
     @param.query.object('where', getWhereSchemaFor(CustomerAddress)) where?: Where<CustomerAddress>,
   ): Promise<Count> {
     return this.customerRepository.customerAddresses(id).delete(where);

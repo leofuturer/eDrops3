@@ -54,7 +54,7 @@ class UpdateAddress extends React.Component {
     };
     let url = customerAddresses.replace('id', Cookies.get('userId'));
     url += `/${addressId}`;
-    API.Request(url, 'PUT', addressMes, true)
+    API.Request(url, 'PATCH', addressMes, true)
       .then((res) => {
         _this.props.history.push('/manage/address');
       })

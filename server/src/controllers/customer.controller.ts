@@ -19,7 +19,7 @@ import {
   response,
 } from '@loopback/rest';
 import {CustomerCreateInterceptor} from '../interceptors';
-import {Customer, User} from '../models';
+import {Customer, OrderInfo, User} from '../models';
 import {CustomerRepository} from '../repositories';
 
 export class CustomerController {
@@ -176,5 +176,20 @@ export class CustomerController {
         domain: process.env.SHOPIFY_DOMAIN,
       },
     };
+  }
+
+  @get('/customers/{id}/getCustomerCart')
+  @response(200, {
+    description: 'Customer cart',
+    content: {
+      'application/json': {
+        schema: {},
+      },
+    },
+  })
+  async getCustomerCart(
+    @param.path.string('id') id: string,
+  ): Promise<Partial<OrderInfo> | number | Error> {
+    return await this.customerRepository.getCustomerCart(id);
   }
 }

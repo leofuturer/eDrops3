@@ -70,6 +70,7 @@ export class OrderInfoRepository extends DefaultCrudRepository<
       this.orderProducts.inclusionResolver,
     );
   }
+  
 
   async addOrderChipToCart(body: Omit<OrderInfo, 'id'>, req: CustomRequest) {
     // console.log(body);
@@ -77,6 +78,9 @@ export class OrderInfoRepository extends DefaultCrudRepository<
     const accessTokenRepository = await this.accessTokenRepositoryGetter();
     const userRepository = await this.userRepositoryGetter();
     const orderChipRepository = await this.orderChipRepositoryGetter();
+    // See https://loopback.io/doc/en/lb4/migration-models-remoting-hooks.html
+    // See https://loopback.io/doc/en/lb4/migration-models-remoting-hooks.html#accessing-the-current-user
+    // May need to create interceptor
     this.findById(body.orderInfoId)
       .then(orderInfo => {
         // console.log(orderInfo);
@@ -157,7 +161,7 @@ export class OrderInfoRepository extends DefaultCrudRepository<
     );
     // TODO: Verify the request came from Shopify
     if (body.checkout_token !== null) {
-      super
+      this
         .findOne({where: {checkoutToken: body.checkout_token}})
         .then(orderInfoInstance => {
           const date = new Date();

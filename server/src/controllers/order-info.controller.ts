@@ -42,6 +42,7 @@ export class OrderInfoController {
     @inject(RestBindings.Http.REQUEST) private request: Request,
   ) {}
 
+  // Shopify webhook (not for end users)
   @post('/orderInfos/newOrderCreated')
   @response(200, {
     description: 'OrderInfo model instance',
@@ -65,6 +66,8 @@ export class OrderInfoController {
       this.request as CustomRequest,
     );
   }
+
+  
 
   @get('/orderInfos/{id}')
   @response(200, {

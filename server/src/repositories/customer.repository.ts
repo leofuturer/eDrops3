@@ -28,7 +28,8 @@ import {
   EMAIL_PORT,
   EMAIL_SENDER,
 } from '../lib/constants/emailConstants';
-import { exit } from 'process';
+import {exit} from 'process';
+import log from '../lib/toolbox/log';
 
 export class CustomerRepository extends DefaultCrudRepository<
   Customer,
@@ -206,5 +207,39 @@ export class CustomerRepository extends DefaultCrudRepository<
       });
     }
     return customer as Customer;
+  }
+
+  async getCustomerCart(customerId: string): Promise<Partial<OrderInfo> | number | Error> {
+    return this.orderInfos(customerId)
+      .find({where: {orderComplete: false}})
+      .then(orders => {
+        if (orders.length > 1) {
+          log.error(
+            `Error getting customer cart or there's more than one active cart`,
+          );
+          throw new Error('Error while querying for customer cart');
+        }
+        else if (orders.length === 0) {
+          log.warning(
+            `No cart found for customer id=${customerId}, need to create one`,
+          );
+          return 0;
+        }
+        log.info(
+          `Cart already exists, is order info model with id ${orders[0].id}`,
+        );
+        return {
+          id: orders[0].id,
+          checkoutIdClient: orders[0].checkoutIdClient,
+          checkoutLink: orders[0].checkoutLink
+        };
+      })
+      .catch(err => {
+        log.error(
+          `Error getting customer cart or there's more than one active cart: ${err}`,
+        );
+        return new Error('Error while querying for customer cart');
+      });
+      
   }
 }
