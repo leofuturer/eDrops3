@@ -9,8 +9,10 @@ import {RestApplication} from '@loopback/rest';
 import {ServiceMixin} from '@loopback/service-proxy';
 import path from 'path';
 import {MySequence} from './sequence';
+// Loopback 3 mounted app imports
 import {Lb3AppBooterComponent} from '@loopback/booter-lb3app';
 import {clearDb, seedDb} from './lib/seed';
+// Authentication service imports
 import {AuthenticationComponent} from '@loopback/authentication';
 // import {
 //   JWTAuthenticationComponent,
@@ -21,12 +23,13 @@ import {
   JWTAuthenticationComponent,
   SECURITY_SCHEME_SPEC,
 } from './components/jwt-authentication';
-// import {AuthorizationComponent} from '@loopback/authorization';
-// import {CasbinAuthorizationComponent} from './components/casbin-authorization';
 import {MysqlDsDataSource} from './datasources';
-import { FILE_UPLOAD_SERVICE, STORAGE_DIRECTORY } from './services';
+import {CasbinAuthorizationComponent} from './components/casbin-authorization';
+// File service imports
+import {FILE_UPLOAD_SERVICE, STORAGE_DIRECTORY} from './services';
 import multer from 'multer';
-import { CasbinAuthorizationComponent } from './components/casbin-authorization';
+import multerS3 from 'multer-s3';
+import {S3Client} from '@aws-sdk/client-s3';
 
 export {ApplicationConfig};
 
@@ -78,7 +81,6 @@ export class EdropsBackendApplication extends BootMixin(
     // this.dataSource(MysqlDsDataSource, UserServiceBindings.DATASOURCE_NAME);
     // Mount casbin authorization component
     this.component(CasbinAuthorizationComponent);
-
   }
 
   addSecuritySpec(): void {
@@ -129,7 +131,7 @@ export class EdropsBackendApplication extends BootMixin(
         });
     }
   }
-  
+
   /**
    * Configure `multer` options for file upload
    */
@@ -137,15 +139,35 @@ export class EdropsBackendApplication extends BootMixin(
     // Upload files to `dist/storage` by default
     destination = destination ?? path.join(__dirname, '../storage');
     this.bind(STORAGE_DIRECTORY).to(destination);
-    const multerOptions: multer.Options = {
-      storage: multer.diskStorage({
-        destination,
-        // Use the original file name as is
-        filename: (req, file, cb) => {
-          cb(null, file.originalname);
-        },
-      }),
-    };
+    const multerOptions: multer.Options =
+      process.env.NODE_ENV != 'production'
+        ? {
+            storage: multer.diskStorage({
+              destination,
+              // Use the original file name as is
+              filename: (req, file, cb) => {
+                cb(null, file.originalname);
+              },
+            }),
+          }
+        : {
+            storage: multerS3({
+              s3: new S3Client({
+                credentials: {
+                  accessKeyId: process.env.S3_AWS_ACCESS_KEY_ID as string,
+                  secretAccessKey: process.env.S3_SECRET_ACCESS_KEY as string,
+                },
+                region: process.env.S3_AWS_DEFAULT_REGION as string,
+              }),
+              bucket: process.env.S3_BUCKET_NAME as string,
+              metadata: function (req, file, cb) {
+                cb(null, {fieldName: file.fieldname});
+              },
+              key: function (req, file, cb) {
+                cb(null, Date.now().toString());
+              },
+            }),
+          };
     // Configure the file upload service with multer options
     this.configure(FILE_UPLOAD_SERVICE).to(multerOptions);
   }

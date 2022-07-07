@@ -178,9 +178,11 @@ export class CustomerFileInfoController {
   })
   async delete(
     @param.path.string('id') id: typeof Customer.prototype.id,
-    @param.query.object('where', getWhereSchemaFor(FileInfo))
-    where?: Where<FileInfo>,
-  ): Promise<Count> {
-    return this.customerRepository.fileInfos(id).delete(where);
+    @param.query.number('fileId') fileId: number,
+  ): Promise<void> {
+    // Soft delete
+    return this.fileInfoRepository.deleteById(fileId);
+    // Hard delete
+    
   }
 }
