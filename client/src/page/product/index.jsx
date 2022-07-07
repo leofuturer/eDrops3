@@ -43,7 +43,7 @@ class Product extends React.Component {
     API.Request(url, 'GET', {}, false)
       .then((res) => {
         this.setState({
-          product: res.data.product,
+          product: res.data,
           fetchedProduct: true,
           addedToCart: true,
         });

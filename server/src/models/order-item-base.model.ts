@@ -73,7 +73,7 @@ export class OrderItemBase extends Entity {
   @property({
     type: 'number',
   })
-  orderId?: number;
+  orderInfoId?: number;
 
   // Define well-known properties here
 

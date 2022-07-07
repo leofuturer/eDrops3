@@ -15,13 +15,13 @@ class API {
     headers = { 'content-type': 'application/json; charset=utf-8' }, sendDataRaw = false) {
     try {
       if (useToken) {
-        if (Cookies.get('access_token') === null || Cookies.get('access_token') === undefined) {
-          headers.Authorization = Cookies.get('base_access_token');
+        if (!Cookies.get('access_token')) {
+          throw new Error('No access token found');
         } else {
-          headers.Authorization = Cookies.get('access_token');
+          headers.Authorization = `Bearer ${Cookies.get('access_token')}`;
         }
       }
-      headers['X-edrop-userbase'] = Cookies.get('base_access_token');
+      headers['X-edrop-userbase'] = Cookies.get('access_token');
       const options = {
         method,
         headers,

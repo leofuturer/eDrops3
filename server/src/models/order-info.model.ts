@@ -193,6 +193,16 @@ export class OrderInfo extends Entity {
   })
   customerId?: string;
 
+  @property({
+    type: 'number',
+  })
+  billingAddressId?: number;
+
+  @property({
+    type: 'number',
+  })
+  shippingAddressId?: number;
+
   @hasMany(() => OrderProduct, {keyTo: 'orderId'})
   orderProducts: OrderProduct[];
 

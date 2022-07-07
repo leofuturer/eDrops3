@@ -147,7 +147,7 @@ export class CustomerController {
     await this.customerRepository.sendVerificationEmail(customer as Customer);
   }
 
-  @get('/customers/getApiToken')
+  @get('/customers/getApi')
   @response(200, {
     description: 'Get API key and domain',
     content: {

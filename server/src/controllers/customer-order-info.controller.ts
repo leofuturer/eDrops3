@@ -14,6 +14,7 @@ import {
   patch,
   post,
   requestBody,
+  response,
 } from '@loopback/rest';
 import {
   Customer,
@@ -51,5 +52,41 @@ export class CustomerOrderInfoController {
       allOrderChips = allOrderChips.concat(tmpOrderChips);
     }
     return allOrderChips;
+  }
+
+  @get('/customers/{id}/customerOrders',  {
+    responses: {
+      '200': {
+        description: 'Get customer orders (cart)',
+        content: {
+          'application/json': {
+            schema: {type: 'array', items: getModelSchemaRef(OrderChip)},
+          },
+        },
+      },
+    },
+  })
+  async getCustomerOrders(
+    @param.path.string('id') id: typeof Customer.prototype.id
+  ) : Promise<Partial<OrderInfo> | number | Error> {
+    return this.customerRepository.getCustomerCart(id as string);
+  }
+
+  @post('/customers/{id}/customerOrders')
+  @response(200,
+    {
+      description: 'Add order to customer cart',
+      content: {
+        'application/json': {
+          schema: {type: 'object', items: getModelSchemaRef(OrderInfo)},
+        },
+      },
+    }
+  )
+  async addOrderToCustomerCart(
+    @param.path.string('id') id: typeof Customer.prototype.id,
+    @requestBody() orderInfo: OrderInfo,
+  ) : Promise<OrderInfo> {
+    return this.customerRepository.orderInfos(id).create(orderInfo);
   }
 }

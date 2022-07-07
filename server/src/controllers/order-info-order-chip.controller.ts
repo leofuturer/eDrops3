@@ -1,3 +1,5 @@
+import {authenticate} from '@loopback/authentication';
+import {intercept} from '@loopback/core';
 import {
   Count,
   CountSchema,
@@ -13,16 +15,16 @@ import {
   post,
   requestBody,
 } from '@loopback/rest';
-import {
-  OrderInfo,
-  OrderChip,
-} from '../models';
+import e from 'cors';
+import {OrderItemCreateInterceptor} from '../interceptors';
+import {OrderInfo, OrderChip} from '../models';
 import {OrderInfoRepository} from '../repositories';
 
 export class OrderInfoOrderChipController {
   constructor(
-    @repository(OrderInfoRepository) protected orderInfoRepository: OrderInfoRepository,
-  ) { }
+    @repository(OrderInfoRepository)
+    protected orderInfoRepository: OrderInfoRepository,
+  ) {}
 
   @get('/orderInfos/{id}/orderChips', {
     responses: {
@@ -43,6 +45,8 @@ export class OrderInfoOrderChipController {
     return this.orderInfoRepository.orderChips(id).find(filter);
   }
 
+  @authenticate('jwt')
+  @intercept(OrderItemCreateInterceptor.BINDING_KEY)
   @post('/orderInfos/{id}/addOrderChipToCart', {
     responses: {
       '200': {
@@ -59,12 +63,46 @@ export class OrderInfoOrderChipController {
           schema: getModelSchemaRef(OrderChip, {
             title: 'NewOrderChipInOrderInfo',
             exclude: ['id'],
-            optional: ['orderId']
+            optional: ['orderId'],
           }),
         },
       },
-    }) orderChip: Omit<OrderChip, 'id'>,
-  ): Promise<OrderChip> {
-    return this.orderInfoRepository.orderChips(id).create(orderChip);
+    })
+    orderChip: Omit<OrderChip, 'id'>,
+  ): Promise<void> {
+    this.orderInfoRepository
+      .orderChips(id)
+      .find({
+        where: {
+          variantIdShopify: orderChip.variantIdShopify,
+          otherDetails: orderChip.otherDetails,
+        },
+      })
+      .then(orderChips => {
+        if (orderChips.length > 1) {
+          console.error('More than one entry for product');
+          throw new Error('More than one entry for product');
+        } else if (orderChips.length === 0) {
+          this.orderInfoRepository
+            .orderChips(id)
+            .create(orderChip)
+            .then(orderChip => {
+              console.log(
+                `Created orderProduct with product order id ${orderChip.id}, product ${orderChip.description}`,
+              );
+              return orderChip;
+            });
+        } else if (orderChips.length === 1) {
+          this.orderInfoRepository.updateById(orderChips[0].id, {
+            quantity: orderChips[0].quantity + orderChip.quantity,
+          });
+        } else {
+          throw new Error('Unknown entries for product');
+        }
+      })
+      .catch(err => {
+        console.error(err);
+        throw new Error(err);
+      });
   }
 }

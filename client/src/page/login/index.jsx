@@ -131,9 +131,9 @@ class Login extends React.Component {
     if (nameEmailResult) {
       API.Request(userLogin, 'POST', data, false)
         .then((res) => {
-          console.log(res);
+          // console.log(res);
           Cookies.set('base_access_token', res.data.token);
-          Cookies.set('access_token', res.data.id);
+          Cookies.set('access_token', res.data.token);
           Cookies.set('userId', res.data.userId);
           Cookies.set('userType', res.data.userType);
           Cookies.set('username', res.data.username);

@@ -1,4 +1,5 @@
-import { inject } from '@loopback/core';
+import {authenticate} from '@loopback/authentication';
+import {inject, intercept} from '@loopback/core';
 import {
   Count,
   CountSchema,
@@ -16,20 +17,19 @@ import {
   post,
   requestBody,
   Request,
-  RestBindings
+  RestBindings,
 } from '@loopback/rest';
-import {
-  OrderInfo,
-  OrderProduct,
-} from '../models';
+import {OrderItemCreateInterceptor} from '../interceptors';
+import {OrderInfo, OrderProduct} from '../models';
 import {OrderInfoRepository} from '../repositories';
-import { CustomRequest } from './order-info.controller';
+import {CustomRequest} from './order-info.controller';
 
 export class OrderInfoOrderProductController {
   constructor(
-    @repository(OrderInfoRepository) protected orderInfoRepository: OrderInfoRepository,
+    @repository(OrderInfoRepository)
+    protected orderInfoRepository: OrderInfoRepository,
     @inject(RestBindings.Http.REQUEST) private request: Request,
-  ) { }
+  ) {}
 
   @get('/orderInfos/{id}/orderProducts', {
     responses: {
@@ -50,11 +50,15 @@ export class OrderInfoOrderProductController {
     return this.orderInfoRepository.orderProducts(id).find(filter);
   }
 
+  @authenticate('jwt')
+  @intercept(OrderItemCreateInterceptor.BINDING_KEY)
   @post('/orderInfos/{id}/addOrderProductToCart', {
     responses: {
       '200': {
         description: 'OrderInfo model instance',
-        content: {'application/json': {schema: getModelSchemaRef(OrderProduct)}},
+        content: {
+          'application/json': {schema: getModelSchemaRef(OrderProduct)},
+        },
       },
     },
   })
@@ -66,12 +70,46 @@ export class OrderInfoOrderProductController {
           schema: getModelSchemaRef(OrderProduct, {
             title: 'NewOrderProductInOrderInfo',
             exclude: ['id'],
-            optional: ['orderId']
+            optional: ['orderId'],
           }),
         },
       },
-    }) orderProduct: Omit<OrderProduct, 'id'>,
+    })
+    orderProduct: Omit<OrderProduct, 'id'>,
   ): Promise<void> {
-    return this.orderInfoRepository.addOrderChipToCart(orderProduct, this.request as CustomRequest);
+    this.orderInfoRepository
+      .orderProducts(id)
+      .find({
+        where: {
+          variantIdShopify: orderProduct.variantIdShopify,
+          otherDetails: orderProduct.otherDetails,
+        },
+      })
+      .then(orderProducts => {
+        if (orderProducts.length > 1) {
+          console.error('More than one entry for product');
+          throw new Error('More than one entry for product');
+        } else if (orderProducts.length === 0) {
+          this.orderInfoRepository
+            .orderProducts(id)
+            .create(orderProduct)
+            .then(orderProduct => {
+              console.log(
+                `Created orderProduct with product order id ${orderProduct.id}, product ${orderProduct.description}`,
+              );
+              return orderProduct;
+            });
+        } else if (orderProducts.length === 1) {
+          this.orderInfoRepository.updateById(orderProducts[0].id, {
+            quantity: orderProducts[0].quantity + orderProduct.quantity,
+          });
+        } else {
+          throw new Error('Unknown entries for product');
+        }
+      })
+      .catch(err => {
+        console.error(err);
+        throw new Error(err);
+      });
   }
 }

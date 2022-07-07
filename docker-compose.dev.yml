@@ -17,7 +17,7 @@ services:
 
   edrop_backend:
     volumes:
-      - ./server/:/usr/src/app
+      - ./server/storage:/home/node/app/storage # persistent storage for uploaded files
     env_file:
       - ./deploy/dev/backend.env
     depends_on:
@@ -33,4 +33,4 @@ services:
       - 4040:4040 # ngrok web interface
 
 volumes:
-  dockerdbdev: 
+  dockerdbdev:

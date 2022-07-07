@@ -83,24 +83,6 @@ export class OrderInfoRepository extends DefaultCrudRepository<
     // May need to create interceptor
     this.findById(body.orderInfoId)
       .then(orderInfo => {
-        // console.log(orderInfo);
-        // Then see if product order already created, if we need to create one
-        accessTokenRepository
-          .findById(req?.headers['x-edrop-userbase'])
-          .then(token => {
-            userRepository
-              .findById(token.userId)
-              .then(user => {
-                if (user.userType !== 'customer') {
-                  console.log('only customer can add chip to cart');
-                }
-              })
-              .catch(err => console.log(err));
-          })
-          .catch(err => console.log(err));
-        if (orderInfo.customerId !== req.accessToken.userId) {
-          console.log('customer and order info does not match');
-        } else {
           orderChipRepository
             .find({
               where: {
@@ -143,7 +125,6 @@ export class OrderInfoRepository extends DefaultCrudRepository<
               }
             })
             .catch(err => console.log(err));
-        }
       })
       .catch(err => console.log(err));
   }

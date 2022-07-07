@@ -169,7 +169,7 @@ export class AdminController {
       },
     },
   })
-  async returnAllItems(): Promise<object[]> {
+  async returnAllItems(): Promise<Client.Product[]> {
     const productIds = [
       Products.CONTROLSYSID,
       Products.TESTBOARDID,
@@ -178,8 +178,21 @@ export class AdminController {
     console.log(productIds);
     return client.product
       .fetchMultiple(productIds)
-      .then((res: object[]) => {
-        return res;
+      .then((res: Client.Product[]) => {
+        return res.map(r => {
+          return {
+            ...r,
+            id: Buffer.from(r.id as string, 'utf-8').toString('base64'),
+            variants: r.variants.map(variant => {
+              return {
+                ...variant,
+                id: Buffer.from(variant.id as string, 'utf-8').toString(
+                  'base64',
+                ),
+              };
+            }),
+          };
+        });
       })
       .catch((err: Error) => {
         console.log(err);
@@ -198,15 +211,57 @@ export class AdminController {
       },
     },
   })
-  async returnOneItem(productId: string): Promise<object> {
+  async returnOneItem(
+    @param.query.string('productId') productId: string
+  ): Promise<Client.Product | object> {
     return client.product
       .fetch(productId)
-      .then((res: object) => {
-        return res
+      .then((res: Client.Product) => {
+        return {
+          ...res,
+          id: Buffer.from(res.id as string, 'utf-8').toString('base64'),
+          variants: res.variants.map(variant => {
+            return {
+              ...variant,
+              id: Buffer.from(variant.id as string, 'utf-8').toString(
+                'base64',
+              ),
+            };
+          }),
+        };;
       })
       .catch((err: Error) => {
         console.log(err);
         return {};
       });
+  }
+
+  @get('/admins/getApi')
+  @response(200, {
+    description: 'Get API token',
+    content: {
+      'application/json': {
+        schema: {
+          properties: {
+            info: {
+              properties: {
+                token: {
+                  type: 'string',
+                },
+                domain: {
+                  type: 'string',
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  })
+  async getApiToken(): Promise<object> {
+    return {
+      token: process.env.SHOPIFY_TOKEN,
+      domain: process.env.SHOPIFY_DOMAIN,
+    };
   }
 }
