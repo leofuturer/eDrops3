@@ -27,8 +27,8 @@ import fetch from 'node-fetch';
 global.fetch = fetch;
 
 const client = Client.buildClient({
-  storefrontAccessToken: process.env.SHOPIFY_TOKEN as string,
-  domain: process.env.SHOPIFY_DOMAIN as string,
+  storefrontAccessToken: (process.env.SHOPIFY_STORE !== 'test' ? process.env.SHOPIFY_TOKEN : process.env.SHOPIFY_DOMAIN_TEST) as string,
+  domain: (process.env.SHOPIFY_STORE !== 'test' ? process.env.SHOPIFY_DOMAIN : process.env.SHOPIFY_DOMAIN_TEST) as string,
 });
 
 export class AdminController {
@@ -59,16 +59,7 @@ export class AdminController {
   ): Promise<Admin> {
     return this.adminRepository.createAdmin(admin);
   }
-
-  @get('/admins/count')
-  @response(200, {
-    description: 'Admin model count',
-    content: {'application/json': {schema: CountSchema}},
-  })
-  async count(@param.where(Admin) where?: Where<Admin>): Promise<Count> {
-    return this.adminRepository.count(where);
-  }
-
+  
   @get('/admins')
   @response(200, {
     description: 'Array of Admin model instances',
@@ -260,8 +251,8 @@ export class AdminController {
   })
   async getApiToken(): Promise<object> {
     return {
-      token: process.env.SHOPIFY_TOKEN,
-      domain: process.env.SHOPIFY_DOMAIN,
+      token: (process.env.SHOPIFY_STORE !== 'test' ? process.env.SHOPIFY_TOKEN : process.env.SHOPIFY_DOMAIN_TEST) as string,
+      domain: (process.env.SHOPIFY_STORE !== 'test' ? process.env.SHOPIFY_DOMAIN : process.env.SHOPIFY_DOMAIN_TEST) as string,
     };
   }
 }

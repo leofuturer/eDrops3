@@ -16,18 +16,16 @@ import {
   requestBody,
   response,
 } from '@loopback/rest';
-import {
-  Customer,
-  OrderChip,
-  OrderInfo,
-} from '../models';
+import {Customer, OrderChip, OrderInfo} from '../models';
 import {CustomerRepository, OrderInfoRepository} from '../repositories';
 
 export class CustomerOrderInfoController {
   constructor(
-    @repository(CustomerRepository) protected customerRepository: CustomerRepository,
-    @repository(OrderInfoRepository) protected orderInfoRepository: OrderInfoRepository,
-  ) { }
+    @repository(CustomerRepository)
+    protected customerRepository: CustomerRepository,
+    @repository(OrderInfoRepository)
+    protected orderInfoRepository: OrderInfoRepository,
+  ) {}
 
   @get('/customers/{id}/orderChips', {
     responses: {
@@ -45,19 +43,27 @@ export class CustomerOrderInfoController {
     @param.path.string('id') id: string,
     @param.query.object('filter') filter?: Filter<OrderInfo>,
   ): Promise<OrderChip[]> {
-    let allOrderChips : OrderChip[] = [];
-    const orderInfos = await this.customerRepository.orderInfos(id).find(filter);
-    for(const orderInfo of orderInfos) {
-      const tmpOrderChips = await this.orderInfoRepository.orderChips(orderInfo.id).find();
-      allOrderChips = allOrderChips.concat(tmpOrderChips);
-    }
+    let allOrderChips: OrderChip[] = [];
+    this.customerRepository
+      .orderInfos(id)
+      .find(filter)
+      .then(orderInfos => {
+        orderInfos.forEach(orderInfo => {
+          this.orderInfoRepository
+            .orderChips(orderInfo.id)
+            .find()
+            .then(orderChips => {
+              allOrderChips = allOrderChips.concat(orderChips);
+            });
+        });
+      });
     return allOrderChips;
   }
 
-  @get('/customers/{id}/customerOrders',  {
+  @get('/customers/{id}/customerOrders', {
     responses: {
       '200': {
-        description: 'Get customer orders (cart)',
+        description: 'Get customer orders',
         content: {
           'application/json': {
             schema: {type: 'array', items: getModelSchemaRef(OrderChip)},
@@ -67,26 +73,25 @@ export class CustomerOrderInfoController {
     },
   })
   async getCustomerOrders(
-    @param.path.string('id') id: typeof Customer.prototype.id
-  ) : Promise<Partial<OrderInfo> | number | Error> {
-    return this.customerRepository.getCustomerCart(id as string);
+    @param.path.string('id') id: typeof Customer.prototype.id,
+    @param.filter(OrderInfo) filter?: Filter<OrderInfo>,
+  ): Promise<OrderInfo[]> {
+    return this.customerRepository.orderInfos(id).find(filter);
   }
 
   @post('/customers/{id}/customerOrders')
-  @response(200,
-    {
-      description: 'Add order to customer cart',
-      content: {
-        'application/json': {
-          schema: {type: 'object', items: getModelSchemaRef(OrderInfo)},
-        },
+  @response(200, {
+    description: 'Add order to customer cart',
+    content: {
+      'application/json': {
+        schema: {type: 'object', items: getModelSchemaRef(OrderInfo)},
       },
-    }
-  )
+    },
+  })
   async addOrderToCustomerCart(
     @param.path.string('id') id: typeof Customer.prototype.id,
     @requestBody() orderInfo: OrderInfo,
-  ) : Promise<OrderInfo> {
+  ): Promise<OrderInfo> {
     return this.customerRepository.orderInfos(id).create(orderInfo);
   }
 }

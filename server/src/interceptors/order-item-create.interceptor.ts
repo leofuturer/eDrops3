@@ -10,7 +10,7 @@ import {
   ValueOrPromise,
 } from '@loopback/core';
 import { repository } from '@loopback/repository';
-import {Request, RestBindings} from '@loopback/rest';
+import {HttpErrors, Request, RestBindings} from '@loopback/rest';
 import {SecurityBindings, UserProfile} from '@loopback/security';
 import { OrderInfoRepository } from '../repositories';
 
@@ -50,18 +50,15 @@ export class OrderItemCreateInterceptor implements Provider<Interceptor> {
   ) {
     try {
       // Add pre-invocation logic here
+      console.log('intercepting...');
       const user = await this.getCurrentUser();
       if (user.userType !== 'customer') {
-        console.log('only customer can add chip to cart');
-        throw new Error('only customer can add chip to cart');
+        throw new HttpErrors.Unauthorized('Only customer can add chip to cart');
       }
       const orderInfo = await this.orderInfoRepository.findById(this.request.body.orderInfoId);
       if (orderInfo.customerId !== user.id) {
-        console.log(this.request.body)
-        console.log(orderInfo)
-        console.log(user)
         console.log('customer and order info does not match');
-        throw new Error('customer and order info does not match');
+        throw new HttpErrors.Unauthorized('Customer and order info does not match');
       }
       const result = await next();
       // Add post-invocation logic here

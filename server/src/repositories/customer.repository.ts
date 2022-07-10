@@ -30,6 +30,7 @@ import {
 } from '../lib/constants/emailConstants';
 import {exit} from 'process';
 import log from '../lib/toolbox/log';
+import { HttpErrors } from '@loopback/rest';
 
 export class CustomerRepository extends DefaultCrudRepository<
   Customer,
@@ -217,7 +218,7 @@ export class CustomerRepository extends DefaultCrudRepository<
           log.error(
             `Error getting customer cart or there's more than one active cart`,
           );
-          throw new Error('Error while querying for customer cart');
+          throw new HttpErrors.NotFound('Error while querying for customer cart');
         }
         else if (orders.length === 0) {
           log.warning(

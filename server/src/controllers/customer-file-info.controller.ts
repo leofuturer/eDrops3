@@ -38,8 +38,6 @@ export class CustomerFileInfoController {
   constructor(
     @repository(CustomerRepository)
     protected customerRepository: CustomerRepository,
-    @repository(FileInfoRepository)
-    protected fileInfoRepository: FileInfoRepository,
     @inject(FILE_UPLOAD_SERVICE) private handler: ExpressRequestHandler,
     @inject(STORAGE_DIRECTORY) private storageDirectory: string,
   ) {}
@@ -110,7 +108,7 @@ export class CustomerFileInfoController {
               files.push(...uploadedFiles[filename].map(mapper));
             }
           }
-          console.log(files);
+          // console.log(files);
 
           const fileInfos: Partial<FileInfo> = files.map(
             (f: MulterFileInfo) => {
@@ -130,7 +128,7 @@ export class CustomerFileInfoController {
               };
             },
           );
-          console.log(fileInfos);
+          // console.log(fileInfos);
 
           const fields = request.body;
           const customer = this.customerRepository
@@ -160,7 +158,10 @@ export class CustomerFileInfoController {
     @param.query.number('fileId') fileId: number,
     @inject(RestBindings.Http.RESPONSE) response: Response,
   ): Promise<Response> {
-    const fileName = await this.fileInfoRepository.findById(fileId).then(file => {return file.containerFileName});
+    const fileName = await this.customerRepository.fileInfos(id).find({where: {id: fileId}})
+      .then(file => {
+        return file[0].containerFileName;
+      });
     const file = path.resolve(this.storageDirectory, fileName);
     if (!file.startsWith(this.storageDirectory))
       throw new HttpErrors.BadRequest(`Invalid file id: ${fileName}`);
@@ -181,8 +182,7 @@ export class CustomerFileInfoController {
     @param.query.number('fileId') fileId: number,
   ): Promise<void> {
     // Soft delete
-    return this.fileInfoRepository.deleteById(fileId);
+    this.customerRepository.fileInfos(id).delete({where: {id: fileId}});
     // Hard delete
-    
   }
 }

@@ -11,6 +11,7 @@ import {
   get,
   getModelSchemaRef,
   getWhereSchemaFor,
+  HttpErrors,
   param,
   post,
   requestBody,
@@ -50,8 +51,7 @@ export class OrderInfoOrderChipController {
   @post('/orderInfos/{id}/addOrderChipToCart', {
     responses: {
       '200': {
-        description: 'OrderInfo model instance',
-        content: {'application/json': {schema: getModelSchemaRef(OrderChip)}},
+        description: 'Added orderChip to cart',
       },
     },
   })
@@ -63,13 +63,14 @@ export class OrderInfoOrderChipController {
           schema: getModelSchemaRef(OrderChip, {
             title: 'NewOrderChipInOrderInfo',
             exclude: ['id'],
-            optional: ['orderId'],
           }),
         },
       },
     })
     orderChip: Omit<OrderChip, 'id'>,
   ): Promise<void> {
+    console.log(orderChip);
+    console.log('orderinfo orderchip');
     this.orderInfoRepository
       .orderChips(id)
       .find({
@@ -79,9 +80,11 @@ export class OrderInfoOrderChipController {
         },
       })
       .then(orderChips => {
+        console.log(orderChips);
         if (orderChips.length > 1) {
-          console.error('More than one entry for product');
-          throw new Error('More than one entry for product');
+          throw new HttpErrors.UnprocessableEntity(
+            'More than one entry for product',
+          );
         } else if (orderChips.length === 0) {
           this.orderInfoRepository
             .orderChips(id)
@@ -97,12 +100,13 @@ export class OrderInfoOrderChipController {
             quantity: orderChips[0].quantity + orderChip.quantity,
           });
         } else {
-          throw new Error('Unknown entries for product');
+          throw new HttpErrors.UnprocessableEntity(
+            'Unknown entries for product',
+          );
         }
       })
       .catch(err => {
-        console.error(err);
-        throw new Error(err);
+        throw new HttpErrors.InternalServerError(err);
       });
   }
 }

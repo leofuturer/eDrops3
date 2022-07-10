@@ -17,6 +17,7 @@ import {
   del,
   requestBody,
   response,
+  HttpErrors,
 } from '@loopback/rest';
 import {CustomerCreateInterceptor} from '../interceptors';
 import {Customer, OrderInfo, User} from '../models';
@@ -142,7 +143,7 @@ export class CustomerController {
       },
     });
     if (!customer) {
-      throw new Error('Customer not found');
+      throw new HttpErrors.NotFound('Customer not found');
     }
     await this.customerRepository.sendVerificationEmail(customer as Customer);
   }
@@ -172,8 +173,8 @@ export class CustomerController {
   async getApiToken(): Promise<object> {
     return {
       info: {
-        token: process.env.SHOPIFY_TOKEN,
-        domain: process.env.SHOPIFY_DOMAIN,
+        token: (process.env.SHOPIFY_STORE !== 'test' ? process.env.SHOPIFY_TOKEN : process.env.SHOPIFY_DOMAIN_TEST) as string,
+        domain: (process.env.SHOPIFY_STORE !== 'test' ? process.env.SHOPIFY_DOMAIN : process.env.SHOPIFY_DOMAIN_TEST) as string,
       },
     };
   }

@@ -1,3 +1,4 @@
+import { inject } from '@loopback/core';
 import {
   Count,
   CountSchema,
@@ -16,14 +17,20 @@ import {
   del,
   requestBody,
   response,
+  HttpErrors,
+  RestBindings,
+  Response,
 } from '@loopback/rest';
 import {FoundryWorker, User} from '../models';
 import {FoundryWorkerRepository} from '../repositories';
+import {SecurityBindings, UserProfile} from '@loopback/security';
 
 export class FoundryWorkerController {
   constructor(
     @repository(FoundryWorkerRepository)
     public foundryWorkerRepository : FoundryWorkerRepository,
+    @inject(SecurityBindings.USER, {optional: true})
+    public user: UserProfile,
   ) {}
 
   @post('/foundryWorkers')
@@ -212,36 +219,15 @@ export class FoundryWorkerController {
     // return this.foundryWorkerRepository.resetPassword();
   }
 
-  @get('/foundryWorkers/{id}/downloadFile')
-  @response(200, {
-    description: 'FoundryWorker DOWNLOAD FILE success',
-  })
-  async downloadFile(
-    @param.path.string('id') id: string,
-    @param.query.string('fileName') fileName: string,
-  ): Promise<void> {
-    return;
-    // return this.foundryWorkerRepository.downloadFile();
-  }
-
-  @post('/foundryWorkers/getWorkerID')
+  @get('/foundryWorkers/getWorkerID')
   @response(200, {
     description: 'FoundryWorker GET WORKER ID success',
   })
   async getWorkerID(
-    @requestBody({
-      content: {
-        'application/json': {
-          schema: getModelSchemaRef(FoundryWorker, {
-            title: 'NewFoundryWorker',
-            exclude: ['id'],
-          }),
-        },
-      },
-    })
-    foundryWorker: Omit<FoundryWorker, 'id'>,
-  ): Promise<void> {
-    return;
-    // return this.foundryWorkerRepository.getWorkerID();
+    @param.query.string('username') username: string,
+  ): Promise<string> {
+    return this.foundryWorkerRepository.findOne({where: {username: username}}).then(foundryWorker => {
+      return foundryWorker?.id as string;
+    });
   } 
 }

@@ -8,7 +8,6 @@ class API {
      * @param {string} method - GET, POST, PATCH, DELETE, etc.
      * @param {object} data - JSON data to accompany request
      * @param {boolean} useToken - Use login token or not
-     * @param {object} params - URL parameters to be sent with request
      * @param {object} [headers] - optional, headers to accompany request
      * @param {boolean} sendDataRaw - optional, if true, send data without JSON.stringify
      */
@@ -17,7 +16,6 @@ class API {
         method: string,
         data: object,
         useToken: boolean,
-        params? : object,
         headers: AxiosRequestHeaders = {
             "content-type": "application/json; charset=utf-8",
         },
@@ -41,13 +39,18 @@ class API {
             headers["X-edrop-userbase"] = Cookies.get(
                 "base_access_token"
             ) as string;
+            const dataToSend = sendDataRaw ? data : JSON.stringify(data);
             const options: AxiosRequestConfig = {
                 method,
                 headers,
                 url,
-                data: sendDataRaw ? data : JSON.stringify(data),
-                params,
             };
+            if (method === "POST || PUT") {
+                options.data = dataToSend;
+            }
+            else {
+                options.params = dataToSend;
+            }
 
             const res = await axios(options);
             return res;

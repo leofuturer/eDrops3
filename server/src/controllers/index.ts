@@ -16,3 +16,5 @@ export * from './file-info.controller';
 export * from './foundry-worker-user.controller';
 export * from './customer-user.controller';
 export * from './admin-user.controller';
+export * from './order-chip-file-info.controller';
+export * from './order-chip-foundry-worker.controller';

@@ -18,6 +18,7 @@ import {
   requestBody,
   Request,
   RestBindings,
+  HttpErrors,
 } from '@loopback/rest';
 import {OrderItemCreateInterceptor} from '../interceptors';
 import {OrderInfo, OrderProduct} from '../models';
@@ -87,8 +88,7 @@ export class OrderInfoOrderProductController {
       })
       .then(orderProducts => {
         if (orderProducts.length > 1) {
-          console.error('More than one entry for product');
-          throw new Error('More than one entry for product');
+          throw new HttpErrors.UnprocessableEntity('More than one entry for product');
         } else if (orderProducts.length === 0) {
           this.orderInfoRepository
             .orderProducts(id)
@@ -104,12 +104,11 @@ export class OrderInfoOrderProductController {
             quantity: orderProducts[0].quantity + orderProduct.quantity,
           });
         } else {
-          throw new Error('Unknown entries for product');
+          throw new HttpErrors.UnprocessableEntity('Unknown entries for product');
         }
       })
       .catch(err => {
-        console.error(err);
-        throw new Error(err);
+        throw new HttpErrors.InternalServerError(err);
       });
   }
 }

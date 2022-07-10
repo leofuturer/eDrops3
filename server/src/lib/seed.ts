@@ -6,6 +6,11 @@ import {
   FoundryWorker,
   User,
   Admin,
+  OrderInfo,
+  FileInfo,
+  OrderChip,
+  OrderItemBase,
+  OrderProduct,
 } from '../models';
 import {
   CustomerAddressRepository,
@@ -15,6 +20,11 @@ import {
   ForumRepository,
   ProjectRepository,
   AdminRepository,
+  OrderInfoRepository,
+  OrderChipRepository,
+  OrderItemBaseRepository,
+  OrderProductRepository,
+  FileInfoRepository,
 } from '../repositories';
 import {CrudRepository, CrudRepositoryImpl} from '@loopback/repository';
 import {
@@ -71,7 +81,22 @@ export async function clearDb(this: any): Promise<void> {
       // await userRepo.execute('ALTER TABLE User AUTO_INCREMENT = ?', [
       //   1,
       // ]);
-
+      const orderInfoRepo: CrudRepositoryImpl<OrderInfo, 1> =
+        await this.getRepository(OrderInfoRepository);
+      await orderInfoRepo.deleteAll();
+      const orderChipRepo: CrudRepositoryImpl<OrderChip, 1> =
+        await this.getRepository(OrderChipRepository);
+      await orderChipRepo.deleteAll();
+      const orderItemBaseRepo: CrudRepositoryImpl<OrderItemBase, 1> =
+        await this.getRepository(OrderItemBaseRepository);
+      await orderItemBaseRepo.deleteAll();
+      const orderProductRepo: CrudRepositoryImpl<OrderProduct, 1> =
+        await this.getRepository(OrderProductRepository);
+      await orderProductRepo.deleteAll();
+      const fileInfoRepo: CrudRepositoryImpl<FileInfo, 1> =
+        await this.getRepository(FileInfoRepository);
+      await fileInfoRepo.deleteAll();
+      
       resolve();
     } catch (err) {
       console.error(err);

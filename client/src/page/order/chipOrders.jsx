@@ -50,11 +50,12 @@ class ChipOrders extends React.Component {
 
     API.Request(url, 'GET', {}, true)
       .then((res) => {
+        console.log(res);
         if(this.state.workerId){
-          res.data.orderChips = res.data.orderChips.filter((orderChip) => orderChip.workerId === this.state.workerId)
+          res.data = res.data.filter((orderChip) => orderChip.workerId === this.state.workerId)
         }
         this.setState({
-          orderList: res.data.orderChips,
+          orderList: res.data,
           isLoading: false,
         });
       })
