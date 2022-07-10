@@ -52,14 +52,18 @@ export class OrderInfoController {
     @requestBody({
       content: {
         'application/json': {
-          schema: getModelSchemaRef(OrderInfo, {
-            title: 'NewOrderInfo',
-            exclude: ['id'],
-          }),
+          schema: {
+            type: 'object',
+          }
+          // schema: getModelSchemaRef(OrderInfo, {
+          //   title: 'NewOrderInfo',
+          //   exclude: ['id'],
+          //   partial: true,
+          // }),
         },
       },
     })
-    orderInfo: Omit<OrderInfo, 'id'>,
+    orderInfo: object,
   ): Promise<void> {
     return this.orderInfoRepository.newOrderCreated(
       orderInfo,

@@ -173,7 +173,7 @@ export class CustomerController {
   async getApiToken(): Promise<object> {
     return {
       info: {
-        token: (process.env.SHOPIFY_STORE !== 'test' ? process.env.SHOPIFY_TOKEN : process.env.SHOPIFY_DOMAIN_TEST) as string,
+        token: (process.env.SHOPIFY_STORE !== 'test' ? process.env.SHOPIFY_TOKEN : process.env.SHOPIFY_TOKEN_TEST) as string,
         domain: (process.env.SHOPIFY_STORE !== 'test' ? process.env.SHOPIFY_DOMAIN : process.env.SHOPIFY_DOMAIN_TEST) as string,
       },
     };

@@ -1,6 +1,20 @@
-// product IDs (first is production store, second is test store)
+import { async } from "validate.js";
+import API from "./api/api";
+import { getApiToken } from "./api/serverConfig";
 
-const mode = process.env.SHOPIFY_STORE !== 'test'
+let mode;
+(async() => {
+    mode = await API.Request(getApiToken, "GET", {}, true).then(
+        (res) => {
+            if(res.info.domain === "edrops-store.myshopify.com"){
+                return "production";
+            }
+            return "test";
+        }
+    )
+})();
+
+// product IDs (first is production store, second is test store)
 export const controlSysId = mode ? 'Z2lkOi8vc2hvcGlmeS9Qcm9kdWN0LzcwMTE4ODI2OTY4ODA=' : 'Z2lkOi8vc2hvcGlmeS9Qcm9kdWN0LzQ1OTU3Njc0NDM0OTA=';
 export const controlSysId5 = mode ? 'Z2lkOi8vc2hvcGlmeS9Qcm9kdWN0LzcwNDA3NzM0ODg4MTY=' : 'Z2lkOi8vc2hvcGlmeS9Qcm9kdWN0LzY5ODA1MjQ2NzEwMTA=';
 export const controlSysId10 = mode ? 'Z2lkOi8vc2hvcGlmeS9Qcm9kdWN0LzcwNDA3NzM4MTY0OTY=' : 'Z2lkOi8vc2hvcGlmeS9Qcm9kdWN0LzY5ODA1MjQ2MzgyNDI=';

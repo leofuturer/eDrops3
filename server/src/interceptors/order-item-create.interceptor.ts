@@ -9,10 +9,11 @@ import {
   Provider,
   ValueOrPromise,
 } from '@loopback/core';
-import { repository } from '@loopback/repository';
+import {repository} from '@loopback/repository';
 import {HttpErrors, Request, RestBindings} from '@loopback/rest';
-import {SecurityBindings, UserProfile} from '@loopback/security';
-import { OrderInfoRepository } from '../repositories';
+import {SecurityBindings, securityId, UserProfile} from '@loopback/security';
+import { OrderInfo } from '../models';
+import {OrderInfoRepository} from '../repositories';
 
 /**
  * This class will be bound to the application as an `Interceptor` during
@@ -26,7 +27,8 @@ export class OrderItemCreateInterceptor implements Provider<Interceptor> {
     @inject(RestBindings.Http.REQUEST) private request: Request,
     @inject.getter(SecurityBindings.USER, {optional: true})
     private getCurrentUser: Getter<UserProfile>,
-    @repository (OrderInfoRepository) protected orderInfoRepository: OrderInfoRepository,
+    @repository(OrderInfoRepository)
+    protected orderInfoRepository: OrderInfoRepository,
   ) {}
 
   /**
@@ -50,16 +52,28 @@ export class OrderItemCreateInterceptor implements Provider<Interceptor> {
   ) {
     try {
       // Add pre-invocation logic here
-      console.log('intercepting...');
-      const user = await this.getCurrentUser();
-      if (user.userType !== 'customer') {
-        throw new HttpErrors.Unauthorized('Only customer can add chip to cart');
-      }
-      const orderInfo = await this.orderInfoRepository.findById(this.request.body.orderInfoId);
-      if (orderInfo.customerId !== user.id) {
-        console.log('customer and order info does not match');
-        throw new HttpErrors.Unauthorized('Customer and order info does not match');
-      }
+      this.getCurrentUser()
+        .then((user: UserProfile) => {
+          if (user.userType !== 'customer') {
+            throw new HttpErrors.Unauthorized(
+              'Only customer can add chip to cart',
+            );
+          }
+          return user;
+        })
+        .then((user: UserProfile) => {
+          this.orderInfoRepository
+            .findById(this.request.body.orderInfoId)
+            .then((orderInfo : OrderInfo) => {
+              if (orderInfo.customerId !== user.id) {
+                throw new HttpErrors.Unauthorized(
+                  'Customer does not have access to resource',
+                );
+              }
+            });
+        }).catch(err => {
+          throw new HttpErrors.InternalServerError(err);
+        });
       const result = await next();
       // Add post-invocation logic here
       return result;

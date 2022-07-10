@@ -63,14 +63,13 @@ export class OrderInfoOrderChipController {
           schema: getModelSchemaRef(OrderChip, {
             title: 'NewOrderChipInOrderInfo',
             exclude: ['id'],
+            partial: true,
           }),
         },
       },
     })
     orderChip: Omit<OrderChip, 'id'>,
   ): Promise<void> {
-    console.log(orderChip);
-    console.log('orderinfo orderchip');
     this.orderInfoRepository
       .orderChips(id)
       .find({
@@ -91,7 +90,7 @@ export class OrderInfoOrderChipController {
             .create(orderChip)
             .then(orderChip => {
               console.log(
-                `Created orderProduct with product order id ${orderChip.id}, product ${orderChip.description}`,
+                `Created orderChip with id ${orderChip.id}, product ${orderChip.name}`,
               );
               return orderChip;
             });

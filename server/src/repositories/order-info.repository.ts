@@ -25,6 +25,7 @@ import {IncomingHttpHeaders} from 'http';
 import {CustomRequest} from '../controllers/order-info.controller';
 import {AccessTokenRepository} from './access-token.repository';
 import {UserRepository} from './user.repository';
+import _ from 'lodash';
 
 export class OrderInfoRepository extends DefaultCrudRepository<
   OrderInfo,
@@ -72,65 +73,8 @@ export class OrderInfoRepository extends DefaultCrudRepository<
   }
   
 
-  async addOrderChipToCart(body: Omit<OrderInfo, 'id'>, req: CustomRequest) {
-    // console.log(body);
-    // Find the specified orderInfo (top level)
-    const accessTokenRepository = await this.accessTokenRepositoryGetter();
-    const userRepository = await this.userRepositoryGetter();
-    const orderChipRepository = await this.orderChipRepositoryGetter();
-    // See https://loopback.io/doc/en/lb4/migration-models-remoting-hooks.html
-    // See https://loopback.io/doc/en/lb4/migration-models-remoting-hooks.html#accessing-the-current-user
-    // May need to create interceptor
-    this.findById(body.orderInfoId)
-      .then(orderInfo => {
-          orderChipRepository
-            .find({
-              where: {
-                variantIdShopify: body.variantIdShopify,
-                otherDetails: body.otherDetails,
-              },
-            })
-            .then(orderChips => {
-              // variant ID should uniquely identify it
-              // console.log(orderProducts);
-              if (orderChips.length > 1) {
-                console.error('More than one entry for product');
-              }
-              // not present, need to create a new one
-              else if (orderChips.length === 0) {
-                orderChipRepository
-                  .create(body)
-                  .then(orderChip => {
-                    // console.log(orderProduct);
-                    console.log(
-                      `Created orderChips with product order id ${orderChip.id}, product ${orderChip.description}`,
-                    );
-                  })
-                  .catch(err => console.log(err));
-              } else if (orderChips.length === 1) {
-                // already exists
-                const newQtyData = {
-                  quantity: orderChips[0].quantity + body.quantity,
-                };
-                orderChips[0]
-                  .updateAttributes(newQtyData)
-                  .then(
-                    (orderChip: {quantity: any; id: any; description: any}) => {
-                      console.log(
-                        `Updated quantity to ${orderChip.quantity} for product order ID: ${orderChip.id}, product ${orderChip.description}`,
-                      );
-                    },
-                  )
-                  .catch((err: any) => console.error(err));
-              }
-            })
-            .catch(err => console.log(err));
-      })
-      .catch(err => console.log(err));
-  }
-
   async newOrderCreated(
-    body: Omit<OrderInfo, 'id'>,
+    body: { [key: string]: any },
     req: CustomRequest,
   ): Promise<void> {
     console.log(
@@ -141,12 +85,15 @@ export class OrderInfoRepository extends DefaultCrudRepository<
       `An order was just paid using email ${body.email}, receiving webhook info from Shopify`,
     );
     // TODO: Verify the request came from Shopify
-    if (body.checkout_token !== null) {
+    if (body.checkout_token) {
+      // consolse.log(`Checkout token: ${body.checkout_token}`);
       this
         .findOne({where: {checkoutToken: body.checkout_token}})
         .then(orderInfoInstance => {
+          // console.log(`Found order info instance: ${JSON.stringify(orderInfoInstance)}`);
           const date = new Date();
-          super.update(orderInfoInstance as OrderInfo, {
+          // Create new orderInfo using updated data from Shopify
+          const orderInfo = _.merge(orderInfoInstance, {
             orderInfoId: body.id,
             orderStatusURL: body.order_status_url,
             orderComplete: true,
@@ -177,7 +124,8 @@ export class OrderInfoRepository extends DefaultCrudRepository<
             ba_province: body.billing_address.province,
             ba_zip: body.billing_address.zip,
             ba_country: body.billing_address.country,
-          });
+          })
+          this.update(orderInfo);
         })
         .catch(err => console.log(err));
     }

@@ -95,7 +95,7 @@ export class OrderInfoOrderProductController {
             .create(orderProduct)
             .then(orderProduct => {
               console.log(
-                `Created orderProduct with product order id ${orderProduct.id}, product ${orderProduct.description}`,
+                `Created orderProduct with id ${orderProduct.id}, product ${orderProduct.name}`,
               );
               return orderProduct;
             });
