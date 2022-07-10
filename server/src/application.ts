@@ -140,7 +140,7 @@ export class EdropsBackendApplication extends BootMixin(
     destination = destination ?? path.join(__dirname, '../storage');
     this.bind(STORAGE_DIRECTORY).to(destination);
     const multerOptions: multer.Options =
-      process.env.NODE_ENV != 'production'
+      process.env.NODE_ENV !== 'production'
         ? {
             storage: multer.diskStorage({
               destination,

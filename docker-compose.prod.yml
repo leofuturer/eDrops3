@@ -11,6 +11,7 @@ services:
   
   edrop_caddy:
     image: caddy:2.3.0
+    container_name: edrop_caddy
     restart: unless-stopped
     ports:
       - 80:80
