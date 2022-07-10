@@ -1,9 +1,9 @@
-import {inject, Getter} from '@loopback/core';
-import {DefaultCrudRepository, repository, BelongsToAccessor} from '@loopback/repository';
-import {MysqlDsDataSource} from '../datasources';
-import {OrderChip, OrderChipRelations, FileInfo, FoundryWorker} from '../models';
-import {FileInfoRepository} from './file-info.repository';
-import {FoundryWorkerRepository} from './foundry-worker.repository';
+import { Getter, inject } from '@loopback/core';
+import { BelongsToAccessor, DefaultCrudRepository, repository } from '@loopback/repository';
+import { MysqlDsDataSource } from '../datasources';
+import { FileInfo, FoundryWorker, OrderChip, OrderChipRelations } from '../models';
+import { FileInfoRepository } from './file-info.repository';
+import { FoundryWorkerRepository } from './foundry-worker.repository';
 
 export class OrderChipRepository extends DefaultCrudRepository<
   OrderChip,

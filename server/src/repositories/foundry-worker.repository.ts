@@ -1,10 +1,10 @@
-import {inject, Getter} from '@loopback/core';
-import {DefaultCrudRepository, repository, HasManyRepositoryFactory, BelongsToAccessor} from '@loopback/repository';
-import {MysqlDsDataSource} from '../datasources';
-import {FoundryWorker, FoundryWorkerRelations, OrderChip, User} from '../models';
-import {OrderChipRepository} from './order-chip.repository';
-import {UserRepository} from './user.repository';
-import {genSalt, hash} from 'bcryptjs';
+import { Getter, inject } from '@loopback/core';
+import { BelongsToAccessor, DefaultCrudRepository, HasManyRepositoryFactory, repository } from '@loopback/repository';
+import { genSalt, hash } from 'bcryptjs';
+import { MysqlDsDataSource } from '../datasources';
+import { FoundryWorker, FoundryWorkerRelations, OrderChip, User } from '../models';
+import { OrderChipRepository } from './order-chip.repository';
+import { UserRepository } from './user.repository';
 
 export class FoundryWorkerRepository extends DefaultCrudRepository<
   FoundryWorker,

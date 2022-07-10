@@ -3,7 +3,7 @@ import {
   CountSchema,
   Filter,
   repository,
-  Where,
+  Where
 } from '@loopback/repository';
 import {
   del,
@@ -12,15 +12,13 @@ import {
   getWhereSchemaFor,
   param,
   patch,
-  post,
-  put,
-  requestBody,
+  post, requestBody
 } from '@loopback/rest';
 import {
   Customer,
-  CustomerAddress,
+  CustomerAddress
 } from '../models';
-import {CustomerAddressRepository, CustomerRepository} from '../repositories';
+import { CustomerAddressRepository, CustomerRepository } from '../repositories';
 
 export class CustomerCustomerAddressController {
   constructor(

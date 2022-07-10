@@ -1,25 +1,19 @@
-import {authenticate} from '@loopback/authentication';
-import {intercept} from '@loopback/core';
+import { authenticate } from '@loopback/authentication';
+import { intercept } from '@loopback/core';
 import {
-  Count,
-  CountSchema,
   Filter,
-  repository,
-  Where,
+  repository
 } from '@loopback/repository';
 import {
   get,
-  getModelSchemaRef,
-  getWhereSchemaFor,
-  HttpErrors,
+  getModelSchemaRef, HttpErrors,
   param,
   post,
-  requestBody,
+  requestBody
 } from '@loopback/rest';
-import e from 'cors';
-import {OrderItemCreateInterceptor} from '../interceptors';
-import {OrderInfo, OrderChip} from '../models';
-import {OrderInfoRepository} from '../repositories';
+import { OrderItemCreateInterceptor } from '../interceptors';
+import { OrderChip, OrderInfo } from '../models';
+import { OrderInfoRepository } from '../repositories';
 
 export class OrderInfoOrderChipController {
   constructor(

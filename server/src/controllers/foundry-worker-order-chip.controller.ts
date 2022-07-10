@@ -1,28 +1,18 @@
-import {inject} from '@loopback/core';
+import { inject } from '@loopback/core';
 import {
-  Count,
-  CountSchema,
   Filter,
-  repository,
-  Where,
+  repository
 } from '@loopback/repository';
 import {
-  del,
   get,
-  getModelSchemaRef,
-  getWhereSchemaFor,
-  HttpErrors,
-  param,
-  patch,
-  post,
-  requestBody,
-  Response,
+  getModelSchemaRef, HttpErrors,
+  param, Response,
   response,
-  RestBindings,
+  RestBindings
 } from '@loopback/rest';
-import {FoundryWorker, OrderChip} from '../models';
-import {FoundryWorkerRepository, OrderChipRepository} from '../repositories';
-import {SecurityBindings, UserProfile} from '@loopback/security';
+import { SecurityBindings, UserProfile } from '@loopback/security';
+import { OrderChip } from '../models';
+import { FoundryWorkerRepository, OrderChipRepository } from '../repositories';
 
 export class FoundryWorkerOrderChipController {
   constructor(

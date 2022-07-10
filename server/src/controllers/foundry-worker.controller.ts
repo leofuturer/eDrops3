@@ -1,29 +1,17 @@
 import { inject } from '@loopback/core';
 import {
-  Count,
-  CountSchema,
   Filter,
   FilterExcludingWhere,
-  repository,
-  Where,
+  repository
 } from '@loopback/repository';
 import {
-  post,
-  param,
-  get,
-  getModelSchemaRef,
-  patch,
-  put,
-  del,
-  requestBody,
-  response,
-  HttpErrors,
-  RestBindings,
-  Response,
+  del, get,
+  getModelSchemaRef, param, patch, post, requestBody,
+  response
 } from '@loopback/rest';
-import {FoundryWorker, User} from '../models';
-import {FoundryWorkerRepository} from '../repositories';
-import {SecurityBindings, UserProfile} from '@loopback/security';
+import { SecurityBindings, UserProfile } from '@loopback/security';
+import { FoundryWorker, User } from '../models';
+import { FoundryWorkerRepository } from '../repositories';
 
 export class FoundryWorkerController {
   constructor(

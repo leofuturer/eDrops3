@@ -1,23 +1,15 @@
 import {
-  Count,
-  CountSchema,
   Filter,
-  repository,
-  Where,
+  repository
 } from '@loopback/repository';
 import {
-  del,
   get,
-  getModelSchemaRef,
-  getWhereSchemaFor,
-  param,
-  patch,
-  post,
+  getModelSchemaRef, param, post,
   requestBody,
-  response,
+  response
 } from '@loopback/rest';
-import {Customer, OrderChip, OrderInfo} from '../models';
-import {CustomerRepository, OrderInfoRepository} from '../repositories';
+import { Customer, OrderChip, OrderInfo } from '../models';
+import { CustomerRepository, OrderInfoRepository } from '../repositories';
 
 export class CustomerOrderInfoController {
   constructor(

@@ -23,7 +23,7 @@ class ChipOrders extends React.Component {
       isLoading: false,
     };
     if (this.props.match.path === '/manage/admin-retrieve-worker-orders'
-            && Cookies.get('userType') === 'admin') {
+      && Cookies.get('userType') === 'admin') {
       Object.assign(this.state, {
         workerId: this.props.location.state.workerId,
         isCustomer: this.props.location.state.isCustomer,
@@ -51,7 +51,7 @@ class ChipOrders extends React.Component {
     API.Request(url, 'GET', {}, true)
       .then((res) => {
         console.log(res);
-        if(this.state.workerId){
+        if (this.state.workerId) {
           res.data = res.data.filter((orderChip) => orderChip.workerId === this.state.workerId)
         }
         this.setState({
@@ -117,8 +117,8 @@ class ChipOrders extends React.Component {
     return (
       <div>
         <SEO title="eDrops | Chip Orders"
-              description="" 
-              metadata={ metadata }/>
+          description=""
+          metadata={metadata} />
         <div className="right-route-content">
           <div className="profile-content">
             <h2>Chip Orders</h2>
@@ -195,11 +195,11 @@ class ChipOrders extends React.Component {
                           {item.quantity}
                         </td>
                         <td className="icon-center">
-                        {
-                          Cookies.get('userType') === 'worker'
-                          ? <i className="fa fa-download" onClick={this.handleDownload} id={`download${item.id}`} />
-                          : <i className="fa fa-download" onClick={this.handleDownload} id={`download${item.fileInfoId}`} />
-                        }
+                          {
+                            Cookies.get('userType') === 'worker'
+                              ? <i className="fa fa-download" onClick={this.handleDownload} id={`download${item.id}`} />
+                              : <i className="fa fa-download" onClick={this.handleDownload} id={`download${item.fileInfoId}`} />
+                          }
                         </td>
                         {
                           Cookies.get('userType') === 'admin'

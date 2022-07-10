@@ -1,27 +1,18 @@
-import {intercept} from '@loopback/core';
+import { intercept } from '@loopback/core';
 import {
-  Count,
-  CountSchema,
   Filter,
   FilterExcludingWhere,
-  repository,
-  Where,
+  repository
 } from '@loopback/repository';
 import {
-  post,
-  param,
-  get,
-  getModelSchemaRef,
-  patch,
-  put,
-  del,
-  requestBody,
-  response,
-  HttpErrors,
+  del, get,
+  getModelSchemaRef, HttpErrors, param, patch, post, requestBody,
+  response
 } from '@loopback/rest';
-import {CustomerCreateInterceptor} from '../interceptors';
-import {Customer, OrderInfo, User} from '../models';
-import {CustomerRepository} from '../repositories';
+import { CustomerCreateInterceptor } from '../interceptors';
+import log from '../lib/toolbox/log';
+import { Customer, OrderInfo, User } from '../models';
+import { CustomerRepository } from '../repositories';
 
 export class CustomerController {
   constructor(
@@ -192,5 +183,63 @@ export class CustomerController {
     @param.path.string('id') id: string,
   ): Promise<Partial<OrderInfo> | number | Error> {
     return await this.customerRepository.getCustomerCart(id);
+  }
+
+  @post('/customers/credsTaken')
+  @response(200, {
+    description: 'Check if creds are taken',
+    content: {
+      'application/json': {
+        schema: {
+          properties: {
+            usernameTaken: {
+              type: 'boolean',
+            },
+            emailTaken: {
+              type: 'boolean',
+            },
+          },
+        },
+      },
+    },
+  })
+  async checkCredsTaken(
+    @requestBody() body: {username: string; email: string},
+  ): Promise<{usernameTaken: boolean; emailTaken: boolean}> {
+    if (!body.username || !body.email) {
+      throw new HttpErrors.NotFound('Missing username and/or email keys');
+    }
+
+    const result = {
+      usernameTaken: false,
+      emailTaken: false,
+    };
+
+    return this.customerRepository
+      .find({
+        where: {
+          or: [
+            {
+              username: body.username || '',
+            },
+            {email: body.email || ''},
+          ],
+        },
+      })
+      .then(values => {
+        if (values[0].length > 0 || values[2].length > 0) {
+          log.warning(`Username ${body.username} taken`);
+          result.usernameTaken = true;
+        }
+
+        if (values[1].length > 0 || values[3].length > 0) {
+          log.warning(`Email ${body.email} taken`);
+          result.emailTaken = true;
+        }
+        return result;
+      })
+      .catch(err => {
+        throw new HttpErrors.InternalServerError(err);
+      });
   }
 }

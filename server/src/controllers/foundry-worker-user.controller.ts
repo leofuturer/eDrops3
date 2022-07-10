@@ -1,16 +1,15 @@
 import {
-  repository,
+  repository
 } from '@loopback/repository';
 import {
-  param,
   get,
-  getModelSchemaRef,
+  getModelSchemaRef, param
 } from '@loopback/rest';
 import {
   FoundryWorker,
-  User,
+  User
 } from '../models';
-import {FoundryWorkerRepository} from '../repositories';
+import { FoundryWorkerRepository } from '../repositories';
 
 export class FoundryWorkerUserController {
   constructor(

@@ -1,29 +1,16 @@
-import {authenticate} from '@loopback/authentication';
-import {inject, intercept} from '@loopback/core';
+import { authenticate } from '@loopback/authentication';
+import { inject, intercept } from '@loopback/core';
 import {
-  Count,
-  CountSchema,
   Filter,
-  repository,
-  Where,
+  repository
 } from '@loopback/repository';
 import {
-  del,
   get,
-  getModelSchemaRef,
-  getWhereSchemaFor,
-  param,
-  patch,
-  post,
-  requestBody,
-  Request,
-  RestBindings,
-  HttpErrors,
+  getModelSchemaRef, HttpErrors, param, post, Request, requestBody, RestBindings
 } from '@loopback/rest';
-import {OrderItemCreateInterceptor} from '../interceptors';
-import {OrderInfo, OrderProduct} from '../models';
-import {OrderInfoRepository} from '../repositories';
-import {CustomRequest} from './order-info.controller';
+import { OrderItemCreateInterceptor } from '../interceptors';
+import { OrderInfo, OrderProduct } from '../models';
+import { OrderInfoRepository } from '../repositories';
 
 export class OrderInfoOrderProductController {
   constructor(

@@ -1,16 +1,15 @@
 import {
-  repository,
+  repository
 } from '@loopback/repository';
 import {
-  param,
   get,
-  getModelSchemaRef,
+  getModelSchemaRef, param
 } from '@loopback/rest';
 import {
   Customer,
-  User,
+  User
 } from '../models';
-import {CustomerRepository} from '../repositories';
+import { CustomerRepository } from '../repositories';
 
 export class CustomerUserController {
   constructor(

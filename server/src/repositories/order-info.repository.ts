@@ -1,31 +1,19 @@
-import {inject, Getter} from '@loopback/core';
+import { Getter, inject } from '@loopback/core';
 import {
-  DefaultCrudRepository,
-  repository,
-  HasManyRepositoryFactory,
-  Order,
+  DefaultCrudRepository, HasManyRepositoryFactory, repository
 } from '@loopback/repository';
-import {MysqlDsDataSource} from '../datasources';
-import {
-  OrderInfo,
-  OrderInfoRelations,
-  OrderProduct,
-  OrderChip,
-  AccessToken,
-} from '../models';
-import {OrderProductRepository} from './order-product.repository';
-import {OrderChipRepository} from './order-chip.repository';
-import {
-  CallbackObject,
-  RequestBodyObject,
-  RequestContext,
-} from '@loopback/rest';
-import {reject} from 'lodash';
-import {IncomingHttpHeaders} from 'http';
-import {CustomRequest} from '../controllers/order-info.controller';
-import {AccessTokenRepository} from './access-token.repository';
-import {UserRepository} from './user.repository';
 import _ from 'lodash';
+import { CustomRequest } from '../controllers/order-info.controller';
+import { MysqlDsDataSource } from '../datasources';
+import {
+  OrderChip, OrderInfo,
+  OrderInfoRelations,
+  OrderProduct
+} from '../models';
+import { AccessTokenRepository } from './access-token.repository';
+import { OrderChipRepository } from './order-chip.repository';
+import { OrderProductRepository } from './order-product.repository';
+import { UserRepository } from './user.repository';
 
 export class OrderInfoRepository extends DefaultCrudRepository<
   OrderInfo,

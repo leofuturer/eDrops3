@@ -4,21 +4,15 @@ import {
   Filter,
   FilterExcludingWhere,
   repository,
-  Where,
+  Where
 } from '@loopback/repository';
 import {
-  post,
-  param,
-  get,
-  getModelSchemaRef,
-  patch,
-  put,
-  del,
-  requestBody,
-  response,
+  del, get,
+  getModelSchemaRef, param, patch, post, put, requestBody,
+  response
 } from '@loopback/rest';
-import {Forum} from '../models';
-import {ForumRepository} from '../repositories';
+import { Forum } from '../models';
+import { ForumRepository } from '../repositories';
 
 export class ForumController {
   constructor(

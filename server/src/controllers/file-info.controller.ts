@@ -1,24 +1,12 @@
 import {
-  Count,
-  CountSchema,
-  Filter,
-  FilterExcludingWhere,
-  repository,
-  Where,
+  Filter, repository
 } from '@loopback/repository';
 import {
-  post,
-  param,
   get,
-  getModelSchemaRef,
-  patch,
-  put,
-  del,
-  requestBody,
-  response,
+  getModelSchemaRef, param, response
 } from '@loopback/rest';
-import {FileInfo} from '../models';
-import {FileInfoRepository} from '../repositories';
+import { FileInfo } from '../models';
+import { FileInfoRepository } from '../repositories';
 
 export class FileInfoController {
   constructor(

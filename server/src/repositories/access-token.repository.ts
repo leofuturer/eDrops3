@@ -1,7 +1,7 @@
-import {inject} from '@loopback/core';
-import {DefaultCrudRepository} from '@loopback/repository';
-import {MysqlDsDataSource} from '../datasources';
-import {AccessToken, AccessTokenRelations} from '../models';
+import { inject } from '@loopback/core';
+import { DefaultCrudRepository } from '@loopback/repository';
+import { MysqlDsDataSource } from '../datasources';
+import { AccessToken, AccessTokenRelations } from '../models';
 
 export class AccessTokenRepository extends DefaultCrudRepository<
   AccessToken,

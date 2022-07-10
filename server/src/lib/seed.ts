@@ -1,40 +1,16 @@
+import { CrudRepository, CrudRepositoryImpl } from '@loopback/repository';
 import {
-  Project,
-  Forum,
-  Customer,
-  CustomerAddress,
-  FoundryWorker,
-  User,
-  Admin,
-  OrderInfo,
-  FileInfo,
-  OrderChip,
-  OrderItemBase,
-  OrderProduct,
+  Admin, Customer,
+  CustomerAddress, FileInfo, Forum, FoundryWorker, OrderChip, OrderInfo, OrderItemBase,
+  OrderProduct, Project, User
 } from '../models';
 import {
-  CustomerAddressRepository,
-  CustomerRepository,
-  UserRepository,
-  FoundryWorkerRepository,
-  ForumRepository,
-  ProjectRepository,
-  AdminRepository,
-  OrderInfoRepository,
-  OrderChipRepository,
-  OrderItemBaseRepository,
-  OrderProductRepository,
-  FileInfoRepository,
+  AdminRepository, CustomerAddressRepository,
+  CustomerRepository, FileInfoRepository, ForumRepository, FoundryWorkerRepository, OrderChipRepository, OrderInfoRepository, OrderItemBaseRepository,
+  OrderProductRepository, ProjectRepository, UserRepository
 } from '../repositories';
-import {CrudRepository, CrudRepositoryImpl} from '@loopback/repository';
 import {
-  defaultForums,
-  defaultProjects,
-  defaultCustomers,
-  defaultCustomerAddresses,
-  defaultFoundryWorkers,
-  defaultUsers,
-  defaultAdmins,
+  defaultAdmins, defaultCustomerAddresses, defaultCustomers, defaultForums, defaultFoundryWorkers, defaultProjects
 } from './data/index';
 
 export async function clearDb(this: any): Promise<void> {

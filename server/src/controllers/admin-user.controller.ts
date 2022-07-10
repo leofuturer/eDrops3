@@ -1,16 +1,15 @@
 import {
-  repository,
+  repository
 } from '@loopback/repository';
 import {
-  param,
   get,
-  getModelSchemaRef,
+  getModelSchemaRef, param
 } from '@loopback/rest';
 import {
   Admin,
-  User,
+  User
 } from '../models';
-import {AdminRepository} from '../repositories';
+import { AdminRepository } from '../repositories';
 
 export class AdminUserController {
   constructor(

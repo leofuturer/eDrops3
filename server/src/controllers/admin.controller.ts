@@ -4,31 +4,30 @@ import {
   Filter,
   FilterExcludingWhere,
   repository,
-  Where,
+  Where
 } from '@loopback/repository';
 import {
-  post,
-  param,
-  get,
-  getModelSchemaRef,
-  patch,
-  put,
-  del,
-  requestBody,
-  response,
+  del, get,
+  getModelSchemaRef, HttpErrors, param, patch, post, put, requestBody,
+  response
 } from '@loopback/rest';
-import {Admin, OrderProduct, User} from '../models';
-import {AdminRepository, OrderProductRepository} from '../repositories';
-import Products from '../lib/constants/productConstants';
-import Client from 'shopify-buy';
 import fetch from 'node-fetch';
+import Client from 'shopify-buy';
+import Products from '../lib/constants/productConstants';
+import log from '../lib/toolbox/log';
+import { Admin, User } from '../models';
+import { AdminRepository, OrderProductRepository } from '../repositories';
 
 // @ts-ignore
 global.fetch = fetch;
 
 const client = Client.buildClient({
-  storefrontAccessToken: (process.env.SHOPIFY_STORE !== 'test' ? process.env.SHOPIFY_TOKEN : process.env.SHOPIFY_TOKEN_TEST) as string,
-  domain: (process.env.SHOPIFY_STORE !== 'test' ? process.env.SHOPIFY_DOMAIN : process.env.SHOPIFY_DOMAIN_TEST) as string,
+  storefrontAccessToken: (process.env.SHOPIFY_STORE !== 'test'
+    ? process.env.SHOPIFY_TOKEN
+    : process.env.SHOPIFY_TOKEN_TEST) as string,
+  domain: (process.env.SHOPIFY_STORE !== 'test'
+    ? process.env.SHOPIFY_DOMAIN
+    : process.env.SHOPIFY_DOMAIN_TEST) as string,
 });
 
 export class AdminController {
@@ -59,7 +58,7 @@ export class AdminController {
   ): Promise<Admin> {
     return this.adminRepository.createAdmin(admin);
   }
-  
+
   @get('/admins')
   @response(200, {
     description: 'Array of Admin model instances',
@@ -203,7 +202,7 @@ export class AdminController {
     },
   })
   async returnOneItem(
-    @param.query.string('productId') productId: string
+    @param.query.string('productId') productId: string,
   ): Promise<Client.Product | object> {
     return client.product
       .fetch(productId)
@@ -214,12 +213,10 @@ export class AdminController {
           variants: res.variants.map(variant => {
             return {
               ...variant,
-              id: Buffer.from(variant.id as string, 'utf-8').toString(
-                'base64',
-              ),
+              id: Buffer.from(variant.id as string, 'utf-8').toString('base64'),
             };
           }),
-        };;
+        };
       })
       .catch((err: Error) => {
         console.log(err);
@@ -251,8 +248,70 @@ export class AdminController {
   })
   async getApiToken(): Promise<object> {
     return {
-      token: (process.env.SHOPIFY_STORE !== 'test' ? process.env.SHOPIFY_TOKEN : process.env.SHOPIFY_TOKEN_TEST) as string,
-      domain: (process.env.SHOPIFY_STORE !== 'test' ? process.env.SHOPIFY_DOMAIN : process.env.SHOPIFY_DOMAIN_TEST) as string,
+      token: (process.env.SHOPIFY_STORE !== 'test'
+        ? process.env.SHOPIFY_TOKEN
+        : process.env.SHOPIFY_TOKEN_TEST) as string,
+      domain: (process.env.SHOPIFY_STORE !== 'test'
+        ? process.env.SHOPIFY_DOMAIN
+        : process.env.SHOPIFY_DOMAIN_TEST) as string,
     };
+  }
+
+  @post('/admin/credsTaken')
+  @response(200, {
+    description: 'Check if creds are taken',
+    content: {
+      'application/json': {
+        schema: {
+          properties: {
+            usernameTaken: {
+              type: 'boolean',
+            },
+            emailTaken: {
+              type: 'boolean',
+            },
+          },
+        },
+      },
+    },
+  })
+  async checkCredsTaken(
+    @requestBody() body: {username: string; email: string},
+  ): Promise<{usernameTaken: boolean; emailTaken: boolean}> {
+    if (!body.username || !body.email) {
+      throw new HttpErrors.NotFound('Missing username and/or email keys');
+    }
+
+    const result = {
+      usernameTaken: false,
+      emailTaken: false,
+    };
+
+    return this.adminRepository
+      .find({
+        where: {
+          or: [
+            {
+              username: body.username || '',
+            },
+            {email: body.email || ''},
+          ],
+        },
+      })
+      .then(values => {
+        if (values[0].length > 0 || values[2].length > 0) {
+          log.warning(`Username ${body.username} taken`);
+          result.usernameTaken = true;
+        }
+
+        if (values[1].length > 0 || values[3].length > 0) {
+          log.warning(`Email ${body.email} taken`);
+          result.emailTaken = true;
+        }
+        return result;
+      })
+      .catch(err => {
+        throw new HttpErrors.InternalServerError(err);
+      });
   }
 }

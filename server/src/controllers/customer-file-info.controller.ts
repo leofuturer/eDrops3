@@ -1,32 +1,26 @@
-import {inject} from '@loopback/core';
+import { inject } from '@loopback/core';
 import {
-  Count,
   CountSchema,
   Filter,
-  repository,
-  Where,
+  repository
 } from '@loopback/repository';
 import {
   del,
   ExpressRequestHandler,
   get,
-  getModelSchemaRef,
-  getWhereSchemaFor,
-  HttpErrors,
+  getModelSchemaRef, HttpErrors,
   oas,
-  param,
-  patch,
-  post,
+  param, post,
   Request,
   requestBody,
   Response,
-  RestBindings,
+  RestBindings
 } from '@loopback/rest';
-import {Customer, FileInfo} from '../models';
-import {CustomerRepository, FileInfoRepository} from '../repositories';
-import {FILE_UPLOAD_SERVICE, STORAGE_DIRECTORY} from '../services';
-import {calculate} from '../lib/toolbox/calculate';
 import path from 'path';
+import { calculate } from '../lib/toolbox/calculate';
+import { Customer, FileInfo } from '../models';
+import { CustomerRepository } from '../repositories';
+import { FILE_UPLOAD_SERVICE, STORAGE_DIRECTORY } from '../services';
 
 const CONTAINER_NAME = process.env.S3_BUCKET_NAME || 'test_container';
 

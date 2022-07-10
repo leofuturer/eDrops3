@@ -7,13 +7,13 @@ import {
   InvocationContext,
   InvocationResult,
   Provider,
-  ValueOrPromise,
+  ValueOrPromise
 } from '@loopback/core';
-import {repository} from '@loopback/repository';
-import {HttpErrors, Request, RestBindings} from '@loopback/rest';
-import {SecurityBindings, securityId, UserProfile} from '@loopback/security';
+import { repository } from '@loopback/repository';
+import { HttpErrors, Request, RestBindings } from '@loopback/rest';
+import { SecurityBindings, UserProfile } from '@loopback/security';
 import { OrderInfo } from '../models';
-import {OrderInfoRepository} from '../repositories';
+import { OrderInfoRepository } from '../repositories';
 
 /**
  * This class will be bound to the application as an `Interceptor` during

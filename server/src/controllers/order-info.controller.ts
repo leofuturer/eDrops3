@@ -1,29 +1,17 @@
-import {inject} from '@loopback/core';
+import { inject } from '@loopback/core';
 import {
-  Count,
-  CountSchema,
   Filter,
   FilterExcludingWhere,
-  repository,
-  Where,
+  repository
 } from '@loopback/repository';
 import {
-  post,
-  param,
   get,
-  getModelSchemaRef,
-  patch,
-  put,
-  del,
-  requestBody,
+  getModelSchemaRef, param, post, Request, requestBody,
   response,
-  RestBindings,
-  Request,
+  RestBindings
 } from '@loopback/rest';
-import {IncomingHttpHeaders} from 'http';
-import path from 'path';
-import {OrderInfo} from '../models';
-import {OrderInfoRepository} from '../repositories';
+import { OrderInfo } from '../models';
+import { OrderInfoRepository } from '../repositories';
 
 export interface CustomRequest extends Request {
   'headers': {

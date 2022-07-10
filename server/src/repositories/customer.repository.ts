@@ -1,36 +1,29 @@
-import {inject, Getter} from '@loopback/core';
+import { Getter, inject } from '@loopback/core';
 import {
-  DefaultCrudRepository,
-  repository,
-  HasManyRepositoryFactory,
-  BelongsToAccessor,
+  BelongsToAccessor, DefaultCrudRepository, HasManyRepositoryFactory, repository
 } from '@loopback/repository';
-import {MysqlDsDataSource} from '../datasources';
-import {
-  Customer,
-  CustomerRelations,
-  CustomerAddress,
-  FileInfo,
-  OrderInfo,
-  User,
-} from '../models';
-import {CustomerAddressRepository} from './customer-address.repository';
-import {FileInfoRepository} from './file-info.repository';
-import {OrderInfoRepository} from './order-info.repository';
-import {UserRepository} from './user.repository';
-import {genSalt, hash} from 'bcryptjs';
-import {createHash} from 'crypto';
-import SendGrid from '../services/send-grid.service';
-import {verifyHTML} from '../lib/views/verify';
+import { HttpErrors } from '@loopback/rest';
+import { genSalt, hash } from 'bcryptjs';
+import { createHash } from 'crypto';
 import ejs from 'ejs';
+import { MysqlDsDataSource } from '../datasources';
 import {
   EMAIL_HOSTNAME,
   EMAIL_PORT,
-  EMAIL_SENDER,
+  EMAIL_SENDER
 } from '../lib/constants/emailConstants';
-import {exit} from 'process';
 import log from '../lib/toolbox/log';
-import { HttpErrors } from '@loopback/rest';
+import { verifyHTML } from '../lib/views/verify';
+import {
+  Customer, CustomerAddress, CustomerRelations, FileInfo,
+  OrderInfo,
+  User
+} from '../models';
+import SendGrid from '../services/send-grid.service';
+import { CustomerAddressRepository } from './customer-address.repository';
+import { FileInfoRepository } from './file-info.repository';
+import { OrderInfoRepository } from './order-info.repository';
+import { UserRepository } from './user.repository';
 
 export class CustomerRepository extends DefaultCrudRepository<
   Customer,

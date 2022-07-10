@@ -1,7 +1,7 @@
-import {inject} from '@loopback/core';
-import {DefaultCrudRepository} from '@loopback/repository';
-import {MysqlDsDataSource} from '../datasources';
-import {Application, ApplicationRelations} from '../models';
+import { inject } from '@loopback/core';
+import { DefaultCrudRepository } from '@loopback/repository';
+import { MysqlDsDataSource } from '../datasources';
+import { Application, ApplicationRelations } from '../models';
 
 export class ApplicationRepository extends DefaultCrudRepository<
   Application,

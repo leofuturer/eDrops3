@@ -1,8 +1,8 @@
-import {model, property, hasMany, belongsTo, Entity} from '@loopback/repository';
-import {User} from '.';
-import {CustomerAddress} from './customer-address.model';
-import {FileInfo} from './file-info.model';
-import {OrderInfo} from './order-info.model';
+import { hasMany, model, property } from '@loopback/repository';
+import { User } from '.';
+import { CustomerAddress } from './customer-address.model';
+import { FileInfo } from './file-info.model';
+import { OrderInfo } from './order-info.model';
 
 @model({
   settings: {

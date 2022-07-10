@@ -1,13 +1,12 @@
-import {inject, Getter} from '@loopback/core';
+import { Getter, inject } from '@loopback/core';
 import {
-  DefaultCrudRepository,
-  repository,
-  BelongsToAccessor,
+  BelongsToAccessor, DefaultCrudRepository,
+  repository
 } from '@loopback/repository';
-import {MysqlDsDataSource} from '../datasources';
-import {Admin, AdminRelations, User} from '../models';
-import {UserRepository} from './user.repository';
-import {genSalt, hash} from 'bcryptjs';
+import { genSalt, hash } from 'bcryptjs';
+import { MysqlDsDataSource } from '../datasources';
+import { Admin, AdminRelations, User } from '../models';
+import { UserRepository } from './user.repository';
 
 export class AdminRepository extends DefaultCrudRepository<
   Admin,

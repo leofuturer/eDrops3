@@ -1,38 +1,24 @@
+import { authenticate } from '@loopback/authentication';
+import { inject } from '@loopback/core';
 import {
-  Credentials,
-  TokenServiceBindings,
-  UserServiceBindings,
-  JWTService,
-  MyUserService,
-  JWTAuthenticationStrategy,
-} from '../components/jwt-authentication';
-import {SecurityBindings, securityId, UserProfile} from '@loopback/security';
-import {inject} from '@loopback/core';
-import {
-  Count,
-  CountSchema,
   Filter,
-  FilterExcludingWhere,
-  property,
-  repository,
-  Where,
+  FilterExcludingWhere, repository
 } from '@loopback/repository';
 import {
-  post,
-  param,
-  get,
-  getModelSchemaRef,
-  patch,
-  del,
-  requestBody,
+  del, get,
+  getModelSchemaRef, param, patch, post, requestBody,
   response,
-  SchemaObject,
+  SchemaObject
 } from '@loopback/rest';
-import {genSalt, hash} from 'bcryptjs';
-import _ from 'lodash';
-import {User} from '../models';
-import {UserRepository} from '../repositories';
-import {authenticate} from '@loopback/authentication';
+import { SecurityBindings, securityId, UserProfile } from '@loopback/security';
+import { genSalt, hash } from 'bcryptjs';
+import {
+  Credentials, JWTService,
+  MyUserService, TokenServiceBindings,
+  UserServiceBindings
+} from '../components/jwt-authentication';
+import { User } from '../models';
+import { UserRepository } from '../repositories';
 
 const CredentialsSchema: SchemaObject = {
   type: 'object',

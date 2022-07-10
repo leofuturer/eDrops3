@@ -1,7 +1,7 @@
-import {inject, lifeCycleObserver, LifeCycleObserver} from '@loopback/core';
-import {juggler} from '@loopback/repository';
-import path from 'path';
+import { inject, lifeCycleObserver, LifeCycleObserver } from '@loopback/core';
+import { juggler } from '@loopback/repository';
 import dotenv from 'dotenv';
+import path from 'path';
 dotenv.config({path: path.resolve(__dirname, '.env')});
 
 const config = {

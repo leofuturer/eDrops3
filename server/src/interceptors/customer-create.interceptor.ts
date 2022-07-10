@@ -6,22 +6,15 @@ import {
   InvocationContext,
   InvocationResult,
   Provider,
-  ValueOrPromise,
+  ValueOrPromise
 } from '@loopback/core';
-import {repository} from '@loopback/repository';
-import {Request, RestBindings} from '@loopback/rest';
+import { repository } from '@loopback/repository';
+import { Request, RestBindings } from '@loopback/rest';
 import validatePassword from '../lib/hooks/passwordValidation';
 // import verifyCustomerEmail from '../lib/hooks/customerEmailVerification';
-import {Customer} from '../models';
-import {CustomerRepository} from '../repositories';
 import log from '../lib/toolbox/log';
-import path from 'path';
-import {
-  EMAIL_HOSTNAME,
-  EMAIL_PORT,
-  EMAIL_SENDER,
-} from '../lib/constants/emailConstants';
-import { verifyHTML } from '../lib/views/verify';
+import { Customer } from '../models';
+import { CustomerRepository } from '../repositories';
 
 /**
  * This class will be bound to the application as an `Interceptor` during
