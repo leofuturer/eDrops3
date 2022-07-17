@@ -4,9 +4,9 @@ import { getApiToken } from "./api/serverConfig";
 
 let mode;
 (async() => {
-    mode = await API.Request(getApiToken, "GET", {}, true).then(
+    mode = await API.Request(getApiToken, "GET", {}, false).then(
         (res) => {
-            if(res.info.domain === "edrops-store.myshopify.com"){
+            if(res.data.domain === "edrops-store.myshopify.com"){
                 return "production";
             }
             return "test";

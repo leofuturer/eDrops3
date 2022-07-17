@@ -125,6 +125,7 @@ export class EdropsBackendApplication extends BootMixin(
           console.log('Seeding database...');
           this.seedDb = seedDb.bind(this);
           this.seedDb();
+          console.log('Done resetting database');
         })
         .catch(err => {
           console.log('Error seeding database:', err);

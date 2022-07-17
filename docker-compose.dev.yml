@@ -1,4 +1,4 @@
-version: "3.7"
+version: "3.9"
 
 # https://start.jcolemorrison.com/authorized-resources-and-database-migrations-with-strongloops-loopback/
 
@@ -14,6 +14,12 @@ services:
       - 3306:3306
     volumes:
       - dockerdbdev:/var/lib/mysql # persistent storage for DB
+    healthcheck:
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+      interval: 15s
+      timeout: 30s
+      retries: 8
+      start_period: 30s
 
   edrop_backend:
     volumes:
@@ -21,7 +27,8 @@ services:
     env_file:
       - ./deploy/dev/backend.env
     depends_on:
-      - edrop_mysqldb # start database before backend
+      edrop_mysqldb:
+        condition: service_healthy
   
   edrop_ngrok:
     # for local dev development, to receive Shopify webhooks
