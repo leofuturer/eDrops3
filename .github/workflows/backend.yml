@@ -31,8 +31,8 @@ jobs:
     - name: backend npm install, docker build, and copy image to EC2
       run: |
           cd server
-          docker build -t danningyu/edrop_backend .
-          docker save -o edrop_backend.tar danningyu/edrop_backend
+          docker build -t edrop_backend .
+          docker save -o edrop_backend.tar edrop_backend
 
           mkdir -p ~/.ssh
           echo "$SSH_KEY" > ~/.ssh/ec2.key

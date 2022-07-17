@@ -72,7 +72,7 @@ jobs:
               env:
                   APP_EMAIL_API_KEY: ${{ secrets.APP_EMAIL_API_KEY }}
                   SHOPIFY_TOKEN: ${{ secrets.SHOPIFY_TOKEN }}
-            - name: Main Site Cypress E2E tests
+            - name: Main site Cypress E2E tests
               uses: cypress-io/github-action@v4
               with:
                 browser: chrome
