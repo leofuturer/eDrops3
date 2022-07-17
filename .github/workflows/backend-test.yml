@@ -1,0 +1,91 @@
+name: Backend Test
+
+on:
+  push:
+    paths:
+    # run if anything changed in server, toplevel, or deploy-related folders
+    - '.github/workflows/backend-test.yml'
+    - 'deploy/**' 
+    - 'server/**'
+    - '*'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [14.15.x]
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
+    - name: Set up test environment and run tests
+      run: |
+          # install server
+          cd server
+          npm install
+          npm install -g wait-on
+          docker build -t danningyu/edrop_backend .
+          
+          # initialize server
+          cd .. 
+          touch deploy/test/backend_pwds.env
+          RESET_DATABASE=Yes docker-compose -f docker-compose.yml -f docker-compose.test.yml up -d
+          
+          echo "Waiting for database to start"
+          wait-on tcp:3306 --timeout 25000
+          echo "Database has started"
+
+          # Wait for database to be reset
+          set +e
+          retries=5
+          docker-compose -f docker-compose.yml -f docker-compose.test.yml logs | grep 'Done resetting database'
+          while [[ $? -ne 0 && $retries -ne 0 ]]; do
+            echo "Waiting for database reset to occur, will try again in 5 seconds"
+            echo "$retries retries left"
+            sleep 5
+            retries=$(( $retries - 1 ))
+            docker-compose -f docker-compose.yml -f docker-compose.test.yml logs | grep 'Done resetting database'
+          done
+
+          if [[ $retries -eq 0 ]]; then
+            echo "Test failure: failed to reset database"
+            exit 1
+          else
+            echo "Database has been reset"
+          fi
+
+          set -e
+
+          # Restart backend without resetting database
+          docker-compose -f docker-compose.yml -f docker-compose.test.yml down
+          docker-compose -f docker-compose.yml -f docker-compose.test.yml up -d
+
+          echo "Waiting for backend to start"
+          wait-on http-get://localhost:3000/explorer --timeout 25000
+          echo "Backend has started"
+
+          docker-compose -f docker-compose.yml -f docker-compose.test.yml logs
+
+          cd server
+
+          set +e
+          EXIT=0
+          npm test
+          if [[ $? -ne 0 ]]; then
+            echo 'One or more tests failed'
+            EXIT=1
+          fi
+
+          docker logs edrop_backend
+
+          # Shut down the testing backend
+          cd ..
+          docker-compose -f docker-compose.yml -f docker-compose.test.yml down
+          exit $EXIT
+      env:
+        APP_EMAIL_API_KEY: ${{ secrets.APP_EMAIL_API_KEY }}
+        SHOPIFY_TOKEN: ${{ secrets.SHOPIFY_TOKEN }}

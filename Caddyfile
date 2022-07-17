@@ -4,6 +4,14 @@
 #   acme_ca https://acme-staging-v02.api.letsencrypt.org/directory
 }
 
+www.edrops.org {
+   redir https://edrops.org{uri}
+}
+
+# api.edrops.org {
+#    reverse_proxy /* edrop_backend:3000
+# }
+
 # edrops.org, localhost:80, 54.241.15.160, ec2-54-241-15-160.us-west-1.compute.amazonaws.com {
 edrops.org {
     log {
@@ -27,11 +35,32 @@ edrops.org {
 
     reverse_proxy /api/* edrop_backend:3000
 
-    root * /usr/share/caddy
+    root * /usr/share/caddy/www
     file_server @frontendApi
 }
 
-# how to remove the www
-# www.myghost.mydomain.com {
-#    redir https://myghost.mydomain.com{uri}
-# }
+community.edrops.org {
+    log {
+        output stdout
+    }
+    encode gzip
+
+    @frontendApi {
+        not {
+            path /api/*
+        }
+    }
+    
+    @try_files {
+        not path /api/*
+        file {
+            try_files {path} {path}/ /index.html
+        }
+    }
+    rewrite @try_files {http.matchers.file.relative}
+
+    reverse_proxy /api/* edrop_backend:3000
+
+    root * /usr/share/caddy/community
+    file_server @frontendApi
+}

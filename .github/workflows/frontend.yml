@@ -1,4 +1,4 @@
-name: frontend
+name: Frontend Deploy
 
 on: 
   # note: workflow_displatch will only work on master branch
@@ -23,12 +23,12 @@ jobs:
         node-version: [14.15.x]
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v1
+      uses: actions/setup-node@v3
       with:
         node-version: ${{ matrix.node-version }}
-    - name: frontend npm install, build, and copy to EC2
+    - name: Frontend npm install, build, and copy to EC2
       run: |
           cd client
           npm install
