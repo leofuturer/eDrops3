@@ -1,19 +1,23 @@
-import { Getter, inject } from '@loopback/core';
+import {Getter, inject} from '@loopback/core';
 import {
-  DefaultCrudRepository, HasManyRepositoryFactory, repository
+  AnyObject,
+  DefaultCrudRepository,
+  HasManyRepositoryFactory,
+  repository,
 } from '@loopback/repository';
 import _ from 'lodash';
-import { CustomRequest } from '../controllers/order-info.controller';
-import { MysqlDsDataSource } from '../datasources';
+import {CustomRequest} from '../controllers/order-info.controller';
+import {MysqlDsDataSource} from '../datasources';
 import {
-  OrderChip, OrderInfo,
+  OrderChip,
+  OrderInfo,
   OrderInfoRelations,
-  OrderProduct
+  OrderProduct,
 } from '../models';
-import { AccessTokenRepository } from './access-token.repository';
-import { OrderChipRepository } from './order-chip.repository';
-import { OrderProductRepository } from './order-product.repository';
-import { UserRepository } from './user.repository';
+import {AccessTokenRepository} from './access-token.repository';
+import {OrderChipRepository} from './order-chip.repository';
+import {OrderProductRepository} from './order-product.repository';
+import {UserRepository} from './user.repository';
 
 export class OrderInfoRepository extends DefaultCrudRepository<
   OrderInfo,
@@ -59,12 +63,8 @@ export class OrderInfoRepository extends DefaultCrudRepository<
       this.orderProducts.inclusionResolver,
     );
   }
-  
 
-  async newOrderCreated(
-    body: { [key: string]: any },
-    req: CustomRequest,
-  ): Promise<void> {
+  async newOrderCreated(body: AnyObject, req: CustomRequest): Promise<void> {
     console.log(
       `Shopify order creation webhook token: ${req?.headers?.['x-shopify-hmac-sha256']}`,
     );
@@ -75,8 +75,7 @@ export class OrderInfoRepository extends DefaultCrudRepository<
     // TODO: Verify the request came from Shopify
     if (body.checkout_token) {
       // consolse.log(`Checkout token: ${body.checkout_token}`);
-      this
-        .findOne({where: {checkoutToken: body.checkout_token}})
+      this.findOne({where: {checkoutToken: body.checkout_token}})
         .then(orderInfoInstance => {
           // console.log(`Found order info instance: ${JSON.stringify(orderInfoInstance)}`);
           const date = new Date();
@@ -112,7 +111,7 @@ export class OrderInfoRepository extends DefaultCrudRepository<
             ba_province: body.billing_address.province,
             ba_zip: body.billing_address.zip,
             ba_country: body.billing_address.country,
-          })
+          });
           this.update(orderInfo);
         })
         .catch(err => console.log(err));

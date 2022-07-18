@@ -1,6 +1,5 @@
 export * from './forum';
 export * from './project';
-export * from './user';
 export * from './customer';
 export * from './customerAddress'
 export * from './foundryWorker';

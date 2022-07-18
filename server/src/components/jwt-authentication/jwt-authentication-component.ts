@@ -31,6 +31,7 @@ export class JWTAuthenticationComponent implements Component {
     Binding.bind(TokenServiceBindings.TOKEN_SERVICE).toClass(JWTService),
     Binding.bind(UserServiceBindings.USER_SERVICE).toClass(MyUserService),
   ];
+  
   constructor(@inject(CoreBindings.APPLICATION_INSTANCE) app: Application) {
     registerAuthenticationStrategy(app, JWTAuthenticationStrategy);
   }

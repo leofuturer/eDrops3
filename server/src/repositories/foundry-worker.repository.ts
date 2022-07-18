@@ -17,7 +17,9 @@ export class FoundryWorkerRepository extends DefaultCrudRepository<
   public readonly user: BelongsToAccessor<User, typeof FoundryWorker.prototype.id>;
 
   constructor(
-    @inject('datasources.mysqlDS') dataSource: MysqlDsDataSource, @repository.getter('OrderChipRepository') protected orderChipRepositoryGetter: Getter<OrderChipRepository>, @repository.getter('UserRepository') protected userRepositoryGetter: Getter<UserRepository>,
+    @inject('datasources.mysqlDS') dataSource: MysqlDsDataSource,
+    @repository.getter('OrderChipRepository') protected orderChipRepositoryGetter: Getter<OrderChipRepository>,
+    @repository.getter('UserRepository') protected userRepositoryGetter: Getter<UserRepository>,
   ) {
     super(FoundryWorker, dataSource);
     // this.user = this.createBelongsToAccessorFor('user', userRepositoryGetter,);

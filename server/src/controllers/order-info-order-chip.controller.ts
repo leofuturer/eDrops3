@@ -82,11 +82,11 @@ export class OrderInfoOrderChipController {
           this.orderInfoRepository
             .orderChips(id)
             .create(orderChip)
-            .then(orderChip => {
+            .then(orderChipInstance => {
               console.log(
-                `Created orderChip with id ${orderChip.id}, product ${orderChip.name}`,
+                `Created orderChip with id ${orderChipInstance.id}, product ${orderChipInstance.name}`,
               );
-              return orderChip;
+              return orderChipInstance;
             });
         } else if (orderChips.length === 1) {
           this.orderInfoRepository.updateById(orderChips[0].id, {

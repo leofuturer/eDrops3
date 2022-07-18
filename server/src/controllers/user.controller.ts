@@ -233,6 +233,7 @@ export class UserController {
     return;
     // return this.userBaseRepository.reset(userBase);
   }
+  
   @post('/users/change-password')
   @response(200, {
     description: 'User CHANGE PASSWORD success',

@@ -37,7 +37,7 @@ export class JWTAuthenticationStrategy implements AuthenticationStrategy {
       );
     }
 
-    //split the string into 2 parts : 'Bearer ' and the `xxx.yyy.zzz`
+    // Split the string into 2 parts : 'Bearer ' and the `xxx.yyy.zzz`
     const parts = authHeaderValue.split(' ');
     if (parts.length !== 2)
       throw new HttpErrors.Unauthorized(

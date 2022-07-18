@@ -49,7 +49,7 @@ describe('Customer tests', () => {
   
   async function testTearDown(){
     console.log(`Deleting the new customer: id=${newCustomerId}`);
-    let response = await app.delete(`/customers/${newCustomerId}`)
+    const response = await app.delete(`/customers/${newCustomerId}`)
       .set('Authorization', adminToken);
     
     expect(response.status).toBe(OK_200);
@@ -91,7 +91,7 @@ describe('Customer tests', () => {
     });
   
     it('Requires admin token', async () => {
-      let response = await app.get('/customers')
+      const response = await app.get('/customers')
         .set('Authorization', adminToken);
   
       expect(response.status).toBe(OK_200);

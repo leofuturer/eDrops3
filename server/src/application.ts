@@ -8,10 +8,11 @@ import {RepositoryMixin, SchemaMigrationOptions} from '@loopback/repository';
 import {RestApplication} from '@loopback/rest';
 import {ServiceMixin} from '@loopback/service-proxy';
 import path from 'path';
-import {MySequence} from './sequence';
+import multer from 'multer';
+import multerS3 from 'multer-s3';
+import {S3Client} from '@aws-sdk/client-s3';
 // Loopback 3 mounted app imports
-import {Lb3AppBooterComponent} from '@loopback/booter-lb3app';
-import {clearDb, seedDb} from './lib/seed';
+// import {Lb3AppBooterComponent} from '@loopback/booter-lb3app';
 // Authentication service imports
 import {AuthenticationComponent} from '@loopback/authentication';
 // import {
@@ -23,26 +24,27 @@ import {
   JWTAuthenticationComponent,
   SECURITY_SCHEME_SPEC,
 } from './components/jwt-authentication';
-import {MysqlDsDataSource} from './datasources';
+// import {MysqlDsDataSource} from './datasources';
+import {clearDb, seedDb} from './lib/seed';
 import {CasbinAuthorizationComponent} from './components/casbin-authorization';
 // File service imports
 import {FILE_UPLOAD_SERVICE, STORAGE_DIRECTORY} from './services';
-import multer from 'multer';
-import multerS3 from 'multer-s3';
-import {S3Client} from '@aws-sdk/client-s3';
+// import {MySequence} from './sequence';
 
 export {ApplicationConfig};
 
 export class EdropsBackendApplication extends BootMixin(
   ServiceMixin(RepositoryMixin(RestApplication)),
 ) {
-  seedDb: (this: any) => Promise<void>;
-  clearDb: (this: any) => Promise<void>;
+  seedDb: (this: EdropsBackendApplication) => Promise<void>;
+
+  clearDb: (this: EdropsBackendApplication) => Promise<void>;
+
   constructor(options: ApplicationConfig = {}) {
     super(options);
 
     // Set up the custom sequence
-    this.sequence(MySequence);
+    // this.sequence(MySequence);
 
     // Set up default home page
     this.static('/', path.join(__dirname, '../public'));
@@ -50,7 +52,7 @@ export class EdropsBackendApplication extends BootMixin(
     this.addSecuritySpec();
 
     // Customize @loopback/rest-explorer configuration here
-    if (process.env.NODE_ENV != 'production') {
+    if (process.env.NODE_ENV !== 'production') {
       this.configure(RestExplorerBindings.COMPONENT).to({
         path: '/explorer',
       });
@@ -88,7 +90,8 @@ export class EdropsBackendApplication extends BootMixin(
       openapi: '3.0.0',
       info: {
         title: 'eDrops v3 backend',
-        version: require('.././package.json').version,
+        /* eslint-disable-next-line global-require */
+        version: require('../package.json').version,
       },
       paths: {},
       components: {securitySchemes: SECURITY_SCHEME_SPEC},
@@ -103,7 +106,7 @@ export class EdropsBackendApplication extends BootMixin(
 
   async migrateSchema(options?: SchemaMigrationOptions) {
     // Run default migration scripts
-    if (process.env.MIGRATE_DATABASE == 'Yes') {
+    if (process.env.MIGRATE_DATABASE === 'Yes') {
       console.log('Migrating schema...');
       // console.log('Options:', options);
       await super.migrateSchema(options).catch(err => {
@@ -115,8 +118,8 @@ export class EdropsBackendApplication extends BootMixin(
 
     // Seed database if environmental variable is set
     if (
-      process.env.RESET_DATABASE == 'Yes' &&
-      process.env.NODE_ENV != 'production'
+      process.env.RESET_DATABASE === 'Yes' &&
+      process.env.NODE_ENV !== 'production'
     ) {
       console.log('Clearing database...');
       this.clearDb = clearDb.bind(this);
@@ -161,10 +164,10 @@ export class EdropsBackendApplication extends BootMixin(
                 region: process.env.S3_AWS_DEFAULT_REGION as string,
               }),
               bucket: process.env.S3_BUCKET_NAME as string,
-              metadata: function (req, file, cb) {
+              metadata: (req, file, cb) => {
                 cb(null, {fieldName: file.fieldname});
               },
-              key: function (req, file, cb) {
+              key: (req, file, cb) => {
                 cb(null, Date.now().toString());
               },
             }),

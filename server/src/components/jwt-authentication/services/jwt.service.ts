@@ -8,9 +8,9 @@ import {inject} from '@loopback/core';
 import {HttpErrors} from '@loopback/rest';
 import {securityId, UserProfile} from '@loopback/security';
 import {promisify} from 'util';
+import jwt, {JwtPayload} from 'jsonwebtoken';
 import {TokenServiceBindings} from '../keys';
 
-import jwt, {JwtPayload} from 'jsonwebtoken';
 // const signAsync = promisify(jwt.sign);
 // const verifyAsync = promisify(jwt.verify);
 
@@ -36,15 +36,19 @@ export class JWTService implements TokenService {
       // const decodedToken = await verifyAsync(token, this.jwtSecret);
       const decodedToken = jwt.verify(token, this.jwtSecret) as JwtPayload;
       // don't copy over  token field 'iat' and 'exp', nor 'email' to user profile
-      userProfile = Object.assign(
-        {[securityId]: '', name: ''},
-        {
-          [securityId]: decodedToken.id,
-          name: decodedToken.name,
-          id: decodedToken.id,
-          userType: decodedToken.userType,
-        },
-      );
+      // userProfile = Object.assign(
+      //   {[securityId]: '', name: ''},
+      //   {
+      //     [securityId]: decodedToken.id,
+      //     name: decodedToken.name,
+      //     id: decodedToken.id,
+      //     userType: decodedToken.userType,
+      //   },
+      // );
+      userProfile = {
+        [securityId]: decodedToken.id,
+        name: decodedToken.name,
+      }
     } catch (error) {
       throw new HttpErrors.Unauthorized(
         `Error verifying token : ${error.message}`,

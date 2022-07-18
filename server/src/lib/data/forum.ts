@@ -1,5 +1,5 @@
-import {Forum} from '../../models';
 import {faker} from '@faker-js/faker';
+import {Forum} from '../../models';
 
 export const defaultForums: Forum[] = new Array(10)
   .fill(0)

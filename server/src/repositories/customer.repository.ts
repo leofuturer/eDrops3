@@ -135,7 +135,7 @@ export class CustomerRepository extends DefaultCrudRepository<
     // exit(0);
 
     const baseURL =
-      process.env.NODE_ENV == 'production'
+      process.env.NODE_ENV === 'production'
         ? `https://${EMAIL_HOSTNAME}`
         : `http://${EMAIL_HOSTNAME}:${EMAIL_PORT}`;
 
@@ -145,8 +145,7 @@ export class CustomerRepository extends DefaultCrudRepository<
         text: `Hello ${customer.username}! Thanks for registering to use eDrops. Please verify your email by clicking on the following link:`,
         email: EMAIL_SENDER,
         verifyHref:
-          baseURL +
-          `/api/customer/verify?customerId=${customer.id}&token=${verificationTokenHash}`,
+          `${baseURL}/api/customer/verify?customerId=${customer.id}&token=${verificationTokenHash}`,
       },
       {},
     );

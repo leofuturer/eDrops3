@@ -37,6 +37,7 @@ export class SendGridDataSource
   implements LifeCycleObserver
 {
   static dataSourceName = 'SendGrid';
+  
   static readonly defaultConfig = config;
 
   constructor(

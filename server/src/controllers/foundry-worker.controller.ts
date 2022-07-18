@@ -1,22 +1,23 @@
-import { inject } from '@loopback/core';
+import {inject} from '@loopback/core';
+import {Filter, FilterExcludingWhere, repository} from '@loopback/repository';
 import {
-  Filter,
-  FilterExcludingWhere,
-  repository
-} from '@loopback/repository';
-import {
-  del, get,
-  getModelSchemaRef, param, patch, post, requestBody,
-  response
+  del,
+  get,
+  getModelSchemaRef,
+  param,
+  patch,
+  post,
+  requestBody,
+  response,
 } from '@loopback/rest';
-import { SecurityBindings, UserProfile } from '@loopback/security';
-import { FoundryWorker, User } from '../models';
-import { FoundryWorkerRepository } from '../repositories';
+import {SecurityBindings, UserProfile} from '@loopback/security';
+import {FoundryWorker, User} from '../models';
+import {FoundryWorkerRepository} from '../repositories';
 
 export class FoundryWorkerController {
   constructor(
     @repository(FoundryWorkerRepository)
-    public foundryWorkerRepository : FoundryWorkerRepository,
+    public foundryWorkerRepository: FoundryWorkerRepository,
     @inject(SecurityBindings.USER, {optional: true})
     public user: UserProfile,
   ) {}
@@ -71,7 +72,8 @@ export class FoundryWorkerController {
   })
   async findById(
     @param.path.string('id') id: string,
-    @param.filter(FoundryWorker, {exclude: 'where'}) filter?: FilterExcludingWhere<FoundryWorker>
+    @param.filter(FoundryWorker, {exclude: 'where'})
+    filter?: FilterExcludingWhere<FoundryWorker>,
   ): Promise<FoundryWorker> {
     return this.foundryWorkerRepository.findById(id, filter);
   }
@@ -214,8 +216,10 @@ export class FoundryWorkerController {
   async getWorkerID(
     @param.query.string('username') username: string,
   ): Promise<string> {
-    return this.foundryWorkerRepository.findOne({where: {username: username}}).then(foundryWorker => {
-      return foundryWorker?.id as string;
-    });
-  } 
+    return this.foundryWorkerRepository
+      .findOne({where: {username}})
+      .then(foundryWorker => {
+        return foundryWorker?.id as string;
+      });
+  }
 }

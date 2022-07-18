@@ -22,7 +22,7 @@ import { Customer, FileInfo } from '../models';
 import { CustomerRepository } from '../repositories';
 import { FILE_UPLOAD_SERVICE, STORAGE_DIRECTORY } from '../services';
 
-const CONTAINER_NAME = process.env.S3_BUCKET_NAME || 'test_container';
+const CONTAINER_NAME = process.env.S3_BUCKET_NAME ?? 'test_container';
 
 export class CustomerFileInfoController {
   /**
@@ -99,7 +99,9 @@ export class CustomerFileInfoController {
             files = uploadedFiles.map(mapper);
           } else {
             for (const filename in uploadedFiles) {
-              files.push(...uploadedFiles[filename].map(mapper));
+              if (uploadedFiles.hasOwnProperty(filename)) {
+                files.push(...uploadedFiles[filename].map(mapper));
+              }
             }
           }
           // console.log(files);
