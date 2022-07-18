@@ -1,4 +1,4 @@
-name: Deploy all to EC2
+name: Deploy all
 
 on:
     # note: workflow_displatch will only work on master branch

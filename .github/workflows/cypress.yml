@@ -1,4 +1,4 @@
-name: End-to-End Tests
+name: End-to-end tests
 on:
     push:
         # Triggers on push to stage or master
@@ -72,7 +72,7 @@ jobs:
               env:
                   APP_EMAIL_API_KEY: ${{ secrets.APP_EMAIL_API_KEY }}
                   SHOPIFY_TOKEN: ${{ secrets.SHOPIFY_TOKEN }}
-            - name: Main site Cypress E2E tests
+            - name: Frontend Cypress E2E tests
               uses: cypress-io/github-action@v4
               with:
                 browser: chrome
