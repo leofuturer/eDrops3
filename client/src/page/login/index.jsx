@@ -40,7 +40,6 @@ class Login extends React.Component {
   }
 
   handleChange(key, value) {
-    // console.log("I am called!");
     this.setState({
       [key]: value,
     });
@@ -132,33 +131,13 @@ class Login extends React.Component {
     if (nameEmailResult) {
       API.Request(userLogin, 'POST', data, false)
         .then((res) => {
-          Cookies.set('base_access_token', res.data.id);
-          const { userType } = res.data;
-          if (userType === 'customer') {
-            url = customerLogin;
-          } else if (userType === 'admin') {
-            url = AdminLogin;
-          } else if (userType === 'worker') {
-            url = FoundryWorkerLogin;
-          } else {
-            console.error('Invalid user type');
-            return;
-          }
-          API.Request(url, 'POST', data, false)
-            .then((res) => {
-              // 4/23/2020: Always have cookies and local storage
-              Cookies.set('access_token', res.data.id);
-              Cookies.set('userId', res.data.userId);
-              Cookies.set('userType', userType);
-              Cookies.set('username', res.data.username);
-              _this.props.history.push('/home');
-            })
-            .catch((err) => {
-              console.error(err);
-              if (err.response.status === 401) {
-                this.showErrorMessage();
-              }
-            });
+          // console.log(res);
+          Cookies.set('base_access_token', res.data.token);
+          Cookies.set('access_token', res.data.token);
+          Cookies.set('userId', res.data.userId);
+          Cookies.set('userType', res.data.userType);
+          Cookies.set('username', res.data.username);
+          _this.props.history.push('/home');
         }).catch((err) => {
           console.error(err);
           if (err.response.status === 401) {
@@ -191,7 +170,7 @@ class Login extends React.Component {
                 <div className="form-group">
                   <div>
                     <span>Don't have an account? </span>
-                    <NavLink to="/register">Register now</NavLink>
+                    <NavLink to="/register" id="sign-up">Register now</NavLink>
                   </div>
                 </div>
                 <div className="form-group name-field">
@@ -234,7 +213,7 @@ class Login extends React.Component {
                 </div>
                 <div className="form-group row">
                   <div className="forget-pass col" style={{ marginLeft: '30px' }}>
-                    <NavLink to="/forgetPass">Forgot Password?</NavLink>
+                    <NavLink to="/forgetPass" id="forget-pass">Forgot Password?</NavLink>
                   </div>
                 </div>
 
@@ -252,7 +231,7 @@ class Login extends React.Component {
                 */}
                 <div className="form-group">
                   <span>If you have trouble logging in to your account, </span>
-                  <a href="mailto:edropswebsite@gmail.com">contact us.</a>
+                  <a href="mailto:service@edrops.org">contact us.</a>
                 </div>
               </div>
             </form>

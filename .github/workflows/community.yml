@@ -1,0 +1,59 @@
+name: Community deploy
+
+on: 
+  # note: workflow_displatch will only work on master branch
+  workflow_dispatch: 
+
+  # Only run workflow on push to master (via a PR being approved)
+  # push:
+  #   branches:
+  #     - master
+  #   paths:
+  #   # run if anything changed in client, toplevel, or deploy-related folders
+  #   - '.github/workflows/frontend.yml'
+  #   - 'deploy/**' 
+  #   - 'client/**'
+  #   - '*'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [16.15.x]
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ matrix.node-version }}
+    - name: Community npm install, build, and copy to EC2
+      run: |
+          cd community
+          npm install
+          npm run build
+
+          mkdir -p ~/.ssh
+          echo "$SSH_KEY" > ~/.ssh/ec2.key
+          chmod 600 ~/.ssh/ec2.key
+          cat >> ~/.ssh/config <<END
+            Host edrop_v2_ec2
+            HostName $SSH_HOST
+            User $SSH_USER
+            IdentityFile ~/.ssh/ec2.key
+            StrictHostKeyChecking no
+          END
+
+          ssh edrop_v2_ec2 'cd ~/eDrops3/community && rm -r dist && mkdir dist'
+          scp -i ~/.ssh/ec2.key -o StrictHostKeyChecking=no -r dist/* $SSH_USER@$SSH_HOST:~/eDrops3/community/dist
+          echo 'Restarting Caddy to pick up new files'
+          ssh edrop_v2_ec2 'cd ~/eDrops3/ && ls community/dist/ && docker restart edrop_caddy'
+      env:
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
+        SSH_USER: ${{ secrets.SSH_USER }}
+        SSH_HOST: ${{ secrets.SSH_HOST }}
+        SSH_KEY: ${{ secrets.SSH_KEY }}
+

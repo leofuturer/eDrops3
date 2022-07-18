@@ -1,26 +1,29 @@
-FROM node:14.15-slim
-WORKDIR /usr/src/app
+# Check out https://hub.docker.com/_/node to select a new base image
+FROM node:16-slim
 
-# tini: https://github.com/krallin/tini#using-tini
-# alternative: dumb-init
-ENV TINI_VERSION v0.19.0
-ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /tini
-RUN chmod +x /tini
+# Set to a non-root built-in user `node`
+USER node
 
-# 3000 for API
-EXPOSE 3000
+# Create app directory (with user `node`)
+RUN mkdir -p /home/node/app
 
-# Copy files over in server folder. If we mount a volume (for dev), it overrides the files
-COPY . /usr/src/app/
+WORKDIR /home/node/app
 
-RUN npm install && npm cache clean --force
-# Production version
-# RUN npm ci --only=production && npm cache clean --force
+# Install app dependencies
+# A wildcard is used to ensure both package.json AND package-lock.json are copied
+# where available (npm@5+)
+COPY --chown=node package*.json ./
 
-# Run as nonroot user for better security
-RUN useradd -u 2000 edrop_backend_user
-USER edrop_backend_user
+RUN npm install
 
-# So that node doesn't start as PID 1
-ENTRYPOINT ["/tini", "--"]
-CMD ["/bin/bash", "initialize.sh"]
+# Bundle app source code
+COPY --chown=node . .
+
+RUN npm run clean
+RUN npm run build
+
+# Bind to all network interfaces so that it can be mapped to the host OS
+ENV HOST=0.0.0.0 PORT=3000
+
+EXPOSE ${PORT}
+CMD [ "node", "." ]

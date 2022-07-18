@@ -1,4 +1,4 @@
-name: backend
+name: Backend deploy
 
 on:
   # note: workflow_displatch will only work on master branch
@@ -20,19 +20,19 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [14.15.x]
+        node-version: [16.15.x]
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v1
+      uses: actions/setup-node@v3
       with:
         node-version: ${{ matrix.node-version }}
     - name: backend npm install, docker build, and copy image to EC2
       run: |
           cd server
-          docker build -t danningyu/edrop_backend .
-          docker save -o edrop_backend.tar danningyu/edrop_backend
+          docker build -t edrop_backend .
+          docker save -o edrop_backend.tar edrop_backend
 
           mkdir -p ~/.ssh
           echo "$SSH_KEY" > ~/.ssh/ec2.key
@@ -45,9 +45,9 @@ jobs:
             StrictHostKeyChecking no
           END
 
-          scp -i ~/.ssh/ec2.key -o StrictHostKeyChecking=no edrop_backend.tar $SSH_USER@$SSH_HOST:~/Edrop-v2.0.0/edrop_backend.tar
+          scp -i ~/.ssh/ec2.key -o StrictHostKeyChecking=no edrop_backend.tar $SSH_USER@$SSH_HOST:~/eDrops3/edrop_backend.tar
           cd ..
-          scp -i ~/.ssh/ec2.key -o StrictHostKeyChecking=no Caddyfile *.yml LICENSE README.md CODEOWNERS $SSH_USER@$SSH_HOST:~/Edrop-v2.0.0/
+          scp -i ~/.ssh/ec2.key -o StrictHostKeyChecking=no Caddyfile *.yml LICENSE README.md CODEOWNERS $SSH_USER@$SSH_HOST:~/eDrops3/
       env:
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -63,7 +63,7 @@ jobs:
         key: ${{ secrets.SSH_KEY }}
         script_stop: true # stop after any command fails
         script: |
-          cd ~/Edrop-v2.0.0
+          cd ~/eDrops3
           docker load -i edrop_backend.tar
           docker-compose -f docker-compose.yml -f docker-compose.prod.yml down
           docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d

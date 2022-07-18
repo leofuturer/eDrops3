@@ -37,13 +37,20 @@
     margin: 0 auto;
     display: block;
 }
-
+/* 
 .modal-body{
     padding: 0;
-}
+} */
 
 .profile-content{
+    width: 1000px;
     margin-top: 0;
+    text-align: center;
+}
+
+.profile-content h3{
+    font-weight: bold;
+    color:#e97730;
 }
 
 .form-div{
@@ -51,6 +58,10 @@
     margin-right: 10px;
 }
 
-.modal-header{
+/* .modal-header{
     padding: 10px;
+} */
+
+.modal .form-div {
+    width: 100%;
 }

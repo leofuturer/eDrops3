@@ -179,7 +179,7 @@ class Profile extends React.Component {
           // need to update address separately
           let addressUrl = customerAddresses.replace('id', Cookies.get('userId'));
           addressUrl += `/${this.defaultAddressId}`;
-          API.Request(addressUrl, 'PUT', addressData, true)
+          API.Request(addressUrl, 'PATCH', addressData, true)
             .then((res) => {
               // console.log("Updated address");
               alert('Profile saved successfully!');

@@ -3,6 +3,6 @@ node_modules/
 deploy/dev/*.env
 deploy/prod/*.env
 deploy/test/backend_pwds.env
-permission_matrix.json
+**/permission_matrix.json
 logs.txt
 *.tar

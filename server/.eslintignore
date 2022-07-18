@@ -1,1 +1,6 @@
-/client/
+node_modules/
+dist/
+coverage/
+.eslintrc.js
+lb3app/
+lambda/

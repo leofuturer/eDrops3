@@ -4,15 +4,15 @@
 const ApiRootUrl = '/api';
 
 // Overall User
-export const userSignUp = `${ApiRootUrl}/userBases`;
-export const userBaseFind = `${ApiRootUrl}/userBases`;
-export const userBaseDeleteById = `${ApiRootUrl}/userBases/id`;
-export const updateUserBaseProfile = `${ApiRootUrl}/userBases/id`;
-export const userLogin = `${ApiRootUrl}/userBases/login`;
-export const userLogout = `${ApiRootUrl}/userBases/logout`;
-export const userForgetPass = `${ApiRootUrl}/userBases/reset`;
-export const userChangePass = `${ApiRootUrl}/userBases/change-password`;
-export const userResetPass = `${ApiRootUrl}/userBases/reset-password`;
+export const userSignUp = `${ApiRootUrl}/users`;
+export const userBaseFind = `${ApiRootUrl}/users`;
+export const userBaseDeleteById = `${ApiRootUrl}/users/id`;
+export const updateUserBaseProfile = `${ApiRootUrl}/users/id`;
+export const userLogin = `${ApiRootUrl}/users/login`;
+export const userLogout = `${ApiRootUrl}/users/logout`;
+export const userForgetPass = `${ApiRootUrl}/users/reset`;
+export const userChangePass = `${ApiRootUrl}/users/change-password`;
+export const userResetPass = `${ApiRootUrl}/users/reset-password`;
 
 // Customer
 export const customerSignUp = `${ApiRootUrl}/customers`;
@@ -35,6 +35,7 @@ export const AdminChangePass = `${ApiRootUrl}/admins/change-password`;
 export const adminGetProfile = `${ApiRootUrl}/admins/id`;
 export const updateAdminProfile = `${ApiRootUrl}/admins/id`;
 export const adminDownloadFile = `${ApiRootUrl}/admins/downloadFile`;
+export const adminCredsTaken = `${ApiRootUrl}/admins/credsTaken`;
 
 export const addFoundryWorker = `${ApiRootUrl}/foundryWorkers`;
 export const addCustomer = `${ApiRootUrl}/customers`;
@@ -55,6 +56,7 @@ export const foundryWorkerGetProfile = `${ApiRootUrl}/foundryWorkers/id`;
 export const editFoundryWorker = `${ApiRootUrl}/foundryWorkers/id`;
 export const FoundryWorkerChangeProfile = `${ApiRootUrl}/foundryWorkers/id`;
 export const updateWorkerProfile = `${ApiRootUrl}/foundryWorkers/id`;
+export const getWorkerId = `${ApiRootUrl}/foundryWorkers/getWorkerID`;
 
 // File management
 export const customerFileRetrieve = `${ApiRootUrl}/customers/id/customerFiles`;

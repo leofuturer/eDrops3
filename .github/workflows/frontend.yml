@@ -1,4 +1,4 @@
-name: frontend
+name: Frontend Deploy
 
 on: 
   # note: workflow_displatch will only work on master branch
@@ -20,15 +20,15 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [14.15.x]
+        node-version: [16.15.x]
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v1
+      uses: actions/setup-node@v3
       with:
         node-version: ${{ matrix.node-version }}
-    - name: frontend npm install, build, and copy to EC2
+    - name: Frontend npm install, build, and copy to EC2
       run: |
           cd client
           npm install
@@ -45,10 +45,10 @@ jobs:
             StrictHostKeyChecking no
           END
 
-          ssh edrop_v2_ec2 'cd ~/Edrop-v2.0.0/client && rm -r dist && mkdir dist'
-          scp -i ~/.ssh/ec2.key -o StrictHostKeyChecking=no -r dist/* $SSH_USER@$SSH_HOST:~/Edrop-v2.0.0/client/dist
+          ssh edrop_v2_ec2 'cd ~/eDrops3/client && rm -r dist && mkdir dist'
+          scp -i ~/.ssh/ec2.key -o StrictHostKeyChecking=no -r dist/* $SSH_USER@$SSH_HOST:~/eDrops3/client/dist
           echo 'Restarting Caddy to pick up new files'
-          ssh edrop_v2_ec2 'cd ~/Edrop-v2.0.0/ && ls client/dist/ && docker restart edrop-v200_edrop_caddy_1'
+          ssh edrop_v2_ec2 'cd ~/eDrops3/ && ls client/dist/ && docker restart edrop_caddy'
       env:
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
