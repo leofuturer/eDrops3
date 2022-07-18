@@ -9,7 +9,7 @@ jobs:
         runs-on: ubuntu-latest
         strategy:
             matrix:
-                node-version: [14.15.x]
+                node-version: [16.15.x]
 
         steps:
             - name: Checkout
@@ -17,7 +17,7 @@ jobs:
             # Install NPM dependencies, cache them correctly
             # and run all Cypress tests
             - name: Node.js ${{ matrix.node-version }}
-              uses: actions/setup-node@v1
+              uses: actions/setup-node@v3
               with:
                   node-version: ${{ matrix.node-version }}
             - name: Start backend
@@ -26,12 +26,12 @@ jobs:
                   cd server
                   npm install
                   npm install -g wait-on
-                  docker build -t danningyu/edrop_backend .
+                  docker build -t edrop_backend .
 
                   # initialize server
                   cd .. 
                   touch deploy/test/backend_pwds.env
-                  RESET_DATABASE=Yes docker-compose -f docker-compose.yml -f docker-compose.test.yml up -d
+                  MIGRATE_DATABASE=Yes RESET_DATABASE=Yes docker-compose -f docker-compose.yml -f docker-compose.test.yml up -d
 
                   echo "Waiting for database to start"
                   wait-on tcp:3306 --timeout 25000
@@ -72,12 +72,16 @@ jobs:
               env:
                   APP_EMAIL_API_KEY: ${{ secrets.APP_EMAIL_API_KEY }}
                   SHOPIFY_TOKEN: ${{ secrets.SHOPIFY_TOKEN }}
-            - name: Cypress E2E tests
-              uses: cypress-io/github-action@v2
+            - name: Main site Cypress E2E tests
+              uses: cypress-io/github-action@v4
+              with:
+                browser: chrome
+                start: npm run dev
+                wait-on: http://localhost:8086
+                working-directory: ./client
             - name: Stop backend
               run: |
                   # Shut down the testing backend
-                  cd ..
                   docker-compose -f docker-compose.yml -f docker-compose.test.yml down
                   exit $EXIT
               

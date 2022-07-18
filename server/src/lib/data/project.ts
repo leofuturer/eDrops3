@@ -1,5 +1,5 @@
-import {Project} from '../../models';
 import {faker} from '@faker-js/faker';
+import {Project} from '../../models';
 
 export const defaultProjects: Project[] = new Array(10)
   .fill(0)

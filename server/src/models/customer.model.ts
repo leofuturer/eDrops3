@@ -1,5 +1,8 @@
-import {model, property} from '@loopback/repository';
-import {User} from '.';
+import { hasMany, model, property } from '@loopback/repository';
+import { User } from '.';
+import { CustomerAddress } from './customer-address.model';
+import { FileInfo } from './file-info.model';
+import { OrderInfo } from './order-info.model';
 
 @model({
   settings: {
@@ -62,8 +65,19 @@ export class Customer extends User {
     required: true,
     default: 'person',
   })
-  userType: string;
+  customerType: string;
 
+  @hasMany(() => CustomerAddress)
+  customerAddresses: CustomerAddress[];
+
+  @hasMany(() => FileInfo)
+  fileInfos: FileInfo[];
+
+  @hasMany(() => OrderInfo)
+  orderInfos: OrderInfo[];
+
+  // @belongsTo(() => User)
+  // userId: string;
   // Define well-known properties here
 
   // Indexer property to allow additional data

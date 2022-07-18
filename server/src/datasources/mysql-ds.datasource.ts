@@ -1,16 +1,17 @@
-import {inject, lifeCycleObserver, LifeCycleObserver} from '@loopback/core';
-import {juggler} from '@loopback/repository';
-import path from 'path';
+import { inject, lifeCycleObserver, LifeCycleObserver } from '@loopback/core';
+import { juggler } from '@loopback/repository';
 import dotenv from 'dotenv';
+import path from 'path';
+
 dotenv.config({path: path.resolve(__dirname, '.env')});
 
 const config = {
   name: 'mysqlDS',
   connector: 'mysql',
   debug: false,
-  database: process.env.APP_MYSQL_DATABASE || 'edrop_db',
-  host: process.env.APP_MYSQL_HOST || 'localhost',
-  port: parseInt(process.env.APP_MYSQL_PORT as string) || 3306,
+  database: process.env.APP_MYSQL_DATABASE ?? 'edrop_db',
+  host: process.env.APP_MYSQL_HOST ?? 'localhost',
+  port: parseInt(process.env.APP_MYSQL_PORT as string, 10) ?? 3306,
   username: process.env.APP_MYSQL_USERNAME,
   password: process.env.APP_MYSQL_PASSWORD,
   connectTimeout: 20000,
@@ -27,6 +28,7 @@ export class MysqlDsDataSource
   implements LifeCycleObserver
 {
   static dataSourceName = 'mysqlDS';
+
   static readonly defaultConfig = config;
 
   constructor(

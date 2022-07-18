@@ -1,10 +1,10 @@
-version: "3.7"
+version: "3.9"
 
 # https://start.jcolemorrison.com/authorized-resources-and-database-migrations-with-strongloops-loopback/
 
 services:  
   edrop_backend:
-    image: danningyu/edrop_backend
+    image: edrop_backend
     container_name: edrop_backend
     ports:
       - 3000:3000

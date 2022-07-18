@@ -57,28 +57,28 @@ class ChipOrder extends React.Component {
     const PAPERFW = "paperfab";
     const PCBFW = "pcbfab";
     // fetch IDs of default foundry workers
-    API.Request(getWorkerId, 'POST', { username: GLASSFW }, true)
+    API.Request(getWorkerId, 'GET', { username: GLASSFW }, true)
       .then((res) => {
         this.setState({
-          GLASSID: res.data.workerId,
+          GLASSID: res.data,
         });
       })
       .catch((err) => {
         console.log(err);
       });
-    API.Request(getWorkerId, 'POST', { username: PAPERFW }, true)
+    API.Request(getWorkerId, 'GET', { username: PAPERFW }, true)
       .then((res) => {
         this.setState({
-          PAPERID: res.data.workerId,
+          PAPERID: res.data,
         });
       })
       .catch((err) => {
         console.log(err);
       });
-    API.Request(getWorkerId, 'POST', { username: PCBFW }, true)
+    API.Request(getWorkerId, 'GET', { username: PCBFW }, true)
       .then((res) => {
         this.setState({
-          PCBID: res.data.workerId,
+          PCBID: res.data,
         });
       })
       .catch((err) => {
@@ -275,7 +275,7 @@ class ChipOrder extends React.Component {
                 otherDetails: customServerOrderAttributes,
                 process: this.state.materialVal,
                 coverPlate: wcpbVal,
-                lastUpdated: Date.now(),
+                lastUpdated: new Date().toISOString(),
                 fileInfoId: this.state.fileInfo.id,
                 workerId: materialSpecificWorkerId,
               };

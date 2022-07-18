@@ -30,9 +30,9 @@ export class AccessToken extends Entity {
   created?: string;
 
   @property({
-    type: 'number',
+    type: 'string',
   })
-  userId?: number;
+  userId?: string;
 
   // Define well-known properties here
 

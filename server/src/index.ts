@@ -9,7 +9,7 @@ export async function main(options: ApplicationConfig = {}) {
   await app.migrateSchema(); // Checks env variables for migrating or seeding database
   await app.start();
 
-  const url = app.restServer.url;
+  const { url } = app.restServer;
   console.log(`Server is running at ${url}`);
   console.log(`Try ${url}/ping`);
 

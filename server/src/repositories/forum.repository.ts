@@ -1,7 +1,7 @@
-import {inject} from '@loopback/core';
-import {DefaultCrudRepository} from '@loopback/repository';
-import {MysqlDsDataSource} from '../datasources';
-import {Forum, ForumRelations} from '../models';
+import { inject } from '@loopback/core';
+import { DefaultCrudRepository } from '@loopback/repository';
+import { MysqlDsDataSource } from '../datasources';
+import { Forum, ForumRelations } from '../models';
 
 export class ForumRepository extends DefaultCrudRepository<
   Forum,

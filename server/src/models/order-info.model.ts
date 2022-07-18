@@ -1,4 +1,6 @@
-import {Entity, model, property} from '@loopback/repository';
+import {Entity, model, property, hasMany} from '@loopback/repository';
+import {OrderProduct} from './order-product.model';
+import {OrderChip} from './order-chip.model';
 
 @model({
   settings: {
@@ -187,10 +189,25 @@ export class OrderInfo extends Entity {
   otherDetails?: string;
 
   @property({
+    type: 'string',
+  })
+  customerId?: string;
+
+  @property({
     type: 'number',
   })
-  customerId?: number;
+  billingAddressId?: number;
 
+  @property({
+    type: 'number',
+  })
+  shippingAddressId?: number;
+
+  @hasMany(() => OrderProduct, {keyTo: 'orderId'})
+  orderProducts: OrderProduct[];
+
+  @hasMany(() => OrderChip, {keyTo: 'orderId'})
+  orderChips: OrderChip[];
   // Define well-known properties here
 
   // Indexer property to allow additional data

@@ -21,9 +21,9 @@ class AllItems extends React.Component {
     const _this = this;
     API.Request(returnAllItems, 'GET', {}, false)
       .then((res) => {
-        if (res.data.products) {
+        if (res.data) {
           _this.setState({
-            products: res.data.products,
+            products: res.data,
             fetchedProducts: true,
           });
         }

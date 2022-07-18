@@ -1,5 +1,7 @@
-import {model, property} from '@loopback/repository';
+import {model, property, belongsTo} from '@loopback/repository';
 import {OrderItemBase} from '.';
+import {FileInfo} from './file-info.model';
+import {FoundryWorker} from './foundry-worker.model';
 
 @model({
   settings: {
@@ -40,17 +42,16 @@ export class OrderChip extends OrderItemBase {
     default: 'Fabrication request received',
   })
   status: string;
+  
+  @belongsTo(() => FileInfo)
+  fileInfoId: number;
 
-  @property({
-    type: 'number',
-  })
-  fileInfoId?: number;
-
-  @property({
-    type: 'number',
-  })
-  workerId?: number;
-
+  @belongsTo(() => FoundryWorker)
+  workerId: string;
+  // @property({
+  //   type: 'number',
+  // })
+  // orderId?: number;
   // Define well-known properties here
 
   // Indexer property to allow additional data

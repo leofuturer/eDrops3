@@ -1,7 +1,7 @@
-import {inject} from '@loopback/core';
-import {DefaultCrudRepository} from '@loopback/repository';
-import {MysqlDsDataSource} from '../datasources';
-import {Scope, ScopeRelations} from '../models';
+import { inject } from '@loopback/core';
+import { DefaultCrudRepository } from '@loopback/repository';
+import { MysqlDsDataSource } from '../datasources';
+import { Scope, ScopeRelations } from '../models';
 
 export class ScopeRepository extends DefaultCrudRepository<
   Scope,

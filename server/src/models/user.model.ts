@@ -11,12 +11,12 @@ import {Entity, model, property} from '@loopback/repository';
 })
 export class User extends Entity {
   @property({
-    type: 'number',
+    type: 'string',
     id: 1,
-    generated: true,
-    updateOnly: true,
+    defaultFn: 'uuidv4',
+    limit: 36,
   })
-  id?: number;
+  id?: string;
 
   @property({
     type: 'string',
@@ -33,6 +33,8 @@ export class User extends Entity {
     required: true,
   })
   password: string;
+  // @hasOne(() => UserCredentials)
+  // userCredentials: UserCredentials;
 
   @property({
     type: 'string',
@@ -51,6 +53,13 @@ export class User extends Entity {
   verificationToken?: string;
 
   // Define well-known properties here
+
+  @property({
+    type: 'string',
+    required: false,
+    default: 'customer',
+  })
+  userType?: string;
 
   // Indexer property to allow additional data
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
