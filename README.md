@@ -1,5 +1,5 @@
-# Edrop-v2.0.0
-The 2nd generation of the eDrops web application.
+# eDrops3
+The 3rd generation of the eDrops web application.
 
 ## Documentation
 
