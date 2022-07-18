@@ -1,13 +1,14 @@
 name: Backend test
 
 on:
-  push:
-    paths:
-    # run if anything changed in server, toplevel, or deploy-related folders
-    - '.github/workflows/backend-test.yml'
-    - 'deploy/**' 
-    - 'server/**'
-    - '*'
+  # push:
+  #   paths:
+  #   # run if anything changed in server, toplevel, or deploy-related folders
+  #   - '.github/workflows/backend-test.yml'
+  #   - 'deploy/**' 
+  #   - 'server/**'
+  #   - '*'
+  workflow_dispatch:
 
 jobs:
   test:
