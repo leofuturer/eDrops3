@@ -28,7 +28,7 @@ jobs:
       uses: actions/setup-node@v3
       with:
         node-version: ${{ matrix.node-version }}
-    - name: backend npm install, docker build, and copy image to EC2
+    - name: Backend npm install, docker build, and copy image to EC2
       run: |
           cd server
           docker build -t edrop_backend .
