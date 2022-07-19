@@ -33,7 +33,9 @@ edrops.org {
     }
     rewrite @try_files {http.matchers.file.relative}
 
-    reverse_proxy /api/* edrop_backend:3000
+    handle_path /api/* {
+        reverse_proxy edrop_backend:3000
+    }
 
     root * /usr/share/caddy/www
     file_server @frontendApi
@@ -59,7 +61,9 @@ community.edrops.org {
     }
     rewrite @try_files {http.matchers.file.relative}
 
-    reverse_proxy /api/* edrop_backend:3000
+    handle_path /api/* {
+        reverse_proxy edrop_backend:3000
+    }
 
     root * /usr/share/caddy/community
     file_server @frontendApi
