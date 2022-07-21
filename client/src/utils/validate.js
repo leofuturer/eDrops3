@@ -1,5 +1,5 @@
 const closestParent = (child, className) => {
-  if (!child || child == document) {
+  if (!child || child === document) {
     return null;
   }
   if (child.classList.contains(className)) {

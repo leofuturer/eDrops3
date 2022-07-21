@@ -1,35 +1,35 @@
-import React from "react";
-import { Helmet } from "react-helmet";
+import React from 'react';
+import { Helmet } from 'react-helmet';
 
 const defaultMetadata = {
-  title: "Digital microfluidic chip & control system provider | eDrops",
-  description: "A portal for electrowetting-on-dielectric (EWOD) digital microfluidics. Design chips; access fabrication services; obtain tools for device operation; share experiences.",
+  title: 'Digital microfluidic chip & control system provider | eDrops',
+  description: 'A portal for electrowetting-on-dielectric (EWOD) digital microfluidics. Design chips; access fabrication services; obtain tools for device operation; share experiences.',
   metadata: [
     {
-      name: "og:title",
-      content: "Digital microfluidic chip & control system provider | eDrops"
+      name: 'og:title',
+      content: 'Digital microfluidic chip & control system provider | eDrops',
     },
     {
-      name: "og:description",
-      content: "A portal for electrowetting-on-dielectric (EWOD) digital microfluidics. Design chips; access fabrication services; obtain tools for device operation; share experiences."
+      name: 'og:description',
+      content: 'A portal for electrowetting-on-dielectric (EWOD) digital microfluidics. Design chips; access fabrication services; obtain tools for device operation; share experiences.',
     },
     {
-      name: "og:image",
-      content: "https://edrops.org/resource/edrop_logo.png"
+      name: 'og:image',
+      content: 'https://edrops.org/resource/edrop_logo.png',
     },
     {
-      name: "og:type",
-      content: "website"
+      name: 'og:type',
+      content: 'website',
     },
     {
-      name: "og:url",
-      content: "https://www.edrops.org"
+      name: 'og:url',
+      content: 'https://www.edrops.org',
     },
     {
-      name: "twitter:card",
-      content: "summary_large_image"
-    }
-  ]
+      name: 'twitter:card',
+      content: 'summary_large_image',
+    },
+  ],
 };
 
 const SEO = ({ title, description, metadata = [] }) => {
@@ -56,7 +56,6 @@ export default SEO;
   og:image (url to image)
   og:url (canonical URL)
   og:type (website, article, etc.)
-  
 
   twitter (Twitter)
   -----------------

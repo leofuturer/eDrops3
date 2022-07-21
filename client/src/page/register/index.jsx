@@ -162,7 +162,7 @@ class Register extends React.Component {
             this.props.history.push('/checkEmail');
             this.setState({
               errorMessage: '',
-            })
+            });
           })
           .catch((error) => {
             console.error(error);
@@ -184,9 +184,11 @@ class Register extends React.Component {
   render() {
     return (
       <div>
-        <SEO title="eDrops | Register"
+        <SEO
+          title="eDrops | Register"
           description=""
-          metadata={metadata} />
+          metadata={metadata}
+        />
         <div className="login-input">
           <div className="register-login-content">
             <h3>Sign Up</h3>

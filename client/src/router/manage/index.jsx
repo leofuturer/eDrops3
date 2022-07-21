@@ -1,41 +1,43 @@
 import React from 'react';
-import { Redirect, Route, Switch, withRouter } from 'react-router-dom';
+import {
+  Redirect, Route, Switch, withRouter,
+} from 'react-router-dom';
 
-import NavLeft from 'component/nav-left/index.jsx';
+import NavLeft from 'component/nav-left/index';
 // Customers
-import AddNewAddress from 'page/address/addNewAddress.jsx';
-import Address from 'page/address/index.jsx';
-import UpdateAddress from 'page/address/updateAddress.jsx';
-import Password from 'page/changePass/index.jsx';
-import Profile from 'page/profile/index.jsx';
+import AddNewAddress from 'page/address/addNewAddress';
+import Address from 'page/address/index';
+import UpdateAddress from 'page/address/updateAddress';
+import Password from 'page/changePass/index';
+import Profile from 'page/profile/index';
 
 // Workers
-import AddOrEditWorker from 'page/foundryWorker/addOrEditWorker.jsx';
-import FoundryWorker from 'page/foundryWorker/index.jsx';
-import AddOrEditUser from 'page/users/addOrEditUser.jsx';
-import Users from 'page/users/index.jsx';
+import AddOrEditWorker from 'page/foundryWorker/addOrEditWorker';
+import FoundryWorker from 'page/foundryWorker/index';
+import AddOrEditUser from 'page/users/addOrEditUser';
+import Users from 'page/users/index';
 
 // Admins
-import AddOrEditAdmin from 'page/admins/addOrEditAdmin.jsx';
-import Admins from 'page/admins/index.jsx';
+import AddOrEditAdmin from 'page/admins/addOrEditAdmin';
+import Admins from 'page/admins/index';
 
 // Files
-import AllFiles from 'page/files/allFiles.jsx';
-import Files from 'page/files/index.jsx';
+import AllFiles from 'page/files/allFiles';
+import Files from 'page/files/index';
 
 // Orders
-import AllOrders from 'page/order/allOrders.jsx';
-import AssignOrders from 'page/order/assignOrders.jsx';
-import ChipOrders from 'page/order/chipOrders.jsx';
-import Orders from 'page/order/index.jsx';
+import AllOrders from 'page/order/allOrders';
+import AssignOrders from 'page/order/assignOrders';
+import ChipOrders from 'page/order/chipOrders';
+import Orders from 'page/order/index';
 
 // Cart
-import Cart from 'page/cart/index.jsx';
+import Cart from 'page/cart/index';
 
 import Cookies from 'js-cookie';
-import Shopify from '../../app.jsx';
-import SEO from '../../component/header/seo.jsx';
-import { metadata } from './metadata.jsx';
+import Shopify from '../../app';
+import SEO from '../../component/header/seo';
+import { metadata } from './metadata';
 
 const routes = [
   // Pages for Admin:
@@ -182,9 +184,11 @@ class Manage extends React.Component {
     }
     return (
       <div className="manage">
-        <SEO title="eDrops | Dashboard"
-              description="" 
-              metadata={ metadata }/>
+        <SEO
+          title="eDrops | Dashboard"
+          description=""
+          metadata={metadata}
+        />
         <div className="left-nav">
           <NavLeft />
         </div>

@@ -1,10 +1,12 @@
 import React from 'react';
 import { withRouter } from 'react-router-dom';
 import './foundryworker.css';
-import API from '../../api/api';
-import { getAllFoundryWorkers, editFoundryWorker, userBaseFind, userBaseDeleteById } from '../../api/serverConfig';
-import DeletePopup from '../../component/popup/deletePopup.jsx';
 import $ from 'jquery';
+import API from '../../api/api';
+import {
+  getAllFoundryWorkers, editFoundryWorker, userBaseFind, userBaseDeleteById,
+} from '../../api/serverConfig';
+import DeletePopup from '../../component/popup/deletePopup.jsx';
 
 class FoundryWorker extends React.Component {
   constructor(props) {
@@ -28,7 +30,7 @@ class FoundryWorker extends React.Component {
     const worker = JSON.parse(e.target.getAttribute('worker'));
     const workerId = worker.id;
     this.props.history.push('/manage/admin-retrieve-worker-orders', {
-      workerId: workerId,
+      workerId,
       isCustomer: false,
     });
   }
@@ -48,7 +50,7 @@ class FoundryWorker extends React.Component {
 
   handleDelete() {
     // we need to delete both userBase and worker instances
-    const worker = this.state.deleteWorker
+    const worker = this.state.deleteWorker;
     let url = `${userBaseFind}?filter={"where": {"email": "${worker.email}"}}`;
     API.Request(url, 'GET', {}, true)
       .then((res) => {
@@ -116,7 +118,7 @@ class FoundryWorker extends React.Component {
                 </tr>
               </thead>
               <tbody>
-                {this.state.workerList.map((worker, index) =>
+                {this.state.workerList.map((worker, index) => (
                   <tr id={`worker${worker.id}`} key={index}>
                     <td>{`${worker.firstName} ${worker.lastName}`}</td>
                     <td>{worker.username}</td>
@@ -130,10 +132,10 @@ class FoundryWorker extends React.Component {
                       <i className="fa fa-edit" worker={JSON.stringify(worker)} onClick={this.handleEditWorker} />
                     </td>
                     <td>
-                      <i className="fa fa-trash" worker={JSON.stringify(worker)} data-toggle="modal" data-target="#deleteModal" onClick={this.handleDeleteWorker}/>
+                      <i className="fa fa-trash" worker={JSON.stringify(worker)} data-toggle="modal" data-target="#deleteModal" onClick={this.handleDeleteWorker} />
                     </td>
                   </tr>
-                )}
+                ))}
               </tbody>
             </table>
           </div>

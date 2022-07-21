@@ -42,7 +42,7 @@ class FormsPage extends React.Component {
     const data = {
       email: this.state.email,
     };
-    if(this.state.email !== '') {
+    if (this.state.email !== '') {
       if (helpType === 'resetPassword') {
         this.setState({
           requestInProgressReset: true,
@@ -111,7 +111,6 @@ class FormsPage extends React.Component {
       });
   }
 
-
   render() {
     return (
       <div>
@@ -135,8 +134,7 @@ class FormsPage extends React.Component {
                   onChange={(v) => this.handleChange('email', v.target.value)}
                   onBlur={this.handleValidateInput}
                 />
-                <div className="messages pad">
-                </div>
+                <div className="messages pad" />
               </div>
               <div className="form-group login-btn">
                 {

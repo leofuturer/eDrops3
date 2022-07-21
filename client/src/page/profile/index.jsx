@@ -230,9 +230,11 @@ class Profile extends React.Component {
     }
     return (
       <div className="right-route-content">
-        <SEO title="eDrops | Profile"
-              description="" 
-              metadata={ metadata }/>
+        <SEO
+          title="eDrops | Profile"
+          description=""
+          metadata={metadata}
+        />
         <div className="profile-content">
           <h2>{profileContent}</h2>
           <div className="form-div">

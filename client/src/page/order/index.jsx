@@ -72,9 +72,11 @@ class Orders extends React.Component {
   render() {
     return (
       <div>
-        <SEO title="eDrops | Orders"
+        <SEO
+          title="eDrops | Orders"
           description=""
-          metadata={metadata} />
+          metadata={metadata}
+        />
         <div className="right-route-content">
           <div className="profile-content">
             {
