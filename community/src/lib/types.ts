@@ -16,3 +16,10 @@ export interface ForumType {
     datetime: Date;
     likes: number;
 }
+
+export interface UserProfile {
+  image: string;
+  username: string;
+  email: string;
+  description: string;
+}

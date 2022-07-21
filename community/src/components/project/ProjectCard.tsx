@@ -1,21 +1,27 @@
-import React from "react";
 import { ProjectType } from "../../lib/types";
 
 function ProjectCard({ project }: { project: ProjectType }) {
-  return (
-    <div className="w-1/4 h-full my-10 border-2 rounded-2xl p-4 shadow-xl border-black/10 flex flex-row items-center">
-      <div className="w-full flex flex-col justify-between h-full">
-        <div className="w-full h-2/3">Image</div>
-        <div className="w-full h-1/3">
-          <h3 className="w-full flex flex-col h-1/2">
-            {project.author} / {project.title}
-          </h3>
-          <p className="flex truncate h-1/2 w-full">{project.content}</p>
-          <p>{new Date(project.datetime).toLocaleDateString()}</p>
-        </div>
-      </div>
-    </div>
-  );
+	return (
+		<div className="w-full rounded-2xl shadow-xl bg-white flex flex-row items-center">
+			<div className="relative w-full flex flex-col justify-between h-full group">
+				<div
+					className="w-full h-full rounded-2xl"
+				>
+					<img src="/static/img/EWOD-chip-compressed.png" alt="Project picture" className="w-full h-full rounded-2xl" />
+				</div>
+				<div className="absolute inset-0 w-full h-full p-4 bg-gray-500/50 rounded-2xl invisible group-hover:visible flex flex-col justify-end">
+					<h3 className="w-full line-clamp-2 text-md font-bold">{project.title}</h3>
+					<p className="w-full line-clamp-1 text-sm">{project.author}</p>
+					<p className="w-full line-clamp-3 text-sm">
+						{project.content}
+					</p>
+					<p className="w-full line-clamp-1">
+						{new Date(project.datetime).toLocaleDateString()}
+					</p>
+				</div>
+			</div>
+		</div>
+	);
 }
 
 export default ProjectCard;

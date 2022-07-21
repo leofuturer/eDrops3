@@ -4,14 +4,14 @@ import NavTop from './NavTop'
 
 function Layout() {
   return (
-    <div className="w-full h-screen flex flex-col">
+    <main className="w-full h-screen flex flex-col">
       <div className="">
         <NavTop />
       </div>
-      <div className="h-full">
+      <div className="h-[calc(100vh-80px)]">
         <Outlet />
       </div>
-    </div>
+    </main>
   )
 }
 
