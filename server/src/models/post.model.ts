@@ -1,7 +1,7 @@
 import {Entity, model, property} from '@loopback/repository';
 
 @model()
-export class Forum extends Entity {
+export class Post extends Entity {
   @property({
     type: 'number',
     id: true,
@@ -56,13 +56,13 @@ export class Forum extends Entity {
   })
   likes: number;
 
-  constructor(data?: Partial<Forum>) {
+  constructor(data?: Partial<Post>) {
     super(data);
   }
 }
 
-export interface ForumRelations {
+export interface PostRelations {
   // describe navigational properties here
 }
 
-export type ForumWithRelations = Forum & ForumRelations;
+export type PostWithRelations = Post & PostRelations;
