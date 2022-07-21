@@ -18,6 +18,11 @@ export class Post extends Entity {
   @property({
     type: 'string',
     required: true,
+    mysql: {
+      index: {
+        kind: 'FULLTEXT'
+      }
+    },
   })
   author: string;
 
