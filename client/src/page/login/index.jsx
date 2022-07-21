@@ -101,9 +101,9 @@ class Login extends React.Component {
     document.querySelector('.passwordError').appendChild(block);
   }
 
-  enterPressed(e){
-    let code = e.keyCode || e.which;
-    if(code === 13){ // the ENTER key
+  enterPressed(e) {
+    const code = e.keyCode || e.which;
+    if (code === 13) { // the ENTER key
       this.handleLogin();
     }
   }
@@ -158,9 +158,11 @@ class Login extends React.Component {
   render() {
     return (
       <div>
-        <SEO title="eDrops | Login"
-              description="" 
-              metadata={ metadata }/>
+        <SEO
+          title="eDrops | Login"
+          description=""
+          metadata={metadata}
+        />
         <div className="login-input">
           <div className="div-login-contenth">
             <h3>Login</h3>
@@ -207,8 +209,14 @@ class Login extends React.Component {
                   {
                     this.state.isLoading
                       ? <img src={loadingGif} alt="" />
-                      : <input type="button" value="Login" className="input-btn" 
-                          onClick={this.handleLogin} />
+                      : (
+                        <input
+                          type="button"
+                          value="Login"
+                          className="input-btn"
+                          onClick={this.handleLogin}
+                        />
+                      )
                   }
                 </div>
                 <div className="form-group row">
@@ -217,7 +225,7 @@ class Login extends React.Component {
                   </div>
                 </div>
 
-                {/* 
+                {/*
                   <div className="form-group">
                     <div className="border-div-goole">
                         <i className="fa fa-google"></i>
@@ -227,7 +235,7 @@ class Login extends React.Component {
                         <i className="fa fa-facebook"></i>
                         <span className="span-txt-padding">Login with Facebook</span>
                     </div>
-                  </div> 
+                  </div>
                 */}
                 <div className="form-group">
                   <span>If you have trouble logging in to your account, </span>

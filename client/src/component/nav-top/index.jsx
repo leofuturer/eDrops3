@@ -4,13 +4,13 @@ import Cookies from 'js-cookie';
 import {
   customerLogout, AdminLogout, FoundryWorkerLogout, userLogout,
   getCustomerCart,
-  getProductOrders, getChipOrders
+  getProductOrders, getChipOrders,
 } from '../../api/serverConfig';
 import API from '../../api/api';
-import eDropsLogo from "../../../static/img/edrop_logo.png";
-import eDropsLogoInverted from "../../../static/img/edrop_logo_inverted.png";
-import './navTop.css'
-import CartContext from '../../context/CartContext'
+import eDropsLogo from '../../../static/img/edrop_logo.png';
+import eDropsLogoInverted from '../../../static/img/edrop_logo_inverted.png';
+import './navTop.css';
+import CartContext from '../../context/CartContext';
 import hoistNonReactStatics from 'hoist-non-react-statics';
 
 class NavTop extends React.Component {
@@ -23,7 +23,7 @@ class NavTop extends React.Component {
   }
 
   componentDidMount() {
-    if((Cookies.get('username') !== undefined)) {
+    if ((Cookies.get('username') !== undefined)) {
       this.setUpCartItems();
     }
   }
@@ -68,7 +68,7 @@ class NavTop extends React.Component {
 
   setUpCartItems() {
     const _this = this;
-    if(Cookies.get('userType') === 'customer') {
+    if (Cookies.get('userType') === 'customer') {
       let url = getCustomerCart.replace('id', Cookies.get('userId'));
       API.Request(url, 'GET', {}, true)
         .then((res) => {
@@ -99,7 +99,7 @@ class NavTop extends React.Component {
         })
         .catch((err) => {
           console.error(err);
-        })
+        });
     }
   }
 
@@ -111,37 +111,42 @@ class NavTop extends React.Component {
 
     return (
     // At this time the className "header-div" has no use
-      // <CartContext.Consumer>
-      //   {(contextProps) => {
-          <header className="header-div">
-            <div className="container-nav">
-              <div className="header-brand">
-                <NavLink to="/home">eDrops</NavLink>
-                <NavLink to="/home"><img className="website-logo" src={eDropsLogoInverted} alt="" /></NavLink>
-              </div>
-              {/* <div> */}
-                <ul className="ul-nav">
-                  <li><NavLink to="/home">Home</NavLink></li>
-                  <li><NavLink to="/featureComing">EWOD CAD</NavLink></li>
-                  <li><NavLink to="/upload">EWOD Chip Fabrication</NavLink></li>
-                  <li><NavLink to="/allItems">Products</NavLink></li>
-                  <li><NavLink to="/featureComing">Community</NavLink></li>
-                  <li><NavLink to="/featureComing">Support</NavLink></li>
-                  <li>
-                    { Cookies.get('userType') === 'customer'
-                      ? notLoggedIn
-                        ? <NavLink to="/login"><i className="fa fa-shopping-cart" /></NavLink> // Cannot view cart if not logged in
-                        : <NavLink to="/manage/cart"><i className="fa fa-shopping-cart" /><span className='badge' value={this.context.items} style={{display: this.context.items ? 'inline-block' : 'none'}}>  </span></NavLink>
-                      : null}
-                  </li>
-                  { /* Should we be using NavLink or href? NavLink prevents page reloading */ }
-                  {/* <li><a href="/featureComing"><i className="fa fa-search" /></a></li> */}
-                  {
+    // <CartContext.Consumer>
+    //   {(contextProps) => {
+      <header className="header-div">
+        <div className="container-nav">
+          <div className="header-brand">
+            <NavLink to="/home">eDrops</NavLink>
+            <NavLink to="/home"><img className="website-logo" src={eDropsLogoInverted} alt="" /></NavLink>
+          </div>
+          {/* <div> */}
+          <ul className="ul-nav">
+            <li><NavLink to="/home">Home</NavLink></li>
+            <li><NavLink to="/featureComing">EWOD CAD</NavLink></li>
+            <li><NavLink to="/upload">EWOD Chip Fabrication</NavLink></li>
+            <li><NavLink to="/allItems">Products</NavLink></li>
+            <li><NavLink to="/featureComing">Community</NavLink></li>
+            <li><NavLink to="/featureComing">Support</NavLink></li>
+            <li>
+              { Cookies.get('userType') === 'customer'
+                ? notLoggedIn
+                  ? <NavLink to="/login"><i className="fa fa-shopping-cart" /></NavLink> // Cannot view cart if not logged in
+                  : (
+                    <NavLink to="/manage/cart">
+                      <i className="fa fa-shopping-cart" />
+                      <span className="badge" value={this.context.items} style={{ display: this.context.items ? 'inline-block' : 'none' }}>  </span>
+                    </NavLink>
+                  )
+                : null}
+            </li>
+            { /* Should we be using NavLink or href? NavLink prevents page reloading */ }
+            {/* <li><a href="/featureComing"><i className="fa fa-search" /></a></li> */}
+            {
                     Cookies.get('userType') === 'customer'
                       ? <li><a href="/upload"><i className="fa fa-upload" /></a></li>
                       : null
                   }
-                  {
+            {
                     notLoggedIn ? null
                       : (Cookies.get('userType') === 'customer'
                         ? <li><NavLink to="/manage/files"><i className="fa fa-database" /></NavLink></li>
@@ -150,7 +155,7 @@ class NavTop extends React.Component {
                           : null)
                       )
                   }
-                  {
+            {
                     notLoggedIn ? <li><NavLink to="/login">Login</NavLink></li>
                       : (
                         <li className="li-username">
@@ -191,21 +196,21 @@ class NavTop extends React.Component {
                         </li>
                       )
                   }
-                  {
+            {
                     notLoggedIn
                       ? <li><NavLink to="/register">Sign Up</NavLink></li>
                       : null
                   }
-                </ul>
-              {/* </div> */}
-            </div>
-          </header>
-      //   }}
-      // </CartContext.Consumer>
+          </ul>
+          {/* </div> */}
+        </div>
+      </header>
+    //   }}
+    // </CartContext.Consumer>
     );
   }
 }
 
 // NavTop = withRouter(NavTop);
 NavTop.contextType = CartContext;
-export default hoistNonReactStatics( NavTop, withRouter(NavTop) );
+export default hoistNonReactStatics(NavTop, withRouter(NavTop));

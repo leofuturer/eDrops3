@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
-import { deleteAdminById, userBaseFind, userBaseDeleteById, findAdminByWhere } from '../../api/serverConfig';
-import API from '../../api/api';
 import $ from 'jquery';
-import DeletePopup from '../../component/popup/deletePopup.jsx';
 import Cookies from 'js-cookie';
+import {
+  deleteAdminById, userBaseFind, userBaseDeleteById, findAdminByWhere,
+} from '../../api/serverConfig';
+import API from '../../api/api';
+import DeletePopup from '../../component/popup/deletePopup.jsx';
 
 class Admins extends Component {
   constructor(props) {
@@ -98,7 +100,7 @@ class Admins extends Component {
                 </tr>
               </thead>
               <tbody>
-                {this.state.adminList.map((admin) =>
+                {this.state.adminList.map((admin) => (
                   <tr id={`admin${admin.id}`} key={admin.id}>
                     <td>{admin.id}</td>
                     <td>{admin.phoneNumber}</td>
@@ -109,11 +111,13 @@ class Admins extends Component {
                       <i className="fa fa-edit" admin={JSON.stringify(admin)} onClick={this.handleEditAdmin} />
                     </td>
                     {admin.id !== parseInt(Cookies.get('userId'))
-                      &&
+                      && (
                       <td>
                         <i className="fa fa-trash" admin={JSON.stringify(admin)} data-toggle="modal" data-target="#deleteModal" onClick={this.handleDeleteAdmin} />
-                      </td>}
-                  </tr>)}
+                      </td>
+                      )}
+                  </tr>
+                ))}
               </tbody>
             </table>
           </div>

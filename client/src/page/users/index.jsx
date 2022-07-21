@@ -1,8 +1,10 @@
 import React from 'react';
 import { withRouter } from 'react-router-dom';
-import { getAllCustomers, customerDeleteById, userBaseFind, userBaseDeleteById } from '../../api/serverConfig';
-import API from '../../api/api';
 import $ from 'jquery';
+import {
+  getAllCustomers, customerDeleteById, userBaseFind, userBaseDeleteById,
+} from '../../api/serverConfig';
+import API from '../../api/api';
 import DeletePopup from '../../component/popup/deletePopup.jsx';
 
 class Users extends React.Component {
@@ -80,7 +82,7 @@ class Users extends React.Component {
   }
 
   handleEdit() {
-    const customer = JSON.parse(e.target.getAttribute('customer'))
+    const customer = JSON.parse(e.target.getAttribute('customer'));
     this.props.history.push('/manage/users/edituser', {
       customerId: customer.id,
       customerInfo: customer,
@@ -127,7 +129,7 @@ class Users extends React.Component {
                 </tr>
               </thead>
               <tbody>
-                {this.state.customerList.map((customer) =>
+                {this.state.customerList.map((customer) => (
                   <tr id={`customer${customer.id}`}>
                     <td>{customer.id}</td>
                     <td>{`${customer.firstName} ${customer.lastName}`}</td>
@@ -139,7 +141,7 @@ class Users extends React.Component {
                     <td><i className="fa fa-edit" customer={JSON.stringify(customer)} onClick={this.handleEdit} /></td>
                     <td><i className="fa fa-trash" customer={JSON.stringify(customer)} data-toggle="modal" data-target="#deleteModal" onClick={this.handleDeleteCustomer} /></td>
                   </tr>
-                )}
+                ))}
               </tbody>
             </table>
           </div>

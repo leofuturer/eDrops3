@@ -62,7 +62,7 @@ class ResetPassword extends React.Component {
       this.setState({
         passwordChange: false,
       });
-      if(resetToken === '') {
+      if (resetToken === '') {
         this.setState({
           errorDetected: true,
         });

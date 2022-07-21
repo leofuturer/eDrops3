@@ -141,7 +141,7 @@ class AddNewAddress extends React.Component {
               </div>
             </div>
             <div className="form-group add-button">
-                <button type="button" className="btn btn-success" onClick={this.handleSaveAddress}>Add Address</button>
+              <button type="button" className="btn btn-success" onClick={this.handleSaveAddress}>Add Address</button>
             </div>
           </form>
         </div>
