@@ -1,11 +1,11 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
-import { ProjectType } from "../../lib/types";
+import { ForumType, ProjectType } from "../../lib/types";
 
-function ProjectPreview({ project }: { project: ProjectType }) {
+function PostPreview({ post }: { post: ForumType }) {
 	return (
 		<NavLink
-			to={`/projects/${project.id}`}
+			to={`/forum/${post.id}`}
 			className="w-full flex flex-col items-center cursor-pointer rounded-2xl mb-4 bg-white shadow-2xl"
 		>
 			<div className="w-full h-40 rounded-t-2xl bg-gray-400">
@@ -13,15 +13,15 @@ function ProjectPreview({ project }: { project: ProjectType }) {
 			</div>
 			<div className="w-full flex flex-col p-4">
 				<div className="flex flex-row justify-between">
-					<h3>{project.title}</h3>
-					<h3>{project.author}</h3>
+					<h3>{post.title}</h3>
+					<h3>{post.author}</h3>
 				</div>
 
 				{/* <p>{project.content}</p> */}
-				<p>{new Date(project.datetime).toLocaleDateString()}</p>
+				<p>{new Date(post.datetime).toLocaleDateString()}</p>
 			</div>
 		</NavLink>
 	);
 }
 
-export default ProjectPreview;
+export default PostPreview;
