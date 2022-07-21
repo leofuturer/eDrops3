@@ -14,23 +14,33 @@ class Home extends React.Component {
     const controlSysPageLink = `/product?id=${controlSysId}`;
     return (
       <div>
-        <SEO title="eDrops | Home"
-              description="" 
-              metadata={ metadata }/>
+        <SEO
+          title="eDrops | Home"
+          description=""
+          metadata={metadata}
+        />
         <div className="clearfix objectImg">
           <div className="col-md-4 cadImg">
             <div className="txt">
-              <h1>EWOD<br/>CAD</h1>
+              <h1>
+                EWOD
+                <br />
+                CAD
+              </h1>
               <div className="txt-bg">
                 <a href="http://cad.edrops.org" target="_blank" rel="noopener noreferrer">
-                DESIGN CHIP
+                  DESIGN CHIP
                 </a>
               </div>
             </div>
           </div>
           <div className="col-md-4 foundryImg">
             <div className="txt">
-              <h1>Foundry<br/>Service</h1>
+              <h1>
+                Foundry
+                <br />
+                Service
+              </h1>
               <div className="txt-bg">
                 {
                   Cookies.get('userType') === 'customer'
@@ -42,7 +52,11 @@ class Home extends React.Component {
           </div>
           <div className="col-md-4 ewodImg">
             <div className="txt">
-              <h1>EWOD Control<br/>System</h1>
+              <h1>
+                EWOD Control
+                <br />
+                System
+              </h1>
               <div className="txt-bg">
                 <NavLink to={controlSysPageLink}>VIEW DETAILS</NavLink>
               </div>

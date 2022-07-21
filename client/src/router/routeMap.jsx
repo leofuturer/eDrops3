@@ -3,28 +3,28 @@ import {
   BrowserRouter as Router, Route, Switch, Redirect,
 } from 'react-router-dom';
 
-import OrderDetail from 'page/order/orderDetail.jsx';
-import Layout from '../component/layout/index.jsx';
+import OrderDetail from 'page/order/orderDetail';
+import Layout from '../component/layout/index';
 // Pages
-import Home from '../page/home/index.jsx';
-import Login from '../page/login/index.jsx';
-import Register from '../page/register/index.jsx';
-import Upload from '../page/fileUpload/index.jsx';
-import Project from '../page/project/index.jsx';
-import Manage from './manage/index.jsx';
-// import Profile from "page/profile/index.jsx";
-import ForgetPass from '../page/forgetPass/index.jsx';
-import ChipOrder from '../page/product/chiporder.jsx';
-import CheckEmail from '../page/checkEmail/index.jsx';
-import EmailVerified from '../page/emailVerified/index.jsx';
-import EmailVerifyInvalid from '../page/emailVerifyInvalid/index.jsx';
-import ResetPassword from '../page/resetPassword/index.jsx';
-import Product from '../page/product/index.jsx';
-import AllItems from '../page/allItems/index.jsx';
-import PageNotFound from '../page/pageNotFound/pageNotFound.jsx';
-import BeforeCheckout from '../page/beforeCheckout/index.jsx';
+import Home from '../page/home/index';
+import Login from '../page/login/index';
+import Register from '../page/register/index';
+import Upload from '../page/fileUpload/index';
+import Project from '../page/project/index';
+import Manage from './manage/index';
+// import Profile from "page/profile/index";
+import ForgetPass from '../page/forgetPass/index';
+import ChipOrder from '../page/product/chiporder';
+import CheckEmail from '../page/checkEmail/index';
+import EmailVerified from '../page/emailVerified/index';
+import EmailVerifyInvalid from '../page/emailVerifyInvalid/index';
+import ResetPassword from '../page/resetPassword/index';
+import Product from '../page/product/index';
+import AllItems from '../page/allItems/index';
+import PageNotFound from '../page/pageNotFound/pageNotFound';
+import BeforeCheckout from '../page/beforeCheckout/index';
 
-import FeatureComing from '../page/featureComing/index.jsx';
+import FeatureComing from '../page/featureComing/index';
 
 export class MainRouter extends React.Component {
   render() {
