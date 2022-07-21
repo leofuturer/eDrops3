@@ -19,3 +19,5 @@ export * from './user.controller';
 export * from './user-saved-post.controller';
 export * from './user-saved-project.controller';
 export * from './user-user-profile.controller';
+export * from './user-post.controller';
+export * from './user-project.controller';

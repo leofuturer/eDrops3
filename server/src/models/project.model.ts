@@ -65,6 +65,11 @@ export class Project extends Entity {
   })
   dislikes: number;
 
+  @property({
+    type: 'string',
+  })
+  userId?: string;
+
   constructor(data?: Partial<Project>) {
     super(data);
   }
