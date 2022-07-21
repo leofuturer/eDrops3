@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "vite dev --config ./vite.config.ts",
     "build": "tsc && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "lint": "eslint . --ext .js"
   },
   "dependencies": {
     "@heroicons/react": "^1.0.6",
