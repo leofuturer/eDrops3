@@ -5,7 +5,7 @@ import {
   Customer,
   CustomerAddress,
   FileInfo,
-  Forum,
+  Post,
   FoundryWorker,
   OrderChip,
   OrderInfo,
@@ -19,7 +19,7 @@ import {
   CustomerAddressRepository,
   CustomerRepository,
   FileInfoRepository,
-  ForumRepository,
+  PostRepository,
   FoundryWorkerRepository,
   OrderChipRepository,
   OrderInfoRepository,
@@ -32,15 +32,15 @@ import {
   defaultAdmins,
   defaultCustomerAddresses,
   defaultCustomers,
-  defaultForums,
+  defaultPosts,
   defaultFoundryWorkers,
   defaultProjects,
 } from './data/index';
 
 export async function clearDb(this: EdropsBackendApplication): Promise<void> {
-  const forumRepo: ForumRepository = await this.getRepository(ForumRepository);
-  forumRepo.deleteAll();
-  forumRepo.execute('ALTER TABLE Forum AUTO_INCREMENT = ?', [1]);
+  const postRepo: PostRepository = await this.getRepository(PostRepository);
+  postRepo.deleteAll();
+  postRepo.execute('ALTER TABLE Post AUTO_INCREMENT = ?', [1]);
   const projectRepo: ProjectRepository = await this.getRepository(
     ProjectRepository,
   );
@@ -97,9 +97,9 @@ export async function clearDb(this: EdropsBackendApplication): Promise<void> {
 }
 
 export async function seedDb(this: EdropsBackendApplication): Promise<void> {
-  const forumRepo: ForumRepository = await this.getRepository(ForumRepository);
-  for (const forum of defaultForums) {
-    await forumRepo.create(forum);
+  const postRepo: PostRepository = await this.getRepository(PostRepository);
+  for (const post of defaultPosts) {
+    await postRepo.create(post);
   }
   const projectRepo: ProjectRepository = await this.getRepository(
     ProjectRepository,
