@@ -52,6 +52,11 @@ export class User extends Entity {
   })
   verificationToken?: string;
 
+  @property({
+    type: 'date',
+  })
+  verificationTokenExpires?: Date;
+
   // Define well-known properties here
 
   @property({

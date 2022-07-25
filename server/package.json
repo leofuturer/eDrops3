@@ -38,7 +38,8 @@
     "prestart": "npm run rebuild",
     "start": "node -r source-map-support/register .",
     "clean": "lb-clean dist *.tsbuildinfo .eslintcache",
-    "rebuild": "npm run clean && npm run build"
+    "rebuild": "npm run clean && npm run build",
+    "endpoints": "ts-node ./src/endpoints.ts"
   },
   "repository": {
     "type": "git",
@@ -99,7 +100,7 @@
     "@types/jsonwebtoken": "^8.5.8",
     "@types/multer": "^1.4.7",
     "@types/multer-s3": "^3.0.0",
-    "@types/node": "^14.18.21",
+    "@types/node": "^14.18.22",
     "@types/node-fetch": "^2.6.2",
     "@types/shopify-buy": "^2.10.10",
     "@typescript-eslint/eslint-plugin": "^5.30.6",

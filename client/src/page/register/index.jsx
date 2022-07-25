@@ -26,7 +26,7 @@ class Register extends React.Component {
       state: '',
       city: '',
       zipCode: '',
-      userType: 'person',
+      customerType: 'person',
       username: '',
       email: '',
       password: '',
@@ -63,12 +63,12 @@ class Register extends React.Component {
     const url = customerCredsTaken;
     API.Request(url, 'POST', data, false)
       .then((res) => {
-        if (res.data.result.usernameTaken) {
+        if (res.data.usernameTaken) {
           errors.username = ['Account already exists with this username'];
           const input1 = document.getElementById('inputUsername');
           showErrorsOrSuccessForInput(input1, errors.username);
         }
-        if (res.data.result.emailTaken) {
+        if (res.data.emailTaken) {
           errors.email = ['Account already exists with this email'];
           const emailInput = document.getElementById('inputEmail');
           showErrorsOrSuccessForInput(emailInput, errors.email);
@@ -90,7 +90,7 @@ class Register extends React.Component {
         };
         const url = customerCredsTaken;
         API.Request(url, 'POST', data, false).then((res) => {
-          if (res.data.result.usernameTaken) {
+          if (res.data.usernameTaken) {
             errors.username = ['Account already exists with this username'];
             const input1 = document.getElementById('inputUsername');
             showErrorsOrSuccessForInput(input1, errors.username);
@@ -98,14 +98,14 @@ class Register extends React.Component {
               requestInProgress: false,
             });
           }
-          if (res.data.result.emailTaken) {
+          if (res.data.emailTaken) {
             errors.email = ['Account already exists with this email'];
             const emailInput = document.getElementById('inputEmail');
             showErrorsOrSuccessForInput(emailInput, errors.email);
             this.setState({
               requestInProgress: false,
             });
-          } else if (!res.data.result.emailTaken && !res.data.result.usernameTaken) {
+          } else if (!res.data.emailTaken && !res.data.usernameTaken) {
             this.handleRegister(e);
           }
         });
@@ -135,42 +135,29 @@ class Register extends React.Component {
       firstName: this.state.firstName,
       lastName: this.state.lastName,
       phoneNumber: this.state.phoneNumber,
-      userType: this.state.userType,
+      customerType: this.state.customerType,
       username: this.state.username,
       email: this.state.email,
       password: this.state.password,
-      street: this.state.street,
-      streetLine2: this.state.streetLine2,
-      country: this.state.country,
-      state: this.state.state,
-      city: this.state.city,
-      zipCode: this.state.zipCode,
-      isDefault: true,
+      customerAddresses: [
+        {
+          street: this.state.street,
+          streetLine2: this.state.streetLine2,
+          country: this.state.country,
+          state: this.state.state,
+          city: this.state.city,
+          zipCode: this.state.zipCode,
+          isDefault: true,
+        }
+      ],
     };
 
-    const userBaseObj = {
-      userType: 'customer',
-      username: this.state.username,
-      email: this.state.email,
-      password: this.state.password,
-    };
-
-    API.Request(userSignUp, 'POST', userBaseObj, false)
+    API.Request(customerSignUp, 'POST', customerData, false)
       .then((res) => {
-        API.Request(customerSignUp, 'POST', customerData, false)
-          .then((res) => {
-            this.props.history.push('/checkEmail');
-            this.setState({
-              errorMessage: '',
-            });
-          })
-          .catch((error) => {
-            console.error(error);
-            this.setState({
-              requestInProgress: false,
-              errorMessage: 'There was an error when registering your account. Please try again.',
-            });
-          });
+        this.props.history.push('/checkEmail');
+        this.setState({
+          errorMessage: '',
+        });
       })
       .catch((error) => {
         console.error(error);
@@ -193,7 +180,7 @@ class Register extends React.Component {
           <div className="register-login-content">
             <h3>Sign Up</h3>
             <div className="border-h3" />
-            <div className="form-div">
+            <div className="form-div-register">
               <form id="main" className="vertical-form" action="" noValidate>
                 <div className="input-content-register">
                   <div className="text-left reminder">
