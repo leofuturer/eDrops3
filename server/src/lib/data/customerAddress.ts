@@ -9,7 +9,6 @@ export const defaultCustomerAddresses: Partial<CustomerAddress>[] = [
     country: 'United States',
     zipCode: '90024',
     isDefault: true,
-    customerId: 'aaaa-bbbb-cccc-dddd',
   },
   {
     street: '1432 Haton Ave',
@@ -19,7 +18,6 @@ export const defaultCustomerAddresses: Partial<CustomerAddress>[] = [
     country: 'United States',
     zipCode: '90034',
     isDefault: true,
-    customerId: 'aaaa-bbbb-cccc-eeee',
   },
   {
     street: '1234 Cilas Ave',
@@ -29,7 +27,6 @@ export const defaultCustomerAddresses: Partial<CustomerAddress>[] = [
     country: 'United States',
     zipCode: '90067',
     isDefault: false,
-    customerId: 'aaaa-bbbb-cccc-dddd',
   },
   {
     street: '456 Cilas Ave',
@@ -39,6 +36,5 @@ export const defaultCustomerAddresses: Partial<CustomerAddress>[] = [
     country: 'United States',
     zipCode: '90067',
     isDefault: false,
-    customerId: 'aaaa-bbbb-cccc-eeee',
   },
 ];

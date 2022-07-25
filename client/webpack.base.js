@@ -2,7 +2,8 @@ const path = require('path');
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const LodashModuleReplacementPlugin = require('lodash-webpack-plugin');
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
+// const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 const CopyPlugin = require('copy-webpack-plugin');
 
@@ -13,7 +14,7 @@ module.exports = {
   output: {
     path: path.resolve(__dirname, 'dist'),
     publicPath: '/',
-    filename: `bundle-[name]-${COMMIT_SHA}-[hash].js`,
+    filename: `bundle-[name]-${COMMIT_SHA}-[fullhash].js`,
   },
   resolve: {
     alias: {
@@ -31,33 +32,35 @@ module.exports = {
         use: {
           loader: 'babel-loader',
           options: {
-            presets: ['env', 'react'],
+            presets: ['@babel/preset-env', '@babel/preset-react'],
           },
         },
       },
       {
         test: /\.(png|PNG|jpg|JPG|jpeg|JPEG|gif|GIF)$/,
-        use: [
-          {
-            loader: 'file-loader',
-            options: {
-              limit: 8192,
-              name: 'resource/[name].[ext]',
-            },
-          },
-        ],
+        type: 'asset/resource',
+        // use: [
+        //   {
+        //     loader: 'file-loader',
+        //     options: {
+        //       limit: 8192,
+        //       name: 'resource/[name].[ext]',
+        //     },
+        //   },
+        // ],
       },
       {
         test: /\.(eot|svg|ttf|woff|woff2|otf)$/,
-        use: [
-          {
-            loader: 'file-loader',
-            options: {
-              limit: 8192,
-              name: 'resource/[name].[ext]',
-            },
-          },
-        ],
+        type: 'asset/resource',
+        // use: [
+        //   {
+        //     loader: 'file-loader',
+        //     options: {
+        //       limit: 8192,
+        //       name: 'resource/[name].[ext]',
+        //     },
+        //   },
+        // ],
       },
     ],
   },
@@ -66,14 +69,15 @@ module.exports = {
       template: './index.html',
     }),
     // Separate the css files and name the output file as styles.css
-    new ExtractTextPlugin({
-      filename: (getPath) => getPath(`styles-${COMMIT_SHA}-[hash].css`),
-    }),
+    // new ExtractTextPlugin({
+    //   filename: (getPath) => getPath(`styles-${COMMIT_SHA}-[hash].css`),
+    // }),
+    new MiniCssExtractPlugin(),
     new webpack.optimize.AggressiveMergingPlugin(), // Merge chunks
-    new webpack.optimize.CommonsChunkPlugin({
-      name: 'common',
-      filename: `js/base-${COMMIT_SHA}-[hash].js`,
-    }),
+    // new webpack.optimize.CommonsChunkPlugin({
+    //   name: 'common',
+    //   filename: `js/base-${COMMIT_SHA}-[hash].js`,
+    // }),
     new webpack.optimize.ModuleConcatenationPlugin(),
     new CopyPlugin([
       { from: 'static/favicon/' },
