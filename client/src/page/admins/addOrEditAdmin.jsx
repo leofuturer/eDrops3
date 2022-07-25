@@ -47,7 +47,7 @@ class AddOrEditAdmin extends React.Component {
           username: adminInfo.username,
           email: adminInfo.email,
           constraints: editConstraints,
-        }
+        },
       });
     }
   }
@@ -58,13 +58,13 @@ class AddOrEditAdmin extends React.Component {
     this.setState({
       requestInProgress: true,
     });
-    const username = this.state.username;
+    const { username } = this.state;
     validate.async(form, this.state.constraints, { cleanAttributes: false })
       .then((success) => {
         const isAddNewAdmin = this.props.match.path === '/manage/admins/addNewAdmin';
         const data = {
           username: document.getElementById('inputUsername').value,
-        }
+        };
         if (isAddNewAdmin) {
           data.email = document.getElementById('inputEmail').value;
         }
@@ -89,19 +89,15 @@ class AddOrEditAdmin extends React.Component {
             } else if (!res.data.result.emailTaken && !res.data.result.usernameTaken) {
               this.handleSave(e);
             }
-          }
-          else {
-            if (this.state.username !== this.state.initialInfo.username && res.data.result.usernameTaken) {
-              errors.username = ['Account already exists with this username'];
-              const input1 = document.getElementById('inputUsername');
-              showErrorsOrSuccessForInput(input1, errors.username);
-              this.setState({
-                requestInProgress: false,
-              });
-            }
-            else {
-              this.handleSave(e);
-            }
+          } else if (this.state.username !== this.state.initialInfo.username && res.data.result.usernameTaken) {
+            errors.username = ['Account already exists with this username'];
+            const input1 = document.getElementById('inputUsername');
+            showErrorsOrSuccessForInput(input1, errors.username);
+            this.setState({
+              requestInProgress: false,
+            });
+          } else {
+            this.handleSave(e);
           }
         }).catch((err) => {
           form.querySelectorAll('input.needValidation').forEach((input, index) => {
@@ -221,8 +217,7 @@ class AddOrEditAdmin extends React.Component {
             const emailInput = document.getElementById('inputEmail');
             showErrorsOrSuccessForInput(emailInput, errors.email);
           }
-        }
-        else if (this.state.username !== this.state.initialInfo.username && res.data.result.usernameTaken) {
+        } else if (this.state.username !== this.state.initialInfo.username && res.data.result.usernameTaken) {
           errors.username = ['Account already exists with this username'];
           const input1 = document.getElementById('inputUsername');
           showErrorsOrSuccessForInput(input1, errors.username);
@@ -259,7 +254,8 @@ class AddOrEditAdmin extends React.Component {
                     value={this.state.phoneNumber}
                     className="form-control needValidation"
                     onChange={(v) => this.handleChange('phoneNumber', v.target.value)}
-                    onBlur={this.handleValidateInput} />
+                    onBlur={this.handleValidateInput}
+                  />
                 </div>
                 <div className="col-md-4 col-sm-4 col-xs-4 messages">
                   <small className="text-muted">Valid phone number required</small>
@@ -276,7 +272,8 @@ class AddOrEditAdmin extends React.Component {
                     value={this.state.realm}
                     className="form-control"
                     onChange={(v) => this.handleChange('realm', v.target.value)}
-                    onBlur={this.handleValidateInput} />
+                    onBlur={this.handleValidateInput}
+                  />
                 </div>
                 <div className="col-md-4 col-sm-4 col-xs-4 messages">
                   <small className="text-muted">(Optional)</small>
@@ -294,7 +291,8 @@ class AddOrEditAdmin extends React.Component {
                     value={this.state.username}
                     className="form-control needValidation"
                     onChange={(v) => this.handleChange('username', v.target.value)}
-                    onBlur={this.handleValidateInput} />
+                    onBlur={this.handleValidateInput}
+                  />
                 </div>
                 <div className="col-md-4 col-sm-4 col-xs-4 messages">
                   <small className="text-muted">Username must be at least 4 characters and only contain a-zA-Z0-9_</small>
@@ -316,7 +314,8 @@ class AddOrEditAdmin extends React.Component {
                             value={this.state.email}
                             className="form-control needValidation"
                             onChange={(v) => this.handleChange('email', v.target.value)}
-                            onBlur={this.handleValidateInput} />
+                            onBlur={this.handleValidateInput}
+                          />
                         </div>
                         <div className="col-md-4 col-sm-4 col-xs-4 messages">
                           <small className="text-muted">Valid Email Required</small>
@@ -332,7 +331,8 @@ class AddOrEditAdmin extends React.Component {
                             name="password"
                             className="form-control needValidation"
                             onChange={(v) => this.handleChange('password', v.target.value)}
-                            onBlur={this.handleValidateInput} />
+                            onBlur={this.handleValidateInput}
+                          />
                         </div>
                         <div className="col-md-4 col-sm-4 col-xs-4 messages">
                           <small className="text-muted">
@@ -351,7 +351,8 @@ class AddOrEditAdmin extends React.Component {
                             name="confirmPassword"
                             className="form-control needValidation"
                             onChange={(v) => this.handleChange('confirmPassword', v.target.value)}
-                            onBlur={this.handleValidateInput} />
+                            onBlur={this.handleValidateInput}
+                          />
                         </div>
                         <div className="col-md-4 col-sm-4 col-xs-4 messages">
                           <small className="text-muted">Please retype your password</small>

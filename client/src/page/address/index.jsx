@@ -35,9 +35,8 @@ class Address extends React.Component {
     _this.props.history.push('/manage/address/updateAddress');
   }
 
-
   handleDeleteAddress(addrIndex) {
-    this.setState({ addrIndex: addrIndex });
+    this.setState({ addrIndex });
     $('#deleteModal').modal('show');
   }
 
@@ -118,42 +117,47 @@ class Address extends React.Component {
   render() {
     return (
       <div className="right-route-content">
-        <SEO title="eDrops | Addresses"
-              description="" 
-              metadata={ metadata }/>
+        <SEO
+          title="eDrops | Addresses"
+          description=""
+          metadata={metadata}
+        />
         <div className="profile-content">
           <h2>Address Book</h2>
         </div>
         <div id="address-list">
           { this.state.isLoading
             ? <img className="loading-GIF" src={loadingGif} alt="" />
-            : ( <div>
-                  {
-                    this.state.addressList.map((oneAddress, index) => 
-                      <AddressTemplate 
-                        key={index} 
-                        addressTem={oneAddress} 
-                        addressNum={index + 1} 
-                        onDeletion={() => this.handleDeleteAddress(index)} />)
+            : (
+              <div>
+                {
+                    this.state.addressList.map((oneAddress, index) => (
+                      <AddressTemplate
+                        key={index}
+                        addressTem={oneAddress}
+                        addressNum={index + 1}
+                        onDeletion={() => this.handleDeleteAddress(index)}
+                      />
+                    ))
                   }
-                  <div className="col-lg-6 col-md-6 col-sm-6 col-xs-6">
-                    <div className="card-view">
-                      <div className="row row-add-new">
-                        <div className="col-md-4 col-sm-4 col-xs-4" />
-                        <div className="col-md-4 col-sm-4 col-xs-4">
-                          <button className="btn btn-success" onClick={this.handleAddNewAddress}>
-                            <i>+</i>
-                            <span className="btn-txt-padding">Add New</span>
-                          </button>
-                        </div>
-                        <div className="col-md-4 col-sm-4 col-xs-4" />
+                <div className="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                  <div className="card-view">
+                    <div className="row row-add-new">
+                      <div className="col-md-4 col-sm-4 col-xs-4" />
+                      <div className="col-md-4 col-sm-4 col-xs-4">
+                        <button className="btn btn-success" onClick={this.handleAddNewAddress}>
+                          <i>+</i>
+                          <span className="btn-txt-padding">Add New</span>
+                        </button>
                       </div>
+                      <div className="col-md-4 col-sm-4 col-xs-4" />
                     </div>
                   </div>
                 </div>
-          )}
+              </div>
+            )}
         </div>
-        <DeletePopup onDelete={this.handleDelete}/>
+        <DeletePopup onDelete={this.handleDelete} />
       </div>
     );
   }

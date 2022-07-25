@@ -38,7 +38,7 @@ class FormsPage extends React.Component {
 
   handleChangePass(e) {
     this.setState({
-      isLoading: true
+      isLoading: true,
     });
     const _this = this;
     const data = {
@@ -68,7 +68,7 @@ class FormsPage extends React.Component {
               // Reset user base password failed
               console.error(error);
               this.setState({
-                isLoading: false
+                isLoading: false,
               });
             });
         })
@@ -81,12 +81,12 @@ class FormsPage extends React.Component {
             this.showErrors(ele[0], errors);
           }
           this.setState({
-            isLoading: false
+            isLoading: false,
           });
         });
     } else {
       this.setState({
-        isLoading: false
+        isLoading: false,
       });
     }
   }
@@ -265,8 +265,7 @@ class FormsPage extends React.Component {
                       onClick={this.handleChangePass}
                     />
                   </div>
-                  )
-              }    
+                )}
             </form>
           </div>
         </div>

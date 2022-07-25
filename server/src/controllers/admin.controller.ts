@@ -4,19 +4,26 @@ import {
   Filter,
   FilterExcludingWhere,
   repository,
-  Where
+  Where,
 } from '@loopback/repository';
 import {
-  del, get,
-  getModelSchemaRef, HttpErrors, param, patch, post, put, requestBody,
-  response
+  del,
+  get,
+  getModelSchemaRef,
+  HttpErrors,
+  param,
+  patch,
+  post,
+  put,
+  requestBody,
+  response,
 } from '@loopback/rest';
 import fetch from 'node-fetch';
 import Client from 'shopify-buy';
 import Products from '../lib/constants/productConstants';
 import log from '../lib/toolbox/log';
-import { Admin, User } from '../models';
-import { AdminRepository, OrderProductRepository } from '../repositories';
+import {Admin, User} from '../models';
+import {AdminRepository, OrderProductRepository} from '../repositories';
 
 // @ts-ignore
 global.fetch = fetch;
@@ -257,7 +264,7 @@ export class AdminController {
     };
   }
 
-  @post('/admin/credsTaken')
+  @post('/admins/credsTaken')
   @response(200, {
     description: 'Check if creds are taken',
     content: {
@@ -278,40 +285,32 @@ export class AdminController {
   async checkCredsTaken(
     @requestBody() body: {username: string; email: string},
   ): Promise<{usernameTaken: boolean; emailTaken: boolean}> {
-    if (!body.username || !body.email) {
+    if (!body.username && !body.email) {
       throw new HttpErrors.NotFound('Missing username and/or email keys');
     }
 
-    const result = {
-      usernameTaken: false,
-      emailTaken: false,
-    };
-
-    return this.adminRepository
-      .find({
+    const usernameTaken = await this.adminRepository
+      .findOne({
         where: {
-          or: [
-            {
-              username: body.username || '',
-            },
-            {email: body.email || ''},
-          ],
+          username: body.username,
         },
       })
-      .then(values => {
-        if (values[0].length > 0 || values[2].length > 0) {
-          log.warning(`Username ${body.username} taken`);
-          result.usernameTaken = true;
-        }
-
-        if (values[1].length > 0 || values[3].length > 0) {
-          log.warning(`Email ${body.email} taken`);
-          result.emailTaken = true;
-        }
-        return result;
-      })
+      .then(admin => admin !== undefined)
       .catch(err => {
         throw new HttpErrors.InternalServerError(err);
       });
+
+    const emailTaken = await this.adminRepository
+      .findOne({
+        where: {
+          email: body.email,
+        },
+      })
+      .then(admin => admin !== undefined)
+      .catch(err => {
+        throw new HttpErrors.InternalServerError(err);
+      });
+
+    return {usernameTaken, emailTaken};
   }
 }

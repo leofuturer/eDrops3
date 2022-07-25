@@ -16,7 +16,7 @@ import loadingGif from '../../../static/img/loading80px.gif';
 import { metadata } from './metadata.jsx';
 import SEO from '../../component/header/seo.jsx';
 
-import CartContext from '../../context/CartContext'
+import CartContext from '../../context/CartContext';
 
 class Cart extends React.Component {
   constructor(props) {
@@ -102,7 +102,7 @@ class Cart extends React.Component {
         this.setState({
           productOrders: items,
           modifiedItems: new Set(this.state.modifiedItems).add(item.variantIdShopify),
-        }, () => { this.updateTotalModified() });
+        }, () => { this.updateTotalModified(); });
       } else if (itemType === 'chip') {
         const items = [...this.state.chipOrders];
         const item = Object.assign({}, items[index]); // replacement for `let item = {...items[index]};`
@@ -111,7 +111,7 @@ class Cart extends React.Component {
         this.setState({
           chipOrders: items,
           modifiedItems: new Set(this.state.modifiedItems).add(item.variantIdShopify),
-        }, () => { this.updateTotalModified() });
+        }, () => { this.updateTotalModified(); });
       }
     }
   }
@@ -151,14 +151,14 @@ class Cart extends React.Component {
                   deleteLoading: false,
                 });
 
-                if(itemType === 'product') {
+                if (itemType === 'product') {
                   const quantity = this.state.productOrders.reduce((prev, curr) => prev + curr.quantity, 0);
                   this.context.setProductQuantity(quantity);
                 } else if (itemType === 'chip') {
                   const quantity = this.state.chipOrders.reduce((prev, curr) => prev + curr.quantity, 0);
                   this.context.setChipQuantity(quantity);
                 }
-                
+
                 this.context.setCartQuantity();
               })
               .catch((err) => {
@@ -210,12 +210,9 @@ class Cart extends React.Component {
                 const data = { quantity: parseInt(array[i].quantity) };
                 API.Request(url, 'PATCH', data, true)
                   .then((res) => {
-                    this.setState((state) => {
-                      return {numModifiedItems: state.numModifiedItems + 1};
-                    });
+                    this.setState((state) => ({ numModifiedItems: state.numModifiedItems + 1 }));
 
-                    if(_this.state.numModifiedItems === _this.state.totalModifiedItems && _this.state.numModifiedItems > 0)
-                    {
+                    if (_this.state.numModifiedItems === _this.state.totalModifiedItems && _this.state.numModifiedItems > 0) {
                       this.setCartItems();
                     }
 
@@ -282,7 +279,7 @@ class Cart extends React.Component {
               numModifiedItems: 0,
               modifiedItems: new Set(),
               totalModifiedItems: 0,
-            })
+            });
           })
           .catch((err) => {
             console.error(err);
@@ -293,20 +290,18 @@ class Cart extends React.Component {
       });
   }
 
-  updateTotalModified() {    
-    if(this.state.chipOrders.length > 0 && this.state.modifiedItems.has(this.state.chipOrders[0].variantIdShopify)) {
+  updateTotalModified() {
+    if (this.state.chipOrders.length > 0 && this.state.modifiedItems.has(this.state.chipOrders[0].variantIdShopify)) {
       const num = (this.state.modifiedItems.size - 1) + this.state.chipOrders.length;
       this.setState({
-        totalModifiedItems: num
+        totalModifiedItems: num,
       });
-    }
-    else {
+    } else {
       const num = this.state.modifiedItems.size;
       this.setState({
-        totalModifiedItems: num
+        totalModifiedItems: num,
       });
     }
-    
   }
 
   render() {
@@ -320,9 +315,11 @@ class Cart extends React.Component {
 
     return (
       <div>
-        <SEO title="eDrops | Cart" 
-            description=""
-            metadata={metadata} />
+        <SEO
+          title="eDrops | Cart"
+          description=""
+          metadata={metadata}
+        />
         { Cookies.get('userType') === 'customer'
           ? (
             <div className="right-route-content">
@@ -415,4 +412,3 @@ class Cart extends React.Component {
 
 Cart.contextType = CartContext;
 export default Cart;
-

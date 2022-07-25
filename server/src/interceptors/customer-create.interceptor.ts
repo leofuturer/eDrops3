@@ -61,27 +61,6 @@ export class CustomerCreateInterceptor implements Provider<Interceptor> {
       // if possible, we should only pass in the customer data to the creation
       // of the customer model too
       // @ts-ignore (target will have CustomerRepository)
-      const addressData: Partial<CustomerAddress>= {
-        // default fields for if any are blank
-        street: this.request.body.address || 'Not provided during signup',
-        city: this.request.body.city || 'Not provided during signup',
-        state: this.request.body.state || 'Not provided during signup',
-        zipCode: this.request.body.zipCode || 'Not provided during signup',
-        country: this.request.body.country || 'Not provided during signup',
-        isDefault: true, // only occurs when a new customer is created
-      };
-      log.info('Customer instance created, now associating address with it');
-      this.customerRepository
-        .customerAddresses(result?.id)
-        .create(addressData)
-        .then(async() => {
-          this.customerRepository.sendVerificationEmail(result);
-        })
-        .catch(err => {
-          // roll back the customer creation
-          this.customerRepository.deleteById(result?.id);
-          console.error(err);
-        });
       return result;
     } catch (err) {
       // Add error handling logic here

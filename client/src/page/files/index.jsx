@@ -106,7 +106,7 @@ class Files extends React.Component {
     else if (this.props.match.path === '/manage/admin-retrieve-user-files'
                 && Cookies.get('userType') === 'admin'
                 && this.props.location.state.isCustomer) {
-      url =  `${adminDownloadFile}?access_token=${Cookies.get('access_token')}&fileId=${e.target.id}`;
+      url = `${adminDownloadFile}?access_token=${Cookies.get('access_token')}&fileId=${e.target.id}`;
       window.location = url;
     }
   }
@@ -154,9 +154,11 @@ class Files extends React.Component {
   render() {
     return (
       <div className="right-route-content">
-       <SEO title="eDrops | Files"
-              description="" 
-              metadata={ metadata }/>
+        <SEO
+          title="eDrops | Files"
+          description=""
+          metadata={metadata}
+        />
         <div className="profile-content">
           { this.props.match.path === '/manage/admin-retrieve-user-files'
             ? (
