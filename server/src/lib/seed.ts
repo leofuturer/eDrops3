@@ -1,4 +1,4 @@
-import {CrudRepository, CrudRepositoryImpl} from '@loopback/repository';
+import {CrudRepository, CrudRepositoryImpl, DefaultCrudRepository, Entity} from '@loopback/repository';
 import {EdropsBackendApplication} from '../application';
 import {
   Admin,
@@ -99,13 +99,18 @@ export async function seedDb(this: EdropsBackendApplication): Promise<void> {
   const customerRepo: CustomerRepository = await this.getRepository(
     CustomerRepository,
   );
+  let customers : Customer[] = [];
   for (const customer of defaultCustomers) {
-    await customerRepo.createCustomer(customer);
+    const tmpCustomer = await customerRepo.createCustomer(customer as Customer & User);
+    customers.push(tmpCustomer);
   }
   const customerAddressRepo: CustomerAddressRepository =
     await this.getRepository(CustomerAddressRepository);
+  let customerNum = 0;
   for (const customerAddress of defaultCustomerAddresses) {
+    customerAddress.customerId = customers[customerNum % 2].id;
     await customerAddressRepo.create(customerAddress);
+    customerNum++;
   }
   const foundryWorkerRepo: FoundryWorkerRepository = await this.getRepository(
     FoundryWorkerRepository,

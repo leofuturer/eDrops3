@@ -1,29 +1,35 @@
-import { Getter, inject } from '@loopback/core';
+import {Getter, inject} from '@loopback/core';
 import {
-  BelongsToAccessor, DefaultCrudRepository, HasManyRepositoryFactory, repository
+  BelongsToAccessor,
+  DefaultCrudRepository,
+  HasManyRepositoryFactory,
+  repository,
 } from '@loopback/repository';
-import { HttpErrors } from '@loopback/rest';
-import { genSalt, hash } from 'bcryptjs';
-import { createHash } from 'crypto';
+import {HttpErrors} from '@loopback/rest';
+import {genSalt, hash} from 'bcryptjs';
+import {createHash} from 'crypto';
 import ejs from 'ejs';
-import { MysqlDsDataSource } from '../datasources';
+import {MysqlDsDataSource} from '../datasources';
 import {
   EMAIL_HOSTNAME,
   EMAIL_PORT,
-  EMAIL_SENDER
+  EMAIL_SENDER,
 } from '../lib/constants/emailConstants';
 import log from '../lib/toolbox/log';
-import { verifyHTML } from '../lib/views/verify';
+import {verifyHTML} from '../lib/views/verify';
 import {
-  Customer, CustomerAddress, CustomerRelations, FileInfo,
+  Customer,
+  CustomerAddress,
+  CustomerRelations,
+  FileInfo,
   OrderInfo,
-  User
+  User,
 } from '../models';
 import SendGrid from '../services/send-grid.service';
-import { CustomerAddressRepository } from './customer-address.repository';
-import { FileInfoRepository } from './file-info.repository';
-import { OrderInfoRepository } from './order-info.repository';
-import { UserRepository } from './user.repository';
+import {CustomerAddressRepository} from './customer-address.repository';
+import {FileInfoRepository} from './file-info.repository';
+import {OrderInfoRepository} from './order-info.repository';
+import {UserRepository} from './user.repository';
 
 export class CustomerRepository extends DefaultCrudRepository<
   Customer,
@@ -90,10 +96,10 @@ export class CustomerRepository extends DefaultCrudRepository<
   }
 
   async createCustomer(
-    customer: Omit<Customer & User, 'id'>,
+    customer: Omit<Customer & CustomerAddress, 'id'>,
   ): Promise<Customer> {
     const hashedPassword = await hash(customer.password, await genSalt());
-    const userData = {
+    const userData: Omit<User, 'id'> = {
       realm: customer.realm,
       username: customer.username,
       password: hashedPassword,
@@ -103,8 +109,10 @@ export class CustomerRepository extends DefaultCrudRepository<
       verificationToken: customer.verificationToken,
     };
     const userRepository = await this.userRepositoryGetter();
-    const userInstance = await userRepository.create(userData);
-    const customerData = {
+    const userInstance = await userRepository.create(userData).catch(err => {
+      throw new HttpErrors.InternalServerError(err.message);
+    });
+    const customerData: Omit<Customer, 'id'> = {
       ...userInstance,
       firstName: customer.firstName,
       lastName: customer.lastName,
@@ -112,7 +120,29 @@ export class CustomerRepository extends DefaultCrudRepository<
       customerType: customer.customerType,
       // userId: userInstance.id,
     };
-    const customerInstance = await this.create(customerData);
+    const customerInstance = await this.create(customerData).catch(err => {
+      throw new HttpErrors.InternalServerError(err.message);
+    });
+    const customerAddressData: Omit<CustomerAddress, 'id'> = {
+      street: customer.street ?? 'Not provided during signup',
+      streetLine2: customer.streetLine2 ?? 'Not provided during signup',
+      country: customer.country ?? 'Not provided during signup',
+      state: customer.state ?? 'Not provided during signup',
+      city: customer.city ?? 'Not provided during signup',
+      zipCode: customer.zipCode ?? 'Not provided during signup',
+      isDefault: customer.isDefault ?? true,
+    };
+    log.info('Customer instance created, now associating address with it');
+    this.customerAddresses(customerInstance.id)
+      .create(customerAddressData)
+      .then(() => {
+        this.sendVerificationEmail(customerInstance);
+      })
+      .catch(err => {
+        // roll back the customer creation
+        this.deleteById(customerInstance?.id);
+        console.error(err);
+      });
     return customerInstance;
   }
 
@@ -122,6 +152,7 @@ export class CustomerRepository extends DefaultCrudRepository<
       .digest('hex');
     return this.updateById(customerId, {
       verificationToken: verificationTokenHash,
+      verificationTokenExpires: new Date(Date.now() + 600000),
     }).then(() => verificationTokenHash);
   }
 
@@ -144,8 +175,7 @@ export class CustomerRepository extends DefaultCrudRepository<
       {
         text: `Hello ${customer.username}! Thanks for registering to use eDrops. Please verify your email by clicking on the following link:`,
         email: EMAIL_SENDER,
-        verifyHref:
-          `${baseURL}/api/customer/verify?customerId=${customer.id}&token=${verificationTokenHash}`,
+        verifyHref: `${baseURL}/api/customers/verify?customerId=${customer.id}&token=${verificationTokenHash}`,
       },
       {},
     );
@@ -189,20 +219,28 @@ export class CustomerRepository extends DefaultCrudRepository<
     customerId: string,
     verificationToken: string,
   ): Promise<Customer> {
-    const customer = await this.findOne({
-      where: {
-        id: customerId,
-      },
-    });
-    if (customer?.verificationToken === verificationToken) {
+    const customer = await this.findById(customerId);
+    if (!customer) {
+      throw new HttpErrors.NotFound('Customer not found');
+    }
+    const currentTime = new Date();
+    if (
+      customer?.verificationToken === verificationToken &&
+      (customer?.verificationTokenExpires ?? currentTime) > currentTime
+    ) {
       this.updateById(customerId, {
         emailVerified: true,
       });
     }
-    return customer as Customer;
+    else {
+      throw new HttpErrors.BadRequest('Invalid verification token');
+    }
+    return customer;
   }
 
-  async getCustomerCart(customerId: string): Promise<Partial<OrderInfo> | number | Error> {
+  async getCustomerCart(
+    customerId: string,
+  ): Promise<Partial<OrderInfo> | number | Error> {
     return this.orderInfos(customerId)
       .find({where: {orderComplete: false}})
       .then(orders => {
@@ -210,9 +248,10 @@ export class CustomerRepository extends DefaultCrudRepository<
           log.error(
             `Error getting customer cart or there's more than one active cart`,
           );
-          throw new HttpErrors.NotFound('Error while querying for customer cart');
-        }
-        else if (orders.length === 0) {
+          throw new HttpErrors.NotFound(
+            'Error while querying for customer cart',
+          );
+        } else if (orders.length === 0) {
           log.warning(
             `No cart found for customer id=${customerId}, need to create one`,
           );
@@ -224,7 +263,7 @@ export class CustomerRepository extends DefaultCrudRepository<
         return {
           id: orders[0].id,
           checkoutIdClient: orders[0].checkoutIdClient,
-          checkoutLink: orders[0].checkoutLink
+          checkoutLink: orders[0].checkoutLink,
         };
       })
       .catch(err => {
@@ -233,6 +272,5 @@ export class CustomerRepository extends DefaultCrudRepository<
         );
         return new Error('Error while querying for customer cart');
       });
-      
   }
 }
