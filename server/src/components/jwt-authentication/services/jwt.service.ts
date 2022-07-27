@@ -48,6 +48,8 @@ export class JWTService implements TokenService {
       userProfile = {
         [securityId]: decodedToken.id,
         name: decodedToken.name,
+        id: decodedToken.id,
+        userType: decodedToken.userType,
       }
     } catch (error) {
       throw new HttpErrors.Unauthorized(
