@@ -4,7 +4,7 @@ import {Entity, model, property} from '@loopback/repository';
 export class SavedProject extends Entity {
   @property({
     type: 'number',
-    id: true,
+    id: 1,
     generated: true,
   })
   id?: number;

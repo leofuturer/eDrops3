@@ -40,40 +40,25 @@ import {
 export async function clearDb(this: EdropsBackendApplication): Promise<void> {
   const postRepo: PostRepository = await this.getRepository(PostRepository);
   postRepo.deleteAll();
-  postRepo.execute('ALTER TABLE Post AUTO_INCREMENT = ?', [1]);
   const projectRepo: ProjectRepository = await this.getRepository(
     ProjectRepository,
   );
   await projectRepo.deleteAll();
-  await projectRepo.execute('ALTER TABLE Project AUTO_INCREMENT = ?', [1]);
   const adminRepo: AdminRepository = await this.getRepository(AdminRepository);
   await adminRepo.deleteAll();
-  await adminRepo.execute('ALTER TABLE admin AUTO_INCREMENT = ?', [1]);
   const customerRepo: CustomerRepository = await this.getRepository(
     CustomerRepository,
   );
   await customerRepo.deleteAll();
-  await customerRepo.execute('ALTER TABLE customer AUTO_INCREMENT = ?', [1]);
   const customerAddressRepo: CustomerAddressRepository =
     await this.getRepository(CustomerAddressRepository);
   await customerAddressRepo.deleteAll();
-  await customerAddressRepo.execute(
-    'ALTER TABLE customerAddress AUTO_INCREMENT = ?',
-    [1],
-  );
   const foundryWorkerRepo: FoundryWorkerRepository = await this.getRepository(
     FoundryWorkerRepository,
   );
   await foundryWorkerRepo.deleteAll();
-  await foundryWorkerRepo.execute(
-    'ALTER TABLE foundryWorker AUTO_INCREMENT = ?',
-    [1],
-  );
   const userRepo: UserRepository = await this.getRepository(UserRepository);
   await userRepo.deleteAll();
-  // await userRepo.execute('ALTER TABLE User AUTO_INCREMENT = ?', [
-  //   1,
-  // ]);
   const orderInfoRepo: OrderInfoRepository = await this.getRepository(
     OrderInfoRepository,
   );
@@ -109,13 +94,13 @@ export async function seedDb(this: EdropsBackendApplication): Promise<void> {
   }
   const adminRepo: AdminRepository = await this.getRepository(AdminRepository);
   for (const admin of defaultAdmins) {
-    await adminRepo.createAdmin(admin as Admin & User);
+    await adminRepo.createAdmin(admin);
   }
   const customerRepo: CustomerRepository = await this.getRepository(
     CustomerRepository,
   );
   for (const customer of defaultCustomers) {
-    await customerRepo.createCustomer(customer as Customer & User);
+    await customerRepo.createCustomer(customer);
   }
   const customerAddressRepo: CustomerAddressRepository =
     await this.getRepository(CustomerAddressRepository);
@@ -126,9 +111,7 @@ export async function seedDb(this: EdropsBackendApplication): Promise<void> {
     FoundryWorkerRepository,
   );
   for (const foundryWorker of defaultFoundryWorkers) {
-    await foundryWorkerRepo.createFoundryWorker(
-      foundryWorker as FoundryWorker & User,
-    );
+    await foundryWorkerRepo.createFoundryWorker(foundryWorker);
   }
   // const userRepo: CrudRepository<UserBase> = await this.getRepository(
   //   UserRepository,
