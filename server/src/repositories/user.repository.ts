@@ -25,7 +25,12 @@ export class UserRepository extends DefaultCrudRepository<
   public readonly projects: HasManyRepositoryFactory<Project, typeof User.prototype.id>;
 
   constructor(
-    @inject('datasources.mysqlDS') dataSource: MysqlDsDataSource, @repository.getter('SavedPostRepository') protected savedPostRepositoryGetter: Getter<SavedPostRepository>, @repository.getter('SavedProjectRepository') protected savedProjectRepositoryGetter: Getter<SavedProjectRepository>, @repository.getter('UserProfileRepository') protected userProfileRepositoryGetter: Getter<UserProfileRepository>, @repository.getter('PostRepository') protected postRepositoryGetter: Getter<PostRepository>, @repository.getter('ProjectRepository') protected projectRepositoryGetter: Getter<ProjectRepository>,
+    @inject('datasources.mysqlDS') dataSource: MysqlDsDataSource, 
+    @repository.getter('SavedPostRepository') protected savedPostRepositoryGetter: Getter<SavedPostRepository>, 
+    @repository.getter('SavedProjectRepository') protected savedProjectRepositoryGetter: Getter<SavedProjectRepository>, 
+    @repository.getter('UserProfileRepository') protected userProfileRepositoryGetter: Getter<UserProfileRepository>, 
+    @repository.getter('PostRepository') protected postRepositoryGetter: Getter<PostRepository>, 
+    @repository.getter('ProjectRepository') protected projectRepositoryGetter: Getter<ProjectRepository>,
   ) {
     super(User, dataSource);
     this.projects = this.createHasManyRepositoryFactoryFor('projects', projectRepositoryGetter,);
@@ -36,7 +41,7 @@ export class UserRepository extends DefaultCrudRepository<
     this.registerInclusionResolver('userProfile', this.userProfile.inclusionResolver);
     this.savedProjects = this.createHasManyRepositoryFactoryFor('savedProjects', savedProjectRepositoryGetter,);
     this.registerInclusionResolver('savedProjects', this.savedProjects.inclusionResolver);
-    this.savedPosts = this.createHasManyRepositoryFactoryFor('savedPost', savedPostRepositoryGetter,);
-    this.registerInclusionResolver('savedPost', this.savedPosts.inclusionResolver);
+    this.savedPosts = this.createHasManyRepositoryFactoryFor('savedPosts', savedPostRepositoryGetter,);
+    this.registerInclusionResolver('savedPosts', this.savedPosts.inclusionResolver);
   }
 }

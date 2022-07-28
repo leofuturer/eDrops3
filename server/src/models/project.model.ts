@@ -7,6 +7,13 @@ import {Entity, model, property} from '@loopback/repository';
 })
 export class Project extends Entity {
   @property({
+    type: 'number',
+    id: 1,
+    generated: true,
+  })
+  id?: number;
+
+  @property({
     type: 'string',
     required: true,
     mysql: {
@@ -41,17 +48,10 @@ export class Project extends Entity {
   content: string;
 
   @property({
-    type: 'number',
-    id: true,
-    generated: true,
-  })
-  id?: number;
-
-  @property({
     type: 'date',
     required: true,
   })
-  datetime: string;
+  datetime: Date;
 
   @property({
     type: 'number',
@@ -68,7 +68,7 @@ export class Project extends Entity {
   @property({
     type: 'string',
   })
-  userId?: string;
+  userId: string;
 
   constructor(data?: Partial<Project>) {
     super(data);

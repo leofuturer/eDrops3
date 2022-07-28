@@ -66,6 +66,7 @@ export class User extends Entity {
 
   @hasMany(() => Project)
   projects: Project[];
+  
   @property({
     type: 'string',
   })
