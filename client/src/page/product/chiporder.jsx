@@ -17,7 +17,7 @@ import './chiporder.css';
 import Cookies from 'js-cookie';
 import {
   getCustomerCart, manipulateCustomerOrders, addOrderChipToCart,
-  getChipOrders, getWorkerId
+  getChipOrders, getWorkerId,
 } from '../../api/serverConfig';
 import API from '../../api/api';
 import {
@@ -27,8 +27,7 @@ import {
 import Shopify from '../../app.jsx';
 import loadingGif from '../../../static/img/loading80px.gif';
 import DXFPreview from './dxf_preview.jsx';
-import CartContext from '../../context/CartContext'
-
+import CartContext from '../../context/CartContext';
 
 class ChipOrder extends React.Component {
   constructor(props) {
@@ -53,9 +52,9 @@ class ChipOrder extends React.Component {
 
   componentDidMount() {
     // usernames of default foundry workers
-    const GLASSFW = "glassfab";
-    const PAPERFW = "paperfab";
-    const PCBFW = "pcbfab";
+    const GLASSFW = 'glassfab';
+    const PAPERFW = 'paperfab';
+    const PCBFW = 'pcbfab';
     // fetch IDs of default foundry workers
     API.Request(getWorkerId, 'GET', { username: GLASSFW }, true)
       .then((res) => {
@@ -249,14 +248,14 @@ class ChipOrder extends React.Component {
               }
               // select default foundry worker based on material
               let materialSpecificWorkerId = 0;
-              switch(this.state.materialVal) {
-                case "ITO Glass":
+              switch (this.state.materialVal) {
+                case 'ITO Glass':
                   materialSpecificWorkerId = this.state.GLASSID;
                   break;
-                case "Paper":
+                case 'Paper':
                   materialSpecificWorkerId = this.state.PAPERID;
                   break;
-                case "PCB":
+                case 'PCB':
                   materialSpecificWorkerId = this.state.PCBID;
                   break;
                 default:

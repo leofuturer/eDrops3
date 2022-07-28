@@ -1,10 +1,10 @@
 import {Entity, model, property} from '@loopback/repository';
 
 @model()
-export class Forum extends Entity {
+export class Post extends Entity {
   @property({
     type: 'number',
-    id: true,
+    id: 1,
     generated: true,
   })
   id?: number;
@@ -18,6 +18,11 @@ export class Forum extends Entity {
   @property({
     type: 'string',
     required: true,
+    mysql: {
+      index: {
+        kind: 'FULLTEXT'
+      }
+    },
   })
   author: string;
 
@@ -48,7 +53,7 @@ export class Forum extends Entity {
     type: 'date',
     required: true,
   })
-  datetime: string;
+  datetime: Date;
 
   @property({
     type: 'number',
@@ -56,13 +61,18 @@ export class Forum extends Entity {
   })
   likes: number;
 
-  constructor(data?: Partial<Forum>) {
+  @property({
+    type: 'string',
+  })
+  userId: string;
+
+  constructor(data?: Partial<Post>) {
     super(data);
   }
 }
 
-export interface ForumRelations {
+export interface PostRelations {
   // describe navigational properties here
 }
 
-export type ForumWithRelations = Forum & ForumRelations;
+export type PostWithRelations = Post & PostRelations;

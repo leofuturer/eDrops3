@@ -1,4 +1,4 @@
-export * from './forum';
+export * from './post';
 export * from './project';
 export * from './customer';
 export * from './customerAddress'

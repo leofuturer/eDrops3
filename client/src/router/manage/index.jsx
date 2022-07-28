@@ -1,5 +1,7 @@
 import React from 'react';
-import { Redirect, Route, Switch, withRouter } from 'react-router-dom';
+import {
+  Redirect, Route, Switch, withRouter,
+} from 'react-router-dom';
 
 import NavLeft from 'component/nav-left/index.jsx';
 // Customers
@@ -182,9 +184,11 @@ class Manage extends React.Component {
     }
     return (
       <div className="manage">
-        <SEO title="eDrops | Dashboard"
-              description="" 
-              metadata={ metadata }/>
+        <SEO
+          title="eDrops | Dashboard"
+          description=""
+          metadata={metadata}
+        />
         <div className="left-nav">
           <NavLeft />
         </div>

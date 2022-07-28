@@ -34,8 +34,8 @@ const constraints = {
   // Add simple phone number validation - DY 4/14/2020
   phoneNumber: {
     format: {
-      pattern:  /^(\+\d{1,2}\s?)?1?\-?\.?\s?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/, // see https://stackoverflow.com/questions/16699007/regular-expression-to-match-standard-10-digit-phone-number
-      message: "must be a valid phone number",
+      pattern: /^(\+\d{1,2}\s?)?1?\-?\.?\s?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/, // see https://stackoverflow.com/questions/16699007/regular-expression-to-match-standard-10-digit-phone-number
+      message: 'must be a valid phone number',
     },
   },
   firstName: {

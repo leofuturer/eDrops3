@@ -38,7 +38,8 @@
     "prestart": "npm run rebuild",
     "start": "node -r source-map-support/register .",
     "clean": "lb-clean dist *.tsbuildinfo .eslintcache",
-    "rebuild": "npm run clean && npm run build"
+    "rebuild": "npm run clean && npm run build",
+    "endpoints": "ts-node ./src/endpoints.ts"
   },
   "repository": {
     "type": "git",
@@ -63,6 +64,7 @@
     "@loopback/rest-explorer": "^5.0.1",
     "@loopback/service-proxy": "^5.0.1",
     "@sendgrid/mail": "^7.7.0",
+    "aws-sdk": "^2.1182.0",
     "bluebird": "^3.7.2",
     "casbin": "^5.15.2",
     "compression": "^1.7.4",
@@ -99,9 +101,10 @@
     "@types/jsonwebtoken": "^8.5.8",
     "@types/multer": "^1.4.7",
     "@types/multer-s3": "^3.0.0",
-    "@types/node": "^14.18.21",
+    "@types/node": "^14.18.22",
     "@types/node-fetch": "^2.6.2",
     "@types/shopify-buy": "^2.10.10",
+    "@types/uuid": "^8.3.4",
     "@typescript-eslint/eslint-plugin": "^5.30.6",
     "@typescript-eslint/parser": "^5.30.6",
     "eslint": "^8.17.0",

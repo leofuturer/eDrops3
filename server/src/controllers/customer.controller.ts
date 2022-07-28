@@ -1,18 +1,21 @@
-import { intercept } from '@loopback/core';
+import {inject, intercept} from '@loopback/core';
+import {Filter, FilterExcludingWhere, repository} from '@loopback/repository';
 import {
-  Filter,
-  FilterExcludingWhere,
-  repository
-} from '@loopback/repository';
-import {
-  del, get,
-  getModelSchemaRef, HttpErrors, param, patch, post, requestBody,
-  response
+  del,
+  get,
+  getModelSchemaRef,
+  HttpErrors,
+  param,
+  patch,
+  post,
+  requestBody,
+  Response,
+  response,
+  RestBindings,
 } from '@loopback/rest';
-import { CustomerCreateInterceptor } from '../interceptors';
-import log from '../lib/toolbox/log';
-import { Customer, OrderInfo, User } from '../models';
-import { CustomerRepository } from '../repositories';
+import {CustomerCreateInterceptor} from '../interceptors';
+import {Customer, CustomerAddress, OrderInfo, User} from '../models';
+import {CustomerRepository} from '../repositories';
 
 export class CustomerController {
   constructor(
@@ -30,15 +33,18 @@ export class CustomerController {
     @requestBody({
       content: {
         'application/json': {
-          schema: getModelSchemaRef(Customer, {
-            title: 'NewCustomer',
-            exclude: ['id'],
-            includeRelations: true,
-          }),
+          schema: {
+            type: 'object',
+          }
+          // schema: getModelSchemaRef(Customer, {
+          //   title: 'NewCustomer',
+          //   exclude: ['id'],
+          //   includeRelations: true,
+          // }),
         },
       },
     })
-    customer: Omit<Customer & User, 'id'>,
+    customer: Omit<Customer & CustomerAddress, 'id'>,
   ): Promise<Customer> {
     return this.customerRepository.createCustomer(customer);
   }
@@ -139,6 +145,35 @@ export class CustomerController {
     await this.customerRepository.sendVerificationEmail(customer as Customer);
   }
 
+  @get('/customers/verify')
+  @response(200, {
+    description: 'Customer model instance',
+    content: {
+      'application/json': {
+        schema: getModelSchemaRef(Customer, {includeRelations: true}),
+      },
+    },
+  })
+  async verify(
+    @param.query.string('customerId') customerId: string,
+    @param.query.string('token') verificationToken: string,
+    @inject(RestBindings.Http.RESPONSE) response: Response
+  ): Promise<Customer> {
+    const customer = await this.customerRepository.verifyEmail(customerId, verificationToken);
+    console.log(customer);
+    if (!customer) {
+      throw new HttpErrors.NotFound('Customer not found');
+    }
+    if(customer.emailVerified) {
+      response.redirect('/emailVerified')
+    }
+    else {
+      response.redirect('/emailVerifyInvalid')
+    }
+    return customer;
+  }
+
+
   @get('/customers/getApi')
   @response(200, {
     description: 'Get API key and domain',
@@ -164,8 +199,12 @@ export class CustomerController {
   async getApiToken(): Promise<object> {
     return {
       info: {
-        token: (process.env.SHOPIFY_STORE !== 'test' ? process.env.SHOPIFY_TOKEN : process.env.SHOPIFY_TOKEN_TEST) as string,
-        domain: (process.env.SHOPIFY_STORE !== 'test' ? process.env.SHOPIFY_DOMAIN : process.env.SHOPIFY_DOMAIN_TEST) as string,
+        token: (process.env.SHOPIFY_STORE !== 'test'
+          ? process.env.SHOPIFY_TOKEN
+          : process.env.SHOPIFY_TOKEN_TEST) as string,
+        domain: (process.env.SHOPIFY_STORE !== 'test'
+          ? process.env.SHOPIFY_DOMAIN
+          : process.env.SHOPIFY_DOMAIN_TEST) as string,
       },
     };
   }
@@ -206,40 +245,36 @@ export class CustomerController {
   async checkCredsTaken(
     @requestBody() body: {username: string; email: string},
   ): Promise<{usernameTaken: boolean; emailTaken: boolean}> {
-    if (!body.username || !body.email) {
+    if (!body.username && !body.email) {
       throw new HttpErrors.NotFound('Missing username and/or email keys');
     }
 
-    const result = {
-      usernameTaken: false,
-      emailTaken: false,
-    };
-
-    return this.customerRepository
-      .find({
+    const usernameTaken = await this.customerRepository
+      .findOne({
         where: {
-          or: [
-            {
-              username: body.username || '',
-            },
-            {email: body.email || ''},
-          ],
+          username: body.username,
         },
       })
-      .then(values => {
-        if (values[0].length > 0 || values[2].length > 0) {
-          log.warning(`Username ${body.username} taken`);
-          result.usernameTaken = true;
-        }
-
-        if (values[1].length > 0 || values[3].length > 0) {
-          log.warning(`Email ${body.email} taken`);
-          result.emailTaken = true;
-        }
-        return result;
+      .then(customer => {
+        return !!customer;
       })
       .catch(err => {
         throw new HttpErrors.InternalServerError(err);
       });
+
+    const emailTaken = await this.customerRepository
+      .findOne({
+        where: {
+          email: body.email,
+        },
+      })
+      .then(customer => {
+        return !!customer;
+      })
+      .catch(err => {
+        throw new HttpErrors.InternalServerError(err);
+      });
+    
+    return {usernameTaken, emailTaken};
   }
 }

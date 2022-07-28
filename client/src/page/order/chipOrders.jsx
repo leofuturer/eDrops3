@@ -52,7 +52,7 @@ class ChipOrders extends React.Component {
       .then((res) => {
         console.log(res);
         if (this.state.workerId) {
-          res.data = res.data.filter((orderChip) => orderChip.workerId === this.state.workerId)
+          res.data = res.data.filter((orderChip) => orderChip.workerId === this.state.workerId);
         }
         this.setState({
           orderList: res.data,
@@ -116,9 +116,11 @@ class ChipOrders extends React.Component {
   render() {
     return (
       <div>
-        <SEO title="eDrops | Chip Orders"
+        <SEO
+          title="eDrops | Chip Orders"
           description=""
-          metadata={metadata} />
+          metadata={metadata}
+        />
         <div className="right-route-content">
           <div className="profile-content">
             <h2>Chip Orders</h2>
