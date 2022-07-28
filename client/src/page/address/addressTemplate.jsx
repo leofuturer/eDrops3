@@ -29,19 +29,18 @@ class AddressTemplate extends React.Component {
             <div className="row">
               <div className="col-md-7 col-sm-7 col-xs-7">
                 <h3>
-                  Address
-                  {this.props.addressNum}
+                  Address {this.props.addressNum}
                 </h3>
               </div>
               { address.isDefault
                 ? (
                   <div className="col-md-5 col-sm-5 col-xs-5">
                     <div>
-                      <span className="txt-span">Default Shipping</span>
+                      <span className="text-span">Default Shipping</span>
                       <i className="fa fa-cube fa-inline" />
                     </div>
                     <div>
-                      <span className="txt-span">Default Billing</span>
+                      <span className="text-span">Default Billing</span>
                       <i className="fa fa-credit-card fa-inline" />
                     </div>
                   </div>
