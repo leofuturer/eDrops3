@@ -1,10 +1,10 @@
 import {Entity, model, property} from '@loopback/repository';
 
-@model({settings: {strict: false}})
+@model()
 export class UserProfile extends Entity {
   @property({
     type: 'string',
-    id: true,
+    id: 1,
     generated: true,
   })
   id?: string;

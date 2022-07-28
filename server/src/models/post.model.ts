@@ -4,7 +4,7 @@ import {Entity, model, property} from '@loopback/repository';
 export class Post extends Entity {
   @property({
     type: 'number',
-    id: true,
+    id: 1,
     generated: true,
   })
   id?: number;
@@ -53,13 +53,18 @@ export class Post extends Entity {
     type: 'date',
     required: true,
   })
-  datetime: string;
+  datetime: Date;
 
   @property({
     type: 'number',
     required: true,
   })
   likes: number;
+
+  @property({
+    type: 'string',
+  })
+  userId: string;
 
   constructor(data?: Partial<Post>) {
     super(data);
