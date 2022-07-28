@@ -1,28 +1,23 @@
-import { inject } from '@loopback/core';
-import {
-  CountSchema,
-  Filter,
-  repository
-} from '@loopback/repository';
+import {inject} from '@loopback/core';
+import {CountSchema, Filter, repository} from '@loopback/repository';
 import {
   del,
   ExpressRequestHandler,
   get,
-  getModelSchemaRef, HttpErrors,
+  getModelSchemaRef,
+  HttpErrors,
   oas,
-  param, post,
+  param,
+  post,
   Request,
   requestBody,
   Response,
-  RestBindings
+  RestBindings,
 } from '@loopback/rest';
 import path from 'path';
-import { calculate } from '../lib/toolbox/calculate';
-import { Customer, FileInfo } from '../models';
-import { CustomerRepository } from '../repositories';
-import { FILE_UPLOAD_SERVICE, STORAGE_DIRECTORY } from '../services';
-
-const CONTAINER_NAME = process.env.S3_BUCKET_NAME ?? 'test_container';
+import {Customer, FileInfo} from '../models';
+import {CustomerRepository} from '../repositories';
+import {FILE_UPLOAD_SERVICE, STORAGE_DIRECTORY} from '../services';
 
 export class CustomerFileInfoController {
   /**
@@ -49,7 +44,7 @@ export class CustomerFileInfoController {
     },
   })
   async find(
-    @param.path.string('id') id: string,
+    @param.path.string('id') id: typeof Customer.prototype.id,
     @param.query.object('filter') filter?: Filter<FileInfo>,
   ): Promise<FileInfo[]> {
     return this.customerRepository.fileInfos(id).find(filter);
@@ -69,68 +64,31 @@ export class CustomerFileInfoController {
     request: Request,
     @inject(RestBindings.Http.RESPONSE) response: Response,
   ): Promise<object> {
-    interface MulterFileInfo {
-      fieldname: string;
-      originalname: string;
-      mimetype: string;
-      size: number;
-      filename: string;
-    }
-    const mapper = (f: globalThis.Express.Multer.File) => ({
-      fieldname: f.fieldname,
-      originalname: f.originalname,
-      mimetype: f.mimetype,
-      size: f.size,
-      filename: f.filename,
-    });
     const username = await this.customerRepository
       .findById(id)
       .then(customer => {
         return customer.username;
       });
     return new Promise<object>((resolve, reject) => {
-      this.handler(request, response, (err: unknown) => {
+      this.handler(request, response, async (err: unknown) => {
         if (err) reject(err);
         else {
-          // Parse multipart/form-data file info from request
-          let files: MulterFileInfo[] = [];
-          const uploadedFiles = request.files;
-          if (Array.isArray(uploadedFiles)) {
-            files = uploadedFiles.map(mapper);
-          } else {
-            for (const filename in uploadedFiles) {
-              if (uploadedFiles.hasOwnProperty(filename)) {
-                files.push(...uploadedFiles[filename].map(mapper));
-              }
-            }
-          }
-          // console.log(files);
-
-          const fileInfos: Partial<FileInfo> = files.map(
-            (f: MulterFileInfo) => {
-              return {
-                uploadTime: calculate.currentTime(),
-                fileName: request.body.newName
-                  ? request.body.newName
-                  : f.originalname,
-                containerFileName: f.filename,
-                container: CONTAINER_NAME, // need fix
-                uploader: username,
-                customerId: id,
-                isDeleted: false,
-                isPublic: request.body.isPublic === 'public',
-                unit: request.body.unit,
-                fileSize: calculate.formatBytes(f.size, 1),
-              };
-            },
+          // console.log(request.files);
+          resolve(
+            process.env.NODE_ENV !== 'production'
+              ? await this.customerRepository.uploadDisk(
+                  request,
+                  response,
+                  username as string,
+                  id as string,
+                )
+              : await this.customerRepository.uploadS3(
+                  request,
+                  response,
+                  username as string,
+                  id as string,
+                ),
           );
-          // console.log(fileInfos);
-
-          const fields = request.body;
-          const customer = this.customerRepository
-            .fileInfos(id)
-            .create(fileInfos[0]);
-          resolve({files, fields});
         }
       });
     });
@@ -154,15 +112,15 @@ export class CustomerFileInfoController {
     @param.query.number('fileId') fileId: number,
     @inject(RestBindings.Http.RESPONSE) response: Response,
   ): Promise<Response> {
-    const fileName = await this.customerRepository.fileInfos(id).find({where: {id: fileId}})
-      .then(file => {
-        return file[0].containerFileName;
+    const filename = await this.customerRepository
+      .fileInfos(id)
+      .find({where: {id: fileId}})
+      .then(files => {
+        return files[0].containerFileName;
       });
-    const file = path.resolve(this.storageDirectory, fileName);
-    if (!file.startsWith(this.storageDirectory))
-      throw new HttpErrors.BadRequest(`Invalid file id: ${fileName}`);
-    response.download(file, fileName);
-    return response;
+    return process.env.NODE_ENV !== 'production'
+      ? this.customerRepository.downloadDisk(filename, response)
+      : this.customerRepository.downloadS3(filename, response);
   }
 
   @del('/customers/{id}/deleteFile', {

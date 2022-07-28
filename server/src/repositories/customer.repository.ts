@@ -9,6 +9,7 @@ import {HttpErrors} from '@loopback/rest';
 import {genSalt, hash} from 'bcryptjs';
 import {createHash} from 'crypto';
 import ejs from 'ejs';
+import {Request, Response} from '@loopback/rest';
 import {MysqlDsDataSource} from '../datasources';
 import {
   EMAIL_HOSTNAME,
@@ -30,6 +31,12 @@ import {CustomerAddressRepository} from './customer-address.repository';
 import {FileInfoRepository} from './file-info.repository';
 import {OrderInfoRepository} from './order-info.repository';
 import {UserRepository} from './user.repository';
+import {calculate} from '../lib/toolbox/calculate';
+import {STORAGE_DIRECTORY} from '../services';
+import path from 'path';
+import AWS from 'aws-sdk';
+
+const CONTAINER_NAME = process.env.S3_BUCKET_NAME ?? 'edrop-v2-files';
 
 export class CustomerRepository extends DefaultCrudRepository<
   Customer,
@@ -53,6 +60,8 @@ export class CustomerRepository extends DefaultCrudRepository<
 
   public readonly user: BelongsToAccessor<User, typeof Customer.prototype.id>;
 
+  public readonly s3: AWS.S3;
+
   constructor(
     @inject('datasources.mysqlDS') dataSource: MysqlDsDataSource,
     @repository.getter('CustomerAddressRepository')
@@ -65,6 +74,7 @@ export class CustomerRepository extends DefaultCrudRepository<
     protected userRepositoryGetter: Getter<UserRepository>,
     @inject('services.SendGrid')
     public sendGrid: SendGrid,
+    @inject(STORAGE_DIRECTORY) private storageDirectory: string,
   ) {
     super(Customer, dataSource);
     // this.user = this.createBelongsToAccessorFor('user', userRepositoryGetter,);
@@ -93,6 +103,16 @@ export class CustomerRepository extends DefaultCrudRepository<
       'customerAddresses',
       this.customerAddresses.inclusionResolver,
     );
+
+    AWS.config.update({
+      accessKeyId: process.env.S3_AWS_ACCESS_KEY_ID ?? 'AKIA5XCJPLK6K2H3WJ5Z',
+      secretAccessKey:
+        process.env.S3_SECRET_ACCESS_KEY ??
+        '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',
+      region: process.env.S3_AWS_DEFAULT_REGION ?? 'us-west-1',
+    });
+
+    this.s3 = new AWS.S3();
   }
 
   async createCustomer(
@@ -231,8 +251,7 @@ export class CustomerRepository extends DefaultCrudRepository<
       this.updateById(customerId, {
         emailVerified: true,
       });
-    }
-    else {
+    } else {
       throw new HttpErrors.BadRequest('Invalid verification token');
     }
     return customer;
@@ -272,5 +291,148 @@ export class CustomerRepository extends DefaultCrudRepository<
         );
         return new Error('Error while querying for customer cart');
       });
+  }
+
+  async uploadDisk(
+    request: Request,
+    response: Response,
+    username: string,
+    id: string,
+  ): Promise<object> {
+    const mapper = (f: Express.Multer.File) => ({
+      fieldname: f.fieldname,
+      originalname: f.originalname,
+      mimetype: f.mimetype,
+      size: f.size,
+      filename: f.filename,
+    });
+    // Parse multipart/form-data file info from request
+    let files: Partial<Express.Multer.File>[] = [];
+    const uploadedFiles = request.files;
+    if (Array.isArray(uploadedFiles)) {
+      files = uploadedFiles.map(mapper);
+    } else {
+      for (const filename in uploadedFiles) {
+        files.push(...uploadedFiles[filename].map(mapper));
+      }
+    }
+
+    const fileInfos: Partial<FileInfo> = files.map(
+      (f: Partial<Express.Multer.File>) => {
+        return {
+          uploadTime: calculate.currentTime(),
+          fileName: request.body.newName
+            ? request.body.newName
+            : f.originalname,
+          containerFileName: f.originalname,
+          container: CONTAINER_NAME, // need fix
+          uploader: username,
+          customerId: id,
+          isDeleted: false,
+          isPublic: request.body.isPublic === 'public',
+          unit: request.body.unit,
+          fileSize: calculate.formatBytes(f.size as number, 1),
+        };
+      },
+    );
+
+    const fields = request.body;
+    const file = await this.fileInfos(id).create(fileInfos[0]);
+    return {files, fields};
+  }
+
+  async uploadS3(
+    request: Request,
+    response: Response,
+    username: string,
+    id: string,
+  ): Promise<object> {
+    const mapper = (f: Express.MulterS3.File) => ({
+      fieldname: f.fieldname,
+      originalname: f.originalname,
+      mimetype: f.mimetype,
+      size: f.size,
+      key: f.key,
+      metadata: f.metadata,
+    });
+    // Parse multipart/form-data file info from request
+    let files: Partial<Express.MulterS3.File>[] = [];
+
+    const uploadedFiles = request.files;
+    if (Array.isArray(uploadedFiles)) {
+      /* @ts-ignore */
+      files = uploadedFiles.map(mapper);
+    } else {
+      for (const filename in uploadedFiles) {
+        /* @ts-ignore */
+        files.push(...uploadedFiles[filename].map(mapper));
+      }
+    }
+
+    const fileInfos: Partial<FileInfo> = files.map(
+      (f: Partial<Express.MulterS3.File>) => {
+        return {
+          uploadTime: calculate.currentTime(),
+          fileName: request.body.newName
+            ? request.body.newName
+            : f.originalname,
+          containerFileName: f.key,
+          container: CONTAINER_NAME, // need fix
+          uploader: username,
+          customerId: id,
+          isDeleted: false,
+          isPublic: request.body.isPublic === 'public',
+          unit: request.body.unit,
+          fileSize: calculate.formatBytes(f.size as number, 1),
+        };
+      },
+    );
+
+    const fields = request.body;
+    const file = await this.fileInfos(id).create(fileInfos[0]);
+    return {files, fields};
+  }
+
+  async downloadDisk(filename: string, response: Response): Promise<Response> {
+    const file = path.resolve(this.storageDirectory, filename);
+    if (!file.startsWith(this.storageDirectory))
+      throw new HttpErrors.BadRequest(`Invalid file id: ${filename}`);
+    response.download(file, filename);
+    return response;
+  }
+
+  /*
+  fieldname: 'file',
+  originalname: 'a.dxf',
+  encoding: '7bit',
+  mimetype: 'application/octet-stream',
+  size: 0,
+  bucket: 'edrop-v2-files',
+  key: 'bd11882f-95d0-4d11-b628-74628043eed2.dxf',
+  acl: 'private',
+  contentType: 'application/octet-stream',
+  contentDisposition: null,
+  contentEncoding: null,
+  storageClass: 'STANDARD',
+  serverSideEncryption: null,
+  metadata: { fieldname: 'file', originalname: 'a.dxf' },
+  location: 'https://edrop-v2-files.s3.us-west-1.amazonaws.com/bd11882f-95d0-4d11-b628-74628043eed2.dxf',
+  etag: '"d41d8cd98f00b204e9800998ecf8427e"',
+  versionId: undefined
+  */
+  async downloadS3(filename: string, response: Response): Promise<Response> {
+    const file = await this.s3
+      .getObject({
+        Key: filename,
+        Bucket: CONTAINER_NAME,
+      })
+      .promise();
+
+    response.writeHead(200, {
+      'Content-Type': file.ContentType,
+      'Content-Disposition': file.ContentDisposition,
+    })
+    response.end(file.Body);
+    return response;
   }
 }
