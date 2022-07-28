@@ -20,6 +20,7 @@ import {AuthenticationComponent} from '@loopback/authentication';
 //   SECURITY_SCHEME_SPEC,
 //   UserServiceBindings,
 // } from '@loopback/authentication-jwt';
+import { v4 } from 'uuid';
 import {
   JWTAuthenticationComponent,
   SECURITY_SCHEME_SPEC,
@@ -165,10 +166,13 @@ export class EdropsBackendApplication extends BootMixin(
               }),
               bucket: process.env.S3_BUCKET_NAME as string,
               metadata: (req, file, cb) => {
-                cb(null, {fieldName: file.fieldname});
+                cb(null, {fieldname: file.fieldname, originalname: file.originalname});
               },
               key: (req, file, cb) => {
-                cb(null, Date.now().toString());
+                cb(null, v4() + path.extname(file.originalname));
+              },
+              contentDisposition: (req, file, cb) => {
+                cb(null, 'attachment; filename=' + file.originalname);
               },
             }),
           };
