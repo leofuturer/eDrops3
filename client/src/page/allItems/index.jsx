@@ -33,9 +33,11 @@ class AllItems extends React.Component {
   render() {
     return (
       <div className="all-items">
-        <SEO title="eDrops | Products"
-              description="" 
-              metadata={ metadata }/>
+        <SEO
+          title="eDrops | Products"
+          description=""
+          metadata={metadata}
+        />
         <h3>Products</h3>
         <div className="border-h3" />
         <div className="all-products">

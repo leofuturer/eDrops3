@@ -225,9 +225,11 @@ class Upload extends React.Component {
     return (
       <div>
         <div className="foundry-content">
-          <SEO title="eDrops | Upload" 
+          <SEO
+            title="eDrops | Upload"
             description=""
-            metadata={metadata} />
+            metadata={metadata}
+          />
           <h1>File Upload</h1>
           <h3>We accept DXF file as mask file</h3>
           <div className="vu-content">
@@ -274,8 +276,7 @@ class Upload extends React.Component {
                       </p>
                       {this.state.file && <p>{this.state.file.name}</p>}
                     </div>
-                  )
-                }
+                  )}
               </div>
             )}
           </Dropzone>
@@ -330,4 +331,3 @@ class Upload extends React.Component {
 
 Upload = withRouter(Upload);
 export default Upload;
-

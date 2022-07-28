@@ -3,7 +3,7 @@ import { NavLink } from 'react-router-dom';
 import IMG_2943 from '../../../static/img/IMG_2943.jpg';
 import IMG_2941 from '../../../static/img/IMG_2941.jpg';
 import { controlSysId, univEwodChipId } from '../../constants';
-import eDropsLogo from "../../../static/img/edrop_logo.png";
+import eDropsLogo from '../../../static/img/edrop_logo.png';
 
 class FooterPage extends React.Component {
   render() {
@@ -19,9 +19,9 @@ class FooterPage extends React.Component {
             </div>
             <h3 className="edrop-txt">eDrops</h3>
             {/* <p className="i-p"> */}
-              {/* <i className="fa fa-twitter"></i> */}
-              {/* <i className="fa fa-facebook"></i> */}
-              {/* <i className="fa fa-youtube"></i> */}
+            {/* <i className="fa fa-twitter"></i> */}
+            {/* <i className="fa fa-facebook"></i> */}
+            {/* <i className="fa fa-youtube"></i> */}
             {/* </p> */}
             <p>
               &copy; eDrops 2018-2021

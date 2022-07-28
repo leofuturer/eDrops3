@@ -1,5 +1,5 @@
 body{
-    font-family: 'Open Sans', "Arial", sans-serif;
+    /* font-family: 'Open Sans', "Arial", sans-serif; */
     word-wrap: break-word;
     min-width: 1200px;
     height: 100%;
@@ -169,7 +169,6 @@ ul.ul-nav li  a:active{
     margin-top:-600px;
 }
 .right-route-content{
-    width:90%;
     margin:0 auto;
 }
 

@@ -1,4 +1,9 @@
-import {Entity, model, property} from '@loopback/repository';
+import {Entity, model, property, hasMany, hasOne} from '@loopback/repository';
+import {SavedPost} from './saved-post.model';
+import {SavedProject} from './saved-project.model';
+import {UserProfile} from './user-profile.model';
+import {Post} from './post.model';
+import {Project} from './project.model';
 
 @model({
   settings: {
@@ -47,10 +52,30 @@ export class User extends Entity {
   })
   emailVerified?: boolean;
 
+  @hasMany(() => SavedPost)
+  savedPosts: SavedPost[];
+
+  @hasMany(() => SavedProject)
+  savedProjects: SavedProject[];
+
+  @hasOne(() => UserProfile)
+  userProfile: UserProfile;
+
+  @hasMany(() => Post)
+  posts: Post[];
+
+  @hasMany(() => Project)
+  projects: Project[];
+  
   @property({
     type: 'string',
   })
   verificationToken?: string;
+
+  @property({
+    type: 'date',
+  })
+  verificationTokenExpires?: Date;
 
   // Define well-known properties here
 

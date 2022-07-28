@@ -15,7 +15,7 @@ class SingleAddress extends React.Component {
         <div className="col-lg-6 col-md-6 col-sm-6 col-xs-6">
           <div className={`card-view ${this.props.selected}`} style={{ minHeight: '200px' }}>
             <div className="row">
-              <div className="col-md-7 col-sm-7 col-xs-7">
+              <div className="col-md-6 col-sm-6 col-xs-6">
                 <h4>
                   Address
                   {' '}
@@ -24,13 +24,13 @@ class SingleAddress extends React.Component {
               </div>
               { address.isDefault
                 ? (
-                  <div className="col-md-5 col-sm-5 col-xs-5">
+                  <div className="col-md-6 col-sm-6 col-xs-6 text-right">
                     <div>
-                      <span className="txt-span">Default Shipping</span>
+                      <span className="text-span">Default Shipping</span>
                       <i className="fa fa-cube fa-inline" />
                     </div>
                     <div>
-                      <span className="txt-span">Default Billing</span>
+                      <span className="text-span">Default Billing</span>
                       <i className="fa fa-credit-card fa-inline" />
                     </div>
                   </div>

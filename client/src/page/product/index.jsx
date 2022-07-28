@@ -2,24 +2,25 @@ import React from 'react';
 import { withRouter, NavLink } from 'react-router-dom';
 import './product.css';
 import Cookies from 'js-cookie';
+import hoistNonReactStatics from 'hoist-non-react-statics';
+import { Buffer } from 'buffer';
 import {
   univEwodChipId,
   univEwodChipWithCoverPlate,
   univEwodChipWithoutCoverPlate,
   productIdsJson,
-  getProductType
+  getProductType,
 } from '../../constants';
 import {
   getCustomerCart,
   manipulateCustomerOrders,
   addOrderProductToCart, returnOneItem,
-  getProductOrders
+  getProductOrders,
 } from '../../api/serverConfig';
 import API from '../../api/api';
 import Shopify from '../../app.jsx';
 import loadingGif from '../../../static/img/loading80px.gif';
 import CartContext from '../../context/CartContext';
-import hoistNonReactStatics from 'hoist-non-react-statics';
 
 class Product extends React.Component {
   constructor(props) {
@@ -70,7 +71,6 @@ class Product extends React.Component {
   componentDidMount() {
     if (this.props.location.search === '') {
       this.props.history.push('/allItems'); // redirect if no ID provided
-      return;
     } else {
       this.fetchProductData(this.props.location.search.slice(4));
     }
@@ -83,12 +83,11 @@ class Product extends React.Component {
       },
     );
     if (key === 'bundleSize') {
-      let productType = getProductType(this.state.product.id);
+      const productType = getProductType(this.state.product.id);
       this.fetchProductData(productIdsJson[productType][value]);
     }
     // console.log(this.state)
   }
-
 
   handleOptionsChange(key, value) {
     const newData = {
@@ -219,11 +218,11 @@ class Product extends React.Component {
         customServerOrderAttributes += `${k}: ${v}\n`;
       }
     }
-    const variantId = _this.state.product.id !== productIdsJson['UNIVEWODCHIPID'][_this.state.bundleSize]
+    const variantId = _this.state.product.id !== productIdsJson.UNIVEWODCHIPID[_this.state.bundleSize]
       ? _this.state.product.variants[0].id
       : (_this.state.otherDetails.withCoverPlateAssembled
-      ? productIdsJson['UNIVEWODCHIPWITHCOVERPLATE'][_this.state.bundleSize]
-      : productIdsJson['UNIVEWODCHIPWITHOUTCOVERPLATE'][_this.state.bundleSize]);
+        ? productIdsJson.UNIVEWODCHIPWITHCOVERPLATE[_this.state.bundleSize]
+        : productIdsJson.UNIVEWODCHIPWITHOUTCOVERPLATE[_this.state.bundleSize]);
     // console.log(variantId);
     const lineItemsToAdd = [{
       variantId,
@@ -236,8 +235,9 @@ class Product extends React.Component {
             let lineItemId;
             // console.log(res);
             for (let i = 0; i < res.lineItems.length; i++) {
-              if (res.lineItems[i].variant.id === variantId) {
-                lineItemId = res.lineItems[i].id;
+              // console.log('lineItemId:', Buffer.from(res.lineItems[i].variant.id).toString('base64'));
+              if (Buffer.from(res.lineItems[i].variant.id).toString('base64') === variantId) {
+                lineItemId = Buffer.from(res.lineItems[i].id).toString('base64');
                 // console.log('lineItemId:', lineItemId);
                 break;
               }
@@ -386,4 +386,4 @@ class Product extends React.Component {
 
 // Product = withRouter(Product);
 Product.contextType = CartContext;
-export default hoistNonReactStatics( Product, withRouter (Product));
+export default hoistNonReactStatics(Product, withRouter(Product));

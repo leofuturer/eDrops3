@@ -1,11 +1,10 @@
-import React, { useCallback } from 'react'
-import './deletePopup.css'
+import React, { useCallback } from 'react';
+import './deletePopup.css';
 
 const DeletePopup = (props) => {
-
   const onDelete = useCallback(() => {
-    props.onDelete()
-  }, [props.onDelete])
+    props.onDelete();
+  }, [props.onDelete]);
 
   return (
     <div className="modal fade" id="deleteModal" tabIndex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
@@ -27,7 +26,7 @@ const DeletePopup = (props) => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
 export default DeletePopup;

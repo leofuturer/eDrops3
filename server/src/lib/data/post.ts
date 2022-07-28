@@ -1,17 +1,17 @@
 import {faker} from '@faker-js/faker';
-import {Forum} from '../../models';
+import {Post} from '../../models';
 
-export const defaultForums: Forum[] = new Array(10)
+export const defaultPosts: Partial<Post>[] = new Array(10)
   .fill(0)
-  .map(() => createForum());
+  .map(() => createPost());
 
-function createForum(): Forum {
+function createPost(): Partial<Post> {
   return {
     parentId: 0,
     author: faker.name.findName(),
     title: faker.lorem.sentence(),
     content: faker.lorem.paragraphs(),
-    datetime: faker.date.past().toISOString(),
+    datetime: faker.date.recent(10),
     likes: Math.random() * 100,
-  } as Forum;
+  };
 }

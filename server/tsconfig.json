@@ -5,7 +5,12 @@
     "experimentalDecorators": true,
     "forceConsistentCasingInFileNames": true,
     "outDir": "dist",
-    "rootDir": "src"
+    "rootDir": "src",
+    "types": [
+      "node",
+      "@types/node",
+      "@types/mocha"
+    ]
   },
   "include": ["src"]
 }

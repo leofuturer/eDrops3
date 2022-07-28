@@ -2,7 +2,6 @@ import {Customer} from '../../models';
 
 export const defaultCustomers: Partial<Customer>[] = [
   {
-    id: 'aaaa-bbbb-cccc-dddd',
     firstName: 'Ryan',
     lastName: 'Liu',
     phoneNumber: '3102896978',
@@ -13,7 +12,6 @@ export const defaultCustomers: Partial<Customer>[] = [
     emailVerified: true,
   },
   {
-    id: 'aaaa-bbbb-cccc-eeee',
     firstName: 'John',
     lastName: 'Wang',
     phoneNumber: '3102896978',
