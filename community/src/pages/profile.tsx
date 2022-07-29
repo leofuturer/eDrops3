@@ -1,7 +1,12 @@
 import Cookies from "js-cookie";
 import React, { useEffect, useState } from "react";
 import { NavLink, useParams } from "react-router-dom";
-import { userBaseFind } from "../api/serverConfig";
+import {
+	userBaseFind,
+	userPosts,
+	userProjects,
+	userSavedPosts,
+} from "../api/serverConfig";
 import API from "../api/api";
 import {
 	ChevronDownIcon,
@@ -12,10 +17,13 @@ import {
 } from "@heroicons/react/solid";
 import ProfileInfo from "../components/profile/ProfileInfo";
 import ProfileEdit from "../components/profile/ProfileEdit";
-import { UserProfile } from "../lib/types";
+import { PostType, ProjectType, UserProfile } from "../lib/types";
+import ProjectPreview from "../components/project/ProjectPreview";
+import PostPreview from "../components/forum/PostPreview";
 
 function Profile(): JSX.Element {
 	const [user, setUser] = useState<UserProfile>({} as UserProfile);
+	const [feedData, setFeedData] = useState<PostType[] | ProjectType[]>([]);
 	const [feed, setFeed] = useState<"Projects" | "Questions">("Projects");
 	const [feedType, setFeedType] = useState<"Activity" | "Saved">("Activity");
 	const [dropdown, setDropdown] = useState<boolean>(false);
@@ -34,6 +42,28 @@ function Profile(): JSX.Element {
 	}, [id]);
 
 	// TODO: Setup API endpoint to retrieve a user's projects (in order to get count and list)
+	const FEED = {
+		Projects: {
+			Activity: userProjects,
+			Saved: userSavedPosts,
+		},
+		Questions: {
+			Activity: userPosts,
+			Saved: userSavedPosts,
+		},
+	};
+	useEffect(() => {
+		API.Request(
+			FEED[feed][feedType].replace("id", Cookies.get("userId") as string),
+			"GET",
+			{},
+			false
+		)
+			.then((res) => {
+				setFeedData(res.data);
+			})
+			.catch((err) => console.log(err));
+	}, [feedType, feed]);
 
 	function handleFeedType(feedType: "Activity" | "Saved") {
 		setFeedType(feedType);
@@ -45,8 +75,8 @@ function Profile(): JSX.Element {
 	}
 
 	return (
-		<section className="grid grid-cols-3 h-full bg-slate-200">
-			<div className="relative flex flex-col h-full bg-white shadow-2xl items-center justify-center">
+		<section className="grid grid-cols-3 min-h-full bg-slate-200">
+			<div className="sticky top-[80px] h-[calc(100vh-80px)] flex flex-col bg-white shadow-2xl items-center justify-center">
 				<div
 					className="absolute top-4 right-4 cursor-pointer"
 					onClick={() => setEdit(!edit)}
@@ -113,6 +143,17 @@ function Profile(): JSX.Element {
 							<p className="text-xl text-center">Questions</p>
 						</div>
 					</div>
+				</div>
+				<div className="flex flex-col space-y-4">
+					{feed === "Projects"
+						? feedData.map((project) => (
+								<ProjectPreview
+									project={project as ProjectType}
+								/>
+						  ))
+						: feedData.map((post) => (
+								<PostPreview post={post as PostType} />
+						  ))}
 				</div>
 			</div>
 		</section>

@@ -7,7 +7,7 @@ export interface ProjectType {
   likes: number;
 }
 
-export interface ForumType {
+export interface PostType {
     id: number;
     parentId: number;
     title: string;
