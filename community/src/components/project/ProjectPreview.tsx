@@ -5,7 +5,7 @@ import { ProjectType } from "../../lib/types";
 function ProjectPreview({ project }: { project: ProjectType }) {
 	return (
 		<NavLink
-			to={`/projects/${project.id}`}
+			to={`/project/${project.id}`}
 			className="w-full flex flex-col items-center cursor-pointer rounded-2xl mb-4 bg-white shadow-2xl"
 		>
 			<div className="w-full h-40 rounded-t-2xl bg-gray-400">
