@@ -2,18 +2,18 @@ import { BookmarkIcon, ChevronLeftIcon } from "@heroicons/react/outline";
 import React, { useEffect, useState } from "react";
 import { NavLink, useParams } from "react-router-dom";
 import API from "../../api/api";
-import { forum } from "../../api/serverConfig";
+import { post } from "../../api/serverConfig";
 import { timeAgo } from "../../lib/time";
-import { ForumType, ProjectType } from "../../lib/types";
+import { PostType, ProjectType } from "../../lib/types";
 
 function Project() {
 	const { id } = useParams();
 	const [loading, setLoading] = useState(true);
 
-	const [currentPost, setCurrentPost] = useState<ForumType>({} as ForumType);
+	const [currentPost, setCurrentPost] = useState<PostType>({} as PostType);
 
 	useEffect(() => {
-		API.Request(forum.replace("id", id as string), "GET", {}, false).then(
+		API.Request(post.replace("id", id as string), "GET", {}, false).then(
 			(res) => {
 				setCurrentPost(res.data);
 				setLoading(false);

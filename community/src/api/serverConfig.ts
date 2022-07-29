@@ -3,10 +3,16 @@
  */
 const ApiRootUrl = '/api';
 
-export const forums = `${ApiRootUrl}/forums`;
-export const forum = `${ApiRootUrl}/forums/id`;
+export const posts = `${ApiRootUrl}/posts`;
+export const post = `${ApiRootUrl}/posts/id`;
+export const featuredPosts = `${ApiRootUrl}/posts/featured`;
+export const userPosts = `${ApiRootUrl}/users/id/posts`;
+export const userSavedPosts = `${ApiRootUrl}/users/id/savedPosts`;
 export const projects = `${ApiRootUrl}/projects`;
 export const project = `${ApiRootUrl}/projects/id`;
+export const featuredProjects = `${ApiRootUrl}/projects/featured`;
+export const userProjects = `${ApiRootUrl}/users/id/projects`;
+export const userSavedProjects = `${ApiRootUrl}/users/id/savedProjects`;
 
 // Overall User
 export const userSignUp = `${ApiRootUrl}/users`;
