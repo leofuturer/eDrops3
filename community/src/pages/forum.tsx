@@ -1,27 +1,17 @@
-import { PlusIcon, SearchIcon, UserCircleIcon } from "@heroicons/react/solid";
-import Cookies from "js-cookie";
+import { PlusIcon, SearchIcon } from "@heroicons/react/solid";
 import { debounce } from "lodash";
 import React, { useState, useEffect, useMemo } from "react";
 import { NavLink } from "react-router-dom";
 import API from "../api/api";
-import { forums, userBaseFind } from "../api/serverConfig";
+import { posts } from "../api/serverConfig";
 import PostPreview from "../components/forum/PostPreview";
-import { ForumType, UserProfile } from "../lib/types";
+import ProfilePreview from "../components/profile/ProfilePreview";
+import { PostType } from "../lib/types";
 
 function Forum() {
-	const [forumList, setForumList] = useState<ForumType[]>([]);
+	const [postList, setPostList] = useState<PostType[]>([]);
 	const [search, setSearch] = useState("");
-	const [user, setUser] = useState<UserProfile>({} as UserProfile);
 	const [feedType, setFeedType] = useState<"Featured" | "New">("Featured");
-
-	useEffect(() => {
-		const userId = Cookies.get("userId");
-		API.Request(`${userBaseFind}/${userId}`, "GET", {}, false).then(
-			(res) => {
-				setUser(res.data);
-			}
-		);
-	}, [Cookies.get("userId")]);
 
 	let filter = {};
 
@@ -49,8 +39,8 @@ function Forum() {
 				},
 			};
 		}
-		API.Request(forums, "GET", filter, false).then((res) => {
-			setForumList(res.data);
+		API.Request(posts, "GET", filter, false).then((res) => {
+			setPostList(res.data);
 		});
 	}, [search]);
 
@@ -71,22 +61,7 @@ function Forum() {
 
 	return (
 		<section className="bg-slate-200 min-h-full grid grid-cols-4">
-			<div className="flex flex-col mt-20 px-10">
-				<div className="bg-white shadow-2xl rounded-2xl flex flex-col items-center">
-					{user?.image ? (
-						<img
-							src={user.image}
-							alt="profile"
-							className="w-32 h-32 rounded-full"
-						/>
-					) : (
-						<UserCircleIcon className="w-32 h-32 text-slate-400" />
-					)}
-					<h1 className="text-lg">{user?.username}</h1>
-					<h2 className="text-md opacity-50">{user?.email}</h2>
-					<p className="">{user?.description}</p>
-				</div>
-			</div>
+			<ProfilePreview />
 			<div className="col-span-2 flex flex-col">
 				<div className="w-full flex flex-row py-4 h-20 space-x-4">
 					<div className="relative w-4/5 h-full">
@@ -104,7 +79,7 @@ function Forum() {
 								type="button"
 								className="bg-sky-800 text-white rounded-2xl w-full h-full hidden lg:flex items-center justify-center"
 							>
-								New Project
+								New Post
 							</button>
 							<button
 								title="New"
@@ -116,9 +91,9 @@ function Forum() {
 						</NavLink>
 					</div>
 				</div>
-				<div id="forumList">
-					{forumList.map((forum) => (
-						<PostPreview post={forum} />
+				<div id="postList">
+					{postList.map((post) => (
+						<PostPreview post={post} key={post.id}/>
 					))}
 				</div>
 			</div>

@@ -1,3 +1,4 @@
+import { intercept } from '@loopback/core';
 import {
   Count,
   CountSchema,
@@ -15,6 +16,7 @@ import {
   post,
   requestBody,
 } from '@loopback/rest';
+import { AuthorInterceptor } from '../interceptors';
 import {
   User,
   Project,
@@ -45,6 +47,7 @@ export class UserProjectController {
     return this.userRepository.projects(id).find(filter);
   }
 
+  @intercept(AuthorInterceptor.BINDING_KEY)
   @post('/users/{id}/projects', {
     responses: {
       '200': {
