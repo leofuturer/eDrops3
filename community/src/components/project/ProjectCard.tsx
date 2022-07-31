@@ -3,8 +3,8 @@ import { ProjectType } from "../../lib/types";
 
 function ProjectCard({ project }: { project: ProjectType }) {
 	return (
-		<NavLink to={`/project/${project.id}`}>
-			<div className="w-full rounded-2xl shadow-xl bg-white flex flex-row items-center">
+		<NavLink to={`/project/${project.id}`} className="h-full">
+			<div className="h-full w-full rounded-2xl shadow-xl bg-white flex flex-row items-center">
 				<div className="relative w-full flex flex-col justify-between h-full group">
 					<div className="w-full h-full rounded-2xl">
 						<img
