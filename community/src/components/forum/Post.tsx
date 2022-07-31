@@ -1,16 +1,19 @@
 import { BookmarkIcon, ChevronLeftIcon } from "@heroicons/react/outline";
-import React, { useEffect, useState } from "react";
+import { AxiosError } from "axios";
+import Cookies from "js-cookie";
+import { useEffect, useState } from "react";
 import { NavLink, useParams } from "react-router-dom";
 import API from "../../api/api";
-import { post } from "../../api/serverConfig";
+import { post, userSavedPosts } from "../../api/serverConfig";
 import { timeAgo } from "../../lib/time";
-import { PostType, ProjectType } from "../../lib/types";
+import { PostType } from "../../lib/types";
 
-function Project() {
+function Post() {
 	const { id } = useParams();
 	const [loading, setLoading] = useState(true);
 
 	const [currentPost, setCurrentPost] = useState<PostType>({} as PostType);
+	const [saved, setSaved] = useState(false);
 
 	useEffect(() => {
 		API.Request(post.replace("id", id as string), "GET", {}, false).then(
@@ -20,6 +23,70 @@ function Project() {
 			}
 		);
 	}, [id]);
+
+
+	useEffect(() => {
+		if (currentPost.id) {
+			API.Request(
+				`${userSavedPosts.replace(
+					"id",
+					Cookies.get("userId") as string
+				)}/${currentPost.id}`,
+				"GET",
+				{},
+				true
+			)
+				.then((res) => {
+					if (res.data) {
+						setSaved(true);
+					} else {
+						setSaved(false);
+					}
+				})
+				.catch((err: AxiosError) => {
+					console.log(err);
+				});
+		}
+	}, [currentPost]);
+
+	function handleSave() {
+		API.Request(
+			`${userSavedPosts.replace("id", Cookies.get('userId') as string)}/${
+				currentPost.id
+			}`,
+			"GET",
+			{},
+			true
+		)
+			.then((res) => {
+				if (res.data) {
+					API.Request(
+						`${userSavedPosts.replace("id", Cookies.get('userId') as string)}/${
+							currentPost.id
+						}`,
+						"DELETE",
+						{},
+						true
+					).then((res) => {
+						setSaved(false);
+					});
+				} else {
+					API.Request(
+						`${userSavedPosts.replace("id", Cookies.get('userId') as string)}/${
+							currentPost.id
+						}`,
+						"POST",
+						{},
+						true
+					).then((res) => {
+						setSaved(true);
+					});
+				}
+			})
+			.catch((err: AxiosError) => {
+				console.log(err);
+			});
+	}
 
 	return (
 		<section className="relative bg-slate-200 h-full py-10 grid grid-cols-5">
@@ -38,9 +105,13 @@ function Project() {
 								<h1 className="text-3xl">
 									{currentPost?.title}
 								</h1>
-								<BookmarkIcon className="h-10 w-10" />
+								<BookmarkIcon
+									className={`w-10 h-10 cursor-pointer ${
+										saved ? "fill-black" : ""
+									}`}
+									onClick={handleSave}
+								/>
 							</div>
-
 							<p className="text-md">
 								{currentPost?.author} &#8226;{" "}
 								{timeAgo(new Date(currentPost.datetime))}
@@ -54,4 +125,4 @@ function Project() {
 	);
 }
 
-export default Project;
+export default Post;

@@ -23,34 +23,35 @@ class API {
 	) {
 		try {
 			if (useToken) {
-				if (
-					Cookies.get("access_token") === null ||
-					Cookies.get("access_token") === undefined
-				) {
-					headers.Authorization = Cookies.get(
-						"base_access_token"
-					) as string;
+				if (!Cookies.get("access_token")) {
+					throw new Error("No access token found");
 				} else {
-					headers.Authorization = Cookies.get(
+					headers.Authorization = `Bearer ${Cookies.get(
 						"access_token"
-					) as string;
+					)}`;
 				}
 			}
-			headers["X-edrop-userbase"] = Cookies.get(
-				"base_access_token"
-			) as string;
+			headers["X-edrop-userbase"] = Cookies.get("access_token") ?? "";
 			const dataToSend = sendDataRaw ? data : JSON.stringify(data);
 			const options: AxiosRequestConfig = {
 				method,
 				headers,
 				url,
 			};
-			if (method === "POST" || method === "PUT") {
-				options.data = dataToSend;
-			} else {
-				options.params = {
-					filter: dataToSend,
-				};
+			switch(method) {
+				case "GET":
+					options.params = dataToSend;
+					break;
+				case "POST":
+				case "PUT":
+				case "PATCH":
+					options.data = dataToSend;
+					break;
+				case "DELETE":
+					// Delete requests don't need data
+					break;
+				default:
+					throw new Error("Invalid method");
 			}
 
 			const res = await axios(options);
