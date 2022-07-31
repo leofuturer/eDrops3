@@ -43,7 +43,7 @@ function Home() {
 				<h1 className="my-4 w-full text-4xl font-semibold text-center">
 					Featured <b className="font-extrabold text-sky-700">Posts</b>
 				</h1>
-				<div className="grid grid-cols-1 md:grid-cols-2 grid-rows-2 gap-4 h-full ">
+				<div className="grid grid-cols-1 md:grid-cols-2 grid-rows-2 gap-4 h-full">
 					{featuredPostList.map((post) => (
 						<PostCard key={post.id} post={post} />
 					))}

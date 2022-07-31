@@ -6,6 +6,7 @@ import {
 	userPosts,
 	userProjects,
 	userSavedPosts,
+	userSavedProjects,
 } from "../api/serverConfig";
 import API from "../api/api";
 import {
@@ -45,7 +46,7 @@ function Profile(): JSX.Element {
 	const FEED = {
 		Projects: {
 			Activity: userProjects,
-			Saved: userSavedPosts,
+			Saved: userSavedProjects,
 		},
 		Questions: {
 			Activity: userPosts,
@@ -57,7 +58,7 @@ function Profile(): JSX.Element {
 			FEED[feed][feedType].replace("id", Cookies.get("userId") as string),
 			"GET",
 			{},
-			false
+			true
 		)
 			.then((res) => {
 				setFeedData(res.data);
@@ -149,10 +150,14 @@ function Profile(): JSX.Element {
 						? feedData.map((project) => (
 								<ProjectPreview
 									project={project as ProjectType}
+									key={project.id}
 								/>
 						  ))
 						: feedData.map((post) => (
-								<PostPreview post={post as PostType} />
+								<PostPreview
+									post={post as PostType}
+									key={post.id}
+								/>
 						  ))}
 				</div>
 			</div>
