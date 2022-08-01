@@ -38,6 +38,7 @@ const endpoints = fs
           });
         return fileEndpoints;
       }
+      return file;
     }),
   )
   .then(async res => {
@@ -62,7 +63,7 @@ const endpoints = fs
     const configEndpoints = await fs.readFile(path.resolve(__dirname, '../../client/src/api/serverConfig.js'), 'utf8').then(
       data => {
         const lines = data.split('\n');
-        const endpointLines = lines.filter(line => line.includes('${ApiRootUrl}'));
+        const endpointLines = lines.filter(line => line.includes('{ApiRootUrl}'));
         const endpointList = endpointLines.map(endpoint => {
           const matches = endpoint.match(CLIENT_MATCHER);
           if (matches) {

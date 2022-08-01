@@ -9,20 +9,20 @@ import {
   get,
   getModelSchemaRef, param, post
 } from '@loopback/rest';
-import { Project, SavedProject, User } from '../models';
+import { Project, LikedProject, User } from '../models';
 import { ProjectRepository, UserRepository } from '../repositories';
 
-export class UserSavedProjectController {
+export class UserLikedProjectController {
   constructor(
     @repository(UserRepository) protected userRepository: UserRepository,
     @repository(ProjectRepository) protected projectRepository: ProjectRepository,
   ) {}
 
   @authenticate('jwt')
-  @get('/users/{id}/savedProjects', {
+  @get('/users/{id}/likedProjects', {
     responses: {
       '200': {
-        description: 'Get all user saved projects',
+        description: 'Get all user liked projects',
         content: {
           'application/json': {
             schema: {type: 'array', items: getModelSchemaRef(Project)},
@@ -35,18 +35,18 @@ export class UserSavedProjectController {
     @param.path.string('id') id: typeof User.prototype.id,
     @param.query.object('filter') filter?: Filter<Project>,
   ): Promise<Project[]> {
-    const savedProjects : Project[] = await this.userRepository.savedProjects(id).find(filter);
-    return savedProjects;
+    const likedProjects : Project[] = await this.userRepository.likedProjects(id).find(filter);
+    return likedProjects;
   }
 
   @authenticate('jwt')
-  @get('/users/{id}/savedProjects/{projectId}', {
+  @get('/users/{id}/likedProjects/{projectId}', {
     responses: {
       '200': {
-        description: 'Check if a project is saved',
+        description: 'Check if a project is liked',
         content: {
           'application/json': {
-            schema: {type: 'array', items: getModelSchemaRef(SavedProject)},
+            schema: {type: 'array', items: getModelSchemaRef(LikedProject)},
           },
         },
       },
@@ -56,17 +56,17 @@ export class UserSavedProjectController {
     @param.path.string('id') id: string,
     @param.path.number('projectId') projectId: typeof Project.prototype.id,
   ): Promise<Project> {
-    const savedProjects = await this.userRepository.savedProjects(id).find({where: {id: projectId}});
-    return savedProjects[0];
+    const likedProjects = await this.userRepository.likedProjects(id).find({where: {id: projectId}});
+    return likedProjects[0];
   }
 
   @authenticate('jwt')
-  @post('/users/{id}/savedProjects/{projectId}', {
+  @post('/users/{id}/likedProjects/{projectId}', {
     responses: {
       '200': {
-        description: 'Save a project',
+        description: 'Like a project',
         content: {
-          'application/json': {schema: getModelSchemaRef(SavedProject)},
+          'application/json': {schema: getModelSchemaRef(LikedProject)},
         },
       },
     },
@@ -75,14 +75,14 @@ export class UserSavedProjectController {
     @param.path.string('id') id: typeof User.prototype.id,
     @param.path.number('projectId') projectId: typeof Project.prototype.id,
   ): Promise<void> {
-    return this.userRepository.savedProjects(id).link(projectId);
+    return this.userRepository.likedProjects(id).link(projectId);
   }
 
   @authenticate('jwt')
-  @del('/users/{id}/savedProjects/{projectId}', {
+  @del('/users/{id}/likedProjects/{projectId}', {
     responses: {
       '200': {
-        description: 'Unsave a project',
+        description: 'Unlike a project',
         content: {'application/json': {schema: CountSchema}},
       },
     },
@@ -91,6 +91,6 @@ export class UserSavedProjectController {
     @param.path.string('id') id: typeof User.prototype.id,
     @param.path.number('projectId') projectId: typeof Project.prototype.id,
   ): Promise<void> {
-    return this.userRepository.savedProjects(id).unlink(projectId);
+    return this.userRepository.likedProjects(id).unlink(projectId);
   }
 }

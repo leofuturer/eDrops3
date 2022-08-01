@@ -4,7 +4,7 @@ import {
   CountSchema,
   Filter,
   repository,
-  Where,
+  Where
 } from '@loopback/repository';
 import {
   del,
@@ -14,14 +14,13 @@ import {
   param,
   patch,
   post,
-  requestBody,
+  requestBody
 } from '@loopback/rest';
 import { AuthorInterceptor } from '../interceptors';
 import {
-  User,
-  Project,
+  Project, User
 } from '../models';
-import {UserRepository} from '../repositories';
+import { UserRepository } from '../repositories';
 
 export class UserProjectController {
   constructor(
