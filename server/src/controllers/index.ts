@@ -21,3 +21,7 @@ export * from './user-saved-project.controller';
 export * from './user-user-profile.controller';
 export * from './user-post.controller';
 export * from './user-project.controller';
+export * from './post-comment-post-comment.controller';
+export * from './post-post-comment.controller';
+export * from './user-liked-post.controller';
+export * from './user-liked-project.controller';

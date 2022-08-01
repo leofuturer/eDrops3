@@ -20,3 +20,7 @@ export * from './order-product.model';
 export * from './user-profile.model';
 export * from './saved-project.model';
 export * from './saved-post.model';
+export * from './post-comment.model';
+export * from './comment-link.model';
+export * from './liked-post.model';
+export * from './liked-project.model';

@@ -1,21 +1,30 @@
-import { BookmarkIcon, ChevronLeftIcon } from "@heroicons/react/outline";
+import {
+	AnnotationIcon,
+	BookmarkIcon,
+	ChatAlt2Icon,
+	ChevronLeftIcon,
+	ThumbUpIcon,
+} from "@heroicons/react/outline";
 import { AxiosError } from "axios";
 import Cookies from "js-cookie";
 import { useEffect, useState } from "react";
-import { NavLink, useParams } from "react-router-dom";
+import { NavLink, useNavigate, useParams } from "react-router-dom";
 import API from "../../api/api";
-import { project, userSavedProjects } from "../../api/serverConfig";
+import { checkReact, react } from "../../api/react";
+import { project } from "../../api/serverConfig";
 import { timeAgo } from "../../lib/time";
 import { ProjectType } from "../../lib/types";
 
 function Project() {
 	const { id } = useParams();
+	const navigate = useNavigate();
 	const [loading, setLoading] = useState(true);
 
 	const [currentProject, setCurrentProject] = useState<ProjectType>(
 		{} as ProjectType
 	);
-	const [saved, setSaved] = useState(false);
+	const [saved, setSaved] = useState<boolean>(false);
+	const [liked, setLiked] = useState<boolean>(false);
 
 	useEffect(() => {
 		API.Request(project.replace("id", id as string), "GET", {}, false).then(
@@ -28,72 +37,64 @@ function Project() {
 
 	useEffect(() => {
 		if (currentProject.id) {
-			API.Request(
-				`${userSavedProjects.replace(
-					"id",
-					Cookies.get("userId") as string
-				)}/${currentProject.id}`,
-				"GET",
-				{},
-				true
-			)
-				.then((res) => {
-					if (res.data) {
-						setSaved(true);
-					} else {
-						setSaved(false);
-					}
-				})
-				.catch((err: AxiosError) => {
-					console.log(err);
-				});
+			checkReact(
+				"Project",
+				"Save",
+				Cookies.get("userId") as string,
+				currentProject.id
+			).then((res: boolean) => {
+				setSaved(res);
+			});
+		}
+	}, [currentProject]);
+
+	useEffect(() => {
+		if (currentProject.id) {
+			checkReact(
+				"Project",
+				"Like",
+				Cookies.get("userId") as string,
+				currentProject.id
+			).then((res: boolean) => {
+				setLiked(res);
+			});
 		}
 	}, [currentProject]);
 
 	function handleSave() {
-		API.Request(
-			`${userSavedProjects.replace(
-				"id",
-				Cookies.get("userId") as string
-			)}/${currentProject.id}`,
-			"GET",
-			{},
-			true
+		react(
+			"Project",
+			"Save",
+			Cookies.get("userId") as string,
+			currentProject.id as number
 		)
-			.then((res) => {
-				if (res.data) {
-					API.Request(
-						`${userSavedProjects.replace(
-							"id",
-							Cookies.get("userId") as string
-						)}/${currentProject.id}`,
-						"DELETE",
-						{},
-						true
-					).then((res) => {
-						setSaved(false);
-					});
-				} else {
-					API.Request(
-						`${userSavedProjects.replace(
-							"id",
-							Cookies.get("userId") as string
-						)}/${currentProject.id}`,
-						"POST",
-						{},
-						true
-					).then((res) => {
-						setSaved(true);
-					});
-				}
-			})
+			.then((res: boolean) => setSaved(res))
 			.catch((err: AxiosError) => {
-				console.log(err);
+				if (err.message === "No access token found") {
+					navigate("/login");
+				}
+				// console.log(err);
+			});
+	}
+
+	function handleLike() {
+		react(
+			"Project",
+			"Like",
+			Cookies.get("userId") as string,
+			currentProject.id as number
+		)
+			.then((res: boolean) => setLiked(res))
+			.catch((err: AxiosError) => {
+				if (err.message === "No access token found") {
+					navigate("/login");
+				}
+				// console.log(err);
 			});
 	}
 
 	return (
-		<section className="relative bg-slate-200 h-full py-10 grid grid-cols-5">
+		<section className="relative bg-slate-200 min-h-full py-10 grid grid-cols-5">
 			<div className="flex flex-col items-center">
 				<div className="h-10 w-10">
 					<NavLink to="/projects">
@@ -122,6 +123,37 @@ function Project() {
 							</p>
 						</div>
 						<div>{currentProject?.content}</div>
+						<div className="flex flex-row space-x-4">
+							<div
+								className="flex flex-row space-x-2 cursor-pointer"
+								onClick={handleLike}
+							>
+								<ThumbUpIcon
+									className={`w-6 h-6 cursor-pointer ${
+										liked ? "fill-black" : ""
+									}`}
+								/>
+								<p className="text-md">
+									{currentProject?.likes}
+								</p>
+							</div>
+							{/* <div className="flex flex-row space-x-2">
+								<ThumbDownIcon className="w-10 h-10" />
+								<p className="text-md">
+									{currentProject?.dislikes}
+								</p>
+							</div> */}
+							<div className="flex flex-row space-x-2">
+								<AnnotationIcon className="w-6 h-6" />
+								<p className="text-md">Comment</p>
+							</div>
+						</div>
+						<div className="flex flex-row space-x-2 border-b-2 border-black pb-2">
+							<h3 className="text-xl">Comments</h3>
+							<ChatAlt2Icon className="w-6 h-6" />
+							<p className="text-md"></p>
+						</div>
+						<div>adsf</div>
 					</>
 				)}
 			</div>

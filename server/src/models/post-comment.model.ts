@@ -1,11 +1,11 @@
 import {Entity, model, property, hasMany} from '@loopback/repository';
-import {PostComment} from './post-comment.model';
+import {CommentLink} from './comment-link.model';
 
 @model()
-export class Post extends Entity {
+export class PostComment extends Entity {
   @property({
     type: 'number',
-    id: 1,
+    id: true,
     generated: true,
   })
   id?: number;
@@ -13,11 +13,6 @@ export class Post extends Entity {
   @property({
     type: 'string',
     required: true,
-    mysql: {
-      index: {
-        kind: 'FULLTEXT'
-      }
-    },
   })
   author: string;
 
@@ -25,20 +20,6 @@ export class Post extends Entity {
     type: 'string',
     required: true,
     mysql: {
-      index: {
-        kind: 'FULLTEXT'
-      }
-    },
-  })
-  title: string;
-
-  @property({
-    type: 'string',
-    required: true,
-    mysql: {
-      index: {
-        kind: 'FULLTEXT'
-      },
       dataType: 'LONGTEXT'
     },
   })
@@ -58,19 +39,27 @@ export class Post extends Entity {
 
   @property({
     type: 'string',
+    required: true,
   })
   userId: string;
 
-  @hasMany(() => PostComment)
+  @property({
+    type: 'number',
+  })
+  postId?: number;
+
+  @hasMany(() => PostComment, {
+    through: {model: () => CommentLink, keyFrom: 'parentId', keyTo: 'childId'},
+  })
   postComments: PostComment[];
 
-  constructor(data?: Partial<Post>) {
+  constructor(data?: Partial<PostComment>) {
     super(data);
   }
 }
 
-export interface PostRelations {
+export interface PostCommentRelations {
   // describe navigational properties here
 }
 
-export type PostWithRelations = Post & PostRelations;
+export type PostCommentWithRelations = PostComment & PostCommentRelations;

@@ -1,25 +1,34 @@
 export interface ProjectType {
-  id: number;
-  title: string;
-  content: string;
-  author: string;
-  datetime: Date;
-  likes: number;
+	id?: number;
+	title: string;
+	content: string;
+	author: string;
+	datetime: Date;
+	likes: number;
 }
 
 export interface PostType {
-    id: number;
-    parentId: number;
-    title: string;
-    content: string;
-    author: string;
-    datetime: Date;
-    likes: number;
+	id?: number;
+	title: string;
+	content: string;
+	author: string;
+	datetime: Date;
+	likes: number;
 }
 
 export interface UserProfile {
-  image: string;
-  username: string;
-  email: string;
-  description: string;
+	image: string;
+	username: string;
+	email: string;
+	description: string;
+}
+
+export interface CommentType {
+	id?: number;
+	content: string;
+	author: string;
+	datetime: Date;
+	likes: number;
+	postId?: number;
+	userId?: string;
 }

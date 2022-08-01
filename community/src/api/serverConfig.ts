@@ -5,14 +5,19 @@ const ApiRootUrl = '/api';
 
 export const posts = `${ApiRootUrl}/posts`;
 export const post = `${ApiRootUrl}/posts/id`;
+export const postComments = `${ApiRootUrl}/posts/id/postComments`;
+export const commentComments = `${ApiRootUrl}/postComments/id/postComments`;
 export const featuredPosts = `${ApiRootUrl}/posts/featured`;
 export const userPosts = `${ApiRootUrl}/users/id/posts`;
 export const userSavedPosts = `${ApiRootUrl}/users/id/savedPosts`;
+export const userLikedPosts = `${ApiRootUrl}/users/id/likedPosts`;
+
 export const projects = `${ApiRootUrl}/projects`;
 export const project = `${ApiRootUrl}/projects/id`;
 export const featuredProjects = `${ApiRootUrl}/projects/featured`;
 export const userProjects = `${ApiRootUrl}/users/id/projects`;
 export const userSavedProjects = `${ApiRootUrl}/users/id/savedProjects`;
+export const userLikedProjects = `${ApiRootUrl}/users/id/likedProjects`;
 
 // Overall User
 export const userSignUp = `${ApiRootUrl}/users`;

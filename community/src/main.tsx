@@ -18,6 +18,7 @@ import Project from "./components/project/Project";
 import Profile from "./pages/profile";
 import NewProject from "./pages/projects/new";
 import Signup from "./pages/signup";
+import NewForum from "./pages/forum/new";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
 	<React.StrictMode>
@@ -33,6 +34,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
 						<Route path="profile" element={<Profile />} />
 						<Route path="profile/:id" element={<Profile />} />
 						<Route path="forum" element={<Forum />} />
+						<Route path="forum/new" element={<NewForum />} />
 						<Route path="forum/:id" element={<Post />} />
 						<Route path="login" element={<Login />} />
 						<Route path="signup" element={<Signup />} />

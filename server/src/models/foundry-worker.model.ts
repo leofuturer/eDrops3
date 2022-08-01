@@ -25,7 +25,6 @@ import {OrderChip} from './order-chip.model';
         getWorkerID: true
       }
     },
-    mysql: {table: 'foundryWorker'}
   }
 })
 export class FoundryWorker extends User {
