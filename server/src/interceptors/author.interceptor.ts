@@ -8,9 +8,9 @@ import {
   Provider,
   ValueOrPromise,
 } from '@loopback/core';
-import { repository } from '@loopback/repository';
-import { HttpErrors, Request, RestBindings } from '@loopback/rest';
-import { UserRepository } from '../repositories';
+import {repository} from '@loopback/repository';
+import {HttpErrors, Request, RestBindings} from '@loopback/rest';
+import {UserRepository} from '../repositories';
 
 /**
  * This class will be bound to the application as an `Interceptor` during
@@ -46,12 +46,24 @@ export class AuthorInterceptor implements Provider<Interceptor> {
   ) {
     try {
       // Add pre-invocation logic here
+      // Check for userId in url params
       const userIdRegex = /\/users\/([a-zA-Z0-9-]+?)\//;
-      const userIdMatch = this.request.url.match(userIdRegex) ?? ''
-      const userId = userIdMatch[1];
-      const username = await this.userRepository.findById(userId)
+      const userIdMatch = this.request.url.match(userIdRegex) ?? '';
+      let userId;
+      if (userIdMatch.length > 1) {
+        userId = userIdMatch[1];
+      } else {
+        userId = this.request.body.userId;
+      }
+      if (!userId) {
+        throw new HttpErrors.BadRequest('Cannot identify user');
+      }
+      const username = await this.userRepository
+        .findById(userId)
         .then(user => user.username)
-        .catch(err => {throw new HttpErrors.InternalServerError(err)});
+        .catch(err => {
+          throw new HttpErrors.InternalServerError(err);
+        });
       this.request.body.author = username;
       const result = await next();
       // Add post-invocation logic here

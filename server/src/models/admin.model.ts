@@ -27,7 +27,6 @@ import {User} from '.';
         getChipOrders: true
       }
     },
-    mysql: {table: 'admin'}
   }
 })
 export class Admin extends User {

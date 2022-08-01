@@ -39,7 +39,6 @@ import { OrderInfo } from './order-info.model';
         'prototype.__updateById__customerAddresses': true
       }
     },
-    mysql: {table: 'customer'}
   }
 })
 export class Customer extends User {

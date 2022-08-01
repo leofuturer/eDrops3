@@ -7,7 +7,6 @@ export const defaultPosts: Partial<Post>[] = new Array(10)
 
 function createPost(): Partial<Post> {
   return {
-    parentId: 0,
     author: faker.name.findName(),
     title: faker.lorem.sentence(),
     content: faker.lorem.paragraphs(),

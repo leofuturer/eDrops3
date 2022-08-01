@@ -8,17 +8,17 @@ import Cookies from "js-cookie";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import API from "../../api/api";
-import { userProjects } from "../../api/serverConfig";
-import { ProjectType } from "../../lib/types";
+import { userPosts } from "../../api/serverConfig";
+import { PostType, ProjectType } from "../../lib/types";
 
-function NewProject() {
+function NewForum() {
 	const [title, setTitle] = useState("");
 	const [content, setContent] = useState("");
 
 	const navigate = useNavigate();
 
 	function handlePost() {
-		const data : ProjectType = {
+		const data: PostType = {
 			title,
 			content,
 			author: "",
@@ -28,12 +28,12 @@ function NewProject() {
 		};
 		console.log(data);
 		API.Request(
-			userProjects.replace("id", Cookies.get("userId") as string),
+			userPosts.replace("id", Cookies.get("userId") as string),
 			"POST",
 			data,
 			true
 		)
-			.then((res) => navigate(`/project/${res.data.id}`))
+			.then((res) => navigate(`/forum/${res.data.id}`))
 			.catch((err) => console.log(err));
 	}
 
@@ -95,4 +95,4 @@ function NewProject() {
 	);
 }
 
-export default NewProject;
+export default NewForum;

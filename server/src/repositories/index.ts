@@ -20,3 +20,7 @@ export * from './user.repository';
 export * from './saved-post.repository';
 export * from './saved-project.repository';
 export * from './user-profile.repository';
+export * from './post-comment.repository';
+export * from './comment-link.repository';
+export * from './liked-post.repository';
+export * from './liked-project.repository';
