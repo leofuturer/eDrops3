@@ -8,23 +8,23 @@ import {
   get,
   getModelSchemaRef, param, post
 } from '@loopback/rest';
-import { Post, SavedPost, User } from '../models';
+import { LikedPost, Post, User } from '../models';
 import { PostRepository, UserRepository } from '../repositories';
 
-export class UserSavedPostController {
+export class UserLikedPostController {
   constructor(
     @repository(UserRepository) protected userRepository: UserRepository,
     @repository(PostRepository) protected postRepository: PostRepository,
   ) {}
 
   @authenticate('jwt')
-  @get('/users/{id}/savedPosts', {
+  @get('/users/{id}/likedPosts', {
     responses: {
       '200': {
-        description: 'Get all user saved posts',
+        description: 'Get all user liked posts',
         content: {
           'application/json': {
-            schema: {type: 'array', items: getModelSchemaRef(SavedPost)},
+            schema: {type: 'array', items: getModelSchemaRef(LikedPost)},
           },
         },
       },
@@ -34,15 +34,15 @@ export class UserSavedPostController {
     @param.path.string('id') id: string,
     @param.query.object('filter') filter?: Filter<Post>,
   ): Promise<Post[]> {
-    const savedPosts : Post[] = await this.userRepository.savedPosts(id).find(filter);
-    return savedPosts;
+    const likedPosts : Post[] = await this.userRepository.likedPosts(id).find(filter);
+    return likedPosts;
   }
 
   @authenticate('jwt')
-  @get('/users/{id}/savedPosts/{postId}', {
+  @get('/users/{id}/likedPosts/{postId}', {
     responses: {
       '200': {
-        description: 'Check if a post is saved',
+        description: 'Check if a post is liked',
         content: {
           'application/json': {
             schema: {type: 'array', items: getModelSchemaRef(Post)},
@@ -55,15 +55,15 @@ export class UserSavedPostController {
     @param.path.string('id') id: string,
     @param.path.number('postId') postId: typeof Post.prototype.id,
   ): Promise<Post> {
-    const savedPosts = await this.userRepository.savedPosts(id).find({where: {id: postId}});
-    return savedPosts[0];
+    const likedPosts = await this.userRepository.likedPosts(id).find({where: {id: postId}});
+    return likedPosts[0];
   }
 
   @authenticate('jwt')
-  @post('/users/{id}/savedPosts/{postId}', {
+  @post('/users/{id}/likedPosts/{postId}', {
     responses: {
       '200': {
-        description: 'Save a post',
+        description: 'Like a post',
       },
     },
   })
@@ -71,14 +71,14 @@ export class UserSavedPostController {
     @param.path.string('id') id: typeof User.prototype.id,
     @param.path.number('postId') postId: typeof Post.prototype.id,
   ): Promise<void> {
-    return this.userRepository.savedPosts(id).link(postId);
+    return this.userRepository.likedPosts(id).link(postId);
   }
 
   @authenticate('jwt')
-  @del('/users/{id}/savedPosts/{postId}', {
+  @del('/users/{id}/likedPosts/{postId}', {
     responses: {
       '200': {
-        description: 'Unsave a post',
+        description: 'Unlike a post',
       },
     },
   })
@@ -86,6 +86,6 @@ export class UserSavedPostController {
     @param.path.string('id') id: typeof User.prototype.id,
     @param.path.number('postId') postId: typeof Post.prototype.id,
   ): Promise<void> {
-    return this.userRepository.savedPosts(id).unlink(postId);
+    return this.userRepository.likedPosts(id).unlink(postId);
   }
 }

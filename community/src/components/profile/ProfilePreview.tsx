@@ -61,7 +61,13 @@ function ProfilePreview() {
 								Sign in
 							</button>
 						</NavLink>
-						<p className="text-xs">or</p>
+						<div className="flex flex-row items-center w-full">
+							<span className="flex-grow border-t border-white" />
+							<span className="flex-shrink mx-4 text-xs text-white">
+								or
+							</span>
+							<span className="flex-grow border-t border-white" />
+						</div>
 						<NavLink to="/signup">
 							<p className="">Sign up</p>
 						</NavLink>
