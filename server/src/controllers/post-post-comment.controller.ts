@@ -15,6 +15,8 @@ import {
   post,
   requestBody,
 } from '@loopback/rest';
+import { intercept } from '@loopback/core'
+import { AuthorInterceptor } from '../interceptors';
 import {
   Post,
   PostComment,
@@ -45,6 +47,7 @@ export class PostPostCommentController {
     return this.postRepository.postComments(id).find(filter);
   }
 
+  @intercept(AuthorInterceptor.BINDING_KEY)
   @post('/posts/{id}/postComments', {
     responses: {
       '200': {
