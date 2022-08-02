@@ -1,16 +1,13 @@
+import Cookies from "js-cookie";
+import API from "../api/api";
 import {
-	AdminLogin,
-	customerLogin,
-	FoundryWorkerLogin,
+	userCredsTaken,
 	userLogin,
-	customerLogout,
-	AdminLogout,
-	FoundryWorkerLogout,
-	userLogout,
 	userSignUp,
 } from "../api/serverConfig";
-import API from "../api/api";
-import Cookies from "js-cookie";
+import { SignupInfo } from "./types";
+import validate from "validate.js";
+import { signUpConstraints } from "./formConstraints";
 
 async function login(username: string, password: string): Promise<void> {
 	let data = {
@@ -19,7 +16,7 @@ async function login(username: string, password: string): Promise<void> {
 	};
 	return API.Request(userLogin, "POST", data, false)
 		.then((res) => {
-			console.log(res);
+			// console.log(res);
 			Cookies.set("base_access_token", res.data.token);
 			Cookies.set("access_token", res.data.token);
 			Cookies.set("userId", res.data.userId);
@@ -34,24 +31,51 @@ async function login(username: string, password: string): Promise<void> {
 		});
 }
 
-async function signup(username: string, password: string): Promise<void> {
-	let data = {
-		username: username,
-		password: password,
-	};
-	return API.Request(userSignUp, "POST", data, false)
+async function signup(user: SignupInfo): Promise<void> {
+	return validate
+		.async(user, signUpConstraints)
+		.then((res) =>
+			API.Request(
+				userCredsTaken,
+				"POST",
+				{
+					username: res.username,
+					email: res.email,
+				},
+				false
+			)
+		)
 		.then((res) => {
-			Cookies.set("base_access_token", res.data.id);
-			Cookies.set("access_token", res.data.id);
+			console.log('verify', res);
+			if(res.data.usernameTaken && res.data.emailTaken) {
+				throw new Error('Username and email are taken');
+			}
+			if (res.data.usernameTaken) {
+				throw new Error("Username is taken");
+			}
+			if (res.data.emailTaken) {
+				throw new Error("Email is taken");
+			}
+			return API.Request(
+				userSignUp,
+				"POST",
+				{
+					username: user.username,
+					email: user.email,
+					password: user.password,
+				},
+				false
+			);
+		})
+		.then((res) => {
+			Cookies.set("base_access_token", res.data.token);
+			Cookies.set("access_token", res.data.token);
 			Cookies.set("userId", res.data.userId);
 			Cookies.set("userType", res.data.userType);
 			Cookies.set("username", res.data.username);
 		})
 		.catch((err) => {
-			console.error(err);
-			if (err.response.status === 401) {
-				// this.showErrorMessage();
-			}
+			throw err;
 		});
 }
 
