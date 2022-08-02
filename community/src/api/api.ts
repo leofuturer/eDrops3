@@ -1,4 +1,9 @@
-import axios, { AxiosRequestConfig, AxiosRequestHeaders } from "axios";
+import axios, {
+	AxiosError,
+	AxiosRequestConfig,
+	AxiosRequestHeaders,
+	AxiosResponse,
+} from "axios";
 import Cookies from "js-cookie";
 
 class API {
@@ -24,7 +29,16 @@ class API {
 		try {
 			if (useToken) {
 				if (!Cookies.get("access_token")) {
-					throw new Error("No access token found");
+					throw new AxiosError(
+						"No access token found",
+						undefined,
+						undefined,
+						undefined,
+						{
+							status: 401,
+							statusText: "Unauthorized",
+						} as AxiosResponse
+					);
 				} else {
 					headers.Authorization = `Bearer ${Cookies.get(
 						"access_token"
@@ -38,7 +52,7 @@ class API {
 				headers,
 				url,
 			};
-			switch(method) {
+			switch (method) {
 				case "GET":
 					options.params = dataToSend;
 					break;
