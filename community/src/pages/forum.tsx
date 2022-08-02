@@ -10,12 +10,12 @@ import { PostType } from "../lib/types";
 
 function Forum() {
 	const [postList, setPostList] = useState<PostType[]>([]);
+	const [sortedPosts, setSortedPosts] = useState<PostType[]>([]);
 	const [search, setSearch] = useState("");
 	const [feedType, setFeedType] = useState<"Featured" | "New">("Featured");
 
-	let filter = {};
-
 	useEffect(() => {
+		let filter = {};
 		if (search !== "") {
 			// filter = {
 			//     where: {
@@ -44,9 +44,19 @@ function Forum() {
 		});
 	}, [search]);
 
+	useEffect(() => {
+		const sortedPosts = ([] as PostType[]).concat(postList)
+		if (feedType === "Featured") {
+			sortedPosts.sort((a, b) => (a.likes < b.likes ? 1 : -1));
+		} else if (feedType === "New") {
+			sortedPosts.sort((a, b) => (a.datetime < b.datetime ? 1 : -1));
+		}
+		setSortedPosts(sortedPosts);
+	}, [feedType, postList]);
+
 	const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
 		setSearch(e.target.value);
-		console.log(e.target.value);
+		// console.log(e.target.value);
 	};
 
 	const debounceSearch = useMemo(() => {
@@ -54,10 +64,6 @@ function Forum() {
 	}, []);
 
 	useEffect(() => debounceSearch.cancel());
-
-	function handleFeedType(type: "Featured" | "New") {
-		setFeedType(type);
-	}
 
 	return (
 		<section className="bg-slate-200 min-h-full grid grid-cols-4">
@@ -92,8 +98,8 @@ function Forum() {
 					</div>
 				</div>
 				<div id="postList">
-					{postList.map((post) => (
-						<PostPreview post={post} key={post.id}/>
+					{sortedPosts.map((post) => (
+						<PostPreview post={post} key={post.id} />
 					))}
 				</div>
 			</div>
@@ -105,7 +111,7 @@ function Forum() {
 								? "bg-sky-800 text-white"
 								: ""
 						}`}
-						onClick={() => handleFeedType("Featured")}
+						onClick={() => setFeedType("Featured")}
 					>
 						<p className="text-2xl text-center">Featured</p>
 					</div>
@@ -113,7 +119,7 @@ function Forum() {
 						className={`py-2 px-4 justify-center items-center rounded-3xl ${
 							feedType === "New" ? "bg-sky-800 text-white" : ""
 						}`}
-						onClick={() => handleFeedType("New")}
+						onClick={() => setFeedType("New")}
 					>
 						<p className="text-2xl text-center">New</p>
 					</div>
