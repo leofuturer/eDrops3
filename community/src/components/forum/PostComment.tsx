@@ -19,7 +19,10 @@ function PostComment(comment: CommentType) {
 
 	useEffect(() => {
 		API.Request(
-			commentComments.replace("id", comment.id.toString()),
+			commentComments.replace(
+				"id",
+				comment.id ? comment.id.toString() : ""
+			),
 			"GET",
 			{},
 			false
@@ -41,12 +44,19 @@ function PostComment(comment: CommentType) {
 			postId: 0,
 			userId: Cookies.get("userId") as string,
 		};
-		API.Request(commentComments.replace("id", comment.id.toString()), "POST", newPostComment, true)
-			.catch((err: AxiosError) => {
-				if(err.message === "No access token found") {
-					navigate("/login");
-				}
-			})
+		API.Request(
+			commentComments.replace(
+				"id",
+				comment.id ? comment.id.toString() : ""
+			),
+			"POST",
+			newPostComment,
+			true
+		).catch((err: AxiosError) => {
+			if (err.message === "No access token found") {
+				navigate("/login");
+			}
+		});
 		setExpanded(!expanded);
 	}
 
