@@ -3,7 +3,8 @@ import {
 	BookmarkIcon,
 	ChatAlt2Icon,
 	ChevronLeftIcon,
-	ThumbUpIcon
+	ChevronRightIcon,
+	ThumbUpIcon,
 } from "@heroicons/react/outline";
 import { AxiosError } from "axios";
 import Cookies from "js-cookie";
@@ -11,9 +12,7 @@ import { useEffect, useState } from "react";
 import { NavLink, useNavigate, useParams } from "react-router-dom";
 import API from "../../api/api";
 import { checkReact, react } from "../../api/react";
-import {
-	post
-} from "../../api/serverConfig";
+import { post, postComments } from "../../api/serverConfig";
 import { timeAgo } from "../../lib/time";
 import { CommentType, PostType } from "../../lib/types";
 import PostComment from "./PostComment";
@@ -26,7 +25,9 @@ function Post() {
 	const [currentPost, setCurrentPost] = useState<PostType>({} as PostType);
 	const [saved, setSaved] = useState<boolean>(false);
 	const [liked, setLiked] = useState<boolean>(false);
+	const [expanded, setExpanded] = useState<boolean>(false);
 
+	const [newComment, setNewComment] = useState<string>("");
 	const [comments, setComments] = useState<CommentType[]>([]);
 
 	useEffect(() => {
@@ -37,6 +38,19 @@ function Post() {
 			}
 		);
 	}, [id]);
+
+	useEffect(() => {
+		API.Request(
+			postComments.replace("id", id as string),
+			"GET",
+			{},
+			false
+		).then((res) => {
+			const comments : CommentType[] = res.data;
+			const sortedComments = comments.sort((a, b) => (a.datetime < b.datetime ? 1 : -1));
+			setComments(sortedComments);
+		});
+	}, [id, newComment]);
 
 	useEffect(() => {
 		if (currentPost.id) {
@@ -96,6 +110,29 @@ function Post() {
 			});
 	}
 
+	function handleComment() {
+		const newPostComment = {
+			content: newComment,
+			author: "",
+			datetime: new Date(),
+			likes: 0,
+			userId: Cookies.get("userId") as string,
+		};
+		API.Request(
+			postComments.replace("id", id ?? ""),
+			"POST",
+			newPostComment,
+			true
+		).then(res => {
+			setNewComment("");
+		}).catch((err: AxiosError) => {
+			if (err.message === "No access token found") {
+				navigate("/login");
+			}
+		});
+		setExpanded(!expanded);
+	}
+
 	return (
 		<section className="relative bg-slate-200 min-h-full py-10 grid grid-cols-5">
 			<div className="flex flex-col items-center">
@@ -144,7 +181,10 @@ function Post() {
 									{currentProject?.dislikes}
 								</p>
 							</div> */}
-							<div className="flex flex-row space-x-2">
+							<div
+								className="flex flex-row space-x-2 cursor-pointer"
+								onClick={() => setExpanded(!expanded)}
+							>
 								<AnnotationIcon className="w-6 h-6" />
 								<p className="text-md">Comment</p>
 							</div>
@@ -154,6 +194,33 @@ function Post() {
 							<ChatAlt2Icon className="w-6 h-6" />
 							<p className="text-md"></p>
 						</div>
+						{expanded && (
+							<div
+								className={`bg-white p-2 pl-4 flex flex-col space-y-2 ${
+									expanded ? "transition-all" : ""
+								} ease-in-out duration-500`}
+							>
+								<textarea
+									title="reply"
+									className="w-full rounded-md resize-none border-black/25 border-2 p-2"
+									value={newComment}
+									onChange={(e) => {
+										setNewComment(e.target.value);
+									}}
+									placeholder="Reply"
+								/>
+								<div className="flex flex-row justify-end">
+									<button
+										type="button"
+										title="Send"
+										className="bg-sky-800 rounded-md p-2"
+										onClick={handleComment}
+									>
+										<ChevronRightIcon className="w-4 h-4 text-white" />
+									</button>
+								</div>
+							</div>
+						)}
 						<div className="flex flex-col space-y-2">
 							{comments.map((comment: CommentType) => (
 								<PostComment {...comment} key={comment.id} />

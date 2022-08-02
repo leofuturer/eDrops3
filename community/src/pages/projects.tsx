@@ -11,12 +11,12 @@ import ProfilePreview from "../components/profile/ProfilePreview";
 
 function Projects() {
 	const [projectList, setProjectList] = useState<ProjectType[]>([]);
+	const [sortedProjects, setSortedProjects] = useState<ProjectType[]>([]);
 	const [search, setSearch] = useState("");
 	const [feedType, setFeedType] = useState<"Featured" | "New">("Featured");
 
-	let filter = {};
-
 	useEffect(() => {
+		let filter = {};
 		if (search !== "") {
 			// filter = {
 			//     where: {
@@ -45,6 +45,16 @@ function Projects() {
 		});
 	}, [search]);
 
+	useEffect(() => {
+		const sortedProjects = ([] as ProjectType[]).concat(projectList)
+		if (feedType === "Featured") {
+			sortedProjects.sort((a, b) => (a.likes < b.likes ? 1 : -1));
+		} else if (feedType === "New") {
+			sortedProjects.sort((a, b) => (a.datetime < b.datetime ? 1 : -1));
+		}
+		setSortedProjects(sortedProjects);
+	}, [feedType, projectList]);
+
 	const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
 		setSearch(e.target.value);
 		console.log(e.target.value);
@@ -55,10 +65,6 @@ function Projects() {
 	}, []);
 
 	useEffect(() => debounceSearch.cancel());
-
-	function handleFeedType(type: "Featured" | "New") {
-		setFeedType(type);
-	}
 
 	return (
 		<section className="min-h-full bg-slate-200 grid grid-cols-4">
@@ -93,7 +99,7 @@ function Projects() {
 					</div>
 				</div>
 				<div id="projectList">
-					{projectList.map((project) => (
+					{sortedProjects.map((project) => (
 						<ProjectPreview project={project} key={project.id}/>
 					))}
 				</div>
@@ -106,7 +112,7 @@ function Projects() {
 								? "bg-sky-800 text-white"
 								: ""
 						}`}
-						onClick={() => handleFeedType("Featured")}
+						onClick={() => setFeedType("Featured")}
 					>
 						<p className="text-2xl text-center">Featured</p>
 					</div>
@@ -114,7 +120,7 @@ function Projects() {
 						className={`py-2 px-4 justify-center items-center rounded-3xl ${
 							feedType === "New" ? "bg-sky-800 text-white" : ""
 						}`}
-						onClick={() => handleFeedType("New")}
+						onClick={() => setFeedType("New")}
 					>
 						<p className="text-2xl text-center">New</p>
 					</div>
