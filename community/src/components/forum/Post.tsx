@@ -46,8 +46,10 @@ function Post() {
 			{},
 			false
 		).then((res) => {
-			const comments : CommentType[] = res.data;
-			const sortedComments = comments.sort((a, b) => (a.datetime < b.datetime ? 1 : -1));
+			const comments: CommentType[] = res.data;
+			const sortedComments = comments.sort((a, b) =>
+				a.datetime < b.datetime ? 1 : -1
+			);
 			setComments(sortedComments);
 		});
 	}, [id, newComment]);
@@ -59,9 +61,16 @@ function Post() {
 				"Save",
 				Cookies.get("userId") as string,
 				currentPost.id
-			).then((res: boolean) => {
-				setSaved(res);
-			});
+			)
+				.then((res: boolean) => {
+					setSaved(res);
+				})
+				.catch((err: AxiosError) => {
+					if (err.response?.status === 401) {
+						// navigate("/login");
+					}
+					// console.log(err);
+				});
 		}
 	}, [currentPost]);
 
@@ -72,9 +81,16 @@ function Post() {
 				"Like",
 				Cookies.get("userId") as string,
 				currentPost.id
-			).then((res: boolean) => {
-				setLiked(res);
-			});
+			)
+				.then((res: boolean) => {
+					setLiked(res);
+				})
+				.catch((err: AxiosError) => {
+					if (err.response?.status === 401) {
+						// navigate("/login");
+					}
+					// console.log(err);
+				});
 		}
 	}, [currentPost]);
 
@@ -87,7 +103,7 @@ function Post() {
 		)
 			.then((res: boolean) => setSaved(res))
 			.catch((err: AxiosError) => {
-				if (err.message === "No access token found") {
+				if (err.response?.status === 401) {
 					navigate("/login");
 				}
 				// console.log(err);
@@ -103,7 +119,7 @@ function Post() {
 		)
 			.then((res: boolean) => setLiked(res))
 			.catch((err: AxiosError) => {
-				if (err.message === "No access token found") {
+				if (err.response?.status === 401) {
 					navigate("/login");
 				}
 				// console.log(err);
@@ -123,13 +139,16 @@ function Post() {
 			"POST",
 			newPostComment,
 			true
-		).then(res => {
-			setNewComment("");
-		}).catch((err: AxiosError) => {
-			if (err.message === "No access token found") {
-				navigate("/login");
-			}
-		});
+		)
+			.then((res) => {
+				setNewComment("");
+			})
+			.catch((err: AxiosError) => {
+				if (err.response?.status === 401) {
+					navigate("/login");
+				}
+				// console.log(err);
+			});
 		setExpanded(!expanded);
 	}
 

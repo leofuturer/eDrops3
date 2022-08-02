@@ -31,7 +31,7 @@ function PostComment(comment: CommentType) {
 				setComments(res.data);
 			})
 			.catch((err: AxiosError) => {
-				console.log(err);
+				// console.log(err);
 			});
 	}, [comment.id]);
 
