@@ -17,6 +17,7 @@ export * from './file-info.model';
 export * from './order-info.model';
 export * from './order-chip.model';
 export * from './order-product.model';
+export * from './order-message.model';
 export * from './chip-fab-order.model';
 export * from './user-profile.model';
 export * from './saved-project.model';
@@ -25,3 +26,5 @@ export * from './post-comment.model';
 export * from './comment-link.model';
 export * from './liked-post.model';
 export * from './liked-project.model';
+
+
