@@ -10,6 +10,7 @@ import {
   OrderChipRepository,
   OrderInfoRepository,
   OrderItemBaseRepository,
+  OrderMessageRepository,
   OrderProductRepository, PostCommentRepository, PostRepository, ProjectRepository,
   UserRepository
 } from '../repositories';
@@ -63,6 +64,10 @@ export async function clearDb(this: EdropsBackendApplication): Promise<void> {
   await orderItemBaseRepo.deleteAll();
   await orderItemBaseRepo.execute('ALTER TABLE OrderItemBase AUTO_INCREMENT = ?', [1]);
 
+  const orderMessageRepo: OrderMessageRepository = await this.getRepository(
+    OrderMessageRepository,
+  );
+  await orderMessageRepo.deleteAll();
   const orderProductRepo: OrderProductRepository = await this.getRepository(
     OrderProductRepository,
   );

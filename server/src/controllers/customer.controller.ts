@@ -189,6 +189,9 @@ export class CustomerController {
                 domain: {
                   type: 'string',
                 },
+                key: {
+                  type: 'string',
+                }
               },
             },
           },
@@ -205,6 +208,7 @@ export class CustomerController {
         domain: (process.env.SHOPIFY_STORE !== 'test'
           ? process.env.SHOPIFY_DOMAIN
           : process.env.SHOPIFY_DOMAIN_TEST) as string,
+        key: (process.env.APP_PUSHER_API_KEY) as string,
       },
     };
   }
