@@ -93,11 +93,7 @@ export const editOrderStatus = `${ApiRootUrl}/orderChips/id`;
 export const assignOrders = `${ApiRootUrl}/orderChips/id`;
 
 export const getOrderMessagesById = `${ApiRootUrl}/orderMessages/id`;
-<<<<<<< HEAD
 export const addOrderMessage = `${ApiRootUrl}/orderMessages`;
-=======
-export const addOrderMessage = `${ApiRootUrl}/orderMessages/id/addOrderMessage`;
->>>>>>> Initial message model system
 
 // For chip order page
 export const adminGetChipOrders = `${ApiRootUrl}/admins/orderChips`;

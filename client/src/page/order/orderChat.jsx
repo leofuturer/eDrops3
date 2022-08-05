@@ -29,6 +29,7 @@ class OrderChat extends React.Component {
     const _this = this;
     // For real time notifications
     pusher.getInstance().getPrivateValue()
+<<<<<<< HEAD
     .then((instance) => {
       const channel = instance.subscribe(`chat-${this.state.orderId}`);
       channel.bind('new-message', data => {
@@ -36,6 +37,15 @@ class OrderChat extends React.Component {
       });
     })
     
+=======
+      .then((instance) => {
+        const channel = instance.subscribe(`chat-${this.state.orderId}`);
+        channel.bind('new-message', data => {
+          this.appendMessageToContainer(data.message, data.user_id);
+        });
+      })
+
+>>>>>>> Initial message model system
     const userType = Cookies.get('userType');
     let InitUrl;
     let userTypeId;
