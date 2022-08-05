@@ -26,6 +26,7 @@ import {
   ProjectLinkRepository,
   ProjectRepository,
   UserRepository,
+  OrderMessageRepository,
 } from '../repositories';
 import {
   defaultAdmins,
@@ -99,7 +100,11 @@ export async function clearDb(this: EdropsBackendApplication): Promise<void> {
     [1],
   );
 
-  /** Clear OrderProduct table **/
+  const orderMessageRepo: OrderMessageRepository = await this.getRepository(
+    OrderMessageRepository,
+  );
+  await orderMessageRepo.deleteAll();
+  
   const orderProductRepo: OrderProductRepository = await this.getRepository(
     OrderProductRepository,
   );

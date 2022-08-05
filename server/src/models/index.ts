@@ -10,6 +10,7 @@ export * from './file-info.model';
 export * from './order-info.model';
 export * from './order-chip.model';
 export * from './order-product.model';
+export * from './order-message.model';
 export * from './user-profile.model';
 export * from './saved-project.model';
 export * from './saved-post.model';
