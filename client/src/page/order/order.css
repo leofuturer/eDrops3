@@ -182,7 +182,6 @@ body {
     justify-content: center;
 }
 
-<<<<<<< HEAD
 .message-container {
     padding: 5% 5%;
 }
@@ -286,34 +285,4 @@ body {
         display:block;
         margin:0.2em auto;
     }
-=======
-#message-container {
-    width: 80%;
-    max-width: 4000px;
-}
-
-#message-container div {
-    background-color: #CCC;
-    padding: 5px;
-    margin-left:175px;
-}
-
-#message-container div:nth-child(2n) {
-    background-color: #FFF;
-}
-
-#send-container {
-    position: relative;
-    padding-bottom: 30px;
-    
-    background-color: white;
-    margin-right: 40px;
-    max-width: 10000px;
-    
-    
-}
-
-#message-input {
-    flex-grow: 1;
->>>>>>> Initial message model system
 }
