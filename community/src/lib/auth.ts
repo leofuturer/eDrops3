@@ -46,7 +46,6 @@ async function signup(user: SignupInfo): Promise<void> {
 			)
 		)
 		.then((res) => {
-			console.log('verify', res);
 			if(res.data.usernameTaken && res.data.emailTaken) {
 				throw new Error('Username and email are taken');
 			}
