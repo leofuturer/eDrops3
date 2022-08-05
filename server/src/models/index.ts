@@ -16,4 +16,5 @@ export * from './customer-address.model';
 export * from './file-info.model';
 export * from './order-info.model';
 export * from './order-chip.model';
+export * from './order-message.model';
 export * from './order-product.model';
