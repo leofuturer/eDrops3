@@ -63,7 +63,9 @@ function Profile(): JSX.Element {
 			.then((res) => {
 				setFeedData(res.data);
 			})
-			.catch((err) => console.log(err));
+			.catch((err) => {
+				// console.log(err)
+			});
 	}, [feedType, feed]);
 
 	function handleFeedType(feedType: "Activity" | "Saved") {
