@@ -5,6 +5,15 @@ import {
   CustomerAddress,
   Post,
   PostComment,
+  FileInfo,
+  Forum,
+  FoundryWorker,
+  OrderChip,
+  OrderInfo,
+  OrderItemBase,
+  OrderMessage,
+  OrderProduct,
+  Project,
   User,
 } from '../models';
 import {
@@ -16,6 +25,7 @@ import {
   OrderChipRepository,
   OrderInfoRepository,
   OrderItemBaseRepository,
+  OrderMessageRepository,
   OrderProductRepository,
   PostCommentLinkRepository,
   PostCommentRepository,
@@ -26,7 +36,6 @@ import {
   ProjectLinkRepository,
   ProjectRepository,
   UserRepository,
-  OrderMessageRepository,
 } from '../repositories';
 import {
   defaultAdmins,
