@@ -117,6 +117,14 @@ class ChipOrders extends React.Component {
       });
   }
 
+  handleChat(e) {
+    const orderId = Number(e.target.id.replace(/[^0-9]/ig, ''))
+    const redirectUrl = `/subpage/order-chat?id=${orderId}`;
+    const strWindowFeatures = 'width=1200px, height=900px';
+    const WindowForOrderChat = window.open(redirectUrl, '_blank', strWindowFeatures);
+    WindowForOrderChat._orderItemId = orderId;
+  }
+
   render() {
     return (
       <div>
@@ -153,6 +161,7 @@ class ChipOrders extends React.Component {
                     }
                     <th className="icon-center">Qty</th>
                     <th className="icon-center">Mask File</th>
+                    <th className="icon-center">Chat</th>
                     {
                       Cookies.get('userType') === 'admin'
                         ? <th className="icon-center">Assign Order</th> // admin
@@ -207,6 +216,9 @@ class ChipOrders extends React.Component {
                               ? <i className="fa fa-download" onClick={this.handleDownload} id={`download${item.id}`} />
                               : <i className="fa fa-download" onClick={this.handleDownload} id={`download${item.fileInfoId}`} />
                           }
+                        </td>
+                        <td className="icon-center">
+                          <i className="fa fa-commenting" onClick={this.handleChat} id={`order${item.orderId}`}/>
                         </td>
                         {
                           Cookies.get('userType') === 'admin'
