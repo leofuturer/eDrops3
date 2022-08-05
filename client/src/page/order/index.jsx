@@ -69,6 +69,14 @@ class Orders extends React.Component {
     const WindowForOrderDetail = window.open(redirectUrl, '_blank', strWindowFeatures);
   }
 
+  handleChat(e){
+    const originalOrderId = e.target.id;
+    const orderId = Number(originalOrderId.replace(/[^0-9]/ig, ''));
+    const redirectUrl = `/subpage/order-chat?id=${orderId}`;
+    const strWindowFeatures = 'width=1200px, height=900px';
+    const WindowForOrderDetail = window.open(redirectUrl, '_blank', strWindowFeatures);
+  }
+
   render() {
     return (
       <div>
@@ -101,6 +109,7 @@ class Orders extends React.Component {
                     <th>Process Status</th>
                     <th>Total Price</th>
                     <th className="icon-center">Other Details</th>
+                    <th className="icon-center">Chat</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -116,6 +125,9 @@ class Orders extends React.Component {
                         </td>
                         <td className="icon-center">
                           <i className="fa fa-commenting" id={`worker-order${item.id}`} onClick={this.handleDetail} />
+                        </td>
+                        <td className="icon-center">
+                          <i className="fa fa-commenting" id={`worker-order${item.id}`} onClick={this.handleChat} />
                         </td>
                       </tr>
                     ))
