@@ -241,8 +241,8 @@ class ChipOrder extends React.Component {
             .then((res) => {
               let lineItemId;
               for (let i = 0; i < res.lineItems.length; i++) {
-                if (res.lineItems[i].variant.id === variantId) {
-                  lineItemId = res.lineItems[i].id;
+                if (Buffer.from(res.lineItems[i].variant.id).toString('base64') === variantId) {
+                  lineItemId = Buffer.from(res.lineItems[i].id).toString('base64');
                   break;
                 }
               }
