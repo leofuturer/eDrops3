@@ -8,6 +8,7 @@ import {
   requestBody,
   response
 } from '@loopback/rest';
+import { ConfigurationServicePlaceholders } from 'aws-sdk/lib/config_service_placeholders';
 import { Customer, OrderChip, OrderInfo } from '../models';
 import { CustomerRepository, OrderInfoRepository } from '../repositories';
 
@@ -32,24 +33,37 @@ export class CustomerOrderInfoController {
     },
   })
   async find(
-    @param.path.string('id') id: string,
+    // @param.path.string('id') id: string,
+    @param.path.string('id') id: typeof Customer.prototype.id,
     @param.query.object('filter') filter?: Filter<OrderInfo>,
+    @param.query.object('filter') filterChip?: Filter<OrderChip>,
   ): Promise<OrderChip[]> {
     let allOrderChips: OrderChip[] = [];
-    this.customerRepository
-      .orderInfos(id)
-      .find(filter)
-      .then(orderInfos => {
-        orderInfos.forEach(orderInfo => {
-          this.orderInfoRepository
-            .orderChips(orderInfo.id)
-            .find()
-            .then(orderChips => {
-              allOrderChips = allOrderChips.concat(orderChips);
-            });
-        });
-      });
-    return allOrderChips;
+    const customerOrders = await this.customerRepository.orderInfos(id).find(filter);
+    const promises = customerOrders.map((orderInfo) => 
+      this.orderInfoRepository.orderChips(orderInfo.id).find(filterChip)
+    );
+
+    return Promise.all<OrderChip[]>(promises).then(orderChipArrs => allOrderChips.concat.apply([], orderChipArrs));
+    
+    // Promise.all<OrderChip[]>(promises)
+    //   .then(orderChipArrs => {orderChipArrs.map(orderChipArr => {
+    //     allOrderChips = allOrderChips.concat(orderChipArr);
+    //     console.log(allOrderChips);
+    //   })});
+    // this.customerRepository
+    //   .orderInfos(id)
+    //   .find(filter)
+    //   .then(orderInfos => {
+    //     orderInfos.forEach(orderInfo => {
+    //       this.orderInfoRepository
+    //         .orderChips(orderInfo.id)
+    //         .find(filterChip)
+    //         .then(orderChips => {
+    //           allOrderChips = allOrderChips.concat(orderChips);
+    //         });
+    //     });
+    //   });
   }
 
   @get('/customers/{id}/customerOrders', {
@@ -58,7 +72,7 @@ export class CustomerOrderInfoController {
         description: 'Get customer orders',
         content: {
           'application/json': {
-            schema: {type: 'array', items: getModelSchemaRef(OrderChip)},
+            schema: {type: 'array', items: getModelSchemaRef(OrderInfo)},
           },
         },
       },
