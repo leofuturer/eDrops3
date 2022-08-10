@@ -89,7 +89,7 @@ class AddOrEditWorker extends React.Component {
     if (this.props.match.path === '/manage/foundryworkers/addfoundryworker') {
       API.Request(addFoundryWorker, 'POST', data, true)
         .then((res) => {
-          console.log(res);
+          // console.log(res);
           const obj = {
             email: this.state.email,
             username: this.state.username,
@@ -107,11 +107,13 @@ class AddOrEditWorker extends React.Component {
     } else {
       const { workerId } = this.props.location.state;
       let url = editFoundryWorker.replace('id', workerId);
+      // console.log(workerId);
       API.Request(url, 'PATCH', data, true)
         .then((res) => {
           url = `${userBaseFind}?filter={"where": {"email": "${data.email}"}}`;
           API.Request(url, 'GET', {}, true)
             .then((res) => {
+              // console.log(res.data[0]);
               const userBaseId = res.data[0].id;
               url = updateUserBaseProfile.replace('id', userBaseId);
               API.Request(url, 'PATCH', data, true)

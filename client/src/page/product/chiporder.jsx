@@ -278,6 +278,7 @@ class ChipOrder extends React.Component {
                 fileInfoId: this.state.fileInfo.id,
                 workerId: materialSpecificWorkerId,
               };
+              // console.log(data);
               // console.log(res);
               let url = addOrderChipToCart.replace('id', _this.state.orderInfoId);
               API.Request(url, 'POST', data, true)
@@ -344,7 +345,7 @@ class ChipOrder extends React.Component {
         </li>,
       );
     }
-
+    // console.log(this.state.fileInfo);
     return (
       <div className="order-container">
         <div className="shop-main-content">

@@ -50,7 +50,7 @@ class ChipOrders extends React.Component {
 
     API.Request(url, 'GET', {}, true)
       .then((res) => {
-        console.log(res);
+        // console.log(res);
         if (this.state.workerId) {
           res.data = res.data.filter((orderChip) => orderChip.workerId === this.state.workerId);
         }
@@ -104,6 +104,7 @@ class ChipOrders extends React.Component {
     const chipOrderId = Number(e.target.id.replace(/[^0-9]/ig, ''));
     const url = editOrderStatus.replace('id', this.state.orderList[chipOrderId].id);
     const data = { status: selectedStatus };
+    // console.log(data);
     API.Request(url, 'PATCH', data, true)
       .then((res) => {
         alert('Status updated!');
@@ -183,7 +184,7 @@ class ChipOrders extends React.Component {
                                   onSubmit={this.handleSubmit}
                                 >
                                   <select id="status-selection" className="order-status" name="status" defaultValue={item.status}>
-                                    <option value="Fab Req Received">Fab Req Received</option>
+                                    <option value="Fabrication request received">Fab Req Received</option>
                                     <option value="Project Started">Project Started</option>
                                     <option value="Project Completed">Project Completed</option>
                                     <option value="Item Shipped">Item Shipped</option>

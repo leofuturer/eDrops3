@@ -203,10 +203,10 @@ export class OrderInfo extends Entity {
   })
   shippingAddressId?: number;
 
-  @hasMany(() => OrderProduct, {keyTo: 'orderId'})
+  @hasMany(() => OrderProduct)
   orderProducts: OrderProduct[];
 
-  @hasMany(() => OrderChip, {keyTo: 'orderId'})
+  @hasMany(() => OrderChip)
   orderChips: OrderChip[];
   // Define well-known properties here
 

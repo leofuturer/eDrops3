@@ -22,8 +22,8 @@ import fetch from 'node-fetch';
 import Client from 'shopify-buy';
 import Products from '../lib/constants/productConstants';
 import log from '../lib/toolbox/log';
-import {Admin, User} from '../models';
-import {AdminRepository, OrderProductRepository} from '../repositories';
+import {Admin, User, OrderChip, ChipFabOrder, Customer, FoundryWorker } from '../models';
+import {AdminRepository, CustomerRepository, OrderProductRepository, OrderChipRepository, OrderInfoRepository, FoundryWorkerRepository} from '../repositories';
 
 // @ts-ignore
 global.fetch = fetch;
@@ -43,6 +43,14 @@ export class AdminController {
     public adminRepository: AdminRepository,
     @repository(OrderProductRepository)
     public orderProduct: OrderProductRepository,
+    @repository(OrderChipRepository)
+    public orderChip: OrderChipRepository,
+    @repository(OrderInfoRepository)
+    public orderInfo: OrderInfoRepository,
+    @repository(CustomerRepository)
+    public customerRepository: CustomerRepository,
+    @repository(FoundryWorkerRepository)
+    public foundryWorkerRepository: FoundryWorkerRepository,
   ) {}
 
   @post('/admins')
@@ -229,6 +237,79 @@ export class AdminController {
         console.log(err);
         return {};
       });
+  }
+
+  @get('/admins/orderChips')
+  @response(200, {
+    description: 'Array of OrderChip model instances',
+    content: {
+      'application/json': {
+        schema: {
+          type: 'array',
+        },
+      },
+    },
+  })
+  async getChipOrders(
+  ): Promise<ChipFabOrder[]> {
+    let allOrderChips: ChipFabOrder[] = [];
+    let customerIds: (string | undefined)[] = [];
+    const completedOrders = await this.orderInfo.find({ where: { orderComplete: true } });
+    const promises = completedOrders.map((orderInfo) => {
+      customerIds.push(orderInfo.customerId);
+      return this.orderChip.find({ where: { id: orderInfo.id } });
+    });
+
+    Promise.all<OrderChip[]>(promises).then(async (orderChipArrs) => {
+      console.log('full array');
+      const promisesInner1 = orderChipArrs.map(async () => {
+        console.log('inner array');
+        const customerId = customerIds.shift();
+        return await this.customerRepository.findById(customerId);
+      });
+      Promise.all<Customer>(promisesInner1).then(customersArr => {
+        customersArr.map((customer, index) => {
+          const promisesInner2 = orderChipArrs[index].map((orderChip) => 
+            this.foundryWorkerRepository.findById(orderChip.workerId)
+          );
+
+          Promise.all<FoundryWorker>(promisesInner2).then((foundryWorkerArr) => {
+            const chipFabOrderArr: ChipFabOrder[] = foundryWorkerArr.map((foundryWorker, indexFW) => {
+              let chipFabOrder = new ChipFabOrder(orderChipArrs[index][indexFW]);
+              chipFabOrder.customerName = `${customer.firstName} ${customer.lastName}`;
+              chipFabOrder.workerName = `${foundryWorker.firstName} ${foundryWorker.lastName}`;
+              return chipFabOrder;
+            });
+            allOrderChips = allOrderChips.concat.apply(allOrderChips, chipFabOrderArr);
+            return allOrderChips;
+          });
+        });
+      });
+    });
+
+    console.log('full array all done');
+    return allOrderChips;
+
+    // allOrderChips = allOrderChips.concat.apply(allOrderChips, chipFabOrderArr);
+
+    // let chipFabOrderArr: ChipFabOrder[] = [];
+    // orderChipArr.map(async (orderChip) => {
+    //   // let chipFabOrder = new ChipFabOrder(orderChip);        
+    //   // chipFabOrder.customerName = `${customer.firstName} ${customer.lastName}`;
+    //   // const foundryWorker = await this.foundryWorkerRepository.findById(orderChip.workerId);
+    //   // chipFabOrder.workerName = `${foundryWorker.firstName} ${foundryWorker.lastName}`;
+    //   // chipFabOrderArr.push(chipFabOrder);
+    //   console.log('inner inner');
+
+    // const promises = completedOrders.map(async (orderInfo) => {
+    //   return this.orderChip.find({ where: { id: orderInfo.id } })
+    //   .then(orderChipArr => { orderChipArr.map(orderChip => {
+    //       let chipFabOrder = new ChipFabOrder(orderChip);
+    //       chipFabOrder.customerId = orderInfo.customerId;
+    //       return chipFabOrder;
+    //     });
+    //   });
+    // });
   }
 
   @get('/admins/getApi')
