@@ -260,35 +260,51 @@ export class AdminController {
       return this.orderChip.find({ where: { id: orderInfo.id } });
     });
 
-    Promise.all<OrderChip[]>(promises).then(async (orderChipArrs) => {
+    return Promise.all<OrderChip[]>(promises).then(async (orderChipArrs) => {
       console.log('full array');
-      const promisesInner1 = orderChipArrs.map(async () => {
+      const promisesInner1 = orderChipArrs.map(() => {
         console.log('inner array');
         const customerId = customerIds.shift();
-        return await this.customerRepository.findById(customerId);
+        return this.customerRepository.findById(customerId);
       });
-      Promise.all<Customer>(promisesInner1).then(customersArr => {
-        customersArr.map((customer, index) => {
+      
+      return Promise.all<Customer>(promisesInner1).then(async (customersArr) => {
+        console.log('customer arr');
+        const promise3 = customersArr.map(async (customer, index) => {
           const promisesInner2 = orderChipArrs[index].map((orderChip) => 
             this.foundryWorkerRepository.findById(orderChip.workerId)
           );
 
-          Promise.all<FoundryWorker>(promisesInner2).then((foundryWorkerArr) => {
-            const chipFabOrderArr: ChipFabOrder[] = foundryWorkerArr.map((foundryWorker, indexFW) => {
+          console.log('promise inner 2');
+          return Promise.all<FoundryWorker>(promisesInner2).then((foundryWorkerArr) => {
+            console.log('each foundry arr');
+            const chipFabOrderArr = foundryWorkerArr.map((foundryWorker, indexFW) => {
+              console.log('each foundry');
               let chipFabOrder = new ChipFabOrder(orderChipArrs[index][indexFW]);
               chipFabOrder.customerName = `${customer.firstName} ${customer.lastName}`;
               chipFabOrder.workerName = `${foundryWorker.firstName} ${foundryWorker.lastName}`;
               return chipFabOrder;
             });
-            allOrderChips = allOrderChips.concat.apply(allOrderChips, chipFabOrderArr);
-            return allOrderChips;
+            console.log('foundry arr done');
+            return chipFabOrderArr;
           });
         });
+
+        console.log('promise 3 resolve')
+        return Promise.all<ChipFabOrder[]>(promise3).then((chipFabOrderArrs) => {
+          chipFabOrderArrs.map(chipFabOrderArr => {
+            console.log('appending chipfaborderarr');
+            allOrderChips = allOrderChips.concat.apply(allOrderChips, chipFabOrderArr);
+          })
+          return allOrderChips;
+        });
       });
+
+      return allOrderChips;
     });
 
-    console.log('full array all done');
-    return allOrderChips;
+    // console.log('full array all done');
+    // return allOrderChips;
 
     // allOrderChips = allOrderChips.concat.apply(allOrderChips, chipFabOrderArr);
 
