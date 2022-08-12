@@ -256,8 +256,9 @@ export class AdminController {
     let customerIds: (string | undefined)[] = [];
     const completedOrders = await this.orderInfo.find({ where: { orderComplete: true } });
     const promises = completedOrders.map((orderInfo) => {
+      console.log(orderInfo);
       customerIds.push(orderInfo.customerId);
-      return this.orderChip.find({ where: { id: orderInfo.id } });
+      return this.orderChip.find({ where: { orderInfoId: orderInfo.id } });
     });
 
     return Promise.all<OrderChip[]>(promises).then(async (orderChipArrs) => {
@@ -271,6 +272,7 @@ export class AdminController {
       return Promise.all<Customer>(promisesInner1).then(async (customersArr) => {
         console.log('customer arr');
         const promise3 = customersArr.map(async (customer, index) => {
+          console.log(orderChipArrs[index]);
           const promisesInner2 = orderChipArrs[index].map((orderChip) => 
             this.foundryWorkerRepository.findById(orderChip.workerId)
           );
@@ -278,6 +280,8 @@ export class AdminController {
           console.log('promise inner 2');
           return Promise.all<FoundryWorker>(promisesInner2).then((foundryWorkerArr) => {
             console.log('each foundry arr');
+            console.log(`length ${foundryWorkerArr.length}`);
+            console.log(foundryWorkerArr);
             const chipFabOrderArr = foundryWorkerArr.map((foundryWorker, indexFW) => {
               console.log('each foundry');
               let chipFabOrder = new ChipFabOrder(orderChipArrs[index][indexFW]);
