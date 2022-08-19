@@ -247,7 +247,6 @@ class ChipOrder extends React.Component {
                   break;
                 }
               }
-              lineItemId = "9387491872491824";
 
               // select default foundry worker based on material
               let materialSpecificWorkerId = 0;
