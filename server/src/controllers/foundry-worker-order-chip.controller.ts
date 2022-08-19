@@ -11,8 +11,8 @@ import {
   RestBindings
 } from '@loopback/rest';
 import { SecurityBindings, UserProfile } from '@loopback/security';
-import { OrderChip } from '../models';
-import { FoundryWorkerRepository, OrderChipRepository } from '../repositories';
+import { ChipFabOrder, OrderChip, OrderInfo } from '../models';
+import { FoundryWorkerRepository, OrderChipRepository, OrderInfoRepository } from '../repositories';
 
 export class FoundryWorkerOrderChipController {
   constructor(
@@ -20,6 +20,8 @@ export class FoundryWorkerOrderChipController {
     protected foundryWorkerRepository: FoundryWorkerRepository,
     @repository(OrderChipRepository)
     protected orderChipRepository: OrderChipRepository,
+    @repository(OrderInfoRepository)
+    protected orderInfoRepository: OrderInfoRepository,
     @inject(RestBindings.Http.RESPONSE) protected response: Response,
     @inject(SecurityBindings.USER, {optional: true})
     protected user: UserProfile,
@@ -40,8 +42,23 @@ export class FoundryWorkerOrderChipController {
   async find(
     @param.path.string('id') id: string,
     @param.query.object('filter') filter?: Filter<OrderChip>,
-  ): Promise<OrderChip[]> {
-    return this.foundryWorkerRepository.orderChips(id).find(filter);
+  ): Promise<ChipFabOrder[]> {
+    let allOrderChips: ChipFabOrder[] = [];
+    const foundryWorker = await this.foundryWorkerRepository.findById(id);
+    const orderChips = await this.foundryWorkerRepository.orderChips(id).find(filter);
+    const promises = orderChips.map(orderChip => {
+      return this.orderInfoRepository.findById(orderChip.orderInfoId);
+    })
+    return Promise.all<OrderInfo>(promises).then(orderInfoArr => {
+      orderInfoArr.map((orderInfo, index) => {
+        let chipFabOrder = new ChipFabOrder(orderChips[index]);
+        chipFabOrder.customerName = orderInfo.sa_name;
+        chipFabOrder.workerName = `${foundryWorker.firstName} ${foundryWorker.lastName}`;
+        allOrderChips.push(chipFabOrder);
+      }) 
+
+      return allOrderChips;
+    })
   }
 
   @get('/foundryWorkers/{id}/downloadFile')
