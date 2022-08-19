@@ -22,8 +22,8 @@ import fetch from 'node-fetch';
 import Client from 'shopify-buy';
 import Products from '../lib/constants/productConstants';
 import log from '../lib/toolbox/log';
-import {Admin, User, OrderChip, ChipFabOrder, Customer, FoundryWorker } from '../models';
-import {AdminRepository, CustomerRepository, OrderProductRepository, OrderChipRepository, OrderInfoRepository, FoundryWorkerRepository} from '../repositories';
+import {Admin, User, OrderChip, ChipFabOrder, FoundryWorker } from '../models';
+import {AdminRepository, OrderProductRepository, OrderChipRepository, OrderInfoRepository, FoundryWorkerRepository} from '../repositories';
 
 // @ts-ignore
 global.fetch = fetch;
@@ -47,8 +47,6 @@ export class AdminController {
     public orderChip: OrderChipRepository,
     @repository(OrderInfoRepository)
     public orderInfo: OrderInfoRepository,
-    @repository(CustomerRepository)
-    public customerRepository: CustomerRepository,
     @repository(FoundryWorkerRepository)
     public foundryWorkerRepository: FoundryWorkerRepository,
   ) {}
@@ -253,83 +251,40 @@ export class AdminController {
   async getChipOrders(
   ): Promise<ChipFabOrder[]> {
     let allOrderChips: ChipFabOrder[] = [];
-    let customerIds: (string | undefined)[] = [];
+    let customerNames : (string | undefined)[] = [];
+
     const completedOrders = await this.orderInfo.find({ where: { orderComplete: true } });
     const promises = completedOrders.map((orderInfo) => {
-      console.log(orderInfo);
-      customerIds.push(orderInfo.customerId);
+      customerNames.push(orderInfo.sa_name);
       return this.orderChip.find({ where: { orderInfoId: orderInfo.id } });
     });
 
     return Promise.all<OrderChip[]>(promises).then(async (orderChipArrs) => {
-      console.log('full array');
-      const promisesInner1 = orderChipArrs.map(() => {
-        console.log('inner array');
-        const customerId = customerIds.shift();
-        return this.customerRepository.findById(customerId);
-      });
-      
-      return Promise.all<Customer>(promisesInner1).then(async (customersArr) => {
-        console.log('customer arr');
-        const promise3 = customersArr.map(async (customer, index) => {
-          console.log(orderChipArrs[index]);
-          const promisesInner2 = orderChipArrs[index].map((orderChip) => 
-            this.foundryWorkerRepository.findById(orderChip.workerId)
-          );
+      const promise3 = customerNames.map(async (customerName, index) => {
+        const promisesInner2 = orderChipArrs[index].map((orderChip) => 
+          this.foundryWorkerRepository.findById(orderChip.workerId)
+        );
 
-          console.log('promise inner 2');
-          return Promise.all<FoundryWorker>(promisesInner2).then((foundryWorkerArr) => {
-            console.log('each foundry arr');
-            console.log(`length ${foundryWorkerArr.length}`);
-            console.log(foundryWorkerArr);
-            const chipFabOrderArr = foundryWorkerArr.map((foundryWorker, indexFW) => {
-              console.log('each foundry');
-              let chipFabOrder = new ChipFabOrder(orderChipArrs[index][indexFW]);
-              chipFabOrder.customerName = `${customer.firstName} ${customer.lastName}`;
-              chipFabOrder.workerName = `${foundryWorker.firstName} ${foundryWorker.lastName}`;
-              return chipFabOrder;
-            });
-            console.log('foundry arr done');
-            return chipFabOrderArr;
+        return Promise.all<FoundryWorker>(promisesInner2).then((foundryWorkerArr) => {
+          const chipFabOrderArr = foundryWorkerArr.map((foundryWorker, indexFW) => {
+            let chipFabOrder = new ChipFabOrder(orderChipArrs[index][indexFW]);
+            chipFabOrder.customerName = customerName;
+            chipFabOrder.workerName = `${foundryWorker.firstName} ${foundryWorker.lastName}`;
+            return chipFabOrder;
           });
-        });
 
-        console.log('promise 3 resolve')
-        return Promise.all<ChipFabOrder[]>(promise3).then((chipFabOrderArrs) => {
-          chipFabOrderArrs.map(chipFabOrderArr => {
-            console.log('appending chipfaborderarr');
-            allOrderChips = allOrderChips.concat.apply(allOrderChips, chipFabOrderArr);
-          })
-          return allOrderChips;
+          return chipFabOrderArr;
         });
       });
 
-      return allOrderChips;
+      return Promise.all<ChipFabOrder[]>(promise3).then((chipFabOrderArrs) => {
+        chipFabOrderArrs.map(chipFabOrderArr => {
+          allOrderChips = allOrderChips.concat.apply(allOrderChips, chipFabOrderArr);
+        })
+
+        return allOrderChips;
+      });
     });
-
-    // console.log('full array all done');
-    // return allOrderChips;
-
-    // allOrderChips = allOrderChips.concat.apply(allOrderChips, chipFabOrderArr);
-
-    // let chipFabOrderArr: ChipFabOrder[] = [];
-    // orderChipArr.map(async (orderChip) => {
-    //   // let chipFabOrder = new ChipFabOrder(orderChip);        
-    //   // chipFabOrder.customerName = `${customer.firstName} ${customer.lastName}`;
-    //   // const foundryWorker = await this.foundryWorkerRepository.findById(orderChip.workerId);
-    //   // chipFabOrder.workerName = `${foundryWorker.firstName} ${foundryWorker.lastName}`;
-    //   // chipFabOrderArr.push(chipFabOrder);
-    //   console.log('inner inner');
-
-    // const promises = completedOrders.map(async (orderInfo) => {
-    //   return this.orderChip.find({ where: { id: orderInfo.id } })
-    //   .then(orderChipArr => { orderChipArr.map(orderChip => {
-    //       let chipFabOrder = new ChipFabOrder(orderChip);
-    //       chipFabOrder.customerId = orderInfo.customerId;
-    //       return chipFabOrder;
-    //     });
-    //   });
-    // });
   }
 
   @get('/admins/getApi')
