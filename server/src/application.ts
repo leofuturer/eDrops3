@@ -172,7 +172,7 @@ export class EdropsBackendApplication extends BootMixin(
                 cb(null, v4() + path.extname(file.originalname));
               },
               contentDisposition: (req, file, cb) => {
-                cb(null, 'attachment; filename=' + file.originalname);
+                cb(null, `attachment; filename=${file.originalname}`);
               },
             }),
           };

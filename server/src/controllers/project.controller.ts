@@ -4,20 +4,26 @@ import {
   Filter,
   FilterExcludingWhere,
   repository,
-  Where
+  Where,
 } from '@loopback/repository';
 import {
-  del, get,
-  getModelSchemaRef, param, patch, post, put, requestBody,
-  response
+  del,
+  get,
+  getModelSchemaRef,
+  param,
+  patch,
+  post,
+  put,
+  requestBody,
+  response,
 } from '@loopback/rest';
-import { Project } from '../models';
-import { ProjectRepository } from '../repositories';
+import {Project} from '../models';
+import {ProjectRepository} from '../repositories';
 
 export class ProjectController {
   constructor(
     @repository(ProjectRepository)
-    public projectRepository : ProjectRepository,
+    public projectRepository: ProjectRepository,
   ) {}
 
   @post('/projects')
@@ -46,9 +52,7 @@ export class ProjectController {
     description: 'Project model count',
     content: {'application/json': {schema: CountSchema}},
   })
-  async count(
-    @param.where(Project) where?: Where<Project>,
-  ): Promise<Count> {
+  async count(@param.where(Project) where?: Where<Project>): Promise<Count> {
     return this.projectRepository.count(where);
   }
 
@@ -100,7 +104,8 @@ export class ProjectController {
   })
   async findById(
     @param.path.number('id') id: number,
-    @param.filter(Project, {exclude: 'where'}) filter?: FilterExcludingWhere<Project>
+    @param.filter(Project, {exclude: 'where'})
+    filter?: FilterExcludingWhere<Project>,
   ): Promise<Project> {
     return this.projectRepository.findById(id, filter);
   }
@@ -140,5 +145,13 @@ export class ProjectController {
   })
   async deleteById(@param.path.number('id') id: number): Promise<void> {
     await this.projectRepository.deleteById(id);
+  }
+
+  @get('/projects/featured')
+  @response(200, {
+    description: 'Featured projects',
+  })
+  async getFeaturedProjects(): Promise<Project[]> {
+    return this.projectRepository.getFeaturedProjects();
   }
 }

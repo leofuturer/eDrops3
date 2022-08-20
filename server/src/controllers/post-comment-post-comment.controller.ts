@@ -1,0 +1,116 @@
+import { intercept } from '@loopback/core';
+import {
+  Count,
+  CountSchema,
+  Filter,
+  repository,
+  Where,
+} from '@loopback/repository';
+import {
+  del,
+  get,
+  getModelSchemaRef,
+  getWhereSchemaFor,
+  param,
+  patch,
+  post,
+  requestBody,
+} from '@loopback/rest';
+import { AuthorInterceptor } from '../interceptors';
+import {PostComment, CommentLink} from '../models';
+import { PostCommentRepository } from '../repositories';
+
+export class PostCommentPostCommentController {
+  constructor(
+    @repository(PostCommentRepository)
+    protected postCommentRepository: PostCommentRepository,
+  ) {}
+
+  @get('/postComments/{id}/postComments', {
+    responses: {
+      '200': {
+        description:
+          'Array of PostComment has many PostComment through CommentLink',
+        content: {
+          'application/json': {
+            schema: {type: 'array', items: getModelSchemaRef(PostComment)},
+          },
+        },
+      },
+    },
+  })
+  async find(
+    @param.path.number('id') id: number,
+    @param.query.object('filter') filter?: Filter<PostComment>,
+  ): Promise<PostComment[]> {
+    return this.postCommentRepository.postComments(id).find(filter);
+  }
+
+  @intercept(AuthorInterceptor.BINDING_KEY)
+  @post('/postComments/{id}/postComments', {
+    responses: {
+      '200': {
+        description: 'create a PostComment model instance',
+        content: {'application/json': {schema: getModelSchemaRef(PostComment)}},
+      },
+    },
+  })
+  async create(
+    @param.path.number('id') id: typeof PostComment.prototype.id,
+    @requestBody({
+      content: {
+        'application/json': {
+          schema: getModelSchemaRef(PostComment, {
+            title: 'NewPostCommentInPostComment',
+            exclude: ['id'],
+          }),
+        },
+      },
+    })
+    postComment: Omit<PostComment, 'id'>,
+  ): Promise<PostComment> {
+    return this.postCommentRepository.postComments(id).create(postComment);
+  }
+
+  @patch('/postComments/{id}/postComments', {
+    responses: {
+      '200': {
+        description: 'PostComment.PostComment PATCH success count',
+        content: {'application/json': {schema: CountSchema}},
+      },
+    },
+  })
+  async patch(
+    @param.path.number('id') id: number,
+    @requestBody({
+      content: {
+        'application/json': {
+          schema: getModelSchemaRef(PostComment, {partial: true}),
+        },
+      },
+    })
+    postComment: Partial<PostComment>,
+    @param.query.object('where', getWhereSchemaFor(PostComment))
+    where?: Where<PostComment>,
+  ): Promise<Count> {
+    return this.postCommentRepository
+      .postComments(id)
+      .patch(postComment, where);
+  }
+
+  @del('/postComments/{id}/postComments', {
+    responses: {
+      '200': {
+        description: 'PostComment.PostComment DELETE success count',
+        content: {'application/json': {schema: CountSchema}},
+      },
+    },
+  })
+  async delete(
+    @param.path.number('id') id: number,
+    @param.query.object('where', getWhereSchemaFor(PostComment))
+    where?: Where<PostComment>,
+  ): Promise<Count> {
+    return this.postCommentRepository.postComments(id).delete(where);
+  }
+}
