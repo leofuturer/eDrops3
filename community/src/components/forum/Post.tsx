@@ -12,7 +12,7 @@ import { useEffect, useState } from "react";
 import { NavLink, useNavigate, useParams } from "react-router-dom";
 import API from "../../api/api";
 import { checkReact, react } from "../../api/react";
-import { post, postComments } from "../../api/serverConfig";
+import { commentCount, post, postComments } from "../../api/serverConfig";
 import { timeAgo } from "../../lib/time";
 import { CommentType, PostType } from "../../lib/types";
 import PostComment from "./PostComment";
@@ -76,21 +76,14 @@ function Post() {
 
 	useEffect(() => {
 		if (currentPost.id) {
-			checkReact(
-				"Post",
-				"Like",
-				Cookies.get("userId") as string,
-				currentPost.id
-			)
-				.then((res: boolean) => {
-					setLiked(res);
-				})
-				.catch((err: AxiosError) => {
-					if (err.response?.status === 401) {
-						// navigate("/login");
-					}
-					// console.log(err);
-				});
+			API.Request(
+				commentCount.replace("id", currentPost?.id.toString()),
+				"GET",
+				{},
+				false
+			).then((res) => {
+				console.log(res);
+			});
 		}
 	}, [currentPost]);
 

@@ -6,7 +6,7 @@ export function createPostComment(userId?: string): Partial<PostComment> {
     author: faker.name.findName(),
     content: faker.lorem.paragraphs(),
     datetime: faker.date.recent(10),
-    likes: Math.random() * 100,
+    likes: 0,
     userId,
   };
 }

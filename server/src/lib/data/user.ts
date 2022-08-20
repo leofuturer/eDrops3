@@ -49,6 +49,26 @@ export const defaultUsers: Partial<User>[] = [
         "password": "edropTest123",
         "email": "edrops.pcbfab@gmail.com",
         "emailVerified": true
+    },
+    {
+        "userType": "customer",
+        "username": "community1",
+        "password": "edropTest123",
+        "email": "edropswebsite@gmail.com",
+        "emailVerified": true
+    },
+    {
+        "userType": "customer",
+        "username": "community2",
+        "password": "edropTest123",
+        "email": "edropswebsite+2@gmail.com",
+        "emailVerified": true
+    },
+    {
+        "userType": "customer",
+        "username": "community3",
+        "password": "edropTest123",
+        "email": "edropswebsite+3@gmail.com",
+        "emailVerified": true
     }
-
 ]

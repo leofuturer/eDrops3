@@ -24,3 +24,4 @@ export * from './post-comment.model';
 export * from './comment-link.model';
 export * from './liked-post.model';
 export * from './liked-project.model';
+export * from './user-follower.model';

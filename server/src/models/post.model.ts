@@ -57,6 +57,12 @@ export class Post extends Entity {
   likes: number;
 
   @property({
+    type: 'number',
+    required: true,
+  })
+  comments: number;
+
+  @property({
     type: 'string',
   })
   userId: string;
