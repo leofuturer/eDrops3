@@ -6,7 +6,7 @@ import {
 } from '@loopback/repository';
 import {
   del, get,
-  getModelSchemaRef, param, patch, post, requestBody,
+  getModelSchemaRef, HttpErrors, param, patch, post, requestBody,
   response,
   SchemaObject
 } from '@loopback/rest';
@@ -274,5 +274,59 @@ export class UserController {
   ): Promise<void> {
     return;
     // return this.userBaseRepository.resetPassword(user);
+  }
+
+  @post('/users/credsTaken')
+  @response(200, {
+    description: 'Check if creds are taken',
+    content: {
+      'application/json': {
+        schema: {
+          properties: {
+            usernameTaken: {
+              type: 'boolean',
+            },
+            emailTaken: {
+              type: 'boolean',
+            },
+          },
+        },
+      },
+    },
+  })
+  async checkCredsTaken(
+    @requestBody() body: {username: string; email: string},
+  ): Promise<{usernameTaken: boolean; emailTaken: boolean}> {
+    if (!body.username && !body.email) {
+      throw new HttpErrors.NotFound('Missing username and/or email keys');
+    }
+
+    const usernameTaken = await this.userRepository
+      .findOne({
+        where: {
+          username: body.username,
+        },
+      })
+      .then(user => {
+        return !!user;
+      })
+      .catch(err => {
+        throw new HttpErrors.InternalServerError(err);
+      });
+
+    const emailTaken = await this.userRepository
+      .findOne({
+        where: {
+          email: body.email,
+        },
+      })
+      .then(user => {
+        return !!user;
+      })
+      .catch(err => {
+        throw new HttpErrors.InternalServerError(err);
+      });
+    
+    return {usernameTaken, emailTaken};
   }
 }
