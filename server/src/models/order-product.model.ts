@@ -12,7 +12,6 @@ import {OrderItemBase} from '.';
         'prototype.replaceById': true,
       },
     },
-    mysql: {table: 'orderProduct'},
   },
 })
 export class OrderProduct extends OrderItemBase {
