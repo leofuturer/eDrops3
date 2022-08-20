@@ -1,6 +1,6 @@
 import {Entity, model, property} from '@loopback/repository';
 
-@model({settings: {validateUpsert: true, idInjection: true, mysql: {table: 'customerAddress'}}})
+@model({settings: {validateUpsert: true, idInjection: true}})
 export class CustomerAddress extends Entity {
   @property({
     type: 'number',
@@ -71,4 +71,5 @@ export interface CustomerAddressRelations {
   // describe navigational properties here
 }
 
-export type CustomerAddressWithRelations = CustomerAddress & CustomerAddressRelations;
+export type CustomerAddressWithRelations = CustomerAddress &
+  CustomerAddressRelations;

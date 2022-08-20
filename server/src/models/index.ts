@@ -1,5 +1,5 @@
 export * from './project.model';
-export * from './forum.model';
+export * from './post.model';
 export * from './application.model';
 export * from './access-token.model';
 export * from './user.model';
@@ -18,3 +18,10 @@ export * from './order-info.model';
 export * from './order-chip.model';
 export * from './order-product.model';
 export * from './chip-fab-order.model';
+export * from './user-profile.model';
+export * from './saved-project.model';
+export * from './saved-post.model';
+export * from './post-comment.model';
+export * from './comment-link.model';
+export * from './liked-post.model';
+export * from './liked-project.model';

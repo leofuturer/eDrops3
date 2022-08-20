@@ -19,7 +19,6 @@ import {OrderChip} from './order-chip.model';
         'prototype.__get__orderChips': true
       }
     },
-    mysql: {table: 'orderInfo'}
   }
 })
 export class OrderInfo extends Entity {
