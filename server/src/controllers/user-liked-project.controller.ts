@@ -75,7 +75,11 @@ export class UserLikedProjectController {
     @param.path.string('id') id: typeof User.prototype.id,
     @param.path.number('projectId') projectId: typeof Project.prototype.id,
   ): Promise<void> {
-    return this.userRepository.likedProjects(id).link(projectId);
+    return this.userRepository.likedProjects(id).link(projectId).then(() => {
+      this.projectRepository.findById(projectId).then((project) => {
+        this.projectRepository.updateById(projectId, { likes: project.likes + 1 });
+      });
+    });
   }
 
   @authenticate('jwt')

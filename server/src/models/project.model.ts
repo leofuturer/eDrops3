@@ -60,12 +60,6 @@ export class Project extends Entity {
   likes: number
 
   @property({
-    type: 'number',
-    required: false,
-  })
-  dislikes: number;
-
-  @property({
     type: 'string',
   })
   userId: string;

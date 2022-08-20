@@ -17,8 +17,7 @@ import {
   Post,
   Project,
   LikedPost,
-  LikedProject,
-} from '../models';
+  LikedProject, UserFollower} from '../models';
 import {SavedPostRepository} from './saved-post.repository';
 import {SavedProjectRepository} from './saved-project.repository';
 import {UserProfileRepository} from './user-profile.repository';
@@ -26,6 +25,7 @@ import {PostRepository} from './post.repository';
 import {ProjectRepository} from './project.repository';
 import {LikedPostRepository} from './liked-post.repository';
 import {LikedProjectRepository} from './liked-project.repository';
+import {UserFollowerRepository} from './user-follower.repository';
 
 export class UserRepository extends DefaultCrudRepository<
   User,
@@ -75,6 +75,11 @@ export class UserRepository extends DefaultCrudRepository<
     typeof User.prototype.id
   >;
 
+  public readonly followers: HasManyThroughRepositoryFactory<User, typeof User.prototype.id,
+          UserFollower,
+          typeof User.prototype.id
+        >;
+
   constructor(
     @inject('datasources.mysqlDS') dataSource: MysqlDsDataSource,
     @repository.getter('SavedPostRepository')
@@ -90,9 +95,11 @@ export class UserRepository extends DefaultCrudRepository<
     @repository.getter('LikedPostRepository')
     protected likedPostRepositoryGetter: Getter<LikedPostRepository>,
     @repository.getter('LikedProjectRepository')
-    protected likedProjectRepositoryGetter: Getter<LikedProjectRepository>,
+    protected likedProjectRepositoryGetter: Getter<LikedProjectRepository>, @repository.getter('UserFollowerRepository') protected userFollowerRepositoryGetter: Getter<UserFollowerRepository>, @repository.getter('UserRepository') protected userRepositoryGetter: Getter<UserRepository>,
   ) {
     super(User, dataSource);
+    this.followers = this.createHasManyThroughRepositoryFactoryFor('followers', userRepositoryGetter, userFollowerRepositoryGetter,);
+    this.registerInclusionResolver('followers', this.followers.inclusionResolver);
     this.likedProjects = this.createHasManyThroughRepositoryFactoryFor(
       'likedProjects',
       projectRepositoryGetter,

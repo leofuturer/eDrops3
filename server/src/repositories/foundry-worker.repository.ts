@@ -36,7 +36,7 @@ export class FoundryWorkerRepository extends DefaultCrudRepository<
       realm: foundryWorker.realm,
       username: foundryWorker.username,
       password: hashedPassword,
-      userType: 'foundryWorker',
+      userType: 'worker',
       email: foundryWorker.email,
       emailVerified: foundryWorker.emailVerified,
       verificationToken: foundryWorker.verificationToken,

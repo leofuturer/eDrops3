@@ -21,11 +21,12 @@ import {
   Post,
   PostComment,
 } from '../models';
-import {PostRepository} from '../repositories';
+import {PostCommentRepository, PostRepository} from '../repositories';
 
 export class PostPostCommentController {
   constructor(
     @repository(PostRepository) protected postRepository: PostRepository,
+    @repository(PostCommentRepository) protected postComments: PostCommentRepository,
   ) { }
 
   @get('/posts/{id}/postComments', {
@@ -45,6 +46,24 @@ export class PostPostCommentController {
     @param.query.object('filter') filter?: Filter<PostComment>,
   ): Promise<PostComment[]> {
     return this.postRepository.postComments(id).find(filter);
+  }
+
+  @get('/posts/{id}/commentCount', {
+    responses: {
+      '200': {
+        description: 'Number of PostComments for a Post',
+        content: {
+          'application/json': {
+            schema: {type: 'array', items: getModelSchemaRef(PostComment)},
+          },
+        },
+      },
+    },
+  })
+  async commentCount(
+    @param.path.number('id') id: number,
+  ): Promise<Count> {
+    return this.postComments.count({ postId: id });
   }
 
   @intercept(AuthorInterceptor.BINDING_KEY)

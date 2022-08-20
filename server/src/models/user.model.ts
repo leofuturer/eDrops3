@@ -6,6 +6,7 @@ import {Post} from './post.model';
 import {Project} from './project.model';
 import {LikedPost} from './liked-post.model';
 import {LikedProject} from './liked-project.model';
+import {UserFollower} from './user-follower.model';
 
 @model({
   settings: {
@@ -96,6 +97,9 @@ export class User extends Entity {
 
   @hasMany(() => Project, {through: {model: () => LikedProject}})
   likedProjects: Project[];
+
+  @hasMany(() => User, {through: {model: () => UserFollower, keyTo: 'followerId'}})
+  followers: User[];
   @hasMany(() => Project)
   projects: Project[];
 

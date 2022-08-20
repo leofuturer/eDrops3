@@ -6,6 +6,7 @@ const ApiRootUrl = "/api";
 export const posts = `${ApiRootUrl}/posts`;
 export const post = `${ApiRootUrl}/posts/id`;
 export const postComments = `${ApiRootUrl}/posts/id/postComments`;
+export const commentCount = `${ApiRootUrl}/posts/id/commentCount`;
 export const commentComments = `${ApiRootUrl}/postComments/id/postComments`;
 export const featuredPosts = `${ApiRootUrl}/posts/featured`;
 export const userPosts = `${ApiRootUrl}/users/id/posts`;
