@@ -22,8 +22,8 @@ import fetch from 'node-fetch';
 import Client from 'shopify-buy';
 import Products from '../lib/constants/productConstants';
 import log from '../lib/toolbox/log';
-import {Admin, User} from '../models';
-import {AdminRepository, OrderProductRepository} from '../repositories';
+import {Admin, User, OrderChip, ChipFabOrder, FoundryWorker } from '../models';
+import {AdminRepository, OrderProductRepository, OrderChipRepository, OrderInfoRepository, FoundryWorkerRepository} from '../repositories';
 
 // @ts-ignore
 global.fetch = fetch;
@@ -43,6 +43,12 @@ export class AdminController {
     public adminRepository: AdminRepository,
     @repository(OrderProductRepository)
     public orderProduct: OrderProductRepository,
+    @repository(OrderChipRepository)
+    public orderChip: OrderChipRepository,
+    @repository(OrderInfoRepository)
+    public orderInfo: OrderInfoRepository,
+    @repository(FoundryWorkerRepository)
+    public foundryWorkerRepository: FoundryWorkerRepository,
   ) {}
 
   @post('/admins')
@@ -229,6 +235,56 @@ export class AdminController {
         console.log(err);
         return {};
       });
+  }
+
+  @get('/admins/orderChips')
+  @response(200, {
+    description: 'Array of OrderChip model instances',
+    content: {
+      'application/json': {
+        schema: {
+          type: 'array',
+        },
+      },
+    },
+  })
+  async getChipOrders(
+  ): Promise<ChipFabOrder[]> {
+    let allOrderChips: ChipFabOrder[] = [];
+    let customerNames : (string | undefined)[] = [];
+
+    const completedOrders = await this.orderInfo.find({ where: { orderComplete: true } });
+    const promises = completedOrders.map((orderInfo) => {
+      customerNames.push(orderInfo.sa_name);
+      return this.orderChip.find({ where: { orderInfoId: orderInfo.id } });
+    });
+
+    return Promise.all<OrderChip[]>(promises).then(async (orderChipArrs) => {
+      const promise3 = customerNames.map(async (customerName, index) => {
+        const promisesInner2 = orderChipArrs[index].map((orderChip) => 
+          this.foundryWorkerRepository.findById(orderChip.workerId)
+        );
+
+        return Promise.all<FoundryWorker>(promisesInner2).then((foundryWorkerArr) => {
+          const chipFabOrderArr = foundryWorkerArr.map((foundryWorker, indexFW) => {
+            let chipFabOrder = new ChipFabOrder(orderChipArrs[index][indexFW]);
+            chipFabOrder.customerName = customerName;
+            chipFabOrder.workerName = `${foundryWorker.firstName} ${foundryWorker.lastName}`;
+            return chipFabOrder;
+          });
+
+          return chipFabOrderArr;
+        });
+      });
+
+      return Promise.all<ChipFabOrder[]>(promise3).then((chipFabOrderArrs) => {
+        chipFabOrderArrs.map(chipFabOrderArr => {
+          allOrderChips = allOrderChips.concat.apply(allOrderChips, chipFabOrderArr);
+        })
+
+        return allOrderChips;
+      });
+    });
   }
 
   @get('/admins/getApi')

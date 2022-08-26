@@ -55,8 +55,9 @@ class ChipOrder extends React.Component {
     const GLASSFW = 'glassfab';
     const PAPERFW = 'paperfab';
     const PCBFW = 'pcbfab';
+    // const url = `${getWorkerId}?username=${}`
     // fetch IDs of default foundry workers
-    API.Request(getWorkerId, 'GET', { username: GLASSFW }, true)
+    API.Request(getWorkerId, 'GET', { username: GLASSFW }, true, undefined, true)
       .then((res) => {
         this.setState({
           GLASSID: res.data,
@@ -65,7 +66,7 @@ class ChipOrder extends React.Component {
       .catch((err) => {
         console.log(err);
       });
-    API.Request(getWorkerId, 'GET', { username: PAPERFW }, true)
+    API.Request(getWorkerId, 'GET', { username: PAPERFW }, true, undefined, true)
       .then((res) => {
         this.setState({
           PAPERID: res.data,
@@ -74,7 +75,7 @@ class ChipOrder extends React.Component {
       .catch((err) => {
         console.log(err);
       });
-    API.Request(getWorkerId, 'GET', { username: PCBFW }, true)
+    API.Request(getWorkerId, 'GET', { username: PCBFW }, true, undefined, true)
       .then((res) => {
         this.setState({
           PCBID: res.data,
@@ -246,6 +247,7 @@ class ChipOrder extends React.Component {
                   break;
                 }
               }
+
               // select default foundry worker based on material
               let materialSpecificWorkerId = 0;
               switch (this.state.materialVal) {
@@ -278,6 +280,7 @@ class ChipOrder extends React.Component {
                 fileInfoId: this.state.fileInfo.id,
                 workerId: materialSpecificWorkerId,
               };
+              // console.log(data);
               // console.log(res);
               let url = addOrderChipToCart.replace('id', _this.state.orderInfoId);
               API.Request(url, 'POST', data, true)
@@ -344,7 +347,7 @@ class ChipOrder extends React.Component {
         </li>,
       );
     }
-
+    // console.log(this.state.fileInfo);
     return (
       <div className="order-container">
         <div className="shop-main-content">

@@ -29,6 +29,7 @@ class Upload extends React.Component {
       checked: false,
       originalName: '',
       file: undefined,
+      fileInfo: undefined,
       percentage: 0,
     };
     this.setCurrentIndex = this.setCurrentIndex.bind(this);
