@@ -336,8 +336,9 @@ export class CustomerRepository extends DefaultCrudRepository<
     );
 
     const fields = request.body;
-    const file = await this.fileInfos(id).create(fileInfos[0]);
-    return {files, fields};
+    const fileInfo = await this.fileInfos(id).create(fileInfos[0]);
+    // return {files, fields};
+    return {fileInfo, fields};
   }
 
   async uploadS3(
@@ -388,8 +389,9 @@ export class CustomerRepository extends DefaultCrudRepository<
     );
 
     const fields = request.body;
-    const file = await this.fileInfos(id).create(fileInfos[0]);
-    return {files, fields};
+    const fileInfo = await this.fileInfos(id).create(fileInfos[0]);
+    // return {files, fields};
+    return {fileInfo, fields};
   }
 
   async downloadDisk(filename: string, response: Response): Promise<Response> {

@@ -10,6 +10,7 @@ export * from './post.controller';
 export * from './foundry-worker-order-chip.controller';
 export * from './foundry-worker-user.controller';
 export * from './foundry-worker.controller';
+export * from './order-chip.controller';
 export * from './order-info-order-chip.controller';
 export * from './order-info-order-product.controller';
 export * from './order-info.controller';

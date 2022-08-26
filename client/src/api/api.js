@@ -29,7 +29,7 @@ class API {
       };
 
       const dataToSend = (sendDataRaw) ? data : JSON.stringify(data);
-      if (method === 'POST' || method === 'PUT') {
+      if (method === 'POST' || method === 'PUT' || method === 'PATCH') {
         options.data = dataToSend;
       } else {
         options.params = dataToSend;

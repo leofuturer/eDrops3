@@ -9,7 +9,7 @@ class AssignOrders extends React.Component {
     super(props);
     this.state = {
       workerList: [],
-      assignId: -1,
+      assignId: '',
       chipOrder: undefined,
     };
     this.handleAssign = this.handleAssign.bind(this);
@@ -31,7 +31,7 @@ class AssignOrders extends React.Component {
 
   handleAssignId(e) {
     this.setState({
-      assignId: Number(e.target.id.replace(/[^0-9]/ig, '')),
+      assignId: e.target.id.match(/(?<=file).*/)[0],
     });
   }
 
