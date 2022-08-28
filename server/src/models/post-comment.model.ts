@@ -1,7 +1,7 @@
 import {Entity, model, property, hasMany} from '@loopback/repository';
 import {CommentLink} from './comment-link.model';
 
-@model()
+@model({settings: {description: 'Post comments', forceId: false}})
 export class PostComment extends Entity {
   @property({
     type: 'number',
@@ -20,7 +20,7 @@ export class PostComment extends Entity {
     type: 'string',
     required: true,
     mysql: {
-      dataType: 'LONGTEXT'
+      dataType: 'LONGTEXT',
     },
   })
   content: string;

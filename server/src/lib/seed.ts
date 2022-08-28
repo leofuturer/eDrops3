@@ -1,84 +1,130 @@
-import { EdropsBackendApplication } from '../application';
+import {EdropsBackendApplication} from '../application';
 import {
-  Customer, User
+  Admin,
+  Customer,
+  CustomerAddress,
+  Post,
+  PostComment,
+  User,
 } from '../models';
 import {
   AdminRepository,
   CustomerAddressRepository,
   CustomerRepository,
-  FileInfoRepository, FoundryWorkerRepository,
+  FileInfoRepository,
+  FoundryWorkerRepository,
   OrderChipRepository,
   OrderInfoRepository,
   OrderItemBaseRepository,
-  OrderProductRepository, PostCommentRepository, PostRepository, ProjectRepository,
-  UserRepository
+  OrderProductRepository,
+  PostCommentRepository,
+  PostRepository,
+  ProjectRepository,
+  UserRepository,
 } from '../repositories';
 import {
-  createPostComment, defaultAdmins,
+  defaultAdmins,
   defaultCustomerAddresses,
-  defaultCustomers, defaultFoundryWorkers, defaultPosts, defaultProjects
+  defaultCustomers,
+  defaultFoundryWorkers,
+  defaultPostComments,
+  defaultPosts,
+  defaultProjects,
 } from './data/index';
 
 export async function clearDb(this: EdropsBackendApplication): Promise<void> {
+  /** Clear Admin table **/
   const adminRepo: AdminRepository = await this.getRepository(AdminRepository);
   await adminRepo.deleteAll();
   await adminRepo.execute('ALTER TABLE Admin AUTO_INCREMENT = ?', [1]); // resets auto increment
-  
+
+  /** Clear Customer table **/
   const customerRepo: CustomerRepository = await this.getRepository(
     CustomerRepository,
   );
   await customerRepo.deleteAll();
   await customerRepo.execute('ALTER TABLE Customer AUTO_INCREMENT = ?', [1]);
 
+  /** Clear CustomerAddress table **/
   const customerAddressRepo: CustomerAddressRepository =
     await this.getRepository(CustomerAddressRepository);
   await customerAddressRepo.deleteAll();
-  await customerAddressRepo.execute('ALTER TABLE CustomerAddress AUTO_INCREMENT = ?', [1]);
+  await customerAddressRepo.execute(
+    'ALTER TABLE CustomerAddress AUTO_INCREMENT = ?',
+    [1],
+  );
 
+  /** Clear FoundryWorker table **/
   const foundryWorkerRepo: FoundryWorkerRepository = await this.getRepository(
     FoundryWorkerRepository,
   );
   await foundryWorkerRepo.deleteAll();
-  await foundryWorkerRepo.execute('ALTER TABLE FoundryWorker AUTO_INCREMENT = ?', [1]);
+  await foundryWorkerRepo.execute(
+    'ALTER TABLE FoundryWorker AUTO_INCREMENT = ?',
+    [1],
+  );
 
+  /** Clear User table **/
   const userRepo: UserRepository = await this.getRepository(UserRepository);
   await userRepo.deleteAll();
   await userRepo.execute('ALTER TABLE User AUTO_INCREMENT = ?', [1]);
 
+  /** Clear OrderInfo table **/
   const orderInfoRepo: OrderInfoRepository = await this.getRepository(
     OrderInfoRepository,
   );
   await orderInfoRepo.deleteAll();
   await orderInfoRepo.execute('ALTER TABLE OrderInfo AUTO_INCREMENT = ?', [1]);
 
+  /** Clear OrderChip table **/
   const orderChipRepo: OrderChipRepository = await this.getRepository(
     OrderChipRepository,
   );
   await orderChipRepo.deleteAll();
   await orderChipRepo.execute('ALTER TABLE OrderChip AUTO_INCREMENT = ?', [1]);
 
+  /** Clear OrderItemBase table **/
   const orderItemBaseRepo: OrderItemBaseRepository = await this.getRepository(
     OrderItemBaseRepository,
   );
   await orderItemBaseRepo.deleteAll();
-  await orderItemBaseRepo.execute('ALTER TABLE OrderItemBase AUTO_INCREMENT = ?', [1]);
+  await orderItemBaseRepo.execute(
+    'ALTER TABLE OrderItemBase AUTO_INCREMENT = ?',
+    [1],
+  );
 
+  /** Clear OrderProduct table **/
   const orderProductRepo: OrderProductRepository = await this.getRepository(
     OrderProductRepository,
   );
   await orderProductRepo.deleteAll();
-  await orderProductRepo.execute('ALTER TABLE OrderProduct AUTO_INCREMENT = ?', [1]);
+  await orderProductRepo.execute(
+    'ALTER TABLE OrderProduct AUTO_INCREMENT = ?',
+    [1],
+  );
 
+  /** Clear FileInfo table **/
   const fileInfoRepo: FileInfoRepository = await this.getRepository(
     FileInfoRepository,
   );
   await fileInfoRepo.deleteAll();
   await fileInfoRepo.execute('ALTER TABLE FileInfo AUTO_INCREMENT = ?', [1]);
 
+  /** Clear Post table **/
   const postRepo: PostRepository = await this.getRepository(PostRepository);
   await postRepo.deleteAll();
   await postRepo.execute('ALTER TABLE Post AUTO_INCREMENT = ?', [1]);
 
+  /** Clear PostComment table **/
+  const postCommentRepo: PostCommentRepository = await this.getRepository(
+    PostCommentRepository,
+  );
+  await postCommentRepo.deleteAll();
+  await postCommentRepo.execute('ALTER TABLE PostComment AUTO_INCREMENT = ?', [
+    1,
+  ]);
+
+  /** Clear Project table **/
   const projectRepo: ProjectRepository = await this.getRepository(
     ProjectRepository,
   );
@@ -87,58 +133,66 @@ export async function clearDb(this: EdropsBackendApplication): Promise<void> {
 }
 
 export async function seedDb(this: EdropsBackendApplication): Promise<void> {
-  const userIds: typeof User.prototype.id[] = [];
-  const customers: Customer[] = [];
-
+  /** Seed Admin table **/
   const adminRepo: AdminRepository = await this.getRepository(AdminRepository);
-  for (const admin of defaultAdmins) {
-    const adminInstance = await adminRepo.createAdmin(admin);
-    userIds.push(adminInstance.id);
-  }
+  const admins: Admin[] = await Promise.all(
+    defaultAdmins.map(admin => adminRepo.createAdmin(admin)),
+  );
 
+  /** Seed Customer table **/
   const customerRepo: CustomerRepository = await this.getRepository(
     CustomerRepository,
   );
-  for (const customer of defaultCustomers) {
-    const customerInstance = await customerRepo.createCustomer(customer);
-    customers.push(customerInstance);
-    userIds.push(customerInstance.id)
-  }
+  const customers: Customer[] = await Promise.all(
+    defaultCustomers.map(customer => customerRepo.createCustomer(customer)),
+  );
 
-  const customerAddressRepo: CustomerAddressRepository = await this.getRepository(CustomerAddressRepository);
-  for (const [index, customerAddress] of defaultCustomerAddresses.entries()) {
-    customerAddress.customerId = customers[index % 2].id;
-    await customerAddressRepo.create(customerAddress);
-  }
+  /** Seed CustomerAddress table **/
+  const customerAddressRepo: CustomerAddressRepository =
+    await this.getRepository(CustomerAddressRepository);
+  const customerAddresses: CustomerAddress[] = await Promise.all(
+    defaultCustomerAddresses.map((customerAddress, index) => {
+      return customerRepo
+        .customerAddresses(customers[index % 2].id)
+        .create(customerAddress);
+    }),
+  );
 
-  const foundryWorkerRepo: FoundryWorkerRepository = await this.getRepository(FoundryWorkerRepository);
-  for (const foundryWorker of defaultFoundryWorkers) {
-    const foundryWorkerInstance = await foundryWorkerRepo.createFoundryWorker(foundryWorker);
-    userIds.push(foundryWorkerInstance.id)
-  }
+  /** Seed FoundryWorker table **/
+  const foundryWorkerRepo: FoundryWorkerRepository = await this.getRepository(
+    FoundryWorkerRepository,
+  );
+  const foundryWorkers = await Promise.all(
+    defaultFoundryWorkers.map(foundryWorker =>
+      foundryWorkerRepo.createFoundryWorker(foundryWorker),
+    ),
+  );
 
+  /** Seed Post table **/
   const postRepo: PostRepository = await this.getRepository(PostRepository);
+  const posts: Post[] = await Promise.all(
+    defaultPosts.map(post => postRepo.create(post)),
+  );
+
+  /** Seed PostComment table **/
   const postCommentRepo: PostCommentRepository = await this.getRepository(
     PostCommentRepository,
   );
-  for (const post of defaultPosts) {
-    const postInstance = await postRepo.create(post);
-    for (let i = 0; i < 1 + Math.random() * 5; i+=1) {
-      const postComment = await postRepo
-        .postComments(postInstance.id)
-        .create(createPostComment(userIds[Math.floor(Math.random() * userIds.length)]));
-      for (let i = 0; i < 1 + Math.random() * 5; i+=1) {
-        const postCommentComment = await postCommentRepo
-          .postComments(postComment.id)
-          .create(createPostComment(userIds[Math.floor(Math.random() * userIds.length)]));
-      }
-    }
-  }
+  const postComments: PostComment[] = await Promise.all(
+    defaultPostComments.map((postComment, index) =>
+      postRepo.postComments(index).create({
+        ...postComment,
+        author: customers[index % 2].username,
+        userId: customers[index % 2].id,
+      }),
+    ),
+  );
 
+  /** Seed Project table **/
   const projectRepo: ProjectRepository = await this.getRepository(
     ProjectRepository,
   );
-  for (const project of defaultProjects) {
-    await projectRepo.create(project);
-  }
+  const projects = await Promise.all(
+    defaultProjects.map(project => projectRepo.create(project)),
+  );
 }

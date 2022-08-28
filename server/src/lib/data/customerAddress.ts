@@ -1,4 +1,4 @@
-import {CustomerAddress} from '../../models';
+import { CustomerAddress } from '../../models';
 
 export const defaultCustomerAddresses: Partial<CustomerAddress>[] = [
   {

@@ -1,6 +1,6 @@
 import {Entity, model, property} from '@loopback/repository';
 
-@model()
+@model({settings: {description: 'Link parent and child comments'}})
 export class CommentLink extends Entity {
   @property({
     type: 'number',
@@ -20,7 +20,6 @@ export class CommentLink extends Entity {
     required: true,
   })
   childId: number;
-
 
   constructor(data?: Partial<CommentLink>) {
     super(data);

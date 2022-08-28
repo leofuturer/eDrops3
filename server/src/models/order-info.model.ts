@@ -2,25 +2,26 @@ import {Entity, model, property, hasMany} from '@loopback/repository';
 import {OrderProduct} from './order-product.model';
 import {OrderChip} from './order-chip.model';
 
-@model({
-  settings: {
-    validateUpsert: true,
-    plural: 'orderInfos',
-    idInjection: true,
-    remoting: {
-      sharedMethods: {
-        '*': false,
-        findById: true,
-        find: true,
-        'prototype.addOrderProductToCart': true,
-        'prototype.addOrderChipToCart': true,
-        newOrderCreated: true,
-        'prototype.__get__orderProducts': true,
-        'prototype.__get__orderChips': true
-      }
-    },
-  }
-})
+// @model({
+//   settings: {
+//     validateUpsert: true,
+//     plural: 'orderInfos',
+//     idInjection: true,
+//     remoting: {
+//       sharedMethods: {
+//         '*': false,
+//         findById: true,
+//         find: true,
+//         'prototype.addOrderProductToCart': true,
+//         'prototype.addOrderChipToCart': true,
+//         newOrderCreated: true,
+//         'prototype.__get__orderProducts': true,
+//         'prototype.__get__orderChips': true
+//       }
+//     },
+//   }
+// })
+@model({ settings: { description: 'Order information' } })
 export class OrderInfo extends Entity {
   @property({
     type: 'number',

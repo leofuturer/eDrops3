@@ -1,43 +1,37 @@
-import {faker} from '@faker-js/faker';
-import {Post} from '../../models';
+import { Post } from '../../models';
 
 export const defaultPosts: Partial<Post>[] = [
   {
+    id: 1,
+    userId: 'a',
     author: 'community1',
     title: 'Electrodes on EWOD device not actuating',
     content:
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Auctor elit sed vulputate mi sit amet. Nam libero justo laoreet sit amet cursus sit amet. Vulputate mi sit amet mauris commodo quis.',
-    datetime: faker.date.recent(10),
+      'The electrodes on my EWOD device aren\'t activating. It\'s not related to the power source as I\'ve tried multiple power sources. I\'ve also tried different electrodes. I\'ve tried to contact the manufacturer but they haven\'t responded. Does anyone know what the problem could be?',
+    datetime: new Date(Date.now() - 1000 * 60 * 60 * 24 * 7),
+    comments: 1,
     likes: 0,
   },
   {
-    author: 'community3',
+    id: 2,
+    userId: 'a',
+    author: 'community2',
     title: 'Dispensing not working on EWOD device',
     content:
-      'Fringilla est ullamcorper eget nulla facilisi etiam dignissim diam quis. Placerat in egestas erat imperdiet sed euismod nisi porta. Elit ullamcorper dignissim cras tincidunt lobortis feugiat vivamus at. Mauris pharetra et ultrices neque ornare aenean euismod elementum nisi. Nibh tellus molestie nunc non blandit massa enim nec dui.',
-    datetime: faker.date.recent(10),
+      'For some reason the dispensing is not working on my EWOD device. I have tried everything I can think of. Any suggestions?',
+    datetime: new Date(Date.now() - 1000 * 60 * 60 * 24 * 3),
+    comments: 1,
     likes: 0,
   },
   {
-    author: 'community2',
+    id: 3,
+    userId: 'a',
+    author: 'community3',
     title: 'What are EWOD devices used for?',
     content:
-      'Fringilla est ullamcorper eget nulla facilisi etiam dignissim diam quis. Placerat in egestas erat imperdiet sed euismod nisi porta. Elit ullamcorper dignissim cras tincidunt lobortis feugiat vivamus at. Mauris pharetra et ultrices neque ornare aenean euismod elementum nisi. Nibh tellus molestie nunc non blandit massa enim nec dui.',
-    datetime: faker.date.recent(10),
+      'I\'m new to the community and would like to learn more about the different use cases for EWOD devices. I\'m interested in hearing from everyone about their experiences with EWOD devices. Thanks!',
+    datetime: new Date(Date.now() - 1000 * 60 * 60 * 8),
+    comments: 1,
     likes: 0,
   },
 ];
-
-// export const defaultPosts: Partial<Post>[] = new Array(10)
-//   .fill(0)
-//   .map(() => createPost());
-
-// function createPost(): Partial<Post> {
-//   return {
-//     author: faker.name.findName(),
-//     title: faker.lorem.sentence(),
-//     content: faker.lorem.paragraphs(),
-//     datetime: faker.date.recent(10),
-//     likes: 0,
-//   };
-// }

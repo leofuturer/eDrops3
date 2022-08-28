@@ -1,6 +1,6 @@
 import {Entity, model, property} from '@loopback/repository';
 
-@model()
+@model({settings: {description: 'Links liked posts to users'}})
 export class LikedPost extends Entity {
   @property({
     type: 'number',
