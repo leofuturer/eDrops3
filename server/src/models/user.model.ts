@@ -8,12 +8,18 @@ import {LikedPost} from './liked-post.model';
 import {LikedProject} from './liked-project.model';
 import {UserFollower} from './user-follower.model';
 
+// @model({
+//   settings: {
+//     caseSensitiveEmail: true,
+//     hidden: ['password', 'verificationToken'],
+//     maxTTL: 31556926,
+//     ttl: 1209600,
+//   },
+// })
 @model({
   settings: {
-    caseSensitiveEmail: true,
-    hidden: ['password', 'verificationToken'],
-    maxTTL: 31556926,
-    ttl: 1209600,
+    description: 'Base user information',
+    forceId: false,
   },
 })
 export class User extends Entity {
@@ -98,7 +104,9 @@ export class User extends Entity {
   @hasMany(() => Project, {through: {model: () => LikedProject}})
   likedProjects: Project[];
 
-  @hasMany(() => User, {through: {model: () => UserFollower, keyTo: 'followerId'}})
+  @hasMany(() => User, {
+    through: {model: () => UserFollower, keyTo: 'followerId'},
+  })
   followers: User[];
   @hasMany(() => Project)
   projects: Project[];
@@ -106,7 +114,7 @@ export class User extends Entity {
   @hasMany(() => Post, {
     through: {model: () => LikedPost, keyFrom: 'userId', keyTo: 'postId'},
   })
-  likedPosts: Post[]
+  likedPosts: Post[];
 
   // Indexer property to allow additional data
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

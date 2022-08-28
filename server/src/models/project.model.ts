@@ -2,7 +2,8 @@ import {Entity, model, property} from '@loopback/repository';
 
 @model({
   settings: {
-    allowExtendedOperators: true
+    description: 'Community site projects',
+    forceId: false,
   }
 })
 export class Project extends Entity {
