@@ -15,19 +15,17 @@ import {
   post,
   requestBody,
 } from '@loopback/rest';
-import { intercept } from '@loopback/core'
-import { AuthorInterceptor } from '../interceptors';
-import {
-  Post,
-  PostComment,
-} from '../models';
+import {intercept} from '@loopback/core';
+import {AuthorInterceptor} from '../interceptors';
+import {Post, PostComment} from '../models';
 import {PostCommentRepository, PostRepository} from '../repositories';
 
 export class PostPostCommentController {
   constructor(
     @repository(PostRepository) protected postRepository: PostRepository,
-    @repository(PostCommentRepository) protected postComments: PostCommentRepository,
-  ) { }
+    @repository(PostCommentRepository)
+    protected postComments: PostCommentRepository,
+  ) {}
 
   @get('/posts/{id}/postComments', {
     responses: {
@@ -60,10 +58,8 @@ export class PostPostCommentController {
       },
     },
   })
-  async commentCount(
-    @param.path.number('id') id: number,
-  ): Promise<Count> {
-    return this.postComments.count({ postId: id });
+  async commentCount(@param.path.number('id') id: number): Promise<Count> {
+    return this.postComments.count({postId: id});
   }
 
   @intercept(AuthorInterceptor.BINDING_KEY)
@@ -83,13 +79,22 @@ export class PostPostCommentController {
           schema: getModelSchemaRef(PostComment, {
             title: 'NewPostCommentInPost',
             exclude: ['id'],
-            optional: ['postId']
+            optional: ['postId'],
           }),
         },
       },
-    }) postComment: Omit<PostComment, 'id'>,
+    })
+    postComment: Omit<PostComment, 'id'>,
   ): Promise<PostComment> {
-    return this.postRepository.postComments(id).create(postComment);
+    return this.postRepository
+      .postComments(id)
+      .create(postComment)
+      .then(comment => {
+        this.postRepository.findById(id).then(post => {
+          this.postRepository.updateById(id, {comments: post.comments + 1});
+        });
+        return comment;
+      });
   }
 
   @patch('/posts/{id}/postComments', {
@@ -110,7 +115,8 @@ export class PostPostCommentController {
       },
     })
     postComment: Partial<PostComment>,
-    @param.query.object('where', getWhereSchemaFor(PostComment)) where?: Where<PostComment>,
+    @param.query.object('where', getWhereSchemaFor(PostComment))
+    where?: Where<PostComment>,
   ): Promise<Count> {
     return this.postRepository.postComments(id).patch(postComment, where);
   }
@@ -125,8 +131,19 @@ export class PostPostCommentController {
   })
   async delete(
     @param.path.number('id') id: number,
-    @param.query.object('where', getWhereSchemaFor(PostComment)) where?: Where<PostComment>,
+    @param.query.object('where', getWhereSchemaFor(PostComment))
+    where?: Where<PostComment>,
   ): Promise<Count> {
-    return this.postRepository.postComments(id).delete(where);
+    return this.postRepository
+      .postComments(id)
+      .delete(where)
+      .then(count => {
+        this.postRepository.findById(id).then(post => {
+          this.postRepository.updateById(id, {
+            comments: post.comments - count.count,
+          });
+        });
+        return count;
+      });
   }
 }

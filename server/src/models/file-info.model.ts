@@ -7,7 +7,12 @@ import {Entity, model, property} from '@loopback/repository';
 //     remoting: {sharedMethods: {'*': false, find: true}},
 //   }
 // })
-@model({settings: {description: 'File information'}})
+@model({
+  settings: {
+    description: 'File information',
+    scope: {where: {isDeleted: false}},
+  },
+})
 export class FileInfo extends Entity {
   @property({
     type: 'number',

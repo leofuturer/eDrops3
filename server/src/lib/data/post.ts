@@ -3,7 +3,7 @@ import { Post } from '../../models';
 export const defaultPosts: Partial<Post>[] = [
   {
     id: 1,
-    userId: 'a',
+    userId: 'aaaaaaaa-aaaa-aaaa-bbbb-aaaaaaaaaaaa',
     author: 'community1',
     title: 'Electrodes on EWOD device not actuating',
     content:
@@ -14,7 +14,7 @@ export const defaultPosts: Partial<Post>[] = [
   },
   {
     id: 2,
-    userId: 'a',
+    userId: 'aaaaaaaa-aaaa-aaaa-cccc-aaaaaaaaaaaa',
     author: 'community2',
     title: 'Dispensing not working on EWOD device',
     content:
@@ -25,7 +25,7 @@ export const defaultPosts: Partial<Post>[] = [
   },
   {
     id: 3,
-    userId: 'a',
+    userId: 'aaaaaaaa-aaaa-aaaa-dddd-aaaaaaaaaaaa',
     author: 'community3',
     title: 'What are EWOD devices used for?',
     content:

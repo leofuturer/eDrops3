@@ -26,6 +26,7 @@ function Project() {
 	const [saved, setSaved] = useState<boolean>(false);
 	const [liked, setLiked] = useState<boolean>(false);
 
+	// Fetch current project and set loading to false after fetch
 	useEffect(() => {
 		API.Request(project.replace("id", id as string), "GET", {}, false).then(
 			(res) => {
@@ -35,6 +36,7 @@ function Project() {
 		);
 	}, [id]);
 
+	// Check if project is saved initially
 	useEffect(() => {
 		if (currentProject.id) {
 			checkReact(
@@ -48,6 +50,7 @@ function Project() {
 		}
 	}, [currentProject]);
 
+	// Check if project is liked initially
 	useEffect(() => {
 		if (currentProject.id) {
 			checkReact(
@@ -84,7 +87,12 @@ function Project() {
 			Cookies.get("userId") as string,
 			currentProject.id as number
 		)
-			.then((res: boolean) => setLiked(res))
+			.then((res: boolean) => {
+				setLiked(res);
+				currentProject.likes = res
+					? currentProject.likes + 1
+					: currentProject.likes - 1;
+			})
 			.catch((err: AxiosError) => {
 				if (err.message === "No access token found") {
 					navigate("/login");

@@ -18,12 +18,12 @@ import {
 } from "@heroicons/react/solid";
 import ProfileInfo from "../components/profile/ProfileInfo";
 import ProfileEdit from "../components/profile/ProfileEdit";
-import { PostType, ProjectType, UserProfile } from "../lib/types";
+import { PostType, ProjectType, UserProfileType } from "../lib/types";
 import ProjectPreview from "../components/project/ProjectPreview";
 import PostPreview from "../components/forum/PostPreview";
 
 function Profile(): JSX.Element {
-	const [user, setUser] = useState<UserProfile>({} as UserProfile);
+	const [user, setUser] = useState<UserProfileType>({} as UserProfileType);
 	const [feedData, setFeedData] = useState<PostType[] | ProjectType[]>([]);
 	const [feed, setFeed] = useState<"Projects" | "Questions">("Projects");
 	const [feedType, setFeedType] = useState<"Activity" | "Saved">("Activity");

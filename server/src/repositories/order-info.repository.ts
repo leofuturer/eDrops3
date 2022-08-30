@@ -14,7 +14,6 @@ import {
   OrderInfoRelations,
   OrderProduct,
 } from '../models';
-import {AccessTokenRepository} from './access-token.repository';
 import {OrderChipRepository} from './order-chip.repository';
 import {OrderProductRepository} from './order-product.repository';
 import {UserRepository} from './user.repository';
@@ -40,8 +39,6 @@ export class OrderInfoRepository extends DefaultCrudRepository<
     protected orderProductRepositoryGetter: Getter<OrderProductRepository>,
     @repository.getter('OrderChipRepository')
     protected orderChipRepositoryGetter: Getter<OrderChipRepository>,
-    @repository.getter('AccessTokenRepository')
-    private accessTokenRepositoryGetter: Getter<AccessTokenRepository>,
     @repository.getter('UserRepository')
     private userRepositoryGetter: Getter<UserRepository>,
   ) {

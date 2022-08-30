@@ -30,6 +30,7 @@ function Post() {
 	const [newComment, setNewComment] = useState<string>("");
 	const [comments, setComments] = useState<CommentType[]>([]);
 
+	// Fetch current post and set loading to false after fetch
 	useEffect(() => {
 		API.Request(post.replace("id", id as string), "GET", {}, false).then(
 			(res) => {
@@ -39,6 +40,7 @@ function Post() {
 		);
 	}, [id]);
 
+	// Fetch comments and sort based on time
 	useEffect(() => {
 		API.Request(
 			postComments.replace("id", id as string),
@@ -54,6 +56,7 @@ function Post() {
 		});
 	}, [id, newComment]);
 
+	// Check if post is saved initially
 	useEffect(() => {
 		if (currentPost.id) {
 			checkReact(
@@ -61,31 +64,38 @@ function Post() {
 				"Save",
 				Cookies.get("userId") as string,
 				currentPost.id
-			)
-				.then((res: boolean) => {
-					setSaved(res);
-				})
-				.catch((err: AxiosError) => {
-					if (err.response?.status === 401) {
-						// navigate("/login");
-					}
-					// console.log(err);
-				});
-		}
-	}, [currentPost]);
-
-	useEffect(() => {
-		if (currentPost.id) {
-			API.Request(
-				commentCount.replace("id", currentPost?.id.toString()),
-				"GET",
-				{},
-				false
-			).then((res) => {
-				console.log(res);
+			).then((res: boolean) => {
+				setSaved(res);
 			});
 		}
 	}, [currentPost]);
+
+	// Check if post is liked initially
+	useEffect(() => {
+		if (currentPost.id) {
+			checkReact(
+				"Post",
+				"Like",
+				Cookies.get("userId") as string,
+				currentPost.id
+			).then((res: boolean) => {
+				setLiked(res);
+			});
+		}
+	}, [currentPost]);
+
+	// useEffect(() => {
+	// 	if (currentPost.id) {
+	// 		API.Request(
+	// 			commentCount.replace("id", currentPost?.id.toString()),
+	// 			"GET",
+	// 			{},
+	// 			false
+	// 		).then((res) => {
+	// 			console.log(res);
+	// 		});
+	// 	}
+	// }, [currentPost]);
 
 	function handleSave() {
 		react(
@@ -110,7 +120,12 @@ function Post() {
 			Cookies.get("userId") as string,
 			currentPost.id as number
 		)
-			.then((res: boolean) => setLiked(res))
+			.then((res: boolean) => {
+				setLiked(res);
+				currentPost.likes = res
+					? currentPost.likes + 1
+					: currentPost.likes - 1;
+			})
 			.catch((err: AxiosError) => {
 				if (err.response?.status === 401) {
 					navigate("/login");
@@ -135,6 +150,7 @@ function Post() {
 		)
 			.then((res) => {
 				setNewComment("");
+				currentPost.comments = currentPost.comments + 1;
 			})
 			.catch((err: AxiosError) => {
 				if (err.response?.status === 401) {
@@ -204,7 +220,7 @@ function Post() {
 						<div className="flex flex-row space-x-2 border-b-2 border-black pb-2">
 							<h3 className="text-xl">Comments</h3>
 							<ChatAlt2Icon className="w-6 h-6" />
-							<p className="text-md"></p>
+							<p className="text-md">{currentPost?.comments}</p>
 						</div>
 						{expanded && (
 							<div
