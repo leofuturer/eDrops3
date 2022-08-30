@@ -1,8 +1,8 @@
 import { PencilIcon, UserCircleIcon } from "@heroicons/react/solid";
 import React from "react";
-import { UserProfile } from "../../lib/types";
+import { UserProfileType } from "../../lib/types";
 
-function ProfileEdit({ user }: { user: UserProfile }) {
+function ProfileEdit({ user }: { user: UserProfileType }) {
 	return (
 		<>
 			{user?.image ? (

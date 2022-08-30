@@ -1,14 +1,14 @@
 import Cookies from "js-cookie";
 import API from "../../api/api";
 import React, { useEffect, useState } from "react";
-import { UserProfile } from "../../lib/types";
+import { UserProfileType } from "../../lib/types";
 import { userBaseFind } from "../../api/serverConfig";
 import { UserCircleIcon } from "@heroicons/react/solid";
 import _ from "lodash";
 import { NavLink } from "react-router-dom";
 
 function ProfilePreview() {
-	const [user, setUser] = useState<UserProfile>({} as UserProfile);
+	const [user, setUser] = useState<UserProfileType>({} as UserProfileType);
 	const [isUser, setIsUser] = useState(false);
 
 	useEffect(() => {

@@ -2,6 +2,7 @@ import { FoundryWorker } from '../../models';
 
 export const defaultFoundryWorkers: Partial<FoundryWorker>[] = [
   {
+    id: 'aaaaaaaa-aaaa-bbbb-aaaa-aaaaaaaaaaaa',
     street: '1400 Midware Ave',
     streetLine2: 'Apt 216',
     firstName: 'Leo',
@@ -18,6 +19,7 @@ export const defaultFoundryWorkers: Partial<FoundryWorker>[] = [
     emailVerified: true,
   },
   {
+    id: 'aaaaaaaa-aaaa-cccc-aaaa-aaaaaaaaaaab',
     street: '1O090 Haton Ave',
     streetLine2: 'Apt 248',
     firstName: 'Sarah',
@@ -34,6 +36,7 @@ export const defaultFoundryWorkers: Partial<FoundryWorker>[] = [
     emailVerified: false,
   },
   {
+    id: 'aaaaaaaa-aaaa-dddd-aaaa-aaaaaaaaaaac',
     street: '330 De Neve Drive',
     streetLine2: '',
     firstName: 'edrops',
@@ -50,6 +53,7 @@ export const defaultFoundryWorkers: Partial<FoundryWorker>[] = [
     emailVerified: true,
   },
   {
+    id: 'aaaaaaaa-aaaa-eeee-aaaa-aaaaaaaaaaad',
     street: '330 De Neve Drive',
     streetLine2: '',
     firstName: 'edrops',
@@ -66,6 +70,7 @@ export const defaultFoundryWorkers: Partial<FoundryWorker>[] = [
     emailVerified: true,
   },
   {
+    id: 'aaaaaaaa-aaaa-ffff-aaaa-aaaaaaaaaaae',
     street: '330 De Neve Drive',
     streetLine2: '',
     firstName: 'edrops',

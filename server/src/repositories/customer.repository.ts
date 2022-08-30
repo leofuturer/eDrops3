@@ -1,39 +1,39 @@
-import { Getter, inject } from '@loopback/core';
+import {Getter, inject} from '@loopback/core';
 import {
   BelongsToAccessor,
   DefaultCrudRepository,
   HasManyRepositoryFactory,
-  repository
+  repository,
 } from '@loopback/repository';
-import { HttpErrors, Request, Response } from '@loopback/rest';
+import {HttpErrors, Request, Response} from '@loopback/rest';
 import AWS from 'aws-sdk';
-import { genSalt, hash } from 'bcryptjs';
-import { createHash } from 'crypto';
+import {genSalt, hash} from 'bcryptjs';
+import {createHash} from 'crypto';
 import ejs from 'ejs';
 import path from 'path';
-import { MysqlDsDataSource } from '../datasources';
+import {MysqlDsDataSource} from '../datasources';
 import {
   EMAIL_HOSTNAME,
   EMAIL_PORT,
-  EMAIL_SENDER
+  EMAIL_SENDER,
 } from '../lib/constants/emailConstants';
-import { calculate } from '../lib/toolbox/calculate';
+import {calculate} from '../lib/toolbox/calculate';
 import log from '../lib/toolbox/log';
-import { verifyHTML } from '../lib/views/verify';
+import {verifyHTML} from '../lib/views/verify';
 import {
   Customer,
   CustomerAddress,
   CustomerRelations,
   FileInfo,
   OrderInfo,
-  User
+  User,
 } from '../models';
-import { STORAGE_DIRECTORY } from '../services';
+import {STORAGE_DIRECTORY} from '../services';
 import SendGrid from '../services/send-grid.service';
-import { CustomerAddressRepository } from './customer-address.repository';
-import { FileInfoRepository } from './file-info.repository';
-import { OrderInfoRepository } from './order-info.repository';
-import { UserRepository } from './user.repository';
+import {CustomerAddressRepository} from './customer-address.repository';
+import {FileInfoRepository} from './file-info.repository';
+import {OrderInfoRepository} from './order-info.repository';
+import {UserRepository} from './user.repository';
 
 const CONTAINER_NAME = process.env.S3_BUCKET_NAME ?? 'edrop-v2-files';
 
@@ -114,8 +114,15 @@ export class CustomerRepository extends DefaultCrudRepository<
     this.s3 = new AWS.S3();
   }
 
+  /**
+   * Create a new customer and its associated user instance
+   * @param customer      Customer to be created
+   * @param createAddress Whether to create a default address for the customer (mainly used for initial seeding)
+   * @returns             Created customer instance
+   */
   async createCustomer(
     customer: Omit<Customer & CustomerAddress, 'id'>,
+    createAddress: boolean = true,
   ): Promise<Customer> {
     const hashedPassword = await hash(customer.password, await genSalt());
     const userData: Omit<User, 'id'> = {
@@ -142,26 +149,28 @@ export class CustomerRepository extends DefaultCrudRepository<
     const customerInstance = await this.create(customerData).catch(err => {
       throw new HttpErrors.InternalServerError(err.message);
     });
-    const customerAddressData: Omit<CustomerAddress, 'id'> = {
-      street: customer.street ?? 'Not provided during signup',
-      streetLine2: customer.streetLine2 ?? 'Not provided during signup',
-      country: customer.country ?? 'Not provided during signup',
-      state: customer.state ?? 'Not provided during signup',
-      city: customer.city ?? 'Not provided during signup',
-      zipCode: customer.zipCode ?? 'Not provided during signup',
-      isDefault: customer.isDefault ?? true,
-    };
-    log.info('Customer instance created, now associating address with it');
-    this.customerAddresses(customerInstance.id)
-      .create(customerAddressData)
-      .then(() => {
-        this.sendVerificationEmail(customerInstance);
-      })
-      .catch(err => {
-        // roll back the customer creation
-        this.deleteById(customerInstance?.id);
-        console.error(err);
-      });
+    if (createAddress) {
+      const customerAddressData: Omit<CustomerAddress, 'id'> = {
+        street: customer.street ?? 'Not provided during signup',
+        streetLine2: customer.streetLine2 ?? 'Not provided during signup',
+        country: customer.country ?? 'Not provided during signup',
+        state: customer.state ?? 'Not provided during signup',
+        city: customer.city ?? 'Not provided during signup',
+        zipCode: customer.zipCode ?? 'Not provided during signup',
+        isDefault: customer.isDefault ?? true,
+      };
+      log.info('Customer instance created, now associating address with it');
+      this.customerAddresses(customerInstance.id)
+        .create(customerAddressData)
+        .then(() => {
+          this.sendVerificationEmail(customerInstance);
+        })
+        .catch(err => {
+          // roll back the customer creation
+          this.deleteById(customerInstance?.id);
+          console.error(err);
+        });
+    }
     return customerInstance;
   }
 

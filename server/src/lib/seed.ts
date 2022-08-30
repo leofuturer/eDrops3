@@ -30,6 +30,7 @@ import {
   defaultPostComments,
   defaultPosts,
   defaultProjects,
+  defaultUsers,
 } from './data/index';
 
 export async function clearDb(this: EdropsBackendApplication): Promise<void> {
@@ -144,18 +145,20 @@ export async function seedDb(this: EdropsBackendApplication): Promise<void> {
     CustomerRepository,
   );
   const customers: Customer[] = await Promise.all(
-    defaultCustomers.map(customer => customerRepo.createCustomer(customer)),
+    defaultCustomers.map(customer =>
+      customerRepo.createCustomer(customer, false),
+    ),
   );
 
   /** Seed CustomerAddress table **/
   const customerAddressRepo: CustomerAddressRepository =
     await this.getRepository(CustomerAddressRepository);
   const customerAddresses: CustomerAddress[] = await Promise.all(
-    defaultCustomerAddresses.map((customerAddress, index) => {
-      return customerRepo
-        .customerAddresses(customers[index % 2].id)
-        .create(customerAddress);
-    }),
+    defaultCustomerAddresses.map(customerAddress =>
+      customerRepo
+        .customerAddresses(customerAddress.customerId)
+        .create(customerAddress),
+    ),
   );
 
   /** Seed FoundryWorker table **/
@@ -166,6 +169,12 @@ export async function seedDb(this: EdropsBackendApplication): Promise<void> {
     defaultFoundryWorkers.map(foundryWorker =>
       foundryWorkerRepo.createFoundryWorker(foundryWorker),
     ),
+  );
+
+  /** Seed User table **/
+  const userRepo: UserRepository = await this.getRepository(UserRepository);
+  const users: User[] = await Promise.all(
+    defaultUsers.map(user => userRepo.create(user)),
   );
 
   /** Seed Post table **/
@@ -179,12 +188,8 @@ export async function seedDb(this: EdropsBackendApplication): Promise<void> {
     PostCommentRepository,
   );
   const postComments: PostComment[] = await Promise.all(
-    defaultPostComments.map((postComment, index) =>
-      postRepo.postComments(index).create({
-        ...postComment,
-        author: customers[index % 2].username,
-        userId: customers[index % 2].id,
-      }),
+    defaultPostComments.map(postComment =>
+      postRepo.postComments(postComment.postId).create(postComment),
     ),
   );
 

@@ -2,6 +2,7 @@ import { Project } from '../../models';
 
 export const defaultProjects: Partial<Project>[] = [
   {
+    id: 1,
     author: 'community1',
     title: 'My first functional EWOD device!',
     content:
@@ -10,6 +11,7 @@ export const defaultProjects: Partial<Project>[] = [
     likes: 0,
   },
   {
+    id: 2,
     author: 'community2',
     title: 'OpenDrop demonstration',
     content:
