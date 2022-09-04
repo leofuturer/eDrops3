@@ -222,4 +222,18 @@ export class FoundryWorkerController {
         return foundryWorker?.id as string;
       });
   }
+
+  @get('/foundryWorkers/{id}/getWorkerName')
+  @response(200, {
+    description: 'FoundryWorker GET WORKER NAME success',
+  })
+  async getWorkerName(
+    @param.path.string('id') id: string,
+  ): Promise<string> {
+    return this.foundryWorkerRepository
+      .findById(id)
+      .then(foundryWorker => {
+        return `${foundryWorker?.firstName} ${foundryWorker?.lastName}`;
+      });
+  }
 }

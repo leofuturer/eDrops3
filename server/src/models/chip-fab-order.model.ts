@@ -6,12 +6,7 @@ export class ChipFabOrder extends OrderChip {
   @property({
     type: 'string',
   })
-  customerName?: string;
-
-  @property({
-    type: 'string',
-  })
-  workerName?: string;
+  customerpName?: string;
 
   // Define well-known properties here
 

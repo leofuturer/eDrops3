@@ -224,6 +224,22 @@ export class CustomerController {
     return this.customerRepository.getCustomerCart(id);
   }
 
+  @get('/customers/{id}/getCustomerName')
+  @response(200, {
+    description: 'Customer cart',
+    content: {
+      'application/json': {
+        schema: {},
+      },
+    },
+  })
+  async getCustomerName(
+    @param.path.string('id') id: string,
+  ): Promise<string> {
+    const customer = await this.customerRepository.findById(id);
+    return `${customer.firstName} ${customer.lastName}`;
+  }
+
   @post('/customers/credsTaken')
   @response(200, {
     description: 'Check if creds are taken',
