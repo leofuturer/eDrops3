@@ -1,40 +1,39 @@
-import {Getter, inject} from '@loopback/core';
+import { Getter, inject } from '@loopback/core';
 import {
   BelongsToAccessor,
   DefaultCrudRepository,
   HasManyRepositoryFactory,
-  repository,
+  repository
 } from '@loopback/repository';
-import {HttpErrors} from '@loopback/rest';
-import {genSalt, hash} from 'bcryptjs';
-import {createHash} from 'crypto';
+import { HttpErrors, Request, Response } from '@loopback/rest';
+import AWS from 'aws-sdk';
+import { genSalt, hash } from 'bcryptjs';
+import { createHash } from 'crypto';
 import ejs from 'ejs';
-import {Request, Response} from '@loopback/rest';
-import {MysqlDsDataSource} from '../datasources';
+import path from 'path';
+import { MysqlDsDataSource } from '../datasources';
 import {
   EMAIL_HOSTNAME,
   EMAIL_PORT,
-  EMAIL_SENDER,
+  EMAIL_SENDER
 } from '../lib/constants/emailConstants';
+import { calculate } from '../lib/toolbox/calculate';
 import log from '../lib/toolbox/log';
-import {verifyHTML} from '../lib/views/verify';
+import { verifyHTML } from '../lib/views/verify';
 import {
   Customer,
   CustomerAddress,
   CustomerRelations,
   FileInfo,
   OrderInfo,
-  User,
+  User
 } from '../models';
+import { STORAGE_DIRECTORY } from '../services';
 import SendGrid from '../services/send-grid.service';
-import {CustomerAddressRepository} from './customer-address.repository';
-import {FileInfoRepository} from './file-info.repository';
-import {OrderInfoRepository} from './order-info.repository';
-import {UserRepository} from './user.repository';
-import {calculate} from '../lib/toolbox/calculate';
-import {STORAGE_DIRECTORY} from '../services';
-import path from 'path';
-import AWS from 'aws-sdk';
+import { CustomerAddressRepository } from './customer-address.repository';
+import { FileInfoRepository } from './file-info.repository';
+import { OrderInfoRepository } from './order-info.repository';
+import { UserRepository } from './user.repository';
 
 const CONTAINER_NAME = process.env.S3_BUCKET_NAME ?? 'edrop-v2-files';
 
@@ -433,7 +432,7 @@ export class CustomerRepository extends DefaultCrudRepository<
     response.writeHead(200, {
       'Content-Type': file.ContentType,
       'Content-Disposition': file.ContentDisposition,
-    })
+    });
     response.end(file.Body);
     return response;
   }

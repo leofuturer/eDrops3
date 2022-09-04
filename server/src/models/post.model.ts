@@ -1,23 +1,23 @@
-import {Entity, model, property} from '@loopback/repository';
+import {Entity, model, property, hasMany} from '@loopback/repository';
+import {PostComment} from './post-comment.model';
 
 @model()
-export class Forum extends Entity {
+export class Post extends Entity {
   @property({
     type: 'number',
-    id: true,
+    id: 1,
     generated: true,
   })
   id?: number;
 
   @property({
-    type: 'number',
-    required: true,
-  })
-  parentId: number;
-
-  @property({
     type: 'string',
     required: true,
+    mysql: {
+      index: {
+        kind: 'FULLTEXT'
+      }
+    },
   })
   author: string;
 
@@ -48,7 +48,7 @@ export class Forum extends Entity {
     type: 'date',
     required: true,
   })
-  datetime: string;
+  datetime: Date;
 
   @property({
     type: 'number',
@@ -56,13 +56,21 @@ export class Forum extends Entity {
   })
   likes: number;
 
-  constructor(data?: Partial<Forum>) {
+  @property({
+    type: 'string',
+  })
+  userId: string;
+
+  @hasMany(() => PostComment)
+  postComments: PostComment[];
+
+  constructor(data?: Partial<Post>) {
     super(data);
   }
 }
 
-export interface ForumRelations {
+export interface PostRelations {
   // describe navigational properties here
 }
 
-export type ForumWithRelations = Forum & ForumRelations;
+export type PostWithRelations = Post & PostRelations;

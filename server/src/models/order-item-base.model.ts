@@ -5,7 +5,6 @@ import {Entity, model, property} from '@loopback/repository';
     validateUpsert: true,
     plural: 'orderItemBase',
     idInjection: true,
-    mysql: {table: 'orderItemBase'}
   }
 })
 export class OrderItemBase extends Entity {

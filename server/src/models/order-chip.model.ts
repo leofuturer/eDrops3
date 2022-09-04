@@ -14,7 +14,6 @@ import {FoundryWorker} from './foundry-worker.model';
         'prototype.replaceById': true
       }
     },
-    mysql: {table: 'orderChip'}
   }
 })
 export class OrderChip extends OrderItemBase {
