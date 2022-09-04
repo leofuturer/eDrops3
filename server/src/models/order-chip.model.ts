@@ -42,6 +42,18 @@ export class OrderChip extends OrderItemBase {
     default: 'Fabrication request received',
   })
   status: string;
+
+  @property({
+    type: 'string',
+    required: false,
+  })
+  workerName: string;
+
+  @property({
+    type: 'string',
+    required: false,
+  })
+  customerName: string;
   
   @belongsTo(() => FileInfo)
   fileInfoId: number;

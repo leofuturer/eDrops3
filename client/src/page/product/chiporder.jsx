@@ -17,7 +17,7 @@ import './chiporder.css';
 import Cookies from 'js-cookie';
 import {
   getCustomerCart, manipulateCustomerOrders, addOrderChipToCart,
-  getChipOrders, getWorkerId,
+  getChipOrders, getWorkerId, customerGetName
 } from '../../api/serverConfig';
 import API from '../../api/api';
 import {
@@ -44,6 +44,10 @@ class ChipOrder extends React.Component {
       GLASSID: 0,
       PAPERID: 0,
       PCBID: 0,
+      GLASSNAME: 'edrop glassfab',
+      PAPERNAME: 'edrop paperfab',
+      PCBNAME: 'edrop pcbfab',
+      customerName: '',
     };
     this.shopifyClient = null;
     this.setCurrentIndex = this.setCurrentIndex.bind(this);
@@ -75,6 +79,17 @@ class ChipOrder extends React.Component {
       .catch((err) => {
         console.log(err);
       });
+
+    API.Request(getWorkerId, 'GET', { username: PCBFW }, true, undefined, true)
+      .then((res) => {
+        this.setState({
+          PCBID: res.data,
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+    
     API.Request(getWorkerId, 'GET', { username: PCBFW }, true, undefined, true)
       .then((res) => {
         this.setState({
@@ -85,6 +100,18 @@ class ChipOrder extends React.Component {
         console.log(err);
       });
 
+    let url = customerGetName.replace('id', Cookies.get('userId'));
+    API.Request(url, 'GET', {}, true)
+      .then((res) => {
+        console.log(res);
+        this.setState({
+          customerName: res.data,
+        });
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+
     if (Cookies.get('access_token') === undefined) {
       alert('Login required for this page');
       this.props.history.push('/login');
@@ -94,7 +121,7 @@ class ChipOrder extends React.Component {
     } else {
       const _this = this;
       // TODO: instead of building client, use Shopify.getInstance().getPrivateValue()
-      let url = getCustomerCart.replace('id', Cookies.get('userId'));
+      url = getCustomerCart.replace('id', Cookies.get('userId'));
       _this.setState({
         fileInfo: this.props.location.state.fileInfo,
       });
@@ -263,6 +290,21 @@ class ChipOrder extends React.Component {
                 default:
               }
 
+              // select default foundry worker name
+              let materialSpecificWorkerName = '';
+              switch (this.state.materialVal) {
+                case 'ITO Glass':
+                  materialSpecificWorkerName = this.state.GLASSNAME;
+                  break;
+                case 'Paper':
+                  materialSpecificWorkerName = this.state.PAPERNAME;
+                  break;
+                case 'PCB':
+                  materialSpecificWorkerName = this.state.PCBNAME;
+                  break;
+                default:
+              }
+
               // create our own chip order here...
               const data = {
                 orderInfoId: _this.state.orderInfoId,
@@ -279,6 +321,8 @@ class ChipOrder extends React.Component {
                 lastUpdated: new Date().toISOString(),
                 fileInfoId: this.state.fileInfo.id,
                 workerId: materialSpecificWorkerId,
+                workerName: materialSpecificWorkerName,
+                customerName: this.state.customerName,
               };
               // console.log(data);
               // console.log(res);
@@ -286,8 +330,9 @@ class ChipOrder extends React.Component {
               API.Request(url, 'POST', data, true)
                 .then((res) => {
                   url = getChipOrders.replace('id', _this.state.orderInfoId);
-                  API.Request(url, 'GET', {}, true)
+                  API.Request(url, 'GET', {}, true, undefined, true)
                     .then((res) => {
+                      console.log('we good');
                       const quantity = res.data.reduce((prev, curr) => prev + curr.quantity, 0);
                       this.context.setChipQuantity(quantity);
                       this.context.setCartQuantity();
@@ -295,6 +340,7 @@ class ChipOrder extends React.Component {
                     })
                     .catch((err) => {
                       console.error(err);
+                      console.log('get chip order here');
                     });
                   this.setState({
                     isLoading: false,

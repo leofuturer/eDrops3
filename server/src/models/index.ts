@@ -17,4 +17,3 @@ export * from './file-info.model';
 export * from './order-info.model';
 export * from './order-chip.model';
 export * from './order-product.model';
-export * from './chip-fab-order.model';

@@ -35,9 +35,13 @@ export class OrderInfoOrderChipController {
   })
   async find(
     @param.path.number('id') id: number,
-    @param.query.object('filter') filter?: Filter<OrderChip>,
+    // @param.query.object('filter') filter?: Filter<OrderChip>,
   ): Promise<OrderChip[]> {
-    return this.orderInfoRepository.orderChips(id).find(filter);
+    let orderInfo = await this.orderInfoRepository.findById(id);
+    console.log(orderInfo);
+    console.log('this is new');
+    // return orderInfo.orderChips;
+    return [];
   }
 
   @authenticate('jwt')
@@ -73,12 +77,14 @@ export class OrderInfoOrderChipController {
         },
       })
       .then(orderChips => {
+        console.log('orderchips stuff');
         console.log(orderChips);
         if (orderChips.length > 1) {
           throw new HttpErrors.UnprocessableEntity(
             'More than one entry for product',
           );
         } else if (orderChips.length === 0) {
+          console.log('0 here');
           this.orderInfoRepository
             .orderChips(id)
             .create(orderChip)
@@ -87,6 +93,9 @@ export class OrderInfoOrderChipController {
                 `Created orderChip with id ${orderChipInstance.id}, product ${orderChipInstance.name}`,
               );
               return orderChipInstance;
+            })
+            .catch(err => {
+              console.log(err);
             });
         } else if (orderChips.length === 1) {
           this.orderInfoRepository.updateById(orderChips[0].id, {

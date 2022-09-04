@@ -11,7 +11,7 @@ import {
   RestBindings
 } from '@loopback/rest';
 import { SecurityBindings, UserProfile } from '@loopback/security';
-import { ChipFabOrder, OrderChip, OrderInfo } from '../models';
+import { OrderChip } from '../models';
 import { FoundryWorkerRepository, OrderChipRepository, OrderInfoRepository } from '../repositories';
 
 export class FoundryWorkerOrderChipController {
@@ -42,23 +42,25 @@ export class FoundryWorkerOrderChipController {
   async find(
     @param.path.string('id') id: string,
     @param.query.object('filter') filter?: Filter<OrderChip>,
-  ): Promise<ChipFabOrder[]> {
-    let allOrderChips: ChipFabOrder[] = [];
-    const foundryWorker = await this.foundryWorkerRepository.findById(id);
-    const orderChips = await this.foundryWorkerRepository.orderChips(id).find(filter);
-    const promises = orderChips.map(orderChip => {
-      return this.orderInfoRepository.findById(orderChip.orderInfoId);
-    })
-    return Promise.all<OrderInfo>(promises).then(orderInfoArr => {
-      orderInfoArr.map((orderInfo, index) => {
-        let chipFabOrder = new ChipFabOrder(orderChips[index]);
-        chipFabOrder.customerName = orderInfo.sa_name;
-        chipFabOrder.workerName = `${foundryWorker.firstName} ${foundryWorker.lastName}`;
-        allOrderChips.push(chipFabOrder);
-      }) 
+  ): Promise<OrderChip[]> {
+    return await this.foundryWorkerRepository.orderChips(id).find(filter);
 
-      return allOrderChips;
-    })
+    // let allOrderChips: ChipFabOrder[] = [];
+    // const foundryWorker = await this.foundryWorkerRepository.findById(id);
+    // const orderChips = await this.foundryWorkerRepository.orderChips(id).find(filter);
+    // const promises = orderChips.map(orderChip => {
+    //   return this.orderInfoRepository.findById(orderChip.orderInfoId);
+    // })
+    // return Promise.all<OrderInfo>(promises).then(orderInfoArr => {
+    //   orderInfoArr.map((orderInfo, index) => {
+    //     let chipFabOrder = new ChipFabOrder(orderChips[index]);
+    //     chipFabOrder.customerName = orderInfo.sa_name;
+    //     chipFabOrder.workerName = `${foundryWorker.firstName} ${foundryWorker.lastName}`;
+    //     allOrderChips.push(chipFabOrder);
+    //   }) 
+
+    //   return allOrderChips;
+    // })
   }
 
   @get('/foundryWorkers/{id}/downloadFile')
