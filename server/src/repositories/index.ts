@@ -18,3 +18,4 @@ export * from './comment-link.repository';
 export * from './liked-post.repository';
 export * from './liked-project.repository';
 export * from './user-follower.repository';
+export * from './project-file.repository';

@@ -15,6 +15,7 @@ export const userLikedPosts = `${ApiRootUrl}/users/id/likedPosts`;
 
 export const projects = `${ApiRootUrl}/projects`;
 export const project = `${ApiRootUrl}/projects/id`;
+export const projectFiles = `${ApiRootUrl}/projects/id/projectFiles`;
 export const featuredProjects = `${ApiRootUrl}/projects/featured`;
 export const userProjects = `${ApiRootUrl}/users/id/projects`;
 export const userSavedProjects = `${ApiRootUrl}/users/id/savedProjects`;
@@ -27,6 +28,6 @@ export const updateUserBaseProfile = `${ApiRootUrl}/users/id`;
 export const userLogin = `${ApiRootUrl}/users/login`;
 export const userLogout = `${ApiRootUrl}/users/logout`;
 export const userForgetPass = `${ApiRootUrl}/users/reset`;
-export const userChangePass = `${ApiRootUrl}/users/change-password`;
-export const userResetPass = `${ApiRootUrl}/users/reset-password`;
+export const userChangePass = `${ApiRootUrl}/users/changePassword`;
+export const userResetPass = `${ApiRootUrl}/users/resetPassword`;
 export const userCredsTaken = `${ApiRootUrl}/users/credsTaken`;
