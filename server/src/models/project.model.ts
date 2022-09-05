@@ -1,4 +1,5 @@
-import {Entity, model, property} from '@loopback/repository';
+import {Entity, model, property, hasMany} from '@loopback/repository';
+import {ProjectFile} from './project-file.model';
 
 @model({
   settings: {
@@ -64,6 +65,9 @@ export class Project extends Entity {
     type: 'string',
   })
   userId: string;
+
+  @hasMany(() => ProjectFile)
+  projectFiles: ProjectFile[];
 
   constructor(data?: Partial<Project>) {
     super(data);

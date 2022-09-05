@@ -19,3 +19,4 @@ export * from './liked-post.model';
 export * from './liked-project.model';
 export * from './user-follower.model';
 export * from './chip-fab-order.model';
+export * from './project-file.model';
