@@ -125,7 +125,8 @@ export class CustomerRepository extends DefaultCrudRepository<
     createAddress: boolean = true,
   ): Promise<Customer> {
     const hashedPassword = await hash(customer.password, await genSalt());
-    const userData: Omit<User, 'id'> = {
+    const userData: Partial<User> = {
+      id: customer.id,
       realm: customer.realm,
       username: customer.username,
       password: hashedPassword,

@@ -105,9 +105,14 @@ export class User extends Entity {
   likedProjects: Project[];
 
   @hasMany(() => User, {
-    through: {model: () => UserFollower, keyTo: 'followerId'},
+    through: {
+      model: () => UserFollower,
+      keyFrom: 'userId',
+      keyTo: 'followerId',
+    },
   })
   followers: User[];
+
   @hasMany(() => Project)
   projects: Project[];
 

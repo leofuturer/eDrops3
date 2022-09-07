@@ -75,8 +75,7 @@ export class ProjectProjectFileController {
             process.env.NODE_ENV !== 'production'
               ? await this.projectRepository.uploadFileDisk(
                   request,
-                  response,
-                  id,
+                  response
                 )
               : await this.projectRepository.uploadFileS3(
                   request,

@@ -2,7 +2,7 @@ import { PaperClipIcon } from "@heroicons/react/outline";
 import { XIcon } from "@heroicons/react/solid";
 import React, { useCallback, useState } from "react";
 import { useDropzone, FileWithPath, FileError } from "react-dropzone";
-import { uploadFiles } from "../../lib/file";
+import { uploadFiles } from "../../api/file";
 
 function FileUpload({ handleClose }: { handleClose: () => void }) {
 	const [files, setFiles] = useState<FileWithPath[]>([]);

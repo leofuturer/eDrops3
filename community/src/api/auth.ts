@@ -1,13 +1,13 @@
 import Cookies from "js-cookie";
-import API from "../api/api";
+import API from "./api";
 import {
 	userCredsTaken,
 	userLogin,
-	userSignUp,
-} from "../api/serverConfig";
-import { SignupInfo } from "./types";
+	users,
+} from "./serverConfig";
+import { SignupInfo } from "../lib/types";
 import validate from "validate.js";
-import { signUpConstraints } from "./formConstraints";
+import { signUpConstraints } from "../lib/formConstraints";
 
 async function login(username: string, password: string): Promise<void> {
 	let data = {
@@ -56,7 +56,7 @@ async function signup(user: SignupInfo): Promise<void> {
 				throw new Error("Email is taken");
 			}
 			return API.Request(
-				userSignUp,
+				users,
 				"POST",
 				{
 					username: user.username,
@@ -64,7 +64,7 @@ async function signup(user: SignupInfo): Promise<void> {
 					password: user.password,
 				},
 				false
-			);
+			)
 		})
 		.then((res) => {
 			Cookies.set("base_access_token", res.data.token);
