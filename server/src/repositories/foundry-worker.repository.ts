@@ -32,7 +32,8 @@ export class FoundryWorkerRepository extends DefaultCrudRepository<
     foundryWorker: Omit<FoundryWorker & User, 'id'>
   ) : Promise<FoundryWorker> {
     const hashedPassword = await hash(foundryWorker.password, await genSalt())
-    const userData = {
+    const userData: Partial<User> = {
+      id: foundryWorker.id,
       realm: foundryWorker.realm,
       username: foundryWorker.username,
       password: hashedPassword,

@@ -13,7 +13,7 @@ export const defaultCustomers: Partial<Customer>[] = [
     emailVerified: true,
   },
   {
-    id: 'aaaaaaaa-cccc-aaaa-aaaa-aaaaaaaaaaab',
+    id: 'aaaaaaaa-cccc-aaaa-aaaa-aaaaaaaaaaaa',
     firstName: 'John',
     lastName: 'Wang',
     phoneNumber: '3102896978',

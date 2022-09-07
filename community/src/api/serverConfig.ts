@@ -21,10 +21,9 @@ export const userProjects = `${ApiRootUrl}/users/id/projects`;
 export const userSavedProjects = `${ApiRootUrl}/users/id/savedProjects`;
 export const userLikedProjects = `${ApiRootUrl}/users/id/likedProjects`;
 
-export const userSignUp = `${ApiRootUrl}/users`;
-export const userBaseFind = `${ApiRootUrl}/users`;
-export const userBaseDeleteById = `${ApiRootUrl}/users/id`;
-export const updateUserBaseProfile = `${ApiRootUrl}/users/id`;
+export const users = `${ApiRootUrl}/users`;
+export const user = `${ApiRootUrl}/users/id`;
+export const userFollowers = `${ApiRootUrl}/users/id/followers/followerId`;
 export const userLogin = `${ApiRootUrl}/users/login`;
 export const userLogout = `${ApiRootUrl}/users/logout`;
 export const userForgetPass = `${ApiRootUrl}/users/reset`;

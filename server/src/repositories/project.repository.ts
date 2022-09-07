@@ -53,7 +53,6 @@ export class ProjectRepository extends DefaultCrudRepository<
   async uploadFileDisk(
     request: Request,
     response: Response,
-    projectId: number,
   ): Promise<object> {
     const mapper = (f: Express.Multer.File) => ({
       fieldname: f.fieldname,
@@ -92,9 +91,10 @@ export class ProjectRepository extends DefaultCrudRepository<
     );
 
     const fields = request.body;
-    const fileInfo = await this.projectFiles(projectId).create(projectFiles[0]);
+    return {};
+    // const fileInfo = await this.projectFiles(projectId).create(projectFiles[0]);
     // return {files, fields};
-    return {fileInfo, fields};
+    // return {fileInfo, fields};
   }
 
   async uploadFileS3(

@@ -26,5 +26,5 @@ export * from './post-comment-post-comment.controller';
 export * from './post-post-comment.controller';
 export * from './user-liked-post.controller';
 export * from './user-liked-project.controller';
-export * from './user-user.controller';
+export * from './user-follower.controller';
 export * from './project-project-file.controller';
