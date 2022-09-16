@@ -43,7 +43,7 @@ export class PostPostCommentController {
     @param.path.number('id') id: number,
     @param.query.object('filter') filter?: Filter<PostComment>,
   ): Promise<PostComment[]> {
-    return this.postRepository.postComments(id).find(filter);
+    return this.postRepository.postComments(id).find({...filter, where: {top: true}});
   }
 
   @get('/posts/{id}/commentCount', {

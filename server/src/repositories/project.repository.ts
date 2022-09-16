@@ -4,13 +4,17 @@ import {
   repository,
   HasManyRepositoryFactory,
 } from '@loopback/repository';
-import {Request, Response} from '@loopback/rest';
 import {MysqlDsDataSource} from '../datasources';
-import {calculate} from '../lib/toolbox/calculate';
-import {Project, ProjectRelations, ProjectFile} from '../models';
+import {
+  Project,
+  ProjectRelations,
+  ProjectFile,
+  ProjectLink,
+  ProjectComment,
+} from '../models';
+import {ProjectCommentRepository} from './project-comment.repository';
 import {ProjectFileRepository} from './project-file.repository';
-
-const CONTAINER_NAME = process.env.S3_BUCKET_NAME ?? 'edrop-v2-files';
+import {ProjectLinkRepository} from './project-link.repository';
 
 export class ProjectRepository extends DefaultCrudRepository<
   Project,
@@ -22,12 +26,34 @@ export class ProjectRepository extends DefaultCrudRepository<
     typeof Project.prototype.id
   >;
 
+  public readonly projectLinks: HasManyRepositoryFactory<
+    ProjectLink,
+    typeof Project.prototype.id
+  >;
+
+  public readonly projectComments: HasManyRepositoryFactory<
+    ProjectComment,
+    typeof Project.prototype.id
+  >;
+
   constructor(
     @inject('datasources.mysqlDS') dataSource: MysqlDsDataSource,
     @repository.getter('ProjectFileRepository')
     protected projectFileRepositoryGetter: Getter<ProjectFileRepository>,
+    @repository.getter('ProjectLinkRepository')
+    protected projectLinkRepositoryGetter: Getter<ProjectLinkRepository>,
+    @repository.getter('ProjectCommentRepository')
+    protected projectCommentRepositoryGetter: Getter<ProjectCommentRepository>,
   ) {
     super(Project, dataSource);
+    this.projectLinks = this.createHasManyRepositoryFactoryFor(
+      'projectLinks',
+      projectLinkRepositoryGetter,
+    );
+    this.registerInclusionResolver(
+      'projectLinks',
+      this.projectLinks.inclusionResolver,
+    );
     this.projectFiles = this.createHasManyRepositoryFactoryFor(
       'projectFiles',
       projectFileRepositoryGetter,
@@ -35,6 +61,14 @@ export class ProjectRepository extends DefaultCrudRepository<
     this.registerInclusionResolver(
       'projectFiles',
       this.projectFiles.inclusionResolver,
+    );
+    this.projectComments = this.createHasManyRepositoryFactoryFor(
+      'projectComments',
+      projectCommentRepositoryGetter,
+    );
+    this.registerInclusionResolver(
+      'projectComments',
+      this.projectComments.inclusionResolver,
     );
   }
 
@@ -48,59 +82,5 @@ export class ProjectRepository extends DefaultCrudRepository<
       order: ['likes DESC'],
       limit: 4,
     });
-  }
-
-  async uploadFileDisk(
-    request: Request,
-    response: Response,
-  ): Promise<object> {
-    const mapper = (f: Express.Multer.File) => ({
-      fieldname: f.fieldname,
-      originalname: f.originalname,
-      mimetype: f.mimetype,
-      size: f.size,
-      filename: f.filename,
-    });
-    // Parse multipart/form-data file info from request
-    let files: Partial<Express.Multer.File>[] = [];
-    const uploadedFiles = request.files;
-    // Normalize uploaded files into an array
-    if (Array.isArray(uploadedFiles)) {
-      files = uploadedFiles.map(mapper);
-    } else {
-      for (const filename in uploadedFiles) {
-        files.push(...uploadedFiles[filename].map(mapper));
-      }
-    }
-
-    const projectFiles: Partial<ProjectFile>[] = files.map(
-      (f: Partial<Express.Multer.File>) => {
-        return {
-          uploadTime: calculate.currentTime(),
-          fileName: request.body.newName
-            ? request.body.newName
-            : f.originalname,
-          containerFileName: f.originalname,
-          container: CONTAINER_NAME, // need fix
-          isDeleted: false,
-          isPublic: request.body.isPublic === 'public',
-          fileType: 'dxf',
-          fileSize: calculate.formatBytes(f.size as number, 1),
-        };
-      },
-    );
-
-    const fields = request.body;
-    return {};
-    // const fileInfo = await this.projectFiles(projectId).create(projectFiles[0]);
-    // return {files, fields};
-    // return {fileInfo, fields};
-  }
-
-  async uploadFileS3(
-    request: Request,
-    response: Response,
-  ): Promise<object> {
-    return {};
   }
 }

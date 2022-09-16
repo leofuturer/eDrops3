@@ -1,5 +1,7 @@
 import {Entity, model, property, hasMany} from '@loopback/repository';
+import { ProjectComment } from './project-comment.model';
 import {ProjectFile} from './project-file.model';
+import {ProjectLink} from './project-link.model';
 
 @model({
   settings: {
@@ -62,12 +64,24 @@ export class Project extends Entity {
   likes: number
 
   @property({
+    type: 'number',
+    required: true,
+  })
+  comments: number;
+
+  @property({
     type: 'string',
   })
   userId: string;
 
   @hasMany(() => ProjectFile)
   projectFiles: ProjectFile[];
+
+  @hasMany(() => ProjectLink)
+  projectLinks: ProjectLink[];
+
+  @hasMany(() => ProjectComment)
+  projectComments: ProjectComment[];
 
   constructor(data?: Partial<Project>) {
     super(data);

@@ -1,8 +1,8 @@
 import {Entity, model, property, hasMany} from '@loopback/repository';
-import {PostCommentLink} from './post-comment-link.model';
+import {ProjectCommentLink} from './project-comment-link.model';
 
-@model({settings: {description: 'Post comments', forceId: false}})
-export class PostComment extends Entity {
+@model({settings: {description: 'Project comments', forceId: false}})
+export class ProjectComment extends Entity {
   @property({
     type: 'number',
     id: true,
@@ -46,7 +46,7 @@ export class PostComment extends Entity {
   @property({
     type: 'number',
   })
-  postId?: number;
+  projectId?: number;
 
   @property({
     type: 'boolean',
@@ -55,18 +55,18 @@ export class PostComment extends Entity {
   })
   top: boolean;
 
-  @hasMany(() => PostComment, {
-    through: {model: () => PostCommentLink, keyFrom: 'parentId', keyTo: 'childId'},
+  @hasMany(() => ProjectComment, {
+    through: {model: () => ProjectCommentLink, keyFrom: 'parentId', keyTo: 'childId'},
   })
-  postComments: PostComment[];
+  projectComments: ProjectComment[];
 
-  constructor(data?: Partial<PostComment>) {
+  constructor(data?: Partial<ProjectComment>) {
     super(data);
   }
 }
 
-export interface PostCommentRelations {
+export interface ProjectCommentRelations {
   // describe navigational properties here
 }
 
-export type PostCommentWithRelations = PostComment & PostCommentRelations;
+export type ProjectCommentWithRelations = ProjectComment & ProjectCommentRelations;

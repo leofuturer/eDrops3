@@ -17,8 +17,11 @@ import {
   OrderInfoRepository,
   OrderItemBaseRepository,
   OrderProductRepository,
+  PostCommentLinkRepository,
   PostCommentRepository,
   PostRepository,
+  ProjectCommentLinkRepository,
+  ProjectCommentRepository,
   ProjectRepository,
   UserRepository,
 } from '../repositories';
@@ -125,12 +128,40 @@ export async function clearDb(this: EdropsBackendApplication): Promise<void> {
     1,
   ]);
 
+  /** Clear PostCommentLink table */
+  const postCommentLinkRepo: PostCommentLinkRepository =
+    await this.getRepository(PostCommentLinkRepository);
+  await postCommentLinkRepo.deleteAll();
+  await postCommentLinkRepo.execute(
+    'ALTER TABLE PostCommentLink AUTO_INCREMENT = ?',
+    [1],
+  );
+
   /** Clear Project table **/
   const projectRepo: ProjectRepository = await this.getRepository(
     ProjectRepository,
   );
   await projectRepo.deleteAll();
   await projectRepo.execute('ALTER TABLE Project AUTO_INCREMENT = ?', [1]);
+
+  /** Clear ProjectComment table **/
+  const projectCommentRepo: ProjectCommentRepository = await this.getRepository(
+    ProjectCommentRepository,
+  );
+  await projectCommentRepo.deleteAll();
+  await projectCommentRepo.execute(
+    'ALTER TABLE ProjectComment AUTO_INCREMENT = ?',
+    [1],
+  );
+
+  /** Clear ProjectCommentLink table */
+  const projectCommentLinkRepo: ProjectCommentLinkRepository =
+    await this.getRepository(ProjectCommentLinkRepository);
+  await projectCommentLinkRepo.deleteAll();
+  await projectCommentLinkRepo.execute(
+    'ALTER TABLE ProjectCommentLink AUTO_INCREMENT = ?',
+    [1],
+  );
 }
 
 export async function seedDb(this: EdropsBackendApplication): Promise<void> {
@@ -200,4 +231,12 @@ export async function seedDb(this: EdropsBackendApplication): Promise<void> {
   const projects = await Promise.all(
     defaultProjects.map(project => projectRepo.create(project)),
   );
+
+  /** Seed ProjectComment table **/
+  // const projectCommentRepo: ProjectCommentRepository = await this.getRepository(
+  //   ProjectCommentRepository,
+  // );
+  // const projectComments = await Promise.all(
+  //   defaultProjectComments.map(projectComment => projectCommentRepo.create(projectComment)),
+  // );
 }

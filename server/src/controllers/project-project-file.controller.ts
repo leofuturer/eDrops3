@@ -1,4 +1,4 @@
-import { inject } from '@loopback/core';
+import {inject} from '@loopback/core';
 import {
   Count,
   CountSchema,
@@ -7,6 +7,7 @@ import {
   Where,
 } from '@loopback/repository';
 import {
+  oas,
   del,
   ExpressRequestHandler,
   get,
@@ -20,19 +21,25 @@ import {
   Response,
   RestBindings,
 } from '@loopback/rest';
+import {Project, ProjectFile, User} from '../models';
 import {
-  Project,
-  ProjectFile,
-} from '../models';
-import {ProjectRepository} from '../repositories';
-import { FILE_UPLOAD_SERVICE, STORAGE_DIRECTORY } from '../services';
+  ProjectFileRepository,
+  ProjectRepository,
+  UserRepository,
+} from '../repositories';
+import {FILE_UPLOAD_SERVICE, STORAGE_DIRECTORY} from '../services';
 
 export class ProjectProjectFileController {
   constructor(
-    @repository(ProjectRepository) protected projectRepository: ProjectRepository,
+    @repository(ProjectRepository)
+    protected projectRepository: ProjectRepository,
+    @repository(ProjectFileRepository)
+    protected projectFileRepository: ProjectFileRepository,
+    @repository(UserRepository)
+    protected userRepository: UserRepository,
     @inject(FILE_UPLOAD_SERVICE) private handler: ExpressRequestHandler,
     @inject(STORAGE_DIRECTORY) private storageDirectory: string,
-  ) { }
+  ) {}
 
   @get('/projects/{id}/projectFiles', {
     responses: {
@@ -53,7 +60,7 @@ export class ProjectProjectFileController {
     return this.projectRepository.projectFiles(id).find(filter);
   }
 
-  @post('/projects/{id}/projectFiles', {
+  @post('/users/{id}/projectFiles', {
     responses: {
       '200': {
         description: 'Project model instance',
@@ -62,32 +69,67 @@ export class ProjectProjectFileController {
     },
   })
   async fileUpload(
-    @param.path.number('id') id: typeof Project.prototype.id,
+    @param.path.string('id') id: typeof User.prototype.id,
     @requestBody.file() request: Request,
     @inject(RestBindings.Http.RESPONSE) response: Response,
   ): Promise<object> {
+    const username = await this.userRepository.findById(id).then(user => {
+      return user.username;
+    });
     return new Promise<object>((resolve, reject) => {
       this.handler(request, response, async (err: unknown) => {
         if (err) reject(err);
         else {
-          // console.log(request.files);
-          resolve(
-            process.env.NODE_ENV !== 'production'
-              ? await this.projectRepository.uploadFileDisk(
-                  request,
-                  response
-                )
-              : await this.projectRepository.uploadFileS3(
+          const res =
+            false
+              ? await this.projectFileRepository.uploadFileDisk(
                   request,
                   response,
-                ),
-          );
+                  username as string,
+                  id as string
+                )
+              : await this.projectFileRepository.uploadFileS3(
+                  request,
+                  response,
+                  username as string,
+                  id as string
+                );
+          // console.log(res);
+          resolve(res);
         }
       });
     });
   }
 
-  @patch('/projects/{id}/projectFiles', {
+  @oas.response.file()
+  @get('/users/{id}/projectFiles/{fileId}', {
+    responses: {
+      '200': {
+        description: 'Download a file',
+        content: {
+          'application/json': {
+            schema: {type: 'array', items: getModelSchemaRef(ProjectFile)},
+          },
+        },
+      },
+    },
+  })
+  async downloadFile(
+    @param.path.string('id') id: typeof User.prototype.id,
+    @param.path.number('fileId') fileId: typeof ProjectFile.prototype.id,
+    @inject(RestBindings.Http.RESPONSE) response: Response,
+  ): Promise<Response> {
+    const filename = await this.projectFileRepository
+      .findById(fileId)
+      .then(file => {
+        return file.containerFileName;
+      });
+    return false
+      ? this.projectFileRepository.downloadFileDisk(filename, response)
+      : this.projectFileRepository.downloadFileS3(filename, response);
+  }
+
+  @patch('/users/{id}/projectFiles/{fileId}', {
     responses: {
       '200': {
         description: 'Project.ProjectFile PATCH success count',
@@ -96,7 +138,8 @@ export class ProjectProjectFileController {
     },
   })
   async patch(
-    @param.path.number('id') id: number,
+    @param.path.string('id') id: typeof User.prototype.id,
+    @param.path.number('fileId') fileId: typeof ProjectFile.prototype.id,
     @requestBody({
       content: {
         'application/json': {
@@ -105,12 +148,11 @@ export class ProjectProjectFileController {
       },
     })
     projectFile: Partial<ProjectFile>,
-    @param.query.object('where', getWhereSchemaFor(ProjectFile)) where?: Where<ProjectFile>,
-  ): Promise<Count> {
-    return this.projectRepository.projectFiles(id).patch(projectFile, where);
+  ): Promise<void> {
+    return this.projectFileRepository.updateById(fileId, projectFile);
   }
 
-  @del('/projects/{id}/projectFiles', {
+  @del('/users/{id}/projectFiles/{fileId}', {
     responses: {
       '200': {
         description: 'Project.ProjectFile DELETE success count',
@@ -119,9 +161,9 @@ export class ProjectProjectFileController {
     },
   })
   async delete(
-    @param.path.number('id') id: number,
-    @param.query.object('where', getWhereSchemaFor(ProjectFile)) where?: Where<ProjectFile>,
-  ): Promise<Count> {
-    return this.projectRepository.projectFiles(id).delete(where);
+    @param.path.string('id') id: typeof User.prototype.id,
+    @param.path.number('fileId') fileId: typeof ProjectFile.prototype.id,
+  ): Promise<void> {
+    return this.projectFileRepository.updateById(fileId, { isDeleted: true });
   }
 }

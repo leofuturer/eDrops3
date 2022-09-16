@@ -10,6 +10,7 @@ export const defaultPostComments: Partial<PostComment>[] = [
     postId: 1,
     author: 'community2',
     userId: 'aaaaaaaa-aaaa-aaaa-cccc-aaaaaaaaaaaa',
+    top: true,
   },
   /** Should be assigned to post #2 "Dispensing not working on EWOD device" **/
   {
@@ -19,6 +20,7 @@ export const defaultPostComments: Partial<PostComment>[] = [
     postId: 2,
     author: 'community3',
     userId: 'aaaaaaaa-aaaa-aaaa-dddd-aaaaaaaaaaaa',
+    top: true,
   },
   /** Should be assigned to post #3 "What are EWOD devices used for?" **/
   {
@@ -28,5 +30,6 @@ export const defaultPostComments: Partial<PostComment>[] = [
     postId: 3,
     author: 'community1',
     userId: 'aaaaaaaa-aaaa-aaaa-bbbb-aaaaaaaaaaaa',
+    top: true,
   },
 ];

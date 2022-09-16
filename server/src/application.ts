@@ -5,7 +5,7 @@ import {
   RestExplorerComponent,
 } from '@loopback/rest-explorer';
 import {RepositoryMixin, SchemaMigrationOptions} from '@loopback/repository';
-import {RestApplication} from '@loopback/rest';
+import {HttpErrors, RestApplication} from '@loopback/rest';
 import {ServiceMixin} from '@loopback/service-proxy';
 import path from 'path';
 import multer from 'multer';
@@ -20,7 +20,7 @@ import {AuthenticationComponent} from '@loopback/authentication';
 //   SECURITY_SCHEME_SPEC,
 //   UserServiceBindings,
 // } from '@loopback/authentication-jwt';
-import { v4 } from 'uuid';
+import {v4} from 'uuid';
 import {
   JWTAuthenticationComponent,
   SECURITY_SCHEME_SPEC,
@@ -30,6 +30,7 @@ import {clearDb, seedDb} from './lib/seed';
 import {CasbinAuthorizationComponent} from './components/casbin-authorization';
 // File service imports
 import {FILE_UPLOAD_SERVICE, STORAGE_DIRECTORY} from './services';
+import fs from 'fs';
 // import {MySequence} from './sequence';
 
 export {ApplicationConfig};
@@ -144,38 +145,50 @@ export class EdropsBackendApplication extends BootMixin(
     // Upload files to `dist/storage` by default
     destination = destination ?? path.join(__dirname, '../storage');
     this.bind(STORAGE_DIRECTORY).to(destination);
-    const multerOptions: multer.Options =
-      process.env.NODE_ENV !== 'production'
-        ? {
-            storage: multer.diskStorage({
-              destination,
-              // Use the original file name as is
-              filename: (req, file, cb) => {
-                cb(null, file.originalname);
+    const multerOptions: multer.Options = false
+      ? // process.env.NODE_ENV !== 'production'
+        {
+          storage: multer.diskStorage({
+            destination: (req, file, cb) => {
+              const folder = file.fieldname;
+              const dir = `${destination}/${folder}`;
+              fs.access(dir, fs.constants.F_OK, err => {
+                if (err) {
+                  return fs.mkdir(dir, error => cb(error, dir));
+                }
+                return cb(null, dir);
+              });
+            },
+            // Use the original file name as is
+            filename: (req, file, cb) => {
+              cb(null, file.originalname);
+            },
+          }),
+        }
+      : {
+          storage: multerS3({
+            s3: new S3Client({
+              credentials: {
+                accessKeyId: process.env.S3_AWS_ACCESS_KEY_ID as string || 'AKIA5XCJPLK6K2H3WJ5Z',
+                secretAccessKey: process.env.S3_SECRET_ACCESS_KEY as string || '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',
               },
+              region: process.env.S3_AWS_DEFAULT_REGION as string || 'us-west-1',
             }),
-          }
-        : {
-            storage: multerS3({
-              s3: new S3Client({
-                credentials: {
-                  accessKeyId: process.env.S3_AWS_ACCESS_KEY_ID as string,
-                  secretAccessKey: process.env.S3_SECRET_ACCESS_KEY as string,
-                },
-                region: process.env.S3_AWS_DEFAULT_REGION as string,
-              }),
-              bucket: process.env.S3_BUCKET_NAME as string,
-              metadata: (req, file, cb) => {
-                cb(null, {fieldname: file.fieldname, originalname: file.originalname});
-              },
-              key: (req, file, cb) => {
-                cb(null, v4() + path.extname(file.originalname));
-              },
-              contentDisposition: (req, file, cb) => {
-                cb(null, `attachment; filename=${file.originalname}`);
-              },
-            }),
-          };
+            bucket: process.env.S3_BUCKET_NAME as string || 'edrop-v2-files',
+            metadata: (req, file, cb) => {
+              cb(null, {
+                fieldname: file.fieldname,
+                originalname: file.originalname,
+              });
+            },
+            key: (req, file, cb) => {
+              cb(null, `${file.fieldname}/${v4()}${path.extname(file.originalname)}`);
+            },
+            contentDisposition: (req, file, cb) => {
+              cb(null, `attachment; filename=${file.originalname}`);
+            },
+          }),
+        };
     // Configure the file upload service with multer options
     this.configure(FILE_UPLOAD_SERVICE).to(multerOptions);
   }

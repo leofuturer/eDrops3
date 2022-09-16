@@ -17,7 +17,7 @@ import {
   requestBody,
 } from '@loopback/rest';
 import {AuthorInterceptor} from '../interceptors';
-import {PostComment, CommentLink} from '../models';
+import {PostComment, PostCommentLink} from '../models';
 import {PostCommentRepository, PostRepository} from '../repositories';
 
 export class PostCommentPostCommentController {
@@ -32,7 +32,7 @@ export class PostCommentPostCommentController {
     responses: {
       '200': {
         description:
-          'Array of PostComment has many PostComment through CommentLink',
+          'Array of PostComment has many PostComment through PostCommentLink',
         content: {
           'application/json': {
             schema: {type: 'array', items: getModelSchemaRef(PostComment)},
@@ -45,7 +45,7 @@ export class PostCommentPostCommentController {
     @param.path.number('id') id: number,
     @param.query.object('filter') filter?: Filter<PostComment>,
   ): Promise<PostComment[]> {
-    return this.postCommentRepository.postComments(id).find(filter);
+    return this.postCommentRepository.postComments(id).find({...filter, where: { top: false }});
   }
 
   @intercept(AuthorInterceptor.BINDING_KEY)

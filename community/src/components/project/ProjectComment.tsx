@@ -1,7 +1,10 @@
 import { useEffect, useState } from "react";
-import { postCommentComments, postComments } from "../../api/serverConfig";
+import {
+	projectCommentComments,
+	projectComments,
+} from "../../api/serverConfig";
 import API from "../../api/api";
-import { CommentType, PostType } from "../../lib/types";
+import { CommentType, ProjectType } from "../../lib/types";
 import { AxiosError } from "axios";
 import { ChevronRightIcon, ThumbUpIcon } from "@heroicons/react/outline";
 import { ReplyIcon } from "@heroicons/react/solid";
@@ -9,7 +12,7 @@ import { timeAgo } from "../../lib/time";
 import { Link, useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
 
-function PostComment({ comment } : {comment: CommentType }) {
+function ProjectComment({comment} : {comment: CommentType}) {
 	const navigate = useNavigate();
 
 	const [comments, setComments] = useState<CommentType[]>([]);
@@ -20,7 +23,7 @@ function PostComment({ comment } : {comment: CommentType }) {
 	// Get all comments under this comment
 	useEffect(() => {
 		API.Request(
-			postCommentComments.replace(
+			projectCommentComments.replace(
 				"id",
 				comment.id ? comment.id.toString() : ""
 			),
@@ -29,7 +32,7 @@ function PostComment({ comment } : {comment: CommentType }) {
 			false
 		)
 			.then((res) => {
-				// console.log('Not top-level comments', res.data);
+				// console.log(res);
 				setComments(res.data);
 			})
 			.catch((err: AxiosError) => {
@@ -38,28 +41,26 @@ function PostComment({ comment } : {comment: CommentType }) {
 	}, [comment.id, newComment]);
 
 	function handleReply() {
-		const newPostComment = {
+		const newProjectComment = {
 			content: newComment,
 			author: "",
 			datetime: new Date(),
 			likes: 0,
-			postId: comment.postId,
+			projectId: 0,
 			userId: Cookies.get("userId") as string,
 			top: false,
 		};
 		API.Request(
-			postCommentComments.replace(
+			projectCommentComments.replace(
 				"id",
 				comment.id ? comment.id.toString() : ""
 			),
 			"POST",
-			newPostComment,
+			newProjectComment,
 			true
 		)
 			.then((res) => {
 				setNewComment("");
-				// @ts-ignore
-				currentPost.comments += 1;
 			})
 			.catch((err: AxiosError) => {
 				if (err.message === "No access token found") {
@@ -128,11 +129,14 @@ function PostComment({ comment } : {comment: CommentType }) {
 			)}
 			<div className="">
 				{comments.map((comment: CommentType) => (
-					<PostComment comment={comment} key={comment.id} />
+					<ProjectComment
+						comment={comment}
+						key={comment.id}
+					/>
 				))}
 			</div>
 		</div>
 	);
 }
 
-export default PostComment;
+export default ProjectComment;

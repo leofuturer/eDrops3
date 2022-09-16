@@ -8,7 +8,7 @@ function ProfileInfo({ user }: { user: UserProfileType }) {
 	const [following, setFollowing] = useState<boolean>(false);
 
 	function handleFollow() {
-		console.log(user.id, Cookies.get("userId"));
+		// console.log(user.id, Cookies.get("userId"));
 		follow(user.id as string, Cookies.get("userId") as string).then(
 			(isFollowing: boolean) => {
 				setFollowing(isFollowing);

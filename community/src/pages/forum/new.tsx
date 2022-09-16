@@ -18,7 +18,7 @@ function NewForum() {
 	const navigate = useNavigate();
 
 	function handlePost() {
-		const data: PostType = {
+		const data: Partial<PostType> = {
 			title,
 			content,
 			author: "",
@@ -26,7 +26,7 @@ function NewForum() {
 			likes: 0,
 			// dislikes: 0,
 		};
-		console.log(data);
+		// console.log(data);
 		API.Request(
 			userPosts.replace("id", Cookies.get("userId") as string),
 			"POST",

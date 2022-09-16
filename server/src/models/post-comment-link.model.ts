@@ -1,7 +1,7 @@
 import {Entity, model, property} from '@loopback/repository';
 
-@model({settings: {description: 'Link parent and child comments'}})
-export class CommentLink extends Entity {
+@model({settings: {description: 'Link parent and child comments for posts'}})
+export class PostCommentLink extends Entity {
   @property({
     type: 'number',
     id: true,
@@ -21,13 +21,13 @@ export class CommentLink extends Entity {
   })
   childId: number;
 
-  constructor(data?: Partial<CommentLink>) {
+  constructor(data?: Partial<PostCommentLink>) {
     super(data);
   }
 }
 
-export interface CommentLinkRelations {
+export interface PostCommentLinkRelations {
   // describe navigational properties here
 }
 
-export type CommentLinkWithRelations = CommentLink & CommentLinkRelations;
+export type PostCommentLinkWithRelations = PostCommentLink & PostCommentLinkRelations;
