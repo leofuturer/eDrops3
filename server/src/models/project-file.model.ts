@@ -1,4 +1,5 @@
-import {Entity, model, property} from '@loopback/repository';
+import {Entity, model, property, belongsTo} from '@loopback/repository';
+import {Project} from './project.model';
 
 @model({
   settings: {
@@ -31,6 +32,12 @@ export class ProjectFile extends Entity {
     required: true,
   })
   containerFileName: string;
+  
+  @property({
+    type: 'string',
+    required: true,
+  })
+  userId: string;
 
   @property({
     type: 'string',
@@ -66,12 +73,10 @@ export class ProjectFile extends Entity {
     type: 'string',
     required: true,
   })
-  fileType: string;
+  fileType: 'attachment' | 'image' | 'video';
 
-  @property({
-    type: 'number',
-  })
-  projectId?: number;
+  @belongsTo(() => Project)
+  projectId: number;
 
   constructor(data?: Partial<ProjectFile>) {
     super(data);

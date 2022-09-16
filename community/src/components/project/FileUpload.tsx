@@ -1,10 +1,18 @@
 import { PaperClipIcon } from "@heroicons/react/outline";
 import { XIcon } from "@heroicons/react/solid";
+import Cookies from "js-cookie";
 import React, { useCallback, useState } from "react";
 import { useDropzone, FileWithPath, FileError } from "react-dropzone";
+import { ProjectFile } from "../../../../server/src/models";
 import { uploadFiles } from "../../api/file";
 
-function FileUpload({ handleClose }: { handleClose: () => void }) {
+function FileUpload({
+	handleClose,
+	addFiles,
+}: {
+	handleClose: () => void;
+	addFiles: (files: ProjectFile[]) => void;
+}) {
 	const [files, setFiles] = useState<FileWithPath[]>([]);
 	const { acceptedFiles, fileRejections, getRootProps, getInputProps } =
 		useDropzone({
@@ -18,7 +26,7 @@ function FileUpload({ handleClose }: { handleClose: () => void }) {
 				setFiles(files.concat(droppedFiles));
 			},
 			onDropRejected(rejectedFiles, event) {
-				console.log(rejectedFiles);
+				// console.log(rejectedFiles);
 			},
 		});
 
@@ -26,11 +34,12 @@ function FileUpload({ handleClose }: { handleClose: () => void }) {
 		setFiles(files.filter((f) => f !== file));
 	}
 
-	function handleNext() {
-		
-		console.log(files);
-		if(files) 
-		uploadFiles(files);
+	async function handleNext() {
+		// console.log(files);
+		if (files) {
+			const uploadedFiles = await uploadFiles(Cookies.get("userId") as string, files);
+			addFiles(uploadedFiles);
+		}
 		handleClose();
 	}
 
@@ -42,7 +51,11 @@ function FileUpload({ handleClose }: { handleClose: () => void }) {
 			<p>
 				{file.path} - {file.size} bytes
 			</p>
-			<button type="button" title="Remove file" onClick={() => removeFile(file)}>
+			<button
+				type="button"
+				title="Remove file"
+				onClick={() => removeFile(file)}
+			>
 				<XIcon className="h-4 w-4" />
 			</button>
 		</li>

@@ -8,11 +8,11 @@ import {
 } from "@heroicons/react/outline";
 import { AxiosError } from "axios";
 import Cookies from "js-cookie";
-import { useEffect, useState } from "react";
-import { NavLink, useNavigate, useParams } from "react-router-dom";
+import { useCallback, useEffect, useState } from "react";
+import { Link, NavLink, useNavigate, useParams } from "react-router-dom";
 import API from "../../api/api";
 import { checkReact, react } from "../../api/react";
-import { commentCount, post, postComments } from "../../api/serverConfig";
+import { post, postComments } from "../../api/serverConfig";
 import { timeAgo } from "../../lib/time";
 import { CommentType, PostType } from "../../lib/types";
 import PostComment from "./PostComment";
@@ -48,6 +48,7 @@ function Post() {
 			{},
 			false
 		).then((res) => {
+			// console.log("Top-level comments", res.data);
 			const comments: CommentType[] = res.data;
 			const sortedComments = comments.sort((a, b) =>
 				a.datetime < b.datetime ? 1 : -1
@@ -83,19 +84,6 @@ function Post() {
 			});
 		}
 	}, [currentPost]);
-
-	// useEffect(() => {
-	// 	if (currentPost.id) {
-	// 		API.Request(
-	// 			commentCount.replace("id", currentPost?.id.toString()),
-	// 			"GET",
-	// 			{},
-	// 			false
-	// 		).then((res) => {
-	// 			console.log(res);
-	// 		});
-	// 	}
-	// }, [currentPost]);
 
 	function handleSave() {
 		react(
@@ -141,6 +129,7 @@ function Post() {
 			datetime: new Date(),
 			likes: 0,
 			userId: Cookies.get("userId") as string,
+			top: true,
 		};
 		API.Request(
 			postComments.replace("id", id ?? ""),
@@ -186,7 +175,10 @@ function Post() {
 								/>
 							</div>
 							<p className="text-md">
-								{currentPost?.author} &#8226;{" "}
+								<Link to={`/profile/${currentPost?.userId}`}>
+									{currentPost?.author}
+								</Link>{" "}
+								&#8226;{" "}
 								{timeAgo(new Date(currentPost.datetime))}
 							</p>
 						</div>
@@ -251,7 +243,10 @@ function Post() {
 						)}
 						<div className="flex flex-col space-y-2">
 							{comments.map((comment: CommentType) => (
-								<PostComment {...comment} key={comment.id} />
+								<PostComment
+									comment={comment}
+									key={comment.id}
+								/>
 							))}
 						</div>
 					</>

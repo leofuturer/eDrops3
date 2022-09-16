@@ -1,11 +1,25 @@
 import { projectFiles } from "../api/serverConfig";
 import API from "../api/api";
+import { ProjectFile } from "../../../server/src/models";
 
 // Upload files to the server, and return the file names (uuids) on the server
-export async function uploadFiles(files: File[]): Promise<void> {
-	return API.Request(projectFiles, "POST", {}, true)
+export async function uploadFiles(
+	userId: string,
+	files: File[],
+	// fields: object = { isPublic: "public" },
+): Promise<ProjectFile[]> {
+	const headers = { "Content-Type": "multipart/form-data" };
+	const formData = new FormData();
+	files.forEach((file) => {
+		// Use fieldname "community" to specify community folder (easiest way)
+		formData.append("community", file);
+	});
+	// console.log(files);
+	// formData.append("fields", JSON.stringify(fields));
+	return API.Request(projectFiles.replace('id', userId), "POST", formData, true, headers, true)
 		.then((res) => {
-			console.log(res);
+			// console.log(res);
+			return res.data.fileInfo;
 			// const promises : Promise<object>[] = [];
 			// res.data.forEach((e) => {
 			// 	promises.push(
@@ -40,4 +54,20 @@ export async function uploadFiles(files: File[]): Promise<void> {
 		.catch((err) => {
 			console.error(err);
 		});
+}
+
+export function downloadFile(
+	userId: string,
+	fileId: number,
+): void {
+	// @ts-ignore
+	window.location = `${projectFiles.replace('id', userId)}/${fileId}`
+// 	return API.Request(`${projectFiles.replace('id', userId)}/${fileId}`, "GET", {}, true)
+// 		.then((res) => {
+// 			console.log(res);
+// 			return res.data;
+// 		})
+// 		.catch((err) => {
+// 			console.error(err);
+// 		});
 }

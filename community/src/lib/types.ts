@@ -32,7 +32,9 @@ export interface CommentType {
 	datetime: Date;
 	likes: number;
 	postId?: number;
+	projectId?: number;
 	userId?: string;
+	top: boolean;
 }
 
 export interface LoginInfo {

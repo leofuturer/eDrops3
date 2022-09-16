@@ -122,11 +122,11 @@ class NavTop extends React.Component {
           {/* <div> */}
           <ul className="ul-nav">
             <li><NavLink to="/home">Home</NavLink></li>
-            <li><NavLink to="/featureComing">EWOD CAD</NavLink></li>
-            <li><NavLink to="/upload">EWOD Chip Fabrication</NavLink></li>
+            {/* <li><NavLink to="/featureComing">EWOD CAD</NavLink></li>
+            <li><NavLink to="/upload">EWOD Chip Fabrication</NavLink></li> */}
             <li><NavLink to="/allItems">Products</NavLink></li>
             <li><NavLink to="/featureComing">Community</NavLink></li>
-            <li><NavLink to="/featureComing">Support</NavLink></li>
+            {/* <li><NavLink to="/featureComing">Support</NavLink></li> */}
             <li>
               { Cookies.get('userType') === 'customer'
                 ? notLoggedIn
