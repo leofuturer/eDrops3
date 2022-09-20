@@ -83,7 +83,7 @@ class AddOrEditWorker extends React.Component {
     if (this.state.password !== '') {
       Object.assign(data, {
         password: this.state.password,
-        confirmPassword: this.state.confirmPassword,
+        // confirmPassword: this.state.confirmPassword,
       });
     }
     if (this.props.match.path === '/manage/foundryworkers/addfoundryworker') {

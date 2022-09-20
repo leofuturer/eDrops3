@@ -37,20 +37,12 @@ export class CustomerOrderInfoController {
     @param.query.object('filter') filter?: Filter<OrderInfo>,
   ): Promise<OrderChip[]> {
     let allOrderChips: OrderChip[] = [];
-    const customerOrders = await this.customerRepository.orderInfos(id).find({ include : ['orderChip'] });
-    console.log(customerOrders);
+    const customerOrders = await this.customerRepository.orderInfos(id).find({include: [{relation : 'orderChips'}]});
     customerOrders.map((orderInfo) => {
       allOrderChips = allOrderChips.concat.apply(allOrderChips, orderInfo.orderChips);
     });
 
     return allOrderChips;
-    // let allOrderChips: OrderChip[] = [];
-    // const customerOrders = await this.customerRepository.orderInfos(id).find(filter);
-    // const promises = customerOrders.map((orderInfo) => 
-    //   this.orderInfoRepository.orderChips(orderInfo.id).find(filterChip)
-    // );
-
-    // return Promise.all<OrderChip[]>(promises).then(orderChipArrs => allOrderChips.concat.apply([], orderChipArrs));
   }
 
   @get('/customers/{id}/customerOrders', {
