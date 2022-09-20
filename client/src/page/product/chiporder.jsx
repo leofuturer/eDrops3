@@ -332,7 +332,6 @@ class ChipOrder extends React.Component {
                   url = getChipOrders.replace('id', _this.state.orderInfoId);
                   API.Request(url, 'GET', {}, true, undefined, true)
                     .then((res) => {
-                      console.log('we good');
                       const quantity = res.data.reduce((prev, curr) => prev + curr.quantity, 0);
                       this.context.setChipQuantity(quantity);
                       this.context.setCartQuantity();
@@ -340,7 +339,6 @@ class ChipOrder extends React.Component {
                     })
                     .catch((err) => {
                       console.error(err);
-                      console.log('get chip order here');
                     });
                   this.setState({
                     isLoading: false,
