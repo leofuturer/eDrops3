@@ -250,52 +250,13 @@ export class AdminController {
   })
   async getChipOrders(
   ): Promise<OrderChip[]> {
-    console.log('new /admin/orderChips');
     let allOrderChips: OrderChip[] = [];
-    const completedOrders = await this.orderInfo.find({ include: ['orderChips'], where: { orderComplete : true} });
-    console.log(completedOrders);
+    const completedOrders = await this.orderInfo.find({ include: [{relation: 'orderChips'}], where: {orderComplete : true} });
     completedOrders.map((orderInfo) => {
       allOrderChips = allOrderChips.concat.apply(allOrderChips, orderInfo.orderChips);
     });
 
-    console.log(allOrderChips);
     return allOrderChips;
-
-    // let allOrderChips: ChipFabOrder[] = [];
-    // let customerNames : (string | undefined)[] = [];
-
-    // const completedOrders = await this.orderInfo.find({ where: { orderComplete: true } });
-    // const promises = completedOrders.map((orderInfo) => {
-    //   customerNames.push(orderInfo.sa_name);
-    //   return this.orderChip.find({ where: { orderInfoId: orderInfo.id } });
-    // });
-
-    // return Promise.all<OrderChip[]>(promises).then(async (orderChipArrs) => {
-    //   const promise3 = customerNames.map(async (customerName, index) => {
-    //     const promisesInner2 = orderChipArrs[index].map((orderChip) => 
-    //       this.foundryWorkerRepository.findById(orderChip.workerId)
-    //     );
-
-    //     return Promise.all<FoundryWorker>(promisesInner2).then((foundryWorkerArr) => {
-    //       const chipFabOrderArr = foundryWorkerArr.map((foundryWorker, indexFW) => {
-    //         let chipFabOrder = new ChipFabOrder(orderChipArrs[index][indexFW]);
-    //         chipFabOrder.customerName = customerName;
-    //         chipFabOrder.workerName = `${foundryWorker.firstName} ${foundryWorker.lastName}`;
-    //         return chipFabOrder;
-    //       });
-
-    //       return chipFabOrderArr;
-    //     });
-    //   });
-
-    //   return Promise.all<ChipFabOrder[]>(promise3).then((chipFabOrderArrs) => {
-    //     chipFabOrderArrs.map(chipFabOrderArr => {
-    //       allOrderChips = allOrderChips.concat.apply(allOrderChips, chipFabOrderArr);
-    //     })
-
-    //     return allOrderChips;
-    //   });
-    // });
   }
 
   @get('/admins/getApi')
