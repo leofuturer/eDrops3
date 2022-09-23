@@ -1,11 +1,15 @@
 import {inject, Getter} from '@loopback/core';
-import {DefaultCrudRepository, repository, BelongsToAccessor} from '@loopback/repository';
+import {
+  DefaultCrudRepository,
+  repository,
+  BelongsToAccessor,
+} from '@loopback/repository';
 import {HttpErrors, Request, Response} from '@loopback/rest';
 import AWS from 'aws-sdk';
 import {calculate} from '../lib/toolbox/calculate';
 import {MysqlDsDataSource} from '../datasources';
 import {ProjectFile, ProjectFileRelations, Project} from '../models';
-import { STORAGE_DIRECTORY } from '../services';
+import {STORAGE_DIRECTORY} from '../services';
 import path from 'path';
 import {ProjectRepository} from './project.repository';
 
@@ -18,25 +22,33 @@ export class ProjectFileRepository extends DefaultCrudRepository<
 > {
   public readonly s3: AWS.S3;
 
-  public readonly project: BelongsToAccessor<Project, typeof ProjectFile.prototype.id>;
+  public readonly project: BelongsToAccessor<
+    Project,
+    typeof ProjectFile.prototype.id
+  >;
 
   constructor(
     @inject('datasources.mysqlDS') dataSource: MysqlDsDataSource,
-    @inject(STORAGE_DIRECTORY) private storageDirectory: string, @repository.getter('ProjectRepository') protected projectRepositoryGetter: Getter<ProjectRepository>,
+    @inject(STORAGE_DIRECTORY) private storageDirectory: string,
+    @repository.getter('ProjectRepository')
+    protected projectRepositoryGetter: Getter<ProjectRepository>,
   ) {
     super(ProjectFile, dataSource);
-    this.project = this.createBelongsToAccessorFor('project', projectRepositoryGetter,);
+    this.project = this.createBelongsToAccessorFor(
+      'project',
+      projectRepositoryGetter,
+    );
     this.registerInclusionResolver('project', this.project.inclusionResolver);
 
-    AWS.config.update({
-      accessKeyId: process.env.S3_AWS_ACCESS_KEY_ID ?? '***REMOVED***',
-      secretAccessKey:
-        process.env.S3_SECRET_ACCESS_KEY ??
-        'mdB27fZvDVAfUl7Dcfiec9Y5wY8EsVIqIRfFlZNu',
-      region: process.env.S3_AWS_DEFAULT_REGION ?? 'us-west-1',
-    });
+    if (process.env.NODE_ENV === 'production') {
+      AWS.config.update({
+        accessKeyId: process.env.S3_AWS_ACCESS_KEY_ID,
+        secretAccessKey: process.env.S3_SECRET_ACCESS_KEY,
+        region: process.env.S3_AWS_DEFAULT_REGION,
+      });
 
-    this.s3 = new AWS.S3();
+      this.s3 = new AWS.S3();
+    }
   }
 
   async uploadFileDisk(
@@ -130,7 +142,7 @@ export class ProjectFileRepository extends DefaultCrudRepository<
           fileType: 'attachment',
           fileSize: calculate.formatBytes(f.size as number, 1),
           uploader: username,
-          userId: userId
+          userId: userId,
         };
       },
     );
@@ -141,7 +153,10 @@ export class ProjectFileRepository extends DefaultCrudRepository<
     return {fileInfo, fields};
   }
 
-  async downloadFileDisk(filename: string, response: Response): Promise<Response> {
+  async downloadFileDisk(
+    filename: string,
+    response: Response,
+  ): Promise<Response> {
     const file = path.resolve(this.storageDirectory, filename);
     if (!file.startsWith(this.storageDirectory))
       throw new HttpErrors.BadRequest(`Invalid file id: ${filename}`);
@@ -149,14 +164,17 @@ export class ProjectFileRepository extends DefaultCrudRepository<
     return response;
   }
 
-  async downloadFileS3(filename: string, response: Response): Promise<Response> {
+  async downloadFileS3(
+    filename: string,
+    response: Response,
+  ): Promise<Response> {
     const file = await this.s3
       .getObject({
         Key: filename,
         Bucket: CONTAINER_NAME,
       })
       .promise();
-    console.log(file);
+    // console.log(file);
 
     response.writeHead(200, {
       'Content-Type': file.ContentType,

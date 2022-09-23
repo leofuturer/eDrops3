@@ -145,50 +145,53 @@ export class EdropsBackendApplication extends BootMixin(
     // Upload files to `dist/storage` by default
     destination = destination ?? path.join(__dirname, '../storage');
     this.bind(STORAGE_DIRECTORY).to(destination);
-    const multerOptions: multer.Options = false
-      ? // process.env.NODE_ENV !== 'production'
-        {
-          storage: multer.diskStorage({
-            destination: (req, file, cb) => {
-              const folder = file.fieldname;
-              const dir = `${destination}/${folder}`;
-              fs.access(dir, fs.constants.F_OK, err => {
-                if (err) {
-                  return fs.mkdir(dir, error => cb(error, dir));
-                }
-                return cb(null, dir);
-              });
-            },
-            // Use the original file name as is
-            filename: (req, file, cb) => {
-              cb(null, file.originalname);
-            },
-          }),
-        }
-      : {
-          storage: multerS3({
-            s3: new S3Client({
-              credentials: {
-                accessKeyId: process.env.S3_AWS_ACCESS_KEY_ID as string || '***REMOVED***',
-                secretAccessKey: process.env.S3_SECRET_ACCESS_KEY as string || 'mdB27fZvDVAfUl7Dcfiec9Y5wY8EsVIqIRfFlZNu',
+    const multerOptions: multer.Options =
+      process.env.NODE_ENV !== 'production'
+        ? {
+            storage: multer.diskStorage({
+              destination: (req, file, cb) => {
+                const folder = file.fieldname;
+                const dir = `${destination}/${folder}`;
+                fs.access(dir, fs.constants.F_OK, err => {
+                  if (err) {
+                    return fs.mkdir(dir, error => cb(error, dir));
+                  }
+                  return cb(null, dir);
+                });
               },
-              region: process.env.S3_AWS_DEFAULT_REGION as string || 'us-west-1',
+              // Use the original file name as is
+              filename: (req, file, cb) => {
+                cb(null, file.originalname);
+              },
             }),
-            bucket: process.env.S3_BUCKET_NAME as string || 'edrop-v2-files',
-            metadata: (req, file, cb) => {
-              cb(null, {
-                fieldname: file.fieldname,
-                originalname: file.originalname,
-              });
-            },
-            key: (req, file, cb) => {
-              cb(null, `${file.fieldname}/${v4()}${path.extname(file.originalname)}`);
-            },
-            contentDisposition: (req, file, cb) => {
-              cb(null, `attachment; filename=${file.originalname}`);
-            },
-          }),
-        };
+          }
+        : {
+            storage: multerS3({
+              s3: new S3Client({
+                credentials: {
+                  accessKeyId: process.env.S3_AWS_ACCESS_KEY_ID as string,
+                  secretAccessKey: process.env.S3_SECRET_ACCESS_KEY as string,
+                },
+                region: process.env.S3_AWS_DEFAULT_REGION as string,
+              }),
+              bucket: process.env.S3_BUCKET_NAME as string,
+              metadata: (req, file, cb) => {
+                cb(null, {
+                  fieldname: file.fieldname,
+                  originalname: file.originalname,
+                });
+              },
+              key: (req, file, cb) => {
+                cb(
+                  null,
+                  `${file.fieldname}/${v4()}${path.extname(file.originalname)}`,
+                );
+              },
+              contentDisposition: (req, file, cb) => {
+                cb(null, `attachment; filename=${file.originalname}`);
+              },
+            }),
+          };
     // Configure the file upload service with multer options
     this.configure(FILE_UPLOAD_SERVICE).to(multerOptions);
   }
