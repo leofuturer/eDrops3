@@ -103,15 +103,15 @@ export class CustomerRepository extends DefaultCrudRepository<
       this.customerAddresses.inclusionResolver,
     );
 
-    AWS.config.update({
-      accessKeyId: process.env.S3_AWS_ACCESS_KEY_ID ?? 'AKIA5XCJPLK6K2H3WJ5Z',
-      secretAccessKey:
-        process.env.S3_SECRET_ACCESS_KEY ??
-        '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',
-      region: process.env.S3_AWS_DEFAULT_REGION ?? 'us-west-1',
-    });
+    if (process.env.NODE_ENV === 'production') {
+      AWS.config.update({
+        accessKeyId: process.env.S3_AWS_ACCESS_KEY_ID,
+        secretAccessKey: process.env.S3_SECRET_ACCESS_KEY,
+        region: process.env.S3_AWS_DEFAULT_REGION,
+      });
 
-    this.s3 = new AWS.S3();
+      this.s3 = new AWS.S3();
+    }
   }
 
   /**
@@ -412,25 +412,6 @@ export class CustomerRepository extends DefaultCrudRepository<
     return response;
   }
 
-  /*
-  fieldname: 'file',
-  originalname: 'a.dxf',
-  encoding: '7bit',
-  mimetype: 'application/octet-stream',
-  size: 0,
-  bucket: 'edrop-v2-files',
-  key: 'bd11882f-95d0-4d11-b628-74628043eed2.dxf',
-  acl: 'private',
-  contentType: 'application/octet-stream',
-  contentDisposition: null,
-  contentEncoding: null,
-  storageClass: 'STANDARD',
-  serverSideEncryption: null,
-  metadata: { fieldname: 'file', originalname: 'a.dxf' },
-  location: 'https://edrop-v2-files.s3.us-west-1.amazonaws.com/bd11882f-95d0-4d11-b628-74628043eed2.dxf',
-  etag: '"d41d8cd98f00b204e9800998ecf8427e"',
-  versionId: undefined
-  */
   async downloadS3(filename: string, response: Response): Promise<Response> {
     const file = await this.s3
       .getObject({
