@@ -44,23 +44,6 @@ export class FoundryWorkerOrderChipController {
     @param.query.object('filter') filter?: Filter<OrderChip>,
   ): Promise<OrderChip[]> {
     return await this.foundryWorkerRepository.orderChips(id).find(filter);
-
-    // let allOrderChips: ChipFabOrder[] = [];
-    // const foundryWorker = await this.foundryWorkerRepository.findById(id);
-    // const orderChips = await this.foundryWorkerRepository.orderChips(id).find(filter);
-    // const promises = orderChips.map(orderChip => {
-    //   return this.orderInfoRepository.findById(orderChip.orderInfoId);
-    // })
-    // return Promise.all<OrderInfo>(promises).then(orderInfoArr => {
-    //   orderInfoArr.map((orderInfo, index) => {
-    //     let chipFabOrder = new ChipFabOrder(orderChips[index]);
-    //     chipFabOrder.customerName = orderInfo.sa_name;
-    //     chipFabOrder.workerName = `${foundryWorker.firstName} ${foundryWorker.lastName}`;
-    //     allOrderChips.push(chipFabOrder);
-    //   }) 
-
-    //   return allOrderChips;
-    // })
   }
 
   @get('/foundryWorkers/{id}/downloadFile')
