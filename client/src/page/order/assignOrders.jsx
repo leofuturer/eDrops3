@@ -41,7 +41,7 @@ class AssignOrders extends React.Component {
       .then((res) => {
         const data = {
           workerId: this.state.assignId,
-          workerName: res.data,
+          workerName: res.data.firstName + res.data.lastName,
         };
     
 

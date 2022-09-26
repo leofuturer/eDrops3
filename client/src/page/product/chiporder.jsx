@@ -103,9 +103,9 @@ class ChipOrder extends React.Component {
     let url = customerGetName.replace('id', Cookies.get('userId'));
     API.Request(url, 'GET', {}, true)
       .then((res) => {
-        console.log(res);
+        // console.log(res);
         this.setState({
-          customerName: res.data,
+          customerName: res.data.firstName + res.data.lastName,
         });
       })
       .catch((err) => {
