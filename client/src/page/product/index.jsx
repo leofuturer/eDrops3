@@ -235,10 +235,8 @@ class Product extends React.Component {
             let lineItemId;
             // console.log(res);
             for (let i = 0; i < res.lineItems.length; i++) {
-              // console.log('lineItemId:', Buffer.from(res.lineItems[i].variant.id).toString('base64'));
               if (Buffer.from(res.lineItems[i].variant.id).toString('base64') === variantId) {
                 lineItemId = Buffer.from(res.lineItems[i].id).toString('base64');
-                // console.log('lineItemId:', lineItemId);
                 break;
               }
             }

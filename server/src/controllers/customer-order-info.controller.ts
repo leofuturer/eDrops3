@@ -8,7 +8,6 @@ import {
   requestBody,
   response
 } from '@loopback/rest';
-import { ConfigurationServicePlaceholders } from 'aws-sdk/lib/config_service_placeholders';
 import { Customer, OrderChip, OrderInfo } from '../models';
 import { CustomerRepository, OrderInfoRepository } from '../repositories';
 
@@ -36,34 +35,14 @@ export class CustomerOrderInfoController {
     // @param.path.string('id') id: string,
     @param.path.string('id') id: typeof Customer.prototype.id,
     @param.query.object('filter') filter?: Filter<OrderInfo>,
-    @param.query.object('filter') filterChip?: Filter<OrderChip>,
   ): Promise<OrderChip[]> {
     let allOrderChips: OrderChip[] = [];
-    const customerOrders = await this.customerRepository.orderInfos(id).find(filter);
-    const promises = customerOrders.map((orderInfo) => 
-      this.orderInfoRepository.orderChips(orderInfo.id).find(filterChip)
-    );
+    const customerOrders = await this.customerRepository.orderInfos(id).find({include: [{relation : 'orderChips'}]});
+    customerOrders.map((orderInfo) => {
+      allOrderChips = allOrderChips.concat.apply(allOrderChips, orderInfo.orderChips);
+    });
 
-    return Promise.all<OrderChip[]>(promises).then(orderChipArrs => allOrderChips.concat.apply([], orderChipArrs));
-    
-    // Promise.all<OrderChip[]>(promises)
-    //   .then(orderChipArrs => {orderChipArrs.map(orderChipArr => {
-    //     allOrderChips = allOrderChips.concat(orderChipArr);
-    //     console.log(allOrderChips);
-    //   })});
-    // this.customerRepository
-    //   .orderInfos(id)
-    //   .find(filter)
-    //   .then(orderInfos => {
-    //     orderInfos.forEach(orderInfo => {
-    //       this.orderInfoRepository
-    //         .orderChips(orderInfo.id)
-    //         .find(filterChip)
-    //         .then(orderChips => {
-    //           allOrderChips = allOrderChips.concat(orderChips);
-    //         });
-    //     });
-    //   });
+    return allOrderChips;
   }
 
   @get('/customers/{id}/customerOrders', {

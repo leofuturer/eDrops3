@@ -67,8 +67,9 @@ export class OrderChipUpdateInterceptor implements Provider<Interceptor> {
       const key = Object.keys(this.request.body)[0];
       const id = parseInt(this.request.url.split('/').slice(-1)[0]);
 
-      console.log(this.request.body);
-      console.log(key, id);
+      if(key !== 'workerId' && key !== 'status') {
+        return await next();
+      }
       
       const chipOrder = await this.orderChipRepository.findById(id);
       if(chipOrder[key] === this.request.body[key])
@@ -95,7 +96,7 @@ export class OrderChipUpdateInterceptor implements Provider<Interceptor> {
         // Add post-invocation logic here
         const foundryWorker = await this.foundryWorkerRepository.findById(this.request.body[key]);
         // assigned foundry
-        console.log(`Hi ${foundryWorker.firstName}::${foundryWorker.email}, you have been assigned to ${fileInfo.fileName}, ${chipOrder.quantity}, ${chipOrder.process}, ${chipOrder.coverPlate ? 'Yes' : 'No'}`);
+        // console.log(`Hi ${foundryWorker.firstName}::${foundryWorker.email}, you have been assigned to ${fileInfo.fileName}, ${chipOrder.quantity}, ${chipOrder.process}, ${chipOrder.coverPlate ? 'Yes' : 'No'}`);
         const sendGridOptionsFoundry = {
           "from":{
             "email": EMAIL_SENDER, 
@@ -117,7 +118,7 @@ export class OrderChipUpdateInterceptor implements Provider<Interceptor> {
         );
 
         // customer
-        console.log(`Hi ${customer.firstName}::${orderInfo.user_email}, your order has been assigned to FW from ${foundryWorker.affiliation}, ${chipOrder.quantity}, ${chipOrder.process}, ${chipOrder.coverPlate ? 'Yes' : 'No'}`);
+        // console.log(`Hi ${customer.firstName}::${orderInfo.user_email}, your order has been assigned to FW from ${foundryWorker.affiliation}, ${chipOrder.quantity}, ${chipOrder.process}, ${chipOrder.coverPlate ? 'Yes' : 'No'}`);
         const sendGridOptionsCustomer = {
           "from":{
             "email": EMAIL_SENDER, 
@@ -141,7 +142,7 @@ export class OrderChipUpdateInterceptor implements Provider<Interceptor> {
 
         if(chipOrder.workerId !== null) {
           const oldFoundryWorker = await this.foundryWorkerRepository.findById(chipOrder.workerId);
-          console.log(`${oldFoundryWorker.firstName} you have been unassigned`);
+          // console.log(`${oldFoundryWorker.firstName} you have been unassigned`);
           
           const sendGridOptionsOldFoundry = {
             "from":{
@@ -168,7 +169,7 @@ export class OrderChipUpdateInterceptor implements Provider<Interceptor> {
         // Add post-invocation logic here
 
         const foundryWorker = await this.foundryWorkerRepository.findById(chipOrder.workerId);
-        console.log(`Hi ${customer.firstName}::${orderInfo.user_email}, your order status has been updated to ${this.request.body[key]} by FW from ${foundryWorker.affiliation}, ${chipOrder.quantity}, ${chipOrder.process}, ${chipOrder.coverPlate ? 'Yes' : 'No'}`);
+        // console.log(`Hi ${customer.firstName}::${orderInfo.user_email}, your order status has been updated to ${this.request.body[key]} by FW from ${foundryWorker.affiliation}, ${chipOrder.quantity}, ${chipOrder.process}, ${chipOrder.coverPlate ? 'Yes' : 'No'}`);
 
         const sendGridOptionsStatus = {
           "from":{
