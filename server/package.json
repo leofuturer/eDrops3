@@ -86,6 +86,7 @@
     "multer-s3": "^3.0.1",
     "node-fetch": "^2.6.1",
     "nodemailer": "^6.7.5",
+    "pusher": "^5.1.1-beta",
     "serve-favicon": "^2.5.0",
     "shopify-buy": "^2.15.1",
     "strong-error-handler": "^4.0.0",

@@ -32,7 +32,7 @@ class OrderChat extends React.Component {
       .then((instance) => {
         const channel = instance.subscribe(`chat-${this.state.orderId}`);
         channel.bind('new-message', data => {
-          this.appendMessageToContainer(data.message, data.user_id);
+          this.appendMessageToContainer(data.message, data.userConvId);
         });
       })
 
@@ -68,11 +68,12 @@ class OrderChat extends React.Component {
     const messageUrl = getOrderMessagesById.replace('id', this.state.orderId);
     API.Request(messageUrl, 'GET', {}, true)
       .then((res) => {
+        console.log(res.data);
         this.setState({
-          messages: res.data.message_arr,
+          messages: res.data,
         });
         this.state.messages.forEach( (element) => {
-          this.appendMessageToContainer(element.message, element.user_id);
+          this.appendMessageToContainer(element.message, element.userConvId);
         });
       })
       .catch((err) => {
@@ -82,7 +83,6 @@ class OrderChat extends React.Component {
 
   appendMessageToContainer(msg, id){
     var message = msg;
-    var messageObj = {message: message, user_id: id};
     var messageContainer = document.getElementById('message-container');
     if (message != null && message != ''){
       const messageElement = document.createElement('div');
@@ -102,14 +102,15 @@ class OrderChat extends React.Component {
   afterSubmission(event){
     event.preventDefault();
     var messageInput = document.getElementById('message-input');
-    var message = messageInput.value;
+    var msg = messageInput.value;
     const data = {
-      msg: message,
-      user_id: this.state.userType,
-      orderId: this.state.orderId
-    };
-    const appendUrl = addOrderMessage.replace('id', this.state.orderId);
-    API.Request(appendUrl, 'POST', data, true)
+      "orderId": Number(this.state.orderId),
+      "message": String(msg),
+      "userConvId": Number(this.state.userType),
+    }; 
+    
+    const appendUrl = addOrderMessage;//.replace('id', this.state.orderId);
+    API.Request(appendUrl, 'POST', data, false)
       .then((res) => {
         console.log(res.data);
       })
@@ -126,9 +127,9 @@ class OrderChat extends React.Component {
             <div className="order-chat-title-container">
               <h2>Order Chat for Order #{this.state.orderId}</h2>
             </div>
-                <div id="message-container">
-                  <div>Use the chat below to communicate about the order!</div>
-                </div>
+            <div id="message-container">
+                  <h3>Use the chat below to communicate about the order!</h3>
+            </div>
               <form id="send-container" onSubmit={this.afterSubmission}>
                   <input type="text" id="message-input"></input>
                   <button type="submit" id="send-button">Send</button>
