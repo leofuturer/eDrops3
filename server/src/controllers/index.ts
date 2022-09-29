@@ -26,10 +26,13 @@ export * from './post-comment-post-comment.controller';
 export * from './post-post-comment.controller';
 export * from './user-liked-post.controller';
 export * from './user-liked-project.controller';
+<<<<<<< HEAD
 export * from './user-follower.controller';
 export * from './project-project-file.controller';
 export * from './project-file-project.controller';
 export * from './project-project-link.controller';
 export * from './project-project-comment.controller';
 export * from './order-product.controller';
+=======
+>>>>>>> Completes messaging API and database changes
 export * from './order-message.controller';

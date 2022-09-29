@@ -113,7 +113,12 @@ export async function clearDb(this: EdropsBackendApplication): Promise<void> {
     OrderMessageRepository,
   );
   await orderMessageRepo.deleteAll();
+<<<<<<< HEAD
   
+=======
+  await orderMessageRepo.execute('ALTER TABLE OrderMessage AUTO_INCREMENT = ?', [1]);
+
+>>>>>>> Completes messaging API and database changes
   const orderProductRepo: OrderProductRepository = await this.getRepository(
     OrderProductRepository,
   );
