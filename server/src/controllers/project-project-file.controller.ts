@@ -81,7 +81,7 @@ export class ProjectProjectFileController {
         if (err) reject(err);
         else {
           const res =
-            false
+            process.env.NODE_ENV !== 'production'
               ? await this.projectFileRepository.uploadFileDisk(
                   request,
                   response,

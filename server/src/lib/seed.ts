@@ -22,6 +22,8 @@ import {
   PostRepository,
   ProjectCommentLinkRepository,
   ProjectCommentRepository,
+  ProjectFileRepository,
+  ProjectLinkRepository,
   ProjectRepository,
   UserRepository,
 } from '../repositories';
@@ -162,6 +164,24 @@ export async function clearDb(this: EdropsBackendApplication): Promise<void> {
     'ALTER TABLE ProjectCommentLink AUTO_INCREMENT = ?',
     [1],
   );
+
+  /** Clear ProjectFile table */
+  const projectFileRepo: ProjectFileRepository = await this.getRepository(
+    ProjectFileRepository,
+  );
+  await projectFileRepo.deleteAll();
+  await projectFileRepo.execute('ALTER TABLE ProjectFile AUTO_INCREMENT = ?', [
+    1,
+  ]);
+
+  /** Clear ProjectLink table */
+  const projectLinkRepo: ProjectLinkRepository = await this.getRepository(
+    ProjectLinkRepository,
+  );
+  await projectLinkRepo.deleteAll();
+  await projectLinkRepo.execute('ALTER TABLE ProjectLink AUTO_INCREMENT = ?', [
+    1,
+  ]);
 }
 
 export async function seedDb(this: EdropsBackendApplication): Promise<void> {

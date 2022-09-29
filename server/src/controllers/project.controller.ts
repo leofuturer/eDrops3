@@ -147,11 +147,11 @@ export class ProjectController {
   //   await this.projectRepository.deleteById(id);
   // }
 
-  // @get('/projects/featured')
-  // @response(200, {
-  //   description: 'Featured projects',
-  // })
-  // async getFeaturedProjects(): Promise<Project[]> {
-  //   return this.projectRepository.getFeaturedProjects();
-  // }
+  @get('/projects/featured')
+  @response(200, {
+    description: 'Featured projects',
+  })
+  async getFeaturedProjects(): Promise<Project[]> {
+    return this.projectRepository.getFeaturedProjects();
+  }
 }
