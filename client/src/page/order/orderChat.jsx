@@ -41,7 +41,7 @@ class OrderChat extends React.Component {
       .then((instance) => {
         const channel = instance.subscribe(`chat-${this.state.orderId}`);
         channel.bind('new-message', data => {
-          this.appendMessageToContainer(data.message, data.user_id);
+          this.appendMessageToContainer(data.message, data.userConvId);
         });
       })
 
@@ -77,6 +77,7 @@ class OrderChat extends React.Component {
   loadMessages() {
     const messageUrl = getOrderMessagesById.replace('id', this.state.orderId);
     API.Request(messageUrl, 'GET', {}, true)
+<<<<<<< HEAD
     .then((res) => {
       console.log(res.data);
       this.setState({
@@ -84,6 +85,19 @@ class OrderChat extends React.Component {
       });
       this.state.messages.forEach( (element) => {
         this.appendMessageToContainer(element.message, element.userConvId);
+=======
+      .then((res) => {
+        console.log(res.data);
+        this.setState({
+          messages: res.data,
+        });
+        this.state.messages.forEach( (element) => {
+          this.appendMessageToContainer(element.message, element.userConvId);
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+>>>>>>> Completes messaging API and database changes
       });
     })
     .catch((err) => {
@@ -92,8 +106,13 @@ class OrderChat extends React.Component {
   }
   
   appendMessageToContainer(msg, id){
+<<<<<<< HEAD
     const message = msg;
     const messageContainer = document.getElementById('chat');
+=======
+    var message = msg;
+    var messageContainer = document.getElementById('message-container');
+>>>>>>> Completes messaging API and database changes
     if (message != null && message != ''){
       const messageBubble = document.createElement('div');
       messageBubble.classList.add('msg');
@@ -118,22 +137,36 @@ class OrderChat extends React.Component {
       "orderId": Number(this.state.orderId),
       "message": String(msg),
       "userConvId": Number(this.state.userType),
+<<<<<<< HEAD
       "messageDate": new Date(),
+=======
+>>>>>>> Completes messaging API and database changes
     }; 
     
     const appendUrl = addOrderMessage;//.replace('id', this.state.orderId);
     API.Request(appendUrl, 'POST', data, false)
+<<<<<<< HEAD
     .then((res) => {
       messageInput.value = '';
     })
     .catch((err) => {
       console.log(err);
     });
+=======
+      .then((res) => {
+        console.log(res.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+    messageInput.value = '';
+>>>>>>> Completes messaging API and database changes
   }
   
   render() {
     return (
       <div className="order-chat-frame">
+<<<<<<< HEAD
         <div className="order-chat-title-container">
           <h2>Order Chat for Order #{this.state.orderId}</h2>
           <p>Use the chat below to communicate about the order!</p>
@@ -147,6 +180,21 @@ class OrderChat extends React.Component {
       </div> 
       );
     }
+=======
+            <div className="order-chat-title-container">
+              <h2>Order Chat for Order #{this.state.orderId}</h2>
+            </div>
+            <div id="message-container">
+                  <h3>Use the chat below to communicate about the order!</h3>
+            </div>
+              <form id="send-container" onSubmit={this.afterSubmission}>
+                  <input type="text" id="message-input"></input>
+                  <button type="submit" id="send-button">Send</button>
+                </form>
+            </div> 
+      </div>
+    );
+>>>>>>> Completes messaging API and database changes
   }
   
   export default OrderChat;

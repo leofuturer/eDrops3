@@ -27,11 +27,14 @@ export class OrderMessage extends Entity {
   })
   userConvId: number;
 
+<<<<<<< HEAD
   @property({
     type: 'date',
     required: true,
   })
   messageDate: Date;
+=======
+>>>>>>> Completes messaging API and database changes
   // Define well-known properties here
 
   // Indexer property to allow additional data
