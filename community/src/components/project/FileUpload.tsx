@@ -1,8 +1,10 @@
 import { PaperClipIcon } from "@heroicons/react/outline";
 import { XIcon } from "@heroicons/react/solid";
+import { AxiosError } from "axios";
 import Cookies from "js-cookie";
 import React, { useCallback, useState } from "react";
 import { useDropzone, FileWithPath, FileError } from "react-dropzone";
+import { useNavigate } from "react-router-dom";
 import { ProjectFile } from "../../../../server/src/models";
 import { uploadFiles } from "../../api/file";
 
@@ -13,6 +15,8 @@ function FileUpload({
 	handleClose: () => void;
 	addFiles: (files: ProjectFile[]) => void;
 }) {
+	const navigate = useNavigate();
+
 	const [files, setFiles] = useState<FileWithPath[]>([]);
 	const { acceptedFiles, fileRejections, getRootProps, getInputProps } =
 		useDropzone({
@@ -37,8 +41,20 @@ function FileUpload({
 	async function handleNext() {
 		// console.log(files);
 		if (files) {
-			const uploadedFiles = await uploadFiles(Cookies.get("userId") as string, files);
-			addFiles(uploadedFiles);
+			const uploadedFiles = await uploadFiles(
+				Cookies.get("userId") as string,
+				files
+			)
+				.then((files) => {
+					addFiles(files);
+					return files;
+				})
+				.catch((err: AxiosError) => {
+					if (err.response?.status === 401) {
+						navigate("/login");
+					}
+					return [];
+				});
 		}
 		handleClose();
 	}

@@ -53,6 +53,7 @@ export async function uploadFiles(
 		})
 		.catch((err) => {
 			console.error(err);
+			throw err;
 		});
 }
 

@@ -4,6 +4,7 @@ import {
 	PhotographIcon,
 	VideoCameraIcon,
 } from "@heroicons/react/solid";
+import { AxiosError } from "axios";
 import Cookies from "js-cookie";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -34,7 +35,12 @@ function NewForum() {
 			true
 		)
 			.then((res) => navigate(`/forum/${res.data.id}`))
-			.catch((err) => console.log(err));
+			.catch((err: AxiosError) => {
+				if (err.response?.status === 401) {
+					navigate("/login");
+				}
+				console.log(err);
+			});
 	}
 
 	return (
