@@ -28,6 +28,7 @@ class Orders extends React.Component {
         username: this.props.location.state.username,
       });
     }
+    
   }
 
   componentDidMount() {
@@ -35,7 +36,7 @@ class Orders extends React.Component {
       isLoading: true,
     });
     if (this.props.match.path === '/manage/customer-orders') {
-      var url = `${customerOrderRetrieve.replace('id', Cookies.get('userId'))}?filter={"where": {"orderComplete": true}}`;
+      var url = `${customerOrderRetrieve.replace('id', Cookies.get('userId'))}`;
     } else if (this.props.match.path === '/manage/admin-retrieve-user-orders') {
       var url = `${getAllOrderInfos}?filter={"where": {"customerId": ${this.state.custId}, "orderComplete": true}}`;
     } else {
@@ -50,6 +51,7 @@ class Orders extends React.Component {
           orderList: res.data,
           isLoading: false,
         });
+        console.log(this.state.orderList);
       })
       .catch((err) => {
         console.error(err);

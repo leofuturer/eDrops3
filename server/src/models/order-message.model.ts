@@ -1,56 +1,45 @@
 import {Entity, model, property} from '@loopback/repository';
 
-@model({
-   settings: {
-      validateUpsert: true,
-      plural: 'orderMessages',
-      idInjection: true,
-      remoting: {
-        sharedMethods: {
-            '*': false,
-            deleteById: true,
-            'prototype.patchAttributes': true,
-            'prototype.replaceById': true,
-            addOrderMessage: true,
-            findById: true,
-            find: true,
-        }
-      },
-   },
-})
-
+@model()
 export class OrderMessage extends Entity {
-    @property({
-      type: 'number',
-      id: 1,
-      generated: true,
-      updateOnly: true,
-      })
-    id?: number;
+  @property({
+    type: 'number',
+    id: 1,
+    generated: true,
+  })
+  id?: number;
+ 
+  @property({
+    type: 'number',
+    required: true,
+  })
+  orderId: number;
 
-    @property({
-      type: 'object',
-      required: false,
-      description: 'Array of messages associated with the order'
-      })
-    message_arr: object;
+  @property({
+    type: 'string',
+    required: true,
+  })
+  message: string;
 
-    @property({
-      type: 'string',
-      required: true,
-      description: 'ID of the order that the messages are associated with'
-      })
-    orderId: string;
+  @property({
+    type: 'number',
+    required: true,
+  })
+  userConvId: number;
 
-    [prop: string]: any;
+  // Define well-known properties here
 
-    constructor(data?: Partial<OrderMessage>) {
+  // Indexer property to allow additional data
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  [prop: string]: any;
+
+  constructor(data?: Partial<OrderMessage>) {
     super(data);
   }
 }
 
 export interface OrderMessageRelations {
-    // describe navigational properties here
-  }
-  
+  // describe navigational properties here
+}
+
 export type OrderMessageWithRelations = OrderMessage & OrderMessageRelations;
