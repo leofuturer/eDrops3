@@ -17,12 +17,9 @@ export * from './post-comment.repository';
 export * from './post-comment-link.repository';
 export * from './liked-post.repository';
 export * from './liked-project.repository';
-<<<<<<< HEAD
 export * from './user-follower.repository';
 export * from './project-file.repository';
 export * from './project-link.repository';
 export * from './project-comment-link.repository';
 export * from './project-comment.repository';
-=======
->>>>>>> Completes messaging API and database changes
 export * from './order-message.repository';
