@@ -88,7 +88,7 @@ export const editOrderStatus = `${ApiRootUrl}/orderChips/id`;
 export const assignOrders = `${ApiRootUrl}/orderChips/id`;
 
 export const getOrderMessagesById = `${ApiRootUrl}/orderMessages/id`;
-export const addOrderMessage = `${ApiRootUrl}/orderMessages/id/addOrderMessage`;
+export const addOrderMessage = `${ApiRootUrl}/orderMessages`;
 
 // For chip order page
 export const adminGetChipOrders = `${ApiRootUrl}/admins/orderChips`;
