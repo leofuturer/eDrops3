@@ -1,7 +1,7 @@
 import {Entity, model, property, hasMany} from '@loopback/repository';
-import {CommentLink} from './comment-link.model';
+import {PostCommentLink} from './post-comment-link.model';
 
-@model()
+@model({settings: {description: 'Post comments', forceId: false}})
 export class PostComment extends Entity {
   @property({
     type: 'number',
@@ -20,7 +20,7 @@ export class PostComment extends Entity {
     type: 'string',
     required: true,
     mysql: {
-      dataType: 'LONGTEXT'
+      dataType: 'LONGTEXT',
     },
   })
   content: string;
@@ -48,8 +48,15 @@ export class PostComment extends Entity {
   })
   postId?: number;
 
+  @property({
+    type: 'boolean',
+    required: true,
+    description: 'Whether the comment is top-level or not',
+  })
+  top: boolean;
+
   @hasMany(() => PostComment, {
-    through: {model: () => CommentLink, keyFrom: 'parentId', keyTo: 'childId'},
+    through: {model: () => PostCommentLink, keyFrom: 'parentId', keyTo: 'childId'},
   })
   postComments: PostComment[];
 

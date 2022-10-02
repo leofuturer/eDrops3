@@ -1,6 +1,6 @@
 import {Entity, model, property} from '@loopback/repository';
 
-@model()
+@model({settings: {description: 'Links liked projects to users'}})
 export class LikedProject extends Entity {
   @property({
     type: 'number',
@@ -20,7 +20,6 @@ export class LikedProject extends Entity {
     required: true,
   })
   userId: string;
-
 
   constructor(data?: Partial<LikedProject>) {
     super(data);

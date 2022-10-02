@@ -28,7 +28,8 @@ export class AdminRepository extends DefaultCrudRepository<
   async createAdmin(admin: Omit<Admin & User, 'id'>): Promise<Admin> {
     // Create user first
     const hashedPassword = await hash(admin.password, await genSalt());
-    const userData = {
+    const userData: Partial<User> = {
+      id: admin.id,
       realm: admin.realm,
       username: admin.username,
       password: hashedPassword,

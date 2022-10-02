@@ -29,12 +29,8 @@ import {AdminRepository, OrderProductRepository, OrderInfoRepository} from '../r
 global.fetch = fetch;
 
 const client = Client.buildClient({
-  storefrontAccessToken: (process.env.SHOPIFY_STORE !== 'test'
-    ? process.env.SHOPIFY_TOKEN
-    : process.env.SHOPIFY_TOKEN_TEST) as string,
-  domain: (process.env.SHOPIFY_STORE !== 'test'
-    ? process.env.SHOPIFY_DOMAIN
-    : process.env.SHOPIFY_DOMAIN_TEST) as string,
+  storefrontAccessToken: process.env.SHOPIFY_TOKEN as string,
+  domain: process.env.SHOPIFY_DOMAIN as string,
 });
 
 export class AdminController {
@@ -175,8 +171,8 @@ export class AdminController {
   async returnAllItems(): Promise<Client.Product[]> {
     const productIds = [
       Products.CONTROLSYSID,
+      Products.PCBCHIPID,
       Products.TESTBOARDID,
-      Products.UNIVEWODCHIPID,
     ];
     console.log(productIds);
     return client.product
@@ -283,12 +279,8 @@ export class AdminController {
   })
   async getApiToken(): Promise<object> {
     return {
-      token: (process.env.SHOPIFY_STORE !== 'test'
-        ? process.env.SHOPIFY_TOKEN
-        : process.env.SHOPIFY_TOKEN_TEST) as string,
-      domain: (process.env.SHOPIFY_STORE !== 'test'
-        ? process.env.SHOPIFY_DOMAIN
-        : process.env.SHOPIFY_DOMAIN_TEST) as string,
+      token: process.env.SHOPIFY_TOKEN as string,
+      domain: process.env.SHOPIFY_DOMAIN as string,
     };
   }
 

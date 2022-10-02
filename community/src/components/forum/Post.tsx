@@ -8,8 +8,8 @@ import {
 } from "@heroicons/react/outline";
 import { AxiosError } from "axios";
 import Cookies from "js-cookie";
-import { useEffect, useState } from "react";
-import { NavLink, useNavigate, useParams } from "react-router-dom";
+import { useCallback, useEffect, useState } from "react";
+import { Link, NavLink, useNavigate, useParams } from "react-router-dom";
 import API from "../../api/api";
 import { checkReact, react } from "../../api/react";
 import { post, postComments } from "../../api/serverConfig";
@@ -30,6 +30,7 @@ function Post() {
 	const [newComment, setNewComment] = useState<string>("");
 	const [comments, setComments] = useState<CommentType[]>([]);
 
+	// Fetch current post and set loading to false after fetch
 	useEffect(() => {
 		API.Request(post.replace("id", id as string), "GET", {}, false).then(
 			(res) => {
@@ -39,6 +40,7 @@ function Post() {
 		);
 	}, [id]);
 
+	// Fetch comments and sort based on time
 	useEffect(() => {
 		API.Request(
 			postComments.replace("id", id as string),
@@ -46,6 +48,7 @@ function Post() {
 			{},
 			false
 		).then((res) => {
+			// console.log("Top-level comments", res.data);
 			const comments: CommentType[] = res.data;
 			const sortedComments = comments.sort((a, b) =>
 				a.datetime < b.datetime ? 1 : -1
@@ -54,6 +57,7 @@ function Post() {
 		});
 	}, [id, newComment]);
 
+	// Check if post is saved initially
 	useEffect(() => {
 		if (currentPost.id) {
 			checkReact(
@@ -61,19 +65,13 @@ function Post() {
 				"Save",
 				Cookies.get("userId") as string,
 				currentPost.id
-			)
-				.then((res: boolean) => {
-					setSaved(res);
-				})
-				.catch((err: AxiosError) => {
-					if (err.response?.status === 401) {
-						// navigate("/login");
-					}
-					// console.log(err);
-				});
+			).then((res: boolean) => {
+				setSaved(res);
+			});
 		}
 	}, [currentPost]);
 
+	// Check if post is liked initially
 	useEffect(() => {
 		if (currentPost.id) {
 			checkReact(
@@ -81,16 +79,9 @@ function Post() {
 				"Like",
 				Cookies.get("userId") as string,
 				currentPost.id
-			)
-				.then((res: boolean) => {
-					setLiked(res);
-				})
-				.catch((err: AxiosError) => {
-					if (err.response?.status === 401) {
-						// navigate("/login");
-					}
-					// console.log(err);
-				});
+			).then((res: boolean) => {
+				setLiked(res);
+			});
 		}
 	}, [currentPost]);
 
@@ -117,7 +108,12 @@ function Post() {
 			Cookies.get("userId") as string,
 			currentPost.id as number
 		)
-			.then((res: boolean) => setLiked(res))
+			.then((res: boolean) => {
+				setLiked(res);
+				currentPost.likes = res
+					? currentPost.likes + 1
+					: currentPost.likes - 1;
+			})
 			.catch((err: AxiosError) => {
 				if (err.response?.status === 401) {
 					navigate("/login");
@@ -133,6 +129,7 @@ function Post() {
 			datetime: new Date(),
 			likes: 0,
 			userId: Cookies.get("userId") as string,
+			top: true,
 		};
 		API.Request(
 			postComments.replace("id", id ?? ""),
@@ -142,6 +139,7 @@ function Post() {
 		)
 			.then((res) => {
 				setNewComment("");
+				currentPost.comments = currentPost.comments + 1;
 			})
 			.catch((err: AxiosError) => {
 				if (err.response?.status === 401) {
@@ -177,7 +175,10 @@ function Post() {
 								/>
 							</div>
 							<p className="text-md">
-								{currentPost?.author} &#8226;{" "}
+								<Link to={`/profile/${currentPost?.userId}`}>
+									{currentPost?.author}
+								</Link>{" "}
+								&#8226;{" "}
 								{timeAgo(new Date(currentPost.datetime))}
 							</p>
 						</div>
@@ -211,7 +212,7 @@ function Post() {
 						<div className="flex flex-row space-x-2 border-b-2 border-black pb-2">
 							<h3 className="text-xl">Comments</h3>
 							<ChatAlt2Icon className="w-6 h-6" />
-							<p className="text-md"></p>
+							<p className="text-md">{currentPost?.comments}</p>
 						</div>
 						{expanded && (
 							<div
@@ -242,7 +243,10 @@ function Post() {
 						)}
 						<div className="flex flex-col space-y-2">
 							{comments.map((comment: CommentType) => (
-								<PostComment {...comment} key={comment.id} />
+								<PostComment
+									comment={comment}
+									key={comment.id}
+								/>
 							))}
 						</div>
 					</>

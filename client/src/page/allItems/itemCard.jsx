@@ -2,7 +2,6 @@ import React from 'react';
 import './itemCard.css';
 import { withRouter } from 'react-router';
 import { NavLink } from 'react-router-dom';
-import Cookies from 'js-cookie';
 
 class ItemCard extends React.Component {
   constructor(props) {
@@ -32,20 +31,21 @@ class ItemCard extends React.Component {
         </NavLink>
 
         <div className="product-text">
-          { this.props.product.description.length > 150
+          {/* { this.props.product.description.length > 150
             ? (
               <div>
                 {this.props.product.description.slice(0, 150)}
                 ...
               </div>
             )
-            : this.props.product.description}
+            : this.props.product.description} */}
+          {this.props.product.description}
         </div>
 
-        <div className="product-price">
+        {/* <div className="product-price">
           $
           {this.props.product.variants[0].price}
-        </div>
+        </div> */}
 
         <NavLink to={`/product?id=${this.props.id}`}>
           <button className="btn btn-primary">Details</button>

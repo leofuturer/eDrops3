@@ -1,7 +1,12 @@
 import {Entity, model, property, hasMany} from '@loopback/repository';
 import {PostComment} from './post-comment.model';
 
-@model()
+@model({
+  settings: {
+    description: 'Community site posts',
+    forceId: false,
+  },
+})
 export class Post extends Entity {
   @property({
     type: 'number',
@@ -15,8 +20,8 @@ export class Post extends Entity {
     required: true,
     mysql: {
       index: {
-        kind: 'FULLTEXT'
-      }
+        kind: 'FULLTEXT',
+      },
     },
   })
   author: string;
@@ -26,8 +31,8 @@ export class Post extends Entity {
     required: true,
     mysql: {
       index: {
-        kind: 'FULLTEXT'
-      }
+        kind: 'FULLTEXT',
+      },
     },
   })
   title: string;
@@ -37,9 +42,9 @@ export class Post extends Entity {
     required: true,
     mysql: {
       index: {
-        kind: 'FULLTEXT'
+        kind: 'FULLTEXT',
       },
-      dataType: 'LONGTEXT'
+      dataType: 'LONGTEXT',
     },
   })
   content: string;
@@ -57,7 +62,14 @@ export class Post extends Entity {
   likes: number;
 
   @property({
+    type: 'number',
+    required: true,
+  })
+  comments: number;
+
+  @property({
     type: 'string',
+    // required: true,
   })
   userId: string;
 
