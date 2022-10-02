@@ -8,39 +8,45 @@ flex box for spacing the 3 products evenly seems to force the three panels to be
 the same height. */
 
 .card {
-    background: #fff;
-    border: none;
-    border-radius: 5px;
-    box-shadow: 0px 1px 25px rgba(0, 0, 0, 0.1);
-    padding: 15px;
-    width: 300px;
-    margin: 25px auto;
+	background: #fff;
+	border: none;
+	border-radius: 5px;
+	box-shadow: 0px 1px 25px rgba(0, 0, 0, 0.1);
+	padding: 15px;
+	width: 300px;
+	margin: 25px auto;
 }
 
 .product-title {
-    display: table;
-    height: 50px;
-    width: 200px;
-    margin: 0 auto;
+	display: table;
+	height: 50px;
+	width: 200px;
+	margin: 0 auto;
 }
 
 .product-title h4 {
-    display: table-cell; 
-    vertical-align: middle;
+	display: table-cell;
+	vertical-align: middle;
 }
 
 .product-img {
-    width: 270px;
-    height: 270px;
+	width: 270px;
+	height: 270px;
 }
 
 .product-text {
-    padding: 5px 0px;
-    text-align: left;
-    height: 90px;
+	padding: 5px 0px;
+	text-align: left;
+	height: 90px;
+	text-overflow:ellipsis;
+  overflow:hidden;
+	display: -webkit-box !important;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  white-space: normal;
 }
 
 .product-price {
-    padding: 5px 0px;
-    font-weight: bold;
+	padding: 5px 0px;
+	font-weight: bold;
 }

@@ -2,13 +2,14 @@ import React from 'react';
 import { NavLink } from 'react-router-dom';
 import IMG_2943 from '../../../static/img/IMG_2943.jpg';
 import IMG_2941 from '../../../static/img/IMG_2941.jpg';
-import { controlSysId, univEwodChipId } from '../../constants';
-import eDropsLogo from '../../../static/img/edrop_logo.png';
+import pcb_chip from '../../../static/img/pcb_chip.jpg'
+import { controlSysId, pcbChipId, univEwodChipId } from '../../constants';
+import eDropsLogo from "../../../static/img/edrop_logo.png";
 
 class FooterPage extends React.Component {
   render() {
     const controlSysPageLink = `/product?id=${controlSysId}`;
-    const ewodChipPageLink = `/product?id=${univEwodChipId}`;
+    const pcbChipPageLink = `/product?id=${pcbChipId}`;
     return (
       <footer className="footer-top-level">
         <div className="hr-div-login" />
@@ -19,12 +20,12 @@ class FooterPage extends React.Component {
             </div>
             <h3 className="edrop-txt">eDrops</h3>
             {/* <p className="i-p"> */}
-            {/* <i className="fa fa-twitter"></i> */}
-            {/* <i className="fa fa-facebook"></i> */}
-            {/* <i className="fa fa-youtube"></i> */}
+              {/* <i className="fa fa-twitter"></i> */}
+              {/* <i className="fa fa-facebook"></i> */}
+              {/* <i className="fa fa-youtube"></i> */}
             {/* </p> */}
             <p>
-              &copy; eDrops 2018-2021
+              &copy; eDrops 2018-2022
             </p>
           </div>
           <div className="top-title">
@@ -51,8 +52,8 @@ class FooterPage extends React.Component {
           </div>
           <div className="top-title">
             <h3 className="other-txt">Featured Products</h3>
-            <p className="pic-div">
-              <NavLink to={controlSysPageLink}>EWOD Control System</NavLink>
+            <NavLink to={controlSysPageLink} className="pic-div">
+              <p>Digital Microfluidics Control System</p>
               <img
                 className="right-inline"
                 src={IMG_2943}
@@ -60,17 +61,17 @@ class FooterPage extends React.Component {
                 width="30"
                 height="30"
               />
-            </p>
-            <p className="pic-div">
-              <NavLink to={ewodChipPageLink}>Universal EWOD Chip</NavLink>
+            </NavLink>
+            <NavLink to={pcbChipPageLink} className="pic-div">
+              <p>PCB-based Digital Microfluidics Chip</p>
               <img
                 className="right-inline"
-                src={IMG_2941}
+                src={pcb_chip}
                 alt=""
                 width="30"
                 height="30"
               />
-            </p>
+            </NavLink>
           </div>
         </div>
         <div className="footer-bottom" />

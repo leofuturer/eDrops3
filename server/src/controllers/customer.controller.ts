@@ -35,7 +35,7 @@ export class CustomerController {
         'application/json': {
           schema: {
             type: 'object',
-          }
+          },
           // schema: getModelSchemaRef(Customer, {
           //   title: 'NewCustomer',
           //   exclude: ['id'],
@@ -157,22 +157,23 @@ export class CustomerController {
   async verify(
     @param.query.string('customerId') customerId: string,
     @param.query.string('token') verificationToken: string,
-    @inject(RestBindings.Http.RESPONSE) response: Response
+    @inject(RestBindings.Http.RESPONSE) response: Response,
   ): Promise<Customer> {
-    const customer = await this.customerRepository.verifyEmail(customerId, verificationToken);
+    const customer = await this.customerRepository.verifyEmail(
+      customerId,
+      verificationToken,
+    );
     console.log(customer);
     if (!customer) {
       throw new HttpErrors.NotFound('Customer not found');
     }
-    if(customer.emailVerified) {
-      response.redirect('/emailVerified')
-    }
-    else {
-      response.redirect('/emailVerifyInvalid')
+    if (customer.emailVerified) {
+      response.redirect('/emailVerified');
+    } else {
+      response.redirect('/emailVerifyInvalid');
     }
     return customer;
   }
-
 
   @get('/customers/getApi')
   @response(200, {
@@ -198,14 +199,8 @@ export class CustomerController {
   })
   async getApiToken(): Promise<object> {
     return {
-      info: {
-        token: (process.env.SHOPIFY_STORE !== 'test'
-          ? process.env.SHOPIFY_TOKEN
-          : process.env.SHOPIFY_TOKEN_TEST) as string,
-        domain: (process.env.SHOPIFY_STORE !== 'test'
-          ? process.env.SHOPIFY_DOMAIN
-          : process.env.SHOPIFY_DOMAIN_TEST) as string,
-      },
+      token: process.env.SHOPIFY_TOKEN as string,
+      domain: process.env.SHOPIFY_DOMAIN as string,
     };
   }
 
@@ -274,7 +269,7 @@ export class CustomerController {
       .catch(err => {
         throw new HttpErrors.InternalServerError(err);
       });
-    
+
     return {usernameTaken, emailTaken};
   }
 }

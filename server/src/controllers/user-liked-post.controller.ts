@@ -1,15 +1,8 @@
-import { authenticate } from '@loopback/authentication';
-import {
-  Filter,
-  repository
-} from '@loopback/repository';
-import {
-  del,
-  get,
-  getModelSchemaRef, param, post
-} from '@loopback/rest';
-import { LikedPost, Post, User } from '../models';
-import { PostRepository, UserRepository } from '../repositories';
+import {authenticate} from '@loopback/authentication';
+import {Filter, repository} from '@loopback/repository';
+import {del, get, getModelSchemaRef, param, post} from '@loopback/rest';
+import {LikedPost, Post, User} from '../models';
+import {PostRepository, UserRepository} from '../repositories';
 
 export class UserLikedPostController {
   constructor(
@@ -34,7 +27,9 @@ export class UserLikedPostController {
     @param.path.string('id') id: string,
     @param.query.object('filter') filter?: Filter<Post>,
   ): Promise<Post[]> {
-    const likedPosts : Post[] = await this.userRepository.likedPosts(id).find(filter);
+    const likedPosts: Post[] = await this.userRepository
+      .likedPosts(id)
+      .find(filter);
     return likedPosts;
   }
 
@@ -55,7 +50,9 @@ export class UserLikedPostController {
     @param.path.string('id') id: string,
     @param.path.number('postId') postId: typeof Post.prototype.id,
   ): Promise<Post> {
-    const likedPosts = await this.userRepository.likedPosts(id).find({where: {id: postId}});
+    const likedPosts = await this.userRepository
+      .likedPosts(id)
+      .find({where: {id: postId}});
     return likedPosts[0];
   }
 
@@ -71,7 +68,16 @@ export class UserLikedPostController {
     @param.path.string('id') id: typeof User.prototype.id,
     @param.path.number('postId') postId: typeof Post.prototype.id,
   ): Promise<void> {
-    return this.userRepository.likedPosts(id).link(postId);
+    this.userRepository
+      .likedPosts(id)
+      .link(postId)
+      .then(() =>
+        this.postRepository
+          .findById(postId)
+          .then(post =>
+            this.postRepository.updateById(postId, {likes: post.likes + 1}),
+          ),
+      );
   }
 
   @authenticate('jwt')
@@ -86,6 +92,15 @@ export class UserLikedPostController {
     @param.path.string('id') id: typeof User.prototype.id,
     @param.path.number('postId') postId: typeof Post.prototype.id,
   ): Promise<void> {
-    return this.userRepository.likedPosts(id).unlink(postId);
+    return this.userRepository
+      .likedPosts(id)
+      .unlink(postId)
+      .then(() => {
+        this.postRepository
+          .findById(postId)
+          .then(post =>
+            this.postRepository.updateById(postId, {likes: post.likes - 1}),
+          );
+      });
   }
 }

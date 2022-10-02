@@ -3,19 +3,20 @@ import {OrderItemBase} from '.';
 import {FileInfo} from './file-info.model';
 import {FoundryWorker} from './foundry-worker.model';
 
-@model({
-  settings: {
-    plural: 'orderChips',
-    remoting: {
-      sharedMethods: {
-        '*': false,
-        deleteById: true,
-        'prototype.patchAttributes': true,
-        'prototype.replaceById': true
-      }
-    },
-  }
-})
+// @model({
+//   settings: {
+//     plural: 'orderChips',
+//     remoting: {
+//       sharedMethods: {
+//         '*': false,
+//         deleteById: true,
+//         'prototype.patchAttributes': true,
+//         'prototype.replaceById': true
+//       }
+//     },
+//   }
+// })
+@model({settings: {description: 'Chip order information'}})
 export class OrderChip extends OrderItemBase {
   @property({
     type: 'string',
@@ -42,18 +43,6 @@ export class OrderChip extends OrderItemBase {
   })
   status: string;
 
-  @property({
-    type: 'string',
-    required: false,
-  })
-  workerName: string;
-
-  @property({
-    type: 'string',
-    required: false,
-  })
-  customerName: string;
-  
   @belongsTo(() => FileInfo)
   fileInfoId: number;
 

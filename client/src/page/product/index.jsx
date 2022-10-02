@@ -2,25 +2,24 @@ import React from 'react';
 import { withRouter, NavLink } from 'react-router-dom';
 import './product.css';
 import Cookies from 'js-cookie';
-import hoistNonReactStatics from 'hoist-non-react-statics';
-import { Buffer } from 'buffer';
 import {
   univEwodChipId,
   univEwodChipWithCoverPlate,
   univEwodChipWithoutCoverPlate,
   productIdsJson,
-  getProductType,
+  getProductType
 } from '../../constants';
 import {
   getCustomerCart,
   manipulateCustomerOrders,
   addOrderProductToCart, returnOneItem,
-  getProductOrders,
+  getProductOrders
 } from '../../api/serverConfig';
 import API from '../../api/api';
 import Shopify from '../../app.jsx';
 import loadingGif from '../../../static/img/loading80px.gif';
 import CartContext from '../../context/CartContext';
+import hoistNonReactStatics from 'hoist-non-react-statics';
 
 class Product extends React.Component {
   constructor(props) {
@@ -43,6 +42,7 @@ class Product extends React.Component {
     const url = `${returnOneItem}?productId=${shopifyProductId}`;
     API.Request(url, 'GET', {}, false)
       .then((res) => {
+        console.log(res);
         this.setState({
           product: res.data,
           fetchedProduct: true,
@@ -71,6 +71,7 @@ class Product extends React.Component {
   componentDidMount() {
     if (this.props.location.search === '') {
       this.props.history.push('/allItems'); // redirect if no ID provided
+      return;
     } else {
       this.fetchProductData(this.props.location.search.slice(4));
     }
@@ -83,11 +84,12 @@ class Product extends React.Component {
       },
     );
     if (key === 'bundleSize') {
-      const productType = getProductType(this.state.product.id);
+      let productType = getProductType(this.state.product.id);
       this.fetchProductData(productIdsJson[productType][value]);
     }
     // console.log(this.state)
   }
+
 
   handleOptionsChange(key, value) {
     const newData = {
@@ -218,11 +220,11 @@ class Product extends React.Component {
         customServerOrderAttributes += `${k}: ${v}\n`;
       }
     }
-    const variantId = _this.state.product.id !== productIdsJson.UNIVEWODCHIPID[_this.state.bundleSize]
+    const variantId = _this.state.product.id !== productIdsJson['UNIVEWODCHIPID'][_this.state.bundleSize]
       ? _this.state.product.variants[0].id
       : (_this.state.otherDetails.withCoverPlateAssembled
-        ? productIdsJson.UNIVEWODCHIPWITHCOVERPLATE[_this.state.bundleSize]
-        : productIdsJson.UNIVEWODCHIPWITHOUTCOVERPLATE[_this.state.bundleSize]);
+        ? productIdsJson['UNIVEWODCHIPWITHCOVERPLATE'][_this.state.bundleSize]
+        : productIdsJson['UNIVEWODCHIPWITHOUTCOVERPLATE'][_this.state.bundleSize]);
     // console.log(variantId);
     const lineItemsToAdd = [{
       variantId,
@@ -294,6 +296,7 @@ class Product extends React.Component {
 
   render() {
     const { product } = this.state;
+    console.log(product)
     const desiredProductId = this.props.location.search.slice(4); // get id after id?=
     return (
       <div className="order-container">
@@ -303,7 +306,7 @@ class Product extends React.Component {
               <div>
                 <div className="shop-left-content">
                   <div className="div-img">
-                    <img src={this.state.product.variants[0].image.src} />
+                    <img src={product.variants[0].image.src} />
                   </div>
                 </div>
                 <div className="shop-right-content">
@@ -331,8 +334,9 @@ class Product extends React.Component {
 
                       <div className="div-price-quantity">
                         <div className="div-product-price">
-                          Price: $
-                          {product.variants[0].price}
+                          Price: Coming soon
+                          {/* Price: $
+                          {product.variants[0].price} */}
                         </div>
                         <div className="div-product-selection">
                           <div className="div-product-quantity">
@@ -355,7 +359,7 @@ class Product extends React.Component {
                         </div>
                       </div>
                       <div>
-                        {this.state.addedToCart
+                        {/* {this.state.addedToCart
                           ? (
                             <div className="cart-btn">
                               <input
@@ -366,8 +370,14 @@ class Product extends React.Component {
                               />
                             </div>
                           )
-                          : <img className="loading-GIF" src={loadingGif} alt="" />}
-
+                          : <img className="loading-GIF" src={loadingGif} alt="" />} */}
+                        <div className="cart-btn">
+                          <input
+                            type="button"
+                            value="Coming soon"
+                            className="btn btn-primary btn-lg btn-block"
+                          />
+                        </div>
                         <div className="tax-info">Note: Price excludes sales tax</div>
                       </div>
                     </div>

@@ -5,8 +5,8 @@ import {
   HasManyThroughRepositoryFactory,
 } from '@loopback/repository';
 import {MysqlDsDataSource} from '../datasources';
-import {PostComment, PostCommentRelations, CommentLink} from '../models';
-import {CommentLinkRepository} from './comment-link.repository';
+import {PostComment, PostCommentRelations, PostCommentLink} from '../models';
+import {PostCommentLinkRepository} from './post-comment-link.repository';
 
 export class PostCommentRepository extends DefaultCrudRepository<
   PostComment,
@@ -16,20 +16,20 @@ export class PostCommentRepository extends DefaultCrudRepository<
   public readonly postComments: HasManyThroughRepositoryFactory<
     PostComment,
     typeof PostComment.prototype.id,
-    CommentLink,
+    PostCommentLink,
     typeof PostComment.prototype.id
   >;
 
   constructor(
     @inject('datasources.mysqlDS') dataSource: MysqlDsDataSource,
-    @repository.getter('CommentLinkRepository')
-    protected commentLinkRepositoryGetter: Getter<CommentLinkRepository>,
+    @repository.getter('PostCommentLinkRepository')
+    protected postCommentLinkRepositoryGetter: Getter<PostCommentLinkRepository>,
   ) {
     super(PostComment, dataSource);
     this.postComments = this.createHasManyThroughRepositoryFactoryFor(
       'postComments',
       Getter.fromValue(this),
-      commentLinkRepositoryGetter,
+      postCommentLinkRepositoryGetter,
     );
     this.registerInclusionResolver(
       'postComments',

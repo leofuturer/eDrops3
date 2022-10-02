@@ -1,8 +1,12 @@
-import {Entity, model, property} from '@loopback/repository';
+import {Entity, model, property, hasMany} from '@loopback/repository';
+import { ProjectComment } from './project-comment.model';
+import {ProjectFile} from './project-file.model';
+import {ProjectLink} from './project-link.model';
 
 @model({
   settings: {
-    allowExtendedOperators: true
+    description: 'Community site projects',
+    forceId: false,
   }
 })
 export class Project extends Entity {
@@ -61,14 +65,23 @@ export class Project extends Entity {
 
   @property({
     type: 'number',
-    required: false,
+    required: true,
   })
-  dislikes: number;
+  comments: number;
 
   @property({
     type: 'string',
   })
   userId: string;
+
+  @hasMany(() => ProjectFile)
+  projectFiles: ProjectFile[];
+
+  @hasMany(() => ProjectLink)
+  projectLinks: ProjectLink[];
+
+  @hasMany(() => ProjectComment)
+  projectComments: ProjectComment[];
 
   constructor(data?: Partial<Project>) {
     super(data);

@@ -18,7 +18,7 @@ import {
 	UserIcon as UserIconOutline,
 } from "@heroicons/react/outline";
 import Cookies from "js-cookie";
-import { signout } from "../lib/auth";
+import { signout } from "../api/auth";
 
 function NavTop() {
 	const navigate = useNavigate();
