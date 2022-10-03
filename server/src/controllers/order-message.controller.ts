@@ -59,9 +59,13 @@ export class OrderMessageController {
       message: orderMessage.message,
       userConvId: orderMessage.userConvId,
 <<<<<<< HEAD
+<<<<<<< HEAD
       date: orderMessage.messageDate,
 =======
 >>>>>>> Completes messaging API and database changes
+=======
+      date: orderMessage.messageDate,
+>>>>>>> Adds date field to message table
     };
     pusher.trigger(`chat-${orderMessage.orderId}`, 'new-message', newMsgEntry);
     return this.orderMessageRepository.create(orderMessage);
