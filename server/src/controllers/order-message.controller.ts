@@ -58,6 +58,7 @@ export class OrderMessageController {
     const newMsgEntry = {
       message: orderMessage.message,
       userConvId: orderMessage.userConvId,
+      date: orderMessage.messageDate,
     };
     pusher.trigger(`chat-${orderMessage.orderId}`, 'new-message', newMsgEntry);
     return this.orderMessageRepository.create(orderMessage);
