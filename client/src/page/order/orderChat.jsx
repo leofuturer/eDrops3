@@ -108,6 +108,7 @@ class OrderChat extends React.Component {
       "orderId": Number(this.state.orderId),
       "message": String(msg),
       "userConvId": Number(this.state.userType),
+      "messageDate": new Date(),
     }; 
     
     const appendUrl = addOrderMessage;//.replace('id', this.state.orderId);

@@ -27,6 +27,11 @@ export class OrderMessage extends Entity {
   })
   userConvId: number;
 
+  @property({
+    type: 'date',
+    required: true,
+  })
+  messageDate: Date;
   // Define well-known properties here
 
   // Indexer property to allow additional data
