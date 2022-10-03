@@ -138,9 +138,13 @@ class OrderChat extends React.Component {
       "message": String(msg),
       "userConvId": Number(this.state.userType),
 <<<<<<< HEAD
+<<<<<<< HEAD
       "messageDate": new Date(),
 =======
 >>>>>>> Completes messaging API and database changes
+=======
+      "messageDate": new Date(),
+>>>>>>> Adds date field to message table
     }; 
     
     const appendUrl = addOrderMessage;//.replace('id', this.state.orderId);
