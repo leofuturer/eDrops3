@@ -1,17 +1,7 @@
-import API from './api/api';
-import { getApiToken } from './api/serverConfig';
+// import API from './api/api';
+// import { getApiToken } from './api/serverConfig';
 
-let mode;
-(async () => {
-  mode = await API.Request(getApiToken, 'GET', {}, false).then(
-    (res) => {
-      if (res.data.domain === 'edrops-store.myshopify.com') {
-        return true; // true for production store
-      }
-      return false; // false for development/test store
-    },
-  );
-})();
+let mode = true; // true for production, false for development
 
 // product IDs (first is production store, second is test store)
 export const controlSysId = mode ? 'Z2lkOi8vc2hvcGlmeS9Qcm9kdWN0LzcwMTE4ODI2OTY4ODA=' : 'Z2lkOi8vc2hvcGlmeS9Qcm9kdWN0LzQ1OTU3Njc0NDM0OTA=';
