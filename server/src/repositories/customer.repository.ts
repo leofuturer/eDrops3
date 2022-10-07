@@ -253,17 +253,17 @@ export class CustomerRepository extends DefaultCrudRepository<
       throw new HttpErrors.NotFound('Customer not found');
     }
     const currentTime = new Date();
-    if (
-      customer?.verificationToken === verificationToken &&
-      (customer?.verificationTokenExpires ?? currentTime) > currentTime
-    ) {
-      this.updateById(customerId, {
-        emailVerified: true,
-      });
-    } else {
-      throw new HttpErrors.BadRequest('Invalid verification token');
-    }
-    return customer;
+    return await this.updateById(customerId, {
+      emailVerified:
+        customer?.verificationToken === verificationToken &&
+        (customer?.verificationTokenExpires ?? currentTime) > currentTime,
+    }).then(
+      () => { 
+        return this.findById(customerId)
+      }
+    ).catch(err => {
+      throw new HttpErrors.InternalServerError(err.message);
+    });
   }
 
   async getCustomerCart(
