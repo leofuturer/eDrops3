@@ -36,12 +36,11 @@ class Home extends React.Component {
             <div className="txt">
               <h1>Foundry<br />Service</h1>
               <div className="txt-bg">
-                {/* {
+                {
                   Cookies.get('userType') === 'customer'
                     ? <NavLink to="/upload">UPLOAD MASK FILE</NavLink>
                     : <NavLink to="/login">UPLOAD MASK FILE</NavLink>
-                } */}
-                COMING SOON
+                }
               </div>
             </div>
           </div>
