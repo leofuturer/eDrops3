@@ -28,30 +28,33 @@ class NavTop extends React.Component {
   }
 
   signout() {
-    let url = '';
-    if (Cookies.get('userType') === 'admin') {
-      url = AdminLogout;
-    } else if (Cookies.get('userType') === 'customer') {
-      url = customerLogout;
-    } else if (Cookies.get('userType') === 'worker') {
-      url = FoundryWorkerLogout;
-    }
+    // let url = '';
+    // if (Cookies.get('userType') === 'admin') {
+    //   url = AdminLogout;
+    // } else if (Cookies.get('userType') === 'customer') {
+    //   url = customerLogout;
+    // } else if (Cookies.get('userType') === 'worker') {
+    //   url = FoundryWorkerLogout;
+    // }
     Cookies.remove('userType');
     Cookies.remove('username');
     Cookies.remove('userId');
-    API.Request(url, 'POST', {}, true)
-      .then((res) => {
-        Cookies.remove('access_token');
-        API.Request(userLogout, 'POST', {}, true)
-          .then((res) => {
-            Cookies.remove('base_access_token');
-            this.setState({ show: false });
-            this.props.history.push('/home');
-          });
-      })
-      .catch((err) => {
-        console.error(err);
-      });
+    Cookies.remove('access_token');
+    Cookies.remove('base_access_token');
+    // Maybe look into this later to see what can be done server-side for logout/token invalidation
+    // API.Request(url, 'POST', {}, true)
+    //   .then((res) => {
+    //     Cookies.remove('access_token');
+    //     API.Request(userLogout, 'POST', {}, true)
+    //       .then((res) => {
+    //         Cookies.remove('base_access_token');
+    //         this.setState({ show: false });
+    //         this.props.history.push('/home');
+    //       });
+    //   })
+    //   .catch((err) => {
+    //     console.error(err);
+    //   });
   }
 
   handleHideDrown() {
