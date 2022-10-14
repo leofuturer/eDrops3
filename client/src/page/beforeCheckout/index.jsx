@@ -1,7 +1,7 @@
 import React from 'react';
 import Cookies from 'js-cookie';
 import { withRouter } from 'react-router-dom';
-import { customerGetProfile, customerAddresses } from '../../api/serverConfig';
+import { customerGetProfile, customerAddresses, modifyChipOrders } from '../../api/serverConfig';
 import API from '../../api/api';
 import SingleAddress from './singleAddress.jsx';
 import './beforeCheckout.css';
@@ -108,7 +108,8 @@ class BeforeCheckout extends React.Component {
               .then((instance) => {
                 instance.checkout.updateShippingAddress(this.state.shopifyCheckoutId, shippingAddr)
                   .then((res) => {
-                    // console.log(res);
+                    console.log(res);
+                    
 
                     window.location.replace(`${this.state.shopifyCheckoutLink}`);
                   })

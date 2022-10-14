@@ -1,3 +1,4 @@
+import {authenticate} from '@loopback/authentication';
 import {inject} from '@loopback/core';
 import {CountSchema, Filter, repository} from '@loopback/repository';
 import {
@@ -50,6 +51,7 @@ export class CustomerFileInfoController {
     return this.customerRepository.fileInfos(id).find(filter);
   }
 
+  @authenticate('jwt')
   @post('/customers/{id}/uploadFile', {
     responses: {
       '200': {
@@ -60,8 +62,7 @@ export class CustomerFileInfoController {
   })
   async fileUpload(
     @param.path.string('id') id: typeof Customer.prototype.id,
-    @requestBody.file()
-    request: Request,
+    @requestBody.file() request: Request,
     @inject(RestBindings.Http.RESPONSE) response: Response,
   ): Promise<object> {
     const username = await this.customerRepository

@@ -1,34 +1,35 @@
 import {model, property, belongsTo, Entity} from '@loopback/repository';
 import {User} from '.';
 
-@model({
-  settings: {
-    validateUpsert: true,
-    idInjection: true,
-    remoting: {
-      sharedMethods: {
-        '*': false,
-        create: true,
-        findById: true,
-        deleteById: true,
-        'prototype.patchAttributes': true,
-        'prototype.replaceById': true,
-        find: true,
-        credsTaken: true,
-        login: true,
-        logout: true,
-        resetPassword: true,
-        setPassword: true,
-        changePassword: true,
-        getApiToken: true,
-        returnAllItems: true,
-        returnOneItem: true,
-        downloadFile: true,
-        getChipOrders: true
-      }
-    },
-  }
-})
+// @model({
+//   settings: {
+//     validateUpsert: true,
+//     idInjection: true,
+//     remoting: {
+//       sharedMethods: {
+//         '*': false,
+//         create: true,
+//         findById: true,
+//         deleteById: true,
+//         'prototype.patchAttributes': true,
+//         'prototype.replaceById': true,
+//         find: true,
+//         credsTaken: true,
+//         login: true,
+//         logout: true,
+//         resetPassword: true,
+//         setPassword: true,
+//         changePassword: true,
+//         getApiToken: true,
+//         returnAllItems: true,
+//         returnOneItem: true,
+//         downloadFile: true,
+//         getChipOrders: true
+//       }
+//     },
+//   }
+// })
+@model({settings: {description: 'Additional admin information', forceId: false}})
 export class Admin extends User {
   // @property({
   //   type: 'number',
@@ -37,7 +38,7 @@ export class Admin extends User {
   //   updateOnly: true,
   // })
   // id?: number;
-  
+
   @property({
     type: 'string',
   })

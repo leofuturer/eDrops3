@@ -1,4 +1,4 @@
-export default process.env.SHOPIFY_STORE !== 'test'
+export default process.env.SHOPIFY_DOMAIN === 'edrops-store.myshopify.com'
   ? {
       CONTROLSYSID: 'Z2lkOi8vc2hvcGlmeS9Qcm9kdWN0LzcwMTE4ODI2OTY4ODA=',
       CONTROLSYSID5: 'Z2lkOi8vc2hvcGlmeS9Qcm9kdWN0LzcwNDA3NzM0ODg4MTY=',
@@ -9,6 +9,9 @@ export default process.env.SHOPIFY_STORE !== 'test'
       UNIVEWODCHIPID: 'Z2lkOi8vc2hvcGlmeS9Qcm9kdWN0LzcwMTE4ODI1OTg1NzY=',
       UNIVEWODCHIPID5: 'Z2lkOi8vc2hvcGlmeS9Qcm9kdWN0LzcwNDA3NzU0NTQ4OTY=',
       UNIVEWODCHIPID10: 'Z2lkOi8vc2hvcGlmeS9Qcm9kdWN0LzcwNDA3NzU1ODU5Njg=',
+      PCBCHIPID: 'Z2lkOi8vc2hvcGlmeS9Qcm9kdWN0LzcxODgyMjMzNjEyMDA=',
+      PCBCHIPID5: 'Z2lkOi8vc2hvcGlmeS9Qcm9kdWN0LzcxODgyMjQzNzcwMDg=',
+      PCBCHIPID10: 'Z2lkOi8vc2hvcGlmeS9Qcm9kdWN0LzcxODgyMjQ0MDk3NzY=',
     }
   : {
       CONTROLSYSID: 'Z2lkOi8vc2hvcGlmeS9Qcm9kdWN0LzQ1OTU3Njc0NDM0OTA=',
@@ -20,4 +23,7 @@ export default process.env.SHOPIFY_STORE !== 'test'
       UNIVEWODCHIPID: 'Z2lkOi8vc2hvcGlmeS9Qcm9kdWN0LzQ1OTk0ODUwMzg2MjY=',
       UNIVEWODCHIPID5: 'Z2lkOi8vc2hvcGlmeS9Qcm9kdWN0LzY5ODA1MjQ3MzY1NDY=',
       UNIVEWODCHIPID10: 'Z2lkOi8vc2hvcGlmeS9Qcm9kdWN0LzY5ODA1MjQ3MDM3Nzg=',
+      PCBCHIPID: 'Z2lkOi8vc2hvcGlmeS9Qcm9kdWN0LzQ1OTk0ODUwMzg2MjY=', // same as UNIVEWODCHIPID on test store
+      PCBCHIPID5: 'Z2lkOi8vc2hvcGlmeS9Qcm9kdWN0LzY5ODA1MjQ3MzY1NDY=', // same as UNIVEWODCHIPID5 on test store
+      PCBCHIPID10: 'Z2lkOi8vc2hvcGlmeS9Qcm9kdWN0LzY5ODA1MjQ3MDM3Nzg=', // same as UNIVEWODCHIPID10 on test store
     };

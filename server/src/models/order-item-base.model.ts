@@ -1,12 +1,13 @@
 import {Entity, model, property} from '@loopback/repository';
 
-@model({
-  settings: {
-    validateUpsert: true,
-    plural: 'orderItemBase',
-    idInjection: true,
-  }
-})
+// @model({
+//   settings: {
+//     validateUpsert: true,
+//     plural: 'orderItemBase',
+//     idInjection: true,
+//   }
+// })
+@model({settings: {description: 'Order item base information'}})
 export class OrderItemBase extends Entity {
   @property({
     type: 'number',

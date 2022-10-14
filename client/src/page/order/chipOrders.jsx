@@ -42,7 +42,7 @@ class ChipOrders extends React.Component {
     let url = '';
     if (Cookies.get('userType') === 'customer') {
       url = customerGetChipOrders.replace('id', Cookies.get('userId'));
-    } else if (Cookies.get('userType') === 'worker') {
+    } else if (Cookies.get('userType') === 'foundryWorker') {
       url = workerGetChipOrders.replace('id', Cookies.get('userId'));
     } else if (Cookies.get('userType') === 'admin') {
       url = adminGetChipOrders;
