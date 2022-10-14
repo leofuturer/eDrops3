@@ -1,4 +1,4 @@
-import { intercept } from '@loopback/core';
+import {intercept} from '@loopback/core';
 import {
   Count,
   CountSchema,
@@ -16,21 +16,23 @@ import {
   post,
   requestBody,
 } from '@loopback/rest';
-import { AuthorInterceptor } from '../interceptors';
-import {PostComment, CommentLink} from '../models';
-import { PostCommentRepository } from '../repositories';
+import {AuthorInterceptor} from '../interceptors';
+import {PostComment, PostCommentLink} from '../models';
+import {PostCommentRepository, PostRepository} from '../repositories';
 
 export class PostCommentPostCommentController {
   constructor(
     @repository(PostCommentRepository)
     protected postCommentRepository: PostCommentRepository,
+    @repository(PostRepository)
+    protected postRepository: PostRepository,
   ) {}
 
   @get('/postComments/{id}/postComments', {
     responses: {
       '200': {
         description:
-          'Array of PostComment has many PostComment through CommentLink',
+          'Array of PostComment has many PostComment through PostCommentLink',
         content: {
           'application/json': {
             schema: {type: 'array', items: getModelSchemaRef(PostComment)},
@@ -43,7 +45,7 @@ export class PostCommentPostCommentController {
     @param.path.number('id') id: number,
     @param.query.object('filter') filter?: Filter<PostComment>,
   ): Promise<PostComment[]> {
-    return this.postCommentRepository.postComments(id).find(filter);
+    return this.postCommentRepository.postComments(id).find({...filter, where: { top: false }});
   }
 
   @intercept(AuthorInterceptor.BINDING_KEY)
@@ -69,7 +71,20 @@ export class PostCommentPostCommentController {
     })
     postComment: Omit<PostComment, 'id'>,
   ): Promise<PostComment> {
-    return this.postCommentRepository.postComments(id).create(postComment);
+    return this.postCommentRepository
+      .postComments(id)
+      .create(postComment)
+      .then(async postComment => {
+        const postId = await this.postCommentRepository
+          .findById(id)
+          .then(postComment => postComment.postId);
+        this.postRepository.findById(postId).then(post => {
+          this.postRepository.updateById(postId, {
+            comments: post.comments + 1,
+          });
+        });
+        return postComment;
+      });
   }
 
   @patch('/postComments/{id}/postComments', {
@@ -111,6 +126,21 @@ export class PostCommentPostCommentController {
     @param.query.object('where', getWhereSchemaFor(PostComment))
     where?: Where<PostComment>,
   ): Promise<Count> {
-    return this.postCommentRepository.postComments(id).delete(where);
+    return this.postCommentRepository
+      .postComments(id)
+      .delete(where)
+      .then(async count => {
+        const postId = await this.postCommentRepository
+          .findById(id)
+          .then(postComment => {
+            return postComment.postId;
+          });
+        this.postRepository.findById(postId).then(post => {
+          this.postRepository.updateById(postId, {
+            comments: post.comments - count.count,
+          });
+        });
+        return count;
+      });
   }
 }

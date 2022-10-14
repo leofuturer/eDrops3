@@ -2,7 +2,7 @@ import Cookies from "js-cookie";
 import React, { useEffect, useState } from "react";
 import { NavLink, useParams } from "react-router-dom";
 import {
-	userBaseFind,
+	users,
 	userPosts,
 	userProjects,
 	userSavedPosts,
@@ -18,12 +18,12 @@ import {
 } from "@heroicons/react/solid";
 import ProfileInfo from "../components/profile/ProfileInfo";
 import ProfileEdit from "../components/profile/ProfileEdit";
-import { PostType, ProjectType, UserProfile } from "../lib/types";
+import { PostType, ProjectType, UserProfileType } from "../lib/types";
 import ProjectPreview from "../components/project/ProjectPreview";
 import PostPreview from "../components/forum/PostPreview";
 
 function Profile(): JSX.Element {
-	const [user, setUser] = useState<UserProfile>({} as UserProfile);
+	const [user, setUser] = useState<UserProfileType>({} as UserProfileType);
 	const [feedData, setFeedData] = useState<PostType[] | ProjectType[]>([]);
 	const [feed, setFeed] = useState<"Projects" | "Questions">("Projects");
 	const [feedType, setFeedType] = useState<"Activity" | "Saved">("Activity");
@@ -35,14 +35,12 @@ function Profile(): JSX.Element {
 	// If looking for a specific user (e.g. /profile/:id) then set the userId to the id, otherwise set it to the current user
 	useEffect(() => {
 		const userId = id ? id : Cookies.get("userId");
-		API.Request(`${userBaseFind}/${userId}`, "GET", {}, false).then(
-			(res) => {
-				setUser(res.data);
-			}
-		);
+		API.Request(`${users}/${userId}`, "GET", {}, false).then((res) => {
+			setUser(res.data);
+		});
 	}, [id]);
 
-	// TODO: Setup API endpoint to retrieve a user's projects (in order to get count and list)
+	// Object mapping feed types to their respective API calls
 	const FEED = {
 		Projects: {
 			Activity: userProjects,
@@ -53,6 +51,7 @@ function Profile(): JSX.Element {
 			Saved: userSavedPosts,
 		},
 	};
+	// Get feed data from API
 	useEffect(() => {
 		API.Request(
 			FEED[feed][feedType].replace("id", Cookies.get("userId") as string),
@@ -80,17 +79,19 @@ function Profile(): JSX.Element {
 	return (
 		<section className="grid grid-cols-3 min-h-full bg-slate-200">
 			<div className="sticky top-[80px] h-[calc(100vh-80px)] flex flex-col bg-white shadow-2xl items-center justify-center">
-				<div
-					className="absolute top-4 right-4 cursor-pointer"
-					onClick={() => setEdit(!edit)}
-				>
-					{edit ? (
-						<SaveIcon className="h-6 w-6" />
-					) : (
-						<PencilIcon className="h-6 w-6" />
-					)}
-				</div>
-				{edit ? (
+				{user.id === Cookies.get("userId") && (
+					<div
+						className="absolute top-4 right-4 cursor-pointer"
+						onClick={() => setEdit(!edit)}
+					>
+						{edit ? (
+							<SaveIcon className="h-6 w-6" />
+						) : (
+							<PencilIcon className="h-6 w-6" />
+						)}
+					</div>
+				)}
+				{edit && user.id === Cookies.get("userId") ? (
 					<ProfileEdit user={user} />
 				) : (
 					<ProfileInfo user={user} />

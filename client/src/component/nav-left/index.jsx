@@ -205,7 +205,7 @@ class NavLeft extends React.Component {
                         <li>
                           <NavLink to={filePath} activeStyle={{ width: '117px', borderLeft: '3px solid #428bca', color: '#428bca' }}>
                             <span className="icon-nav"><i className="fa fa-database" /></span>
-                            <span className="icon-txt">Files</span>
+                            <span className="icon-txt">Mask Files</span>
                           </NavLink>
                         </li>
                       )
@@ -214,7 +214,7 @@ class NavLeft extends React.Component {
           <li>
             <NavLink to="/manage/chip-orders" activeStyle={{ width: '117px', borderLeft: '3px solid #428bca', color: '#428bca' }}>
               <span className="icon-nav"><i className="fa fa-microchip" /></span>
-              <span className="icon-txt">Chip Fab Orders</span>
+              <span className="icon-txt">Fab Orders</span>
             </NavLink>
           </li>
         </ul>

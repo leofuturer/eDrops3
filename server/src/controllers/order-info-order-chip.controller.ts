@@ -35,9 +35,9 @@ export class OrderInfoOrderChipController {
   })
   async find(
     @param.path.number('id') id: number,
-    @param.query.object('filter') filter?: Filter<OrderChip>,
   ): Promise<OrderChip[]> {
-    return this.orderInfoRepository.orderChips(id).find(filter);
+    let orderInfo = await this.orderInfoRepository.findById(id, {include: [{relation: 'orderChips' }]});
+    return orderInfo.orderChips;
   }
 
   @authenticate('jwt')
@@ -73,7 +73,6 @@ export class OrderInfoOrderChipController {
         },
       })
       .then(orderChips => {
-        console.log(orderChips);
         if (orderChips.length > 1) {
           throw new HttpErrors.UnprocessableEntity(
             'More than one entry for product',
@@ -87,6 +86,9 @@ export class OrderInfoOrderChipController {
                 `Created orderChip with id ${orderChipInstance.id}, product ${orderChipInstance.name}`,
               );
               return orderChipInstance;
+            })
+            .catch(err => {
+              console.log(err);
             });
         } else if (orderChips.length === 1) {
           this.orderInfoRepository.updateById(orderChips[0].id, {

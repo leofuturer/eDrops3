@@ -1,15 +1,15 @@
 import { useEffect, useState } from "react";
-import { commentComments, postComments } from "../../api/serverConfig";
+import { postCommentComments, postComments } from "../../api/serverConfig";
 import API from "../../api/api";
-import { CommentType } from "../../lib/types";
+import { CommentType, PostType } from "../../lib/types";
 import { AxiosError } from "axios";
 import { ChevronRightIcon, ThumbUpIcon } from "@heroicons/react/outline";
 import { ReplyIcon } from "@heroicons/react/solid";
 import { timeAgo } from "../../lib/time";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
 
-function PostComment(comment: CommentType) {
+function PostComment({ comment } : {comment: CommentType }) {
 	const navigate = useNavigate();
 
 	const [comments, setComments] = useState<CommentType[]>([]);
@@ -17,9 +17,10 @@ function PostComment(comment: CommentType) {
 
 	const [newComment, setNewComment] = useState<string>("");
 
+	// Get all comments under this comment
 	useEffect(() => {
 		API.Request(
-			commentComments.replace(
+			postCommentComments.replace(
 				"id",
 				comment.id ? comment.id.toString() : ""
 			),
@@ -28,12 +29,13 @@ function PostComment(comment: CommentType) {
 			false
 		)
 			.then((res) => {
+				// console.log('Not top-level comments', res.data);
 				setComments(res.data);
 			})
 			.catch((err: AxiosError) => {
 				// console.log(err);
 			});
-	}, [comment.id]);
+	}, [comment.id, newComment]);
 
 	function handleReply() {
 		const newPostComment = {
@@ -41,35 +43,44 @@ function PostComment(comment: CommentType) {
 			author: "",
 			datetime: new Date(),
 			likes: 0,
-			postId: 0,
+			postId: comment.postId,
 			userId: Cookies.get("userId") as string,
+			top: false,
 		};
 		API.Request(
-			commentComments.replace(
+			postCommentComments.replace(
 				"id",
 				comment.id ? comment.id.toString() : ""
 			),
 			"POST",
 			newPostComment,
 			true
-		).catch((err: AxiosError) => {
-			if (err.message === "No access token found") {
-				navigate("/login");
-			}
-		});
+		)
+			.then((res) => {
+				setNewComment("");
+				// @ts-ignore
+				currentPost.comments += 1;
+			})
+			.catch((err: AxiosError) => {
+				if (err.message === "No access token found") {
+					navigate("/login");
+				}
+			});
 		setExpanded(!expanded);
 	}
 
 	return (
 		<div
 			className={`flex flex-col space-y-2 ${
-				comment.postId ? "" : "pl-2 border-l-2 border-black/25"
+				comment.top ? "" : "pl-2 border-l-2 border-black/25"
 			}`}
 		>
 			<div className="flex flex-col space-y-2 pb-2 border-b-2 border-black/25">
 				<h3 className="text-lg">
-					{comment.author} &#8226;{" "}
-					{timeAgo(new Date(comment.datetime))}
+					<Link to={`/profile/${comment?.userId}`}>
+						{comment?.author}
+					</Link>{" "}
+					&#8226; {timeAgo(new Date(comment.datetime))}
 				</h3>
 				<p>{comment.content}</p>
 				<div className="flex flex-row space-x-4">
@@ -117,7 +128,7 @@ function PostComment(comment: CommentType) {
 			)}
 			<div className="">
 				{comments.map((comment: CommentType) => (
-					<PostComment {...comment} key={comment.id} />
+					<PostComment comment={comment} key={comment.id} />
 				))}
 			</div>
 		</div>

@@ -15,6 +15,7 @@ function Projects() {
 	const [search, setSearch] = useState("");
 	const [feedType, setFeedType] = useState<"Featured" | "New">("Featured");
 
+	// Return projects based on search query (debounced)
 	useEffect(() => {
 		let filter = {};
 		if (search !== "") {
@@ -45,6 +46,7 @@ function Projects() {
 		});
 	}, [search]);
 
+	// Sort projects based on feed type
 	useEffect(() => {
 		const sortedProjects = ([] as ProjectType[]).concat(projectList)
 		if (feedType === "Featured") {
@@ -55,6 +57,7 @@ function Projects() {
 		setSortedProjects(sortedProjects);
 	}, [feedType, projectList]);
 
+	// Handle search (debounced in debounceSearch)
 	const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
 		setSearch(e.target.value);
 		console.log(e.target.value);

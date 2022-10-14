@@ -22,19 +22,15 @@ import fetch from 'node-fetch';
 import Client from 'shopify-buy';
 import Products from '../lib/constants/productConstants';
 import log from '../lib/toolbox/log';
-import {Admin, User, OrderChip, ChipFabOrder, FoundryWorker } from '../models';
-import {AdminRepository, OrderProductRepository, OrderChipRepository, OrderInfoRepository, FoundryWorkerRepository} from '../repositories';
+import {Admin, User, OrderChip} from '../models';
+import {AdminRepository, OrderProductRepository, OrderInfoRepository} from '../repositories';
 
 // @ts-ignore
 global.fetch = fetch;
 
 const client = Client.buildClient({
-  storefrontAccessToken: (process.env.SHOPIFY_STORE !== 'test'
-    ? process.env.SHOPIFY_TOKEN
-    : process.env.SHOPIFY_TOKEN_TEST) as string,
-  domain: (process.env.SHOPIFY_STORE !== 'test'
-    ? process.env.SHOPIFY_DOMAIN
-    : process.env.SHOPIFY_DOMAIN_TEST) as string,
+  storefrontAccessToken: process.env.SHOPIFY_TOKEN as string,
+  domain: process.env.SHOPIFY_DOMAIN as string,
 });
 
 export class AdminController {
@@ -43,12 +39,12 @@ export class AdminController {
     public adminRepository: AdminRepository,
     @repository(OrderProductRepository)
     public orderProduct: OrderProductRepository,
-    @repository(OrderChipRepository)
-    public orderChip: OrderChipRepository,
+    // @repository(OrderChipRepository)
+    // public orderChip: OrderChipRepository,
     @repository(OrderInfoRepository)
     public orderInfo: OrderInfoRepository,
-    @repository(FoundryWorkerRepository)
-    public foundryWorkerRepository: FoundryWorkerRepository,
+    // @repository(FoundryWorkerRepository)
+    // public foundryWorkerRepository: FoundryWorkerRepository,
   ) {}
 
   @post('/admins')
@@ -175,8 +171,8 @@ export class AdminController {
   async returnAllItems(): Promise<Client.Product[]> {
     const productIds = [
       Products.CONTROLSYSID,
+      Products.PCBCHIPID,
       Products.TESTBOARDID,
-      Products.UNIVEWODCHIPID,
     ];
     console.log(productIds);
     return client.product
@@ -249,42 +245,14 @@ export class AdminController {
     },
   })
   async getChipOrders(
-  ): Promise<ChipFabOrder[]> {
-    let allOrderChips: ChipFabOrder[] = [];
-    let customerNames : (string | undefined)[] = [];
-
-    const completedOrders = await this.orderInfo.find({ where: { orderComplete: true } });
-    const promises = completedOrders.map((orderInfo) => {
-      customerNames.push(orderInfo.sa_name);
-      return this.orderChip.find({ where: { orderInfoId: orderInfo.id } });
+  ): Promise<OrderChip[]> {
+    let allOrderChips: OrderChip[] = [];
+    const completedOrders = await this.orderInfo.find({ include: [{relation: 'orderChips'}], where: {orderComplete : true} });
+    completedOrders.map((orderInfo) => {
+      allOrderChips = allOrderChips.concat.apply(allOrderChips, orderInfo.orderChips);
     });
 
-    return Promise.all<OrderChip[]>(promises).then(async (orderChipArrs) => {
-      const promise3 = customerNames.map(async (customerName, index) => {
-        const promisesInner2 = orderChipArrs[index].map((orderChip) => 
-          this.foundryWorkerRepository.findById(orderChip.workerId)
-        );
-
-        return Promise.all<FoundryWorker>(promisesInner2).then((foundryWorkerArr) => {
-          const chipFabOrderArr = foundryWorkerArr.map((foundryWorker, indexFW) => {
-            let chipFabOrder = new ChipFabOrder(orderChipArrs[index][indexFW]);
-            chipFabOrder.customerName = customerName;
-            chipFabOrder.workerName = `${foundryWorker.firstName} ${foundryWorker.lastName}`;
-            return chipFabOrder;
-          });
-
-          return chipFabOrderArr;
-        });
-      });
-
-      return Promise.all<ChipFabOrder[]>(promise3).then((chipFabOrderArrs) => {
-        chipFabOrderArrs.map(chipFabOrderArr => {
-          allOrderChips = allOrderChips.concat.apply(allOrderChips, chipFabOrderArr);
-        })
-
-        return allOrderChips;
-      });
-    });
+    return allOrderChips;
   }
 
   @get('/admins/getApi')
@@ -311,12 +279,8 @@ export class AdminController {
   })
   async getApiToken(): Promise<object> {
     return {
-      token: (process.env.SHOPIFY_STORE !== 'test'
-        ? process.env.SHOPIFY_TOKEN
-        : process.env.SHOPIFY_TOKEN_TEST) as string,
-      domain: (process.env.SHOPIFY_STORE !== 'test'
-        ? process.env.SHOPIFY_DOMAIN
-        : process.env.SHOPIFY_DOMAIN_TEST) as string,
+      token: process.env.SHOPIFY_TOKEN as string,
+      domain: process.env.SHOPIFY_DOMAIN as string,
     };
   }
 

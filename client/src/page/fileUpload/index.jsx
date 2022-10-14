@@ -131,7 +131,7 @@ class Upload extends React.Component {
     }
     const uploadUrl = uploadFile.replace('id', Cookies.get('userId'));
     const formData = new FormData();
-    formData.append('file', this.state.file);
+    formData.append('www', this.state.file);
     formData.append('fields', JSON.stringify(extraFields));
     const headers = { 'Content-Type': 'multipart/form-data' };
     API.Request(uploadUrl, 'POST', formData, true, headers, true)

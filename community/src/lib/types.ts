@@ -1,26 +1,28 @@
-export interface ProjectType {
-	id?: number;
-	title: string;
-	content: string;
-	author: string;
-	datetime: Date;
-	likes: number;
+import { Post, Project, UserProfile } from '../../../server/src/models'
+
+export interface ProjectType extends Project {
+	// id?: number;
+	// title: string;
+	// content: string;
+	// author: string;
+	// datetime: Date;
+	// likes: number;
 }
 
-export interface PostType {
-	id?: number;
-	title: string;
-	content: string;
-	author: string;
-	datetime: Date;
-	likes: number;
+export interface PostType extends Post {
+	// id?: number;
+	// title: string;
+	// content: string;
+	// author: string;
+	// datetime: Date;
+	// likes: number;
 }
 
-export interface UserProfile {
-	image: string;
-	username: string;
-	email: string;
-	description: string;
+export interface UserProfileType extends UserProfile {
+	// image: string;
+	// username: string;
+	// email: string;
+	// description: string;
 }
 
 export interface CommentType {
@@ -30,7 +32,9 @@ export interface CommentType {
 	datetime: Date;
 	likes: number;
 	postId?: number;
+	projectId?: number;
 	userId?: string;
+	top: boolean;
 }
 
 export interface LoginInfo {

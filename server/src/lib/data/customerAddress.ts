@@ -1,7 +1,8 @@
-import {CustomerAddress} from '../../models';
+import { CustomerAddress } from '../../models';
 
 export const defaultCustomerAddresses: Partial<CustomerAddress>[] = [
   {
+    id: 1,
     street: '10988 Ashton Ave',
     streetLine2: '',
     city: 'Los Angeles',
@@ -9,8 +10,10 @@ export const defaultCustomerAddresses: Partial<CustomerAddress>[] = [
     country: 'United States',
     zipCode: '90024',
     isDefault: true,
+    customerId: 'aaaaaaaa-bbbb-aaaa-aaaa-aaaaaaaaaaaa',
   },
   {
+    id: 2,
     street: '1432 Haton Ave',
     streetLine2: '',
     city: 'Los Angeles',
@@ -18,8 +21,10 @@ export const defaultCustomerAddresses: Partial<CustomerAddress>[] = [
     country: 'United States',
     zipCode: '90034',
     isDefault: true,
+    customerId: 'aaaaaaaa-bbbb-aaaa-aaaa-aaaaaaaaaaaa',
   },
   {
+    id: 3,
     street: '1234 Cilas Ave',
     streetLine2: '',
     city: 'Los Angeles',
@@ -27,8 +32,10 @@ export const defaultCustomerAddresses: Partial<CustomerAddress>[] = [
     country: 'United States',
     zipCode: '90067',
     isDefault: false,
+    customerId: 'aaaaaaaa-cccc-aaaa-aaaa-aaaaaaaaaaaa',
   },
   {
+    id: 4,
     street: '456 Cilas Ave',
     streetLine2: '',
     city: 'Los Angeles',
@@ -36,5 +43,6 @@ export const defaultCustomerAddresses: Partial<CustomerAddress>[] = [
     country: 'United States',
     zipCode: '90067',
     isDefault: false,
+    customerId: 'aaaaaaaa-cccc-aaaa-aaaa-aaaaaaaaaaaa',
   },
 ];

@@ -1,6 +1,6 @@
 import {Entity, model, property} from '@loopback/repository';
 
-@model()
+@model({settings: {description: 'User profile information'}})
 export class UserProfile extends Entity {
   @property({
     type: 'string',

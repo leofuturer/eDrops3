@@ -4,6 +4,7 @@ import {
 	PhotographIcon,
 	VideoCameraIcon,
 } from "@heroicons/react/solid";
+import { AxiosError } from "axios";
 import Cookies from "js-cookie";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -18,7 +19,7 @@ function NewForum() {
 	const navigate = useNavigate();
 
 	function handlePost() {
-		const data: PostType = {
+		const data: Partial<PostType> = {
 			title,
 			content,
 			author: "",
@@ -26,7 +27,7 @@ function NewForum() {
 			likes: 0,
 			// dislikes: 0,
 		};
-		console.log(data);
+		// console.log(data);
 		API.Request(
 			userPosts.replace("id", Cookies.get("userId") as string),
 			"POST",
@@ -34,7 +35,12 @@ function NewForum() {
 			true
 		)
 			.then((res) => navigate(`/forum/${res.data.id}`))
-			.catch((err) => console.log(err));
+			.catch((err: AxiosError) => {
+				if (err.response?.status === 401) {
+					navigate("/login");
+				}
+				console.log(err);
+			});
 	}
 
 	return (

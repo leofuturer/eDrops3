@@ -22,6 +22,9 @@ module.exports = {
       component: path.resolve(__dirname, 'src/component'),
       router: path.resolve(__dirname, 'src/router'),
     },
+    fallback: {
+      buffer: require.resolve('buffer/'),
+    },
   },
   module: {
     rules: [
@@ -85,6 +88,9 @@ module.exports = {
       { from: 'sitemap.xml' },
     ]),
     new LodashModuleReplacementPlugin(),
+    new webpack.ProvidePlugin({
+      Buffer: ['buffer', 'Buffer'],
+    }),
 
     // Add this to see bundle size
     // new BundleAnalyzerPlugin(),

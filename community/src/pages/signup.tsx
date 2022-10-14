@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-import { signup } from "../lib/auth";
+import { signup } from "../api/auth";
 import { useNavigate } from "react-router-dom";
 import { SignupInfo } from "../lib/types";
 
