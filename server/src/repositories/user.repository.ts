@@ -28,6 +28,7 @@ import {ProjectRepository} from './project.repository';
 import {LikedPostRepository} from './liked-post.repository';
 import {LikedProjectRepository} from './liked-project.repository';
 import {UserFollowerRepository} from './user-follower.repository';
+import {genSalt, hash} from 'bcryptjs';
 
 export class UserRepository extends DefaultCrudRepository<
   User,
@@ -167,5 +168,20 @@ export class UserRepository extends DefaultCrudRepository<
       'savedPosts',
       this.savedPosts.inclusionResolver,
     );
+  }
+
+  async createUser(user: Omit<User, 'id'>) {
+    const hashedPassword = await hash(user.password, await genSalt());
+    const userData: Partial<User> = {
+      id: user.id,
+      realm: user.realm,
+      username: user.username,
+      password: hashedPassword,
+      userType: user.userType,
+      email: user.email,
+      emailVerified: user.emailVerified,
+      verificationToken: user.verificationToken,
+    };
+    return this.create(userData);
   }
 }

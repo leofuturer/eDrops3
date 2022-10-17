@@ -258,7 +258,14 @@ export class CustomerRepository extends DefaultCrudRepository<
         customer?.verificationToken === verificationToken &&
         (customer?.verificationTokenExpires ?? currentTime) > currentTime,
     }).then(
-      () => { 
+      async() => { 
+        // Update associated User instance
+        const userRepository = await this.userRepositoryGetter();
+        await userRepository.updateById(customerId, {
+          emailVerified:
+            customer?.verificationToken === verificationToken &&
+            (customer?.verificationTokenExpires ?? currentTime) > currentTime,
+        });
         return this.findById(customerId)
       }
     ).catch(err => {
