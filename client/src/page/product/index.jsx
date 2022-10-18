@@ -334,9 +334,8 @@ class Product extends React.Component {
 
                       <div className="div-price-quantity">
                         <div className="div-product-price">
-                          Price: Coming soon
-                          {/* Price: $
-                          {product.variants[0].price} */}
+                          Price: $
+                          {product.variants[0].price}
                         </div>
                         <div className="div-product-selection">
                           <div className="div-product-quantity">
@@ -359,7 +358,7 @@ class Product extends React.Component {
                         </div>
                       </div>
                       <div>
-                        {/* {this.state.addedToCart
+                        {this.state.addedToCart
                           ? (
                             <div className="cart-btn">
                               <input
@@ -370,14 +369,7 @@ class Product extends React.Component {
                               />
                             </div>
                           )
-                          : <img className="loading-GIF" src={loadingGif} alt="" />} */}
-                        <div className="cart-btn">
-                          <input
-                            type="button"
-                            value="Coming soon"
-                            className="btn btn-primary btn-lg btn-block"
-                          />
-                        </div>
+                          : <img className="loading-GIF" src={loadingGif} alt="" />}
                         <div className="tax-info">Note: Price excludes sales tax</div>
                       </div>
                     </div>
