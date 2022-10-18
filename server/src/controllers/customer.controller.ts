@@ -163,7 +163,7 @@ export class CustomerController {
       customerId,
       verificationToken,
     );
-    console.log(customer);
+    // console.log(customer);
     if (!customer) {
       throw new HttpErrors.NotFound('Customer not found');
     }

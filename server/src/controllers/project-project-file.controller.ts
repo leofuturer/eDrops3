@@ -124,7 +124,7 @@ export class ProjectProjectFileController {
       .then(file => {
         return file.containerFileName;
       });
-    return false
+    return process.env.NODE_ENV !== 'production'
       ? this.projectFileRepository.downloadFileDisk(filename, response)
       : this.projectFileRepository.downloadFileS3(filename, response);
   }

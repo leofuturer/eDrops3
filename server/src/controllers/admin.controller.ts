@@ -174,7 +174,7 @@ export class AdminController {
       Products.PCBCHIPID,
       Products.TESTBOARDID,
     ];
-    console.log(productIds);
+    // console.log(productIds);
     return client.product
       .fetchMultiple(productIds)
       .then((res: Client.Product[]) => {
@@ -216,6 +216,7 @@ export class AdminController {
     return client.product
       .fetch(productId)
       .then((res: Client.Product) => {
+        console.log(res);
         return {
           ...res,
           id: Buffer.from(res.id as string, 'utf-8').toString('base64'),
@@ -262,15 +263,11 @@ export class AdminController {
       'application/json': {
         schema: {
           properties: {
-            info: {
-              properties: {
-                token: {
-                  type: 'string',
-                },
-                domain: {
-                  type: 'string',
-                },
-              },
+            token: {
+              type: 'string',
+            },
+            domain: {
+              type: 'string',
             },
           },
         },
@@ -278,10 +275,12 @@ export class AdminController {
     },
   })
   async getApiToken(): Promise<object> {
-    return {
+    const info = {
       token: process.env.SHOPIFY_TOKEN as string,
       domain: process.env.SHOPIFY_DOMAIN as string,
     };
+    console.log(info);
+    return info;
   }
 
   @post('/admins/credsTaken')
