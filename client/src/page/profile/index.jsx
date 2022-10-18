@@ -61,7 +61,7 @@ class Profile extends React.Component {
               email: res.data.email,
             },
           );
-        } else if (userType === 'foundryWorker') {
+        } else if (userType === 'worker') {
           // console.log(res.data);
           this.setState({
             street: res.data.street,
@@ -340,7 +340,7 @@ class Profile extends React.Component {
                                   )
                             }
               {
-                                Cookies.get('userType') === 'foundryWorker'
+                                Cookies.get('userType') === 'worker'
                                   ? (
                                     <div className="form-group">
                                       <label className="col-md-4 col-sm-4 col-xs-4 control-label">
