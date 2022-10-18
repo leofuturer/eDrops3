@@ -19,8 +19,6 @@ export class OrderInfoOrderChipController {
   constructor(
     @repository(OrderInfoRepository)
     protected orderInfoRepository: OrderInfoRepository,
-    @repository(OrderChipRepository)
-    protected orderChipRepository: OrderInfoRepository,
   ) {}
 
   @get('/orderInfos/{id}/orderChips', {
@@ -39,7 +37,7 @@ export class OrderInfoOrderChipController {
     @param.path.number('id') id: number,
   ): Promise<OrderChip[]> {
     let orderInfo = await this.orderInfoRepository.findById(id, {include: [{relation: 'orderChips' }]});
-    return orderInfo.orderChips;
+    return orderInfo.orderChips ?? [];
   }
 
   @authenticate('jwt')
@@ -93,7 +91,7 @@ export class OrderInfoOrderChipController {
               console.log(err);
             });
         } else if (orderChips.length === 1) {
-          this.orderChipRepository.updateById(orderChips[0].id, {
+          this.orderInfoRepository.orderChips(orderChips[0].id).patch({
             quantity: orderChips[0].quantity + orderChip.quantity,
           });
         } else {
