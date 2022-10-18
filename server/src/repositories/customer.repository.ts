@@ -253,17 +253,24 @@ export class CustomerRepository extends DefaultCrudRepository<
       throw new HttpErrors.NotFound('Customer not found');
     }
     const currentTime = new Date();
-    if (
-      customer?.verificationToken === verificationToken &&
-      (customer?.verificationTokenExpires ?? currentTime) > currentTime
-    ) {
-      this.updateById(customerId, {
-        emailVerified: true,
-      });
-    } else {
-      throw new HttpErrors.BadRequest('Invalid verification token');
-    }
-    return customer;
+    return await this.updateById(customerId, {
+      emailVerified:
+        customer?.verificationToken === verificationToken &&
+        (customer?.verificationTokenExpires ?? currentTime) > currentTime,
+    }).then(
+      async() => { 
+        // Update associated User instance
+        const userRepository = await this.userRepositoryGetter();
+        await userRepository.updateById(customerId, {
+          emailVerified:
+            customer?.verificationToken === verificationToken &&
+            (customer?.verificationTokenExpires ?? currentTime) > currentTime,
+        });
+        return this.findById(customerId)
+      }
+    ).catch(err => {
+      throw new HttpErrors.InternalServerError(err.message);
+    });
   }
 
   async getCustomerCart(
@@ -405,7 +412,7 @@ export class CustomerRepository extends DefaultCrudRepository<
   }
 
   async downloadDisk(filename: string, response: Response): Promise<Response> {
-    const file = path.resolve(this.storageDirectory, filename);
+    const file = path.resolve(`${this.storageDirectory}/www/`, filename);
     if (!file.startsWith(this.storageDirectory))
       throw new HttpErrors.BadRequest(`Invalid file id: ${filename}`);
     response.download(file, filename);

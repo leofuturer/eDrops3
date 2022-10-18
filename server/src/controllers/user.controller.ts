@@ -161,6 +161,10 @@ export class UserController {
     // ensure the user exists, and the password is correct
     const user = await this.userService.verifyCredentials(credentials);
 
+    if(!user.emailVerified) {
+      throw new HttpErrors.Unauthorized('Email is not verified');
+    }
+
     // convert a User object into a UserProfile object (reduced set of properties)
     const userProfile = this.userService.convertToUserProfile(user);
 
