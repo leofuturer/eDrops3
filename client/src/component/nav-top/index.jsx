@@ -28,30 +28,33 @@ class NavTop extends React.Component {
   }
 
   signout() {
-    let url = '';
-    if (Cookies.get('userType') === 'admin') {
-      url = AdminLogout;
-    } else if (Cookies.get('userType') === 'customer') {
-      url = customerLogout;
-    } else if (Cookies.get('userType') === 'worker') {
-      url = FoundryWorkerLogout;
-    }
+    // let url = '';
+    // if (Cookies.get('userType') === 'admin') {
+    //   url = AdminLogout;
+    // } else if (Cookies.get('userType') === 'customer') {
+    //   url = customerLogout;
+    // } else if (Cookies.get('userType') === 'worker') {
+    //   url = FoundryWorkerLogout;
+    // }
     Cookies.remove('userType');
     Cookies.remove('username');
     Cookies.remove('userId');
-    API.Request(url, 'POST', {}, true)
-      .then((res) => {
-        Cookies.remove('access_token');
-        API.Request(userLogout, 'POST', {}, true)
-          .then((res) => {
-            Cookies.remove('base_access_token');
-            this.setState({ show: false });
-            this.props.history.push('/home');
-          });
-      })
-      .catch((err) => {
-        console.error(err);
-      });
+    Cookies.remove('access_token');
+    Cookies.remove('base_access_token');
+    // Maybe look into this later to see what can be done server-side for logout/token invalidation
+    // API.Request(url, 'POST', {}, true)
+    //   .then((res) => {
+    //     Cookies.remove('access_token');
+    //     API.Request(userLogout, 'POST', {}, true)
+    //       .then((res) => {
+    //         Cookies.remove('base_access_token');
+    //         this.setState({ show: false });
+    //         this.props.history.push('/home');
+    //       });
+    //   })
+    //   .catch((err) => {
+    //     console.error(err);
+    //   });
   }
 
   handleHideDrown() {
@@ -118,7 +121,6 @@ class NavTop extends React.Component {
             <NavLink to="/home">eDrops</NavLink>
             <NavLink to="/home"><img className="website-logo" src={eDropsLogoInverted} alt="" /></NavLink>
           </div>
-          {/* <div> */}
           <ul className="ul-nav">
             <li><NavLink to="/home">Home</NavLink></li>
             <li><NavLink to="/allItems">Products</NavLink></li>
@@ -132,21 +134,21 @@ class NavTop extends React.Component {
                 : null}
             </li>
             { /* Should we be using NavLink or href? NavLink prevents page reloading */}
-            {/* <li><a href="/featureComing"><i className="fa fa-search" /></a></li> */}
-            {/* {
+            <li><NavLink to="/featureComing"><i className="fa fa-search" /></NavLink></li>
+            {
                     Cookies.get('userType') === 'customer'
-                      ? <li><a href="/upload"><i className="fa fa-upload" /></a></li>
+                      ? <li><NavLink to="/upload"><i className="fa fa-upload" /></NavLink></li>
                       : null
-                  } */}
-            {/* {
+                  }
+            {
                     notLoggedIn ? null
                       : (Cookies.get('userType') === 'customer'
                         ? <li><NavLink to="/manage/files"><i className="fa fa-database" /></NavLink></li>
                         : (Cookies.get('userType') === 'admin'
-                          ? <li><a href="/manage/allfiles"><i className="fa fa-database" /></a></li>
+                          ? <li><NavLink to="/manage/allfiles"><i className="fa fa-database" /></NavLink></li>
                           : null)
                       )
-                  } */}
+                  }
             {
               notLoggedIn ? <li><NavLink to="/login">Login</NavLink></li>
                 : (
@@ -159,26 +161,26 @@ class NavTop extends React.Component {
                           <i className="fa fa-dashboard" style={{ paddingRight: '15px' }} />
                           <NavLink to="/manage/profile">Your Dashboard</NavLink>
                         </li>
-                        {/* {
-                                Cookies.get('userType') == 'customer'
-                                  ? (
-                                    <li onClick={() => this.handleHideDrown()}>
-                                      <i className="fa fa-upload" style={{ paddingRight: '15px' }} />
-                                      <NavLink to="/upload">Upload a file</NavLink>
-                                    </li>
-                                  )
-                                  : null
-                              } */}
-                        {/* {
-                                Cookies.get('userType') == 'customer'
-                                  ? (
-                                    <li onClick={() => this.handleHideDrown()}>
-                                      <i className="fa fa-database" style={{ paddingRight: '15px' }} />
-                                      <NavLink to="/manage/files">Your Projects</NavLink>
-                                    </li>
-                                  )
-                                  : null
-                              } */}
+                        {
+                          Cookies.get('userType') == 'customer'
+                            ? (
+                              <li onClick={() => this.handleHideDrown()}>
+                                <i className="fa fa-upload" style={{ paddingRight: '15px' }} />
+                                <NavLink to="/upload">Upload a file</NavLink>
+                              </li>
+                            )
+                            : null
+                        }
+                        {
+                          Cookies.get('userType') == 'customer'
+                            ? (
+                              <li onClick={() => this.handleHideDrown()}>
+                                <i className="fa fa-database" style={{ paddingRight: '15px' }} />
+                                <NavLink to="/manage/files">Your Projects</NavLink>
+                              </li>
+                            )
+                            : null
+                        }
                         <li onClick={() => this.signout()}>
                           <i className="fa fa-sign-out" style={{ paddingRight: '15px' }} />
                           <NavLink to="/home">Logout</NavLink>
