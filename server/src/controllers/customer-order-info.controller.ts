@@ -33,10 +33,7 @@ export class CustomerOrderInfoController {
     },
   })
   async find(
-    // @param.path.string('id') id: string,
     @param.path.string('id') id: typeof Customer.prototype.id,
-    @param.query.object('filter') filter?: Filter<OrderInfo>,
-    @param.query.object('filter') filterChip?: Filter<OrderChip>,
   ): Promise<OrderChip[]> {
     let allOrderChips: OrderChip[] = [];
     const customerOrders = await this.customerRepository.orderInfos(id).find({include: [{relation : 'orderChips'}]});

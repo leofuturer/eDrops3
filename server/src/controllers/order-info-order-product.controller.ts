@@ -33,9 +33,11 @@ export class OrderInfoOrderProductController {
   })
   async find(
     @param.path.number('id') id: number,
-    @param.query.object('filter') filter?: Filter<OrderProduct>,
+    // @param.query.object('filter') filter?: Filter<OrderProduct>,
   ): Promise<OrderProduct[]> {
-    return this.orderInfoRepository.orderProducts(id).find(filter);
+    // return this.orderInfoRepository.orderProducts(id).find(filter);
+    let orderInfo = await this.orderInfoRepository.findById(id, {include: [{relation: 'orderProducts' }]});
+    return orderInfo.orderProducts ?? [];
   }
 
   @authenticate('jwt')
@@ -87,7 +89,7 @@ export class OrderInfoOrderProductController {
               return orderProduct;
             });
         } else if (orderProducts.length === 1) {
-          this.orderInfoRepository.updateById(orderProducts[0].id, {
+          this.orderInfoRepository.orderProducts(orderProducts[0].id).patch({
             quantity: orderProducts[0].quantity + orderProduct.quantity,
           });
         } else {
