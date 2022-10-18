@@ -93,7 +93,6 @@ export class OrderInfoOrderChipController {
               console.log(err);
             });
         } else if (orderChips.length === 1) {
-          console.log(orderChips[0]);
           this.orderChipRepository.updateById(orderChips[0].id, {
             quantity: orderChips[0].quantity + orderChip.quantity,
           });
