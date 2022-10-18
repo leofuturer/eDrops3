@@ -13,12 +13,14 @@ import {
 } from '@loopback/rest';
 import { OrderItemCreateInterceptor } from '../interceptors';
 import { OrderChip, OrderInfo } from '../models';
-import { OrderInfoRepository } from '../repositories';
+import { OrderChipRepository, OrderInfoRepository } from '../repositories';
 
 export class OrderInfoOrderChipController {
   constructor(
     @repository(OrderInfoRepository)
     protected orderInfoRepository: OrderInfoRepository,
+    @repository(OrderChipRepository)
+    protected orderChipRepository: OrderInfoRepository,
   ) {}
 
   @get('/orderInfos/{id}/orderChips', {
@@ -91,7 +93,8 @@ export class OrderInfoOrderChipController {
               console.log(err);
             });
         } else if (orderChips.length === 1) {
-          this.orderInfoRepository.updateById(orderChips[0].id, {
+          console.log(orderChips[0]);
+          this.orderChipRepository.updateById(orderChips[0].id, {
             quantity: orderChips[0].quantity + orderChip.quantity,
           });
         } else {

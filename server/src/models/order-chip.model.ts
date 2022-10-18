@@ -48,6 +48,17 @@ export class OrderChip extends OrderItemBase {
 
   @belongsTo(() => FoundryWorker)
   workerId: string;
+
+  @property({
+    type: 'string',
+  })
+  customerName?: string;
+
+  @property({
+    type: 'string',
+  })
+  workerName?: string;
+
   // @property({
   //   type: 'number',
   // })

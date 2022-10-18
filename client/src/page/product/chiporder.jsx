@@ -105,7 +105,7 @@ class ChipOrder extends React.Component {
       .then((res) => {
         // console.log(res);
         this.setState({
-          customerName: res.data.firstName + res.data.lastName,
+          customerName: `${res.data.firstName} ${res.data.lastName}`,
         });
       })
       .catch((err) => {
