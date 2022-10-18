@@ -199,15 +199,15 @@ export class CustomerRepository extends DefaultCrudRepository<
         ? `https://${EMAIL_HOSTNAME}`
         : `http://${EMAIL_HOSTNAME}:${EMAIL_PORT}`;
 
-    const EMAIL_TEMPLATE = ejs.render(
-      verifyHTML,
-      {
-        text: `Hello ${customer.username}! Thanks for registering to use eDrops. Please verify your email by clicking on the following link:`,
-        email: EMAIL_SENDER,
-        verifyHref: `${baseURL}/api/customers/verify?customerId=${customer.id}&token=${verificationTokenHash}`,
-      },
-      {},
-    );
+    // const EMAIL_TEMPLATE = ejs.render(
+    //   verifyHTML,
+    //   {
+    //     text: `Hello ${customer.username}! Thanks for registering to use eDrops. Please verify your email by clicking on the following link:`,
+    //     email: EMAIL_SENDER,
+    //     verifyHref: `${baseURL}/api/customers/verify?customerId=${customer.id}&token=${verificationTokenHash}`,
+    //   },
+    //   {},
+    // );
     // console.log(EMAIL_TEMPLATE);
     const sendGridOptions = {
       personalizations: [
@@ -218,24 +218,25 @@ export class CustomerRepository extends DefaultCrudRepository<
           to: [
             {
               email: customer.email,
-              name: customer.username,
+              // name: customer.username,
             },
           ],
-          subject: '[eDrops] Email Verification',
+          // subject: '[eDrops] Email Verification',
+          dynamic_template_data:{
+            firstName: customer.firstName,
+            lastName: customer.lastName,
+            text: "Thanks for registering to use eDrops. Please verify your email by clicking on the following link:",
+            verifyLink: `${baseURL}/api/customers/verify?customerId=${customer.id}&token=${verificationTokenHash}`,
+          }
         },
       ],
+      template_id: "d-0fdd579fca2e4125a687db6e13be290d",
       from: {
         email: EMAIL_SENDER,
       },
       reply_to: {
         email: EMAIL_SENDER,
       },
-      content: [
-        {
-          type: 'text/html',
-          value: EMAIL_TEMPLATE,
-        },
-      ],
     };
 
     this.sendGrid.send(
