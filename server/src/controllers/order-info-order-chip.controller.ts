@@ -13,7 +13,7 @@ import {
 } from '@loopback/rest';
 import { OrderItemCreateInterceptor } from '../interceptors';
 import { OrderChip, OrderInfo } from '../models';
-import { OrderChipRepository, OrderInfoRepository } from '../repositories';
+import { OrderInfoRepository } from '../repositories';
 
 export class OrderInfoOrderChipController {
   constructor(
