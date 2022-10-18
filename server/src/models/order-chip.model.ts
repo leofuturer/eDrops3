@@ -54,6 +54,16 @@ export class OrderChip extends OrderItemBase {
   // orderId?: number;
   // Define well-known properties here
 
+  @property({
+    type: 'string',
+  })
+  workerName: string;
+
+  @property({
+    type: 'string',
+  })
+  customerName: string;
+
   // Indexer property to allow additional data
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [prop: string]: any;
