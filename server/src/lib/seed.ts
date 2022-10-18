@@ -225,7 +225,7 @@ export async function seedDb(this: EdropsBackendApplication): Promise<void> {
   /** Seed User table **/
   const userRepo: UserRepository = await this.getRepository(UserRepository);
   const users: User[] = await Promise.all(
-    defaultUsers.map(user => userRepo.create(user)),
+    defaultUsers.map(user => userRepo.createUser(user)),
   );
 
   /** Seed Post table **/
