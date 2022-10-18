@@ -139,17 +139,13 @@ class Register extends React.Component {
       username: this.state.username,
       email: this.state.email,
       password: this.state.password,
-      customerAddresses: [
-        {
-          street: this.state.street,
-          streetLine2: this.state.streetLine2,
-          country: this.state.country,
-          state: this.state.state,
-          city: this.state.city,
-          zipCode: this.state.zipCode,
-          isDefault: true,
-        }
-      ],
+      street: this.state.street,
+      streetLine2: this.state.streetLine2,
+      country: this.state.country,
+      state: this.state.state,
+      city: this.state.city,
+      zipCode: this.state.zipCode,
+      isDefault: true,
     };
 
     API.Request(customerSignUp, 'POST', customerData, false)
