@@ -306,7 +306,7 @@ class Cart extends React.Component {
 
   render() {
     let totalPrice = 0;
-    console.log(this.state);
+    // console.log(this.state);
     if (this.state.productOrders) {
       this.state.productOrders.forEach((product) => {
         totalPrice += (product.quantity * product.price);
