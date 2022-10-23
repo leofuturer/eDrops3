@@ -42,7 +42,7 @@ class Product extends React.Component {
     const url = `${returnOneItem}?productId=${shopifyProductId}`;
     API.Request(url, 'GET', {}, false)
       .then((res) => {
-        console.log(res);
+        // console.log(res);
         this.setState({
           product: res.data,
           fetchedProduct: true,
@@ -260,6 +260,7 @@ class Product extends React.Component {
                 url = getProductOrders.replace('id', orderInfoId);
                 API.Request(url, 'GET', {}, true)
                   .then((res) => {
+                    console.log(res);
                     const quantity = res.data.reduce((prev, curr) => prev + curr.quantity, 0);
                     this.context.setProductQuantity(quantity);
                     this.context.setCartQuantity();
@@ -296,7 +297,7 @@ class Product extends React.Component {
 
   render() {
     const { product } = this.state;
-    console.log(product)
+    // console.log(product)
     const desiredProductId = this.props.location.search.slice(4); // get id after id?=
     return (
       <div className="order-container">
