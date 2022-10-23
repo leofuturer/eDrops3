@@ -306,17 +306,12 @@ class Cart extends React.Component {
 
   render() {
     let totalPrice = 0;
-    // console.log(this.state);
-    if (this.state.productOrders) {
-      this.state.productOrders.forEach((product) => {
-        totalPrice += (product.quantity * product.price);
-      });
-    }
-    if (this.state.chipOrders) {
-      this.state.chipOrders.forEach((product) => {
-        totalPrice += (product.quantity * product.price);
-      });
-    }
+    this.state.productOrders.forEach((product) => {
+      totalPrice += (product.quantity * product.price);
+    });
+    this.state.chipOrders.forEach((product) => {
+      totalPrice += (product.quantity * product.price);
+    });
 
     return (
       <div>
@@ -325,13 +320,13 @@ class Cart extends React.Component {
           description=""
           metadata={metadata}
         />
-        {Cookies.get('userType') === 'customer'
+        { Cookies.get('userType') === 'customer'
           ? (
             <div className="right-route-content">
               <div className="profile-content">
                 <h2>Cart</h2>
               </div>
-              {this.state.productOrders.length + this.state.chipOrders.length > 0
+              { this.state.productOrders.length + this.state.chipOrders.length > 0
                 ? (
                   <div>
                     <div className="left-right-wrapper">
@@ -340,7 +335,7 @@ class Cart extends React.Component {
                         changes to quantities. Deletions are saved immediately.
                       </div>
                       <div>
-                        {this.state.saveInProgress
+                        { this.state.saveInProgress
                           ? <img className="cart-loading-GIF" src={loadingGif} alt="" />
                           : (
                             <span className="cart-save-btn">
@@ -363,7 +358,7 @@ class Cart extends React.Component {
                       </div>
                     </div>
                     {
-                      this.state.productOrders && this.state.productOrders.map((oneProduct, index) => (
+                      this.state.productOrders.map((oneProduct, index) => (
                         <CartItem
                           key={index}
                           info={oneProduct}
