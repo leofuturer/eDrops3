@@ -7,6 +7,8 @@ import {
   HasManyThroughRepository,
   HasManyThroughRepositoryFactory,
 } from '@loopback/repository';
+import {genSalt, hash} from 'bcryptjs';
+import {createHash} from 'crypto';
 import {MysqlDsDataSource} from '../datasources';
 import {
   User,
@@ -28,7 +30,13 @@ import {ProjectRepository} from './project.repository';
 import {LikedPostRepository} from './liked-post.repository';
 import {LikedProjectRepository} from './liked-project.repository';
 import {UserFollowerRepository} from './user-follower.repository';
-import {genSalt, hash} from 'bcryptjs';
+import {
+  EMAIL_HOSTNAME,
+  EMAIL_PORT,
+  EMAIL_SENDER,
+} from '../lib/constants/emailConstants';
+import SendGrid from '../services/send-grid.service';
+import {JwtPayload, sign, verify} from 'jsonwebtoken';
 
 export class UserRepository extends DefaultCrudRepository<
   User,
@@ -103,6 +111,8 @@ export class UserRepository extends DefaultCrudRepository<
     protected likedProjectRepositoryGetter: Getter<LikedProjectRepository>,
     @repository.getter('UserFollowerRepository')
     protected userFollowerRepositoryGetter: Getter<UserFollowerRepository>,
+    @inject('services.SendGrid')
+    public sendGrid: SendGrid,
   ) {
     super(User, dataSource);
     this.followers = this.createHasManyThroughRepositoryFactoryFor(
@@ -183,5 +193,81 @@ export class UserRepository extends DefaultCrudRepository<
       verificationToken: user.verificationToken,
     };
     return this.create(userData);
+  }
+
+  async generateResetToken(user: User): Promise<string> {
+    // const resetTokenHash = createHash('sha256')
+    //   .update(user.password + Date.now().toString())
+    //   .digest('hex');
+
+    const payload = {
+      id: user.id,
+    };
+    const resetToken = sign(
+      payload,
+      Buffer.from(process.env.JWT_SECRET ?? 't3stS3cr3teDrops123').toString(
+        'base64',
+      ),
+      {
+        expiresIn: 900, // 15 minutes
+      },
+    );
+    const resetTokenEncoded = Buffer.from(resetToken).toString('base64');
+
+    return resetTokenEncoded;
+  }
+
+  async sendResetEmail(email: string): Promise<void> {
+    // Send reset email
+    const user = await this.findOne({where: {email}});
+    if (!user) {
+      // throw new HttpErrors.NotFound('User not found');
+      return;
+    }
+    const baseURL =
+      process.env.NODE_ENV === 'production'
+        ? `https://${EMAIL_HOSTNAME}`
+        : `http://${EMAIL_HOSTNAME}:${EMAIL_PORT}`;
+
+    const reset_token = await this.generateResetToken(user);
+    const sendGridOptionsReset = {
+      from: {
+        email: EMAIL_SENDER,
+      },
+      personalizations: [
+        {
+          to: [
+            {
+              email: user.email,
+            },
+          ],
+          dynamic_template_data: {
+            link: `${baseURL}/resetPassword?access_token=${reset_token}`,
+          },
+        },
+      ],
+      template_id: 'd-9410fec18d0a46c8a8776ae03f68219d',
+    };
+
+    this.sendGrid.send(
+      process.env.APP_EMAIL_API_KEY as string,
+      sendGridOptionsReset,
+    );
+  }
+
+  async verifyResetToken(token: string): Promise<string> {
+    const tokenDecoded = Buffer.from(token, 'base64').toString('ascii');
+    const payload = verify(
+      tokenDecoded,
+      Buffer.from(process.env.JWT_SECRET ?? 't3stS3cr3teDrops123').toString(
+        'base64',
+      ),
+    ) as JwtPayload;
+    return payload.id ?? '';
+  }
+
+  async changePassword(userId: string, newPassword: string): Promise<void> {
+    const hashedPassword = await hash(newPassword, await genSalt());
+    await this.updateById(userId, {password: hashedPassword});
   }
 }

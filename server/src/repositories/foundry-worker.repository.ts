@@ -61,4 +61,12 @@ export class FoundryWorkerRepository extends DefaultCrudRepository<
     const foundryWorkerInstance = await this.create(foundryWorkerData);
     return foundryWorkerInstance;
   }
+
+  async changePassword(userId: string, newPassword: string): Promise<void> {
+    const hashedPassword = await hash(newPassword, await genSalt());
+    await this.updateById(userId, {password: hashedPassword});
+
+    const userRepository = await this.userRepositoryGetter();
+    await userRepository.updateById(userId, {password: hashedPassword});
+  }
 }
