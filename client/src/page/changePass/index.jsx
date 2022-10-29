@@ -56,22 +56,22 @@ class FormsPage extends React.Component {
     const validateResult = _this.handleSubmit();
     if (validateResult) {
       API.Request(url, 'POST', data, true)
-        .then((res) => {
-          const userToken = Cookies.get('access_token');
-          Cookies.remove('access_token');
-          API.Request(userChangePass, 'POST', data, true)
-            .then((res) => {
-              alert('Password successfully changed');
-              Cookies.set('access_token', userToken);
-              this.props.history.push('/manage/profile');
-            }).catch((error) => {
-              // Reset user base password failed
-              console.error(error);
-              this.setState({
-                isLoading: false,
-              });
-            });
-        })
+        // .then((res) => {
+        //   const userToken = Cookies.get('access_token');
+        //   Cookies.remove('access_token');
+        //   API.Request(userChangePass, 'POST', data, true)
+        //     .then((res) => {
+        //       alert('Password successfully changed');
+        //       Cookies.set('access_token', userToken);
+        //       this.props.history.push('/manage/profile');
+        //     }).catch((error) => {
+        //       // Reset user base password failed
+        //       console.error(error);
+        //       this.setState({
+        //         isLoading: false,
+        //       });
+        //     });
+        // })
         .catch((error) => {
           console.error(error.response.data.error.message);
           if (error.response.data.error.message === 'Invalid current password') {
