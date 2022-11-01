@@ -72,6 +72,10 @@ class FormsPage extends React.Component {
         //       });
         //     });
         // })
+        .then((res) => {
+          alert('Password successfully changed');
+          this.props.history.push('/manage/profile');
+        })
         .catch((error) => {
           console.error(error.response.data.error.message);
           if (error.response.data.error.message === 'Invalid current password') {
@@ -254,7 +258,7 @@ class FormsPage extends React.Component {
                 />
                 <div className="messages-wide" />
               </div>
-              { this.state.isLoading
+              {this.state.isLoading
                 ? <img className="loading-GIF" src={loadingGif} alt="" />
                 : (
                   <div className="form-group text-right" style={{ marginTop: '30px' }}>
