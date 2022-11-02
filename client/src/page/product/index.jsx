@@ -42,7 +42,7 @@ class Product extends React.Component {
     const url = `${returnOneItem}?productId=${shopifyProductId}`;
     API.Request(url, 'GET', {}, false)
       .then((res) => {
-        console.log(res);
+        // console.log(res);
         this.setState({
           product: res.data,
           fetchedProduct: true,
@@ -260,6 +260,7 @@ class Product extends React.Component {
                 url = getProductOrders.replace('id', orderInfoId);
                 API.Request(url, 'GET', {}, true)
                   .then((res) => {
+                    console.log(res);
                     const quantity = res.data.reduce((prev, curr) => prev + curr.quantity, 0);
                     this.context.setProductQuantity(quantity);
                     this.context.setCartQuantity();
@@ -296,7 +297,7 @@ class Product extends React.Component {
 
   render() {
     const { product } = this.state;
-    console.log(product)
+    // console.log(product)
     const desiredProductId = this.props.location.search.slice(4); // get id after id?=
     return (
       <div className="order-container">
@@ -334,9 +335,8 @@ class Product extends React.Component {
 
                       <div className="div-price-quantity">
                         <div className="div-product-price">
-                          Price: Coming soon
-                          {/* Price: $
-                          {product.variants[0].price} */}
+                          Price: $
+                          {product.variants[0].price}
                         </div>
                         <div className="div-product-selection">
                           <div className="div-product-quantity">
@@ -359,7 +359,7 @@ class Product extends React.Component {
                         </div>
                       </div>
                       <div>
-                        {/* {this.state.addedToCart
+                        {this.state.addedToCart
                           ? (
                             <div className="cart-btn">
                               <input
@@ -370,14 +370,7 @@ class Product extends React.Component {
                               />
                             </div>
                           )
-                          : <img className="loading-GIF" src={loadingGif} alt="" />} */}
-                        <div className="cart-btn">
-                          <input
-                            type="button"
-                            value="Coming soon"
-                            className="btn btn-primary btn-lg btn-block"
-                          />
-                        </div>
+                          : <img className="loading-GIF" src={loadingGif} alt="" />}
                         <div className="tax-info">Note: Price excludes sales tax</div>
                       </div>
                     </div>

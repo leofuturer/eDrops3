@@ -152,13 +152,13 @@ export class CustomerRepository extends DefaultCrudRepository<
     });
     if (createAddress) {
       const customerAddressData: Omit<CustomerAddress, 'id'> = {
-        street: customer.street ?? 'Not provided during signup',
-        streetLine2: customer.streetLine2 ?? 'Not provided during signup',
-        country: customer.country ?? 'Not provided during signup',
-        state: customer.state ?? 'Not provided during signup',
-        city: customer.city ?? 'Not provided during signup',
-        zipCode: customer.zipCode ?? 'Not provided during signup',
-        isDefault: customer.isDefault ?? true,
+        street: customer.street || 'Not provided during signup',
+        streetLine2: customer.streetLine2 || 'Not provided during signup',
+        country: customer.country || 'Not provided during signup',
+        state: customer.state || 'Not provided during signup',
+        city: customer.city || 'Not provided during signup',
+        zipCode: customer.zipCode || 'Not provided during signup',
+        isDefault: customer.isDefault || true,
       };
       log.info('Customer instance created, now associating address with it');
       this.customerAddresses(customerInstance.id)
@@ -434,5 +434,13 @@ export class CustomerRepository extends DefaultCrudRepository<
     });
     response.end(file.Body);
     return response;
+  }
+
+  async changePassword(userId: string, newPassword: string): Promise<void> {
+    const hashedPassword = await hash(newPassword, await genSalt());
+    await this.updateById(userId, {password: hashedPassword});
+
+    const userRepository = await this.userRepositoryGetter();
+    await userRepository.updateById(userId, {password: hashedPassword});
   }
 }

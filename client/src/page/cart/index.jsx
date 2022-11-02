@@ -369,7 +369,7 @@ class Cart extends React.Component {
                       ))
                     }
                     {
-                      this.state.chipOrders.map((oneProduct, index) => (
+                      this.state.chipOrders && this.state.chipOrders.map((oneProduct, index) => (
                         <CartItem
                           key={index}
                           info={oneProduct}
@@ -390,7 +390,7 @@ class Cart extends React.Component {
                 )
                 : (
                   <div>
-                    { this.state.cartLoading
+                    {this.state.cartLoading
                       ? <img className="loading-GIF" src={loadingGif} alt="" />
                       : (
                         <div className="empty-cart">
