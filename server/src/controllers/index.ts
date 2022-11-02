@@ -31,3 +31,4 @@ export * from './project-project-file.controller';
 export * from './project-file-project.controller';
 export * from './project-project-link.controller';
 export * from './project-project-comment.controller';
+export * from './order-product.controller';
