@@ -193,7 +193,7 @@ class Cart extends React.Component {
           return resolve(checkout);
         })
         .catch((err) => {
-          console.log(err);
+          console.error(err);
           return reject();
         });
     });

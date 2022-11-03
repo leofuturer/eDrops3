@@ -68,11 +68,7 @@ export class OrderChipUpdateInterceptor implements Provider<Interceptor> {
       const key = Object.keys(this.request.body)[0];
       const id = parseInt(this.request.url.split('/').slice(-1)[0]);
 
-      console.log(key);
-
       if(key !== 'workerId' && key !== 'status') {
-        console.log(key);
-        console.log('update here');
         return await next();
       }
       

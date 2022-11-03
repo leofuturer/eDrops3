@@ -88,7 +88,7 @@ export class OrderInfoOrderChipController {
               return orderChipInstance;
             })
             .catch(err => {
-              console.log(err);
+              console.error(err);
             });
         } else if (orderChips.length === 1) {
           this.orderInfoRepository.orderChips(id).patch({
@@ -96,7 +96,7 @@ export class OrderInfoOrderChipController {
             lastUpdated: orderChips[0].lastUpdated,
           }, { id: orderChips[0].id })
           .catch(err => {
-            console.log(err);
+            console.error(err);
           });
         } else {
           throw new HttpErrors.UnprocessableEntity(
