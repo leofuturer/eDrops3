@@ -99,12 +99,17 @@ class ChipOrders extends React.Component {
 
   handleSubmit(e) {
     e.preventDefault();
-    const dropdown = document.getElementById('status-selection');
+    // const dropdown = document.getElementById('status-selection');
+    // const selectedStatus = dropdown.options[dropdown.selectedIndex].value;
+    // const chipOrderId = Number(e.target.id.replace(/[^0-9]/ig, ''));
+  
+    const chipOrderId = Number(e.target.getAttribute('data-item-id'));
+    const dropdown = document.getElementById(`status-selection-${chipOrderId}`);
     const selectedStatus = dropdown.options[dropdown.selectedIndex].value;
-    const chipOrderId = Number(e.target.id.replace(/[^0-9]/ig, ''));
-    const url = editOrderStatus.replace('id', this.state.orderList[chipOrderId].id);
+    const url = editOrderStatus.replace('id', chipOrderId);
     const data = { status: selectedStatus };
-    // console.log(data);
+    console.log(e.target);
+    console.log(chipOrderId);
     API.Request(url, 'PATCH', data, true)
       .then((res) => {
         alert('Status updated!');
@@ -182,8 +187,9 @@ class ChipOrders extends React.Component {
                                   id="edit-order-status-form"
                                   className="edit-order-status-form"
                                   onSubmit={this.handleSubmit}
+                                  data-item-id={item.id}
                                 >
-                                  <select id="status-selection" className="order-status" name="status" defaultValue={item.status}>
+                                  <select id={`status-selection-${item.id}`} className="order-status" name="status" defaultValue={item.status}>
                                     <option value="Fabrication request received">Fab Req Received</option>
                                     <option value="Project Started">Project Started</option>
                                     <option value="Project Completed">Project Completed</option>

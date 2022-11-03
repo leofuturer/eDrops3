@@ -89,8 +89,11 @@ export class OrderInfoOrderProductController {
               return orderProduct;
             });
         } else if (orderProducts.length === 1) {
-          this.orderInfoRepository.orderProducts(orderProducts[0].id).patch({
+          this.orderInfoRepository.orderProducts(id).patch({
             quantity: orderProducts[0].quantity + orderProduct.quantity,
+          }, { id: orderProducts[0].id })
+          .catch(err => {
+            console.log(err);
           });
         } else {
           throw new HttpErrors.UnprocessableEntity('Unknown entries for product');
