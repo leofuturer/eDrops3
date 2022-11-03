@@ -93,7 +93,7 @@ export class OrderInfoOrderProductController {
             quantity: orderProducts[0].quantity + orderProduct.quantity,
           }, { id: orderProducts[0].id })
           .catch(err => {
-            console.log(err);
+            console.error(err);
           });
         } else {
           throw new HttpErrors.UnprocessableEntity('Unknown entries for product');
