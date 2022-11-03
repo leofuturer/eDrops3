@@ -101,7 +101,7 @@ class Cart extends React.Component {
         items[index] = item;
         this.setState({
           productOrders: items,
-          modifiedItems: new Set(this.state.modifiedItems).add(item.variantIdShopify),
+          modifiedItems: new Set(this.state.modifiedItems).add(item.lineItemIdShopify),
         }, () => { this.updateTotalModified(); });
       } else if (itemType === 'chip') {
         const items = [...this.state.chipOrders];
@@ -110,7 +110,7 @@ class Cart extends React.Component {
         items[index] = item;
         this.setState({
           chipOrders: items,
-          modifiedItems: new Set(this.state.modifiedItems).add(item.variantIdShopify),
+          modifiedItems: new Set(this.state.modifiedItems).add(item.lineItemIdShopify),
         }, () => { this.updateTotalModified(); });
       }
     }
@@ -127,12 +127,14 @@ class Cart extends React.Component {
     } else if (itemType === 'chip') {
       var array = _this.state.chipOrders;
     }
+
     // Delete from Shopify, then our own DB
     const itemToDelete = [array[index].lineItemIdShopify];
     Shopify.getInstance().getPrivateValue()
       .then((instance) => {
         instance.checkout.removeLineItems(_this.state.shopifyCheckoutId, itemToDelete)
           .then((checkout) => {
+            // console.log(checkout);
             if (itemType === 'product') {
               url = modifyProductOrders.replace('id', array[index].id);
             } else if (itemType === 'chip') {
@@ -173,7 +175,7 @@ class Cart extends React.Component {
             this.setState({
               deleteLoading: false,
             });
-          });
+          }); 
       })
       .catch((err) => {
         console.error(err);
@@ -183,6 +185,20 @@ class Cart extends React.Component {
       });
   }
 
+  updateLineItemCartHelper(instance, itemsToUpdate) {
+    const _this = this;
+    return new Promise((resolve, reject) => {
+      instance.checkout.updateLineItems(_this.state.shopifyCheckoutId, itemsToUpdate)
+        .then((checkout) => {
+          return resolve(checkout);
+        })
+        .catch((err) => {
+          console.log(err);
+          return reject();
+        });
+    });
+  }
+
   handleSaveForOrders(array, type) {
     let url;
     const _this = this;
@@ -190,60 +206,65 @@ class Cart extends React.Component {
       this.setState({
         saveInProgress: true,
       });
-    }
-    for (let i = 0; i < array.length; i++) {
-      if (_this.state.modifiedItems.has(array[i].variantIdShopify)) {
-        const itemsToUpdate = [{
-          id: array[i].lineItemIdShopify,
-          quantity: parseInt(array[i].quantity),
-        }];
-        Shopify.getInstance().getPrivateValue()
-          .then((instance) => {
-            instance.checkout.updateLineItems(_this.state.shopifyCheckoutId, itemsToUpdate)
-              .then((checkout) => {
-                // console.log(checkout.lineItems);
-                if (type === 'product') {
-                  url = modifyProductOrders.replace('id', array[i].id);
-                } else if (type === 'chip') {
-                  url = modifyChipOrders.replace('id', array[i].id);
-                }
-                const data = { quantity: parseInt(array[i].quantity) };
-                API.Request(url, 'PATCH', data, true)
-                  .then((res) => {
-                    this.setState((state) => ({ numModifiedItems: state.numModifiedItems + 1 }));
 
-                    if (_this.state.numModifiedItems === _this.state.totalModifiedItems && _this.state.numModifiedItems > 0) {
-                      this.setCartItems();
-                    }
+      Shopify.getInstance().getPrivateValue()
+      .then((instance) => {
+        // https://stackoverflow.com/questions/40328932/javascript-es6-promise-for-loop
+        for (let i = 0, p = Promise.resolve(); i < array.length; i += 1) {
+          if (_this.state.modifiedItems.has(array[i].variantIdShopify) || _this.state.modifiedItems.has(array[i].lineItemIdShopify)) {
+            const itemsToUpdate = [{
+              id: array[i].lineItemIdShopify,
+              quantity: parseInt(array[i].quantity),
+            }];
 
-                    this.setState({
-                      saveInProgress: false,
+            // the for loop chains promises at each iteration together so that they execute synchronously
+            p = p.then(() => this.updateLineItemCartHelper(instance, itemsToUpdate)) // update line item in shopify cart
+                .then((checkout) => {           // update table in database
+                  // console.log(checkout.lineItems);
+                  if (type === 'product') {
+                    url = modifyProductOrders.replace('id', array[i].id);
+                  } else if (type === 'chip') {
+                    url = modifyChipOrders.replace('id', array[i].id);
+                  }
+                  const data = { quantity: parseInt(array[i].quantity) };
+                  API.Request(url, 'PATCH', data, true)
+                    .then((res) => {
+                      this.setState((state) => ({ numModifiedItems: state.numModifiedItems + 1 }));
+
+                      if (_this.state.numModifiedItems === _this.state.totalModifiedItems && _this.state.numModifiedItems > 0) {
+                        this.setCartItems();    // updates number on cart icon
+
+                        this.setState({
+                          saveInProgress: false,
+                        });
+                      }
+                      
+                    })
+                    .catch((err) => {
+                      console.error(err);
+                      this.setState({
+                        saveInProgress: false,
+                      });
                     });
-                  })
-                  .catch((err) => {
-                    console.error(err);
-                    this.setState({
-                      saveInProgress: false,
-                    });
+                })
+                .catch((err) => {
+                  console.error(err);
+                  this.setState({
+                    saveInProgress: false,
                   });
-              })
-              .catch((err) => {
-                console.error(err);
-                this.setState({
-                  saveInProgress: false,
-                });
-              });
-          })
-          .catch((err) => {
-            console.error(err);
-            this.setState({
-              saveInProgress: false,
-            });
-          });
-      }
+                })          
+          }
+        }
+      })
+      .catch((err) => {
+        console.error(err);
+        this.setState({
+          saveInProgress: false,
+        });
+      });
     }
   }
-
+  
   handleSave() {
     const _this = this;
     _this.handleSaveForOrders(_this.state.productOrders, 'product');
