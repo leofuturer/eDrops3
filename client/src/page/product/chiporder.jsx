@@ -68,7 +68,7 @@ class ChipOrder extends React.Component {
         });
       })
       .catch((err) => {
-        console.log(err);
+        console.error(err);
       });
     API.Request(getWorkerId, 'GET', { username: PAPERFW }, true, undefined, true)
       .then((res) => {
@@ -77,7 +77,7 @@ class ChipOrder extends React.Component {
         });
       })
       .catch((err) => {
-        console.log(err);
+        console.error(err);
       });
 
     API.Request(getWorkerId, 'GET', { username: PCBFW }, true, undefined, true)
@@ -87,7 +87,7 @@ class ChipOrder extends React.Component {
         });
       })
       .catch((err) => {
-        console.log(err);
+        console.error(err);
       });
     
     API.Request(getWorkerId, 'GET', { username: PCBFW }, true, undefined, true)
@@ -97,7 +97,7 @@ class ChipOrder extends React.Component {
         });
       })
       .catch((err) => {
-        console.log(err);
+        console.error(err);
       });
 
     let url = customerGetName.replace('id', Cookies.get('userId'));
@@ -109,7 +109,7 @@ class ChipOrder extends React.Component {
         });
       })
       .catch((err) => {
-        console.log(err)
+        console.error(err)
       })
 
     if (Cookies.get('access_token') === undefined) {
@@ -279,8 +279,6 @@ class ChipOrder extends React.Component {
               // save lineItemId of the last item returned in checkout
               const lineItemIdDecoded = checkout.lineItems[checkout.lineItems.length-1].id;
               const lineItemId = Buffer.from(lineItemIdDecoded).toString('base64');
-              console.log(lineItemIdDecoded);
-              console.log(lineItemId);
 
               // select default foundry worker based on material
               let materialSpecificWorkerId = 0;
@@ -331,8 +329,7 @@ class ChipOrder extends React.Component {
                 workerName: materialSpecificWorkerName,
                 customerName: this.state.customerName,
               };
-              // console.log(data);
-              // console.log(res);
+
               let url = addOrderChipToCart.replace('id', _this.state.orderInfoId);
               API.Request(url, 'POST', data, true)
                 .then((res) => {

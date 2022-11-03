@@ -108,14 +108,12 @@ class ChipOrders extends React.Component {
     const selectedStatus = dropdown.options[dropdown.selectedIndex].value;
     const url = editOrderStatus.replace('id', chipOrderId);
     const data = { status: selectedStatus };
-    console.log(e.target);
-    console.log(chipOrderId);
     API.Request(url, 'PATCH', data, true)
       .then((res) => {
         alert('Status updated!');
       })
       .catch((err) => {
-        console.log(err);
+        console.error(err);
       });
   }
 
