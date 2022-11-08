@@ -19,6 +19,7 @@ import {
   EMAIL_PORT,
   EMAIL_SENDER,
 } from '../lib/constants/emailConstants';
+import { ConfigurationServicePlaceholders } from 'aws-sdk/lib/config_service_placeholders';
 /**
  * This class will be bound to the application as an `Interceptor` during
  * `boot`
@@ -185,7 +186,7 @@ export class OrderChipUpdateInterceptor implements Provider<Interceptor> {
               "orderDetails": orderDetails,
             }
           }],
-          "template_id": (this.request.body[key] === 'Fabrication Request Received')? 'd-4214ff5db42d4c2aa454480729f065f4': 
+          "template_id": (this.request.body[key] === 'Fabrication request received')? 'd-4214ff5db42d4c2aa454480729f065f4': 
             (this.request.body[key] === 'Project Started')? 'd-fcd1558c0858457dbc71d74fe51faf88': 
             (this.request.body[key] === 'Project Completed' )? 'd-478d5e6a854e4bbd8dc7454a1acd52ca': 
             'd-0c0085cba1a34286be944acbb0f3547d', /* Item Shipped */
