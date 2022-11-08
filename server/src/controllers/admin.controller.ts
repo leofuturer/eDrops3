@@ -1,3 +1,5 @@
+import { authenticate } from '@loopback/authentication';
+import { inject } from '@loopback/core';
 import {
   Count,
   CountSchema,
@@ -18,6 +20,8 @@ import {
   requestBody,
   response,
 } from '@loopback/rest';
+import {SecurityBindings, securityId, UserProfile} from '@loopback/security';
+import { compare } from 'bcryptjs';
 import fetch from 'node-fetch';
 import Client from 'shopify-buy';
 import Products from '../lib/constants/productConstants';
@@ -331,5 +335,40 @@ export class AdminController {
       });
 
     return {usernameTaken, emailTaken};
+  }
+
+  @authenticate('jwt')
+  @post('/admins/changePassword')
+  @response(200, {
+    description: 'Admin CHANGE PASSWORD success',
+  })
+  async changePassword(
+    @requestBody({
+      content: {
+        'application/json': {
+          type: 'object',
+          schema: {
+            properties: {
+              oldPassword: {type: 'string'},
+              newPassword: {type: 'string'},
+            },
+          },
+        },
+      },
+    })
+    data: {oldPassword: string; newPassword: string},
+    @inject(SecurityBindings.USER)
+    userProfile: UserProfile,
+  ): Promise<void> {
+    const user = await this.adminRepository.findById(userProfile.id);
+
+    const passwordMatched = await compare(data.oldPassword, user.password);
+    if (!passwordMatched) {
+      throw new HttpErrors.Unauthorized('Invalid current password');
+    }
+    await this.adminRepository.changePassword(
+      userProfile.id,
+      data.newPassword,
+    );
   }
 }
