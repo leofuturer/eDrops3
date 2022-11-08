@@ -1,7 +1,7 @@
 import React from 'react';
 import './resetPassword.css';
 import { NavLink } from 'react-router-dom';
-import { userResetPass } from '../../api/serverConfig';
+import { customerResetPass } from '../../api/serverConfig';
 import API from '../../api/api';
 import constraints from '../register/formConstraints';
 
@@ -68,11 +68,12 @@ class ResetPassword extends React.Component {
         });
       }
     } else {
-      const url = `${userResetPass}?access_token=${resetToken}`;
-      const options = {
+      const url = `${customerResetPass}`;
+      const body = {
         newPassword: this.state.newPassword,
+        accessToken: resetToken,
       };
-      API.Request(url, 'POST', options, false)
+      API.Request(url, 'POST', body, false)
         .then((res) => {
           this.setState({
             passwordChanged: true,
