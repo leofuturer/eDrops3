@@ -4,8 +4,16 @@ import './product.css';
 import Cookies from 'js-cookie';
 import {
   univEwodChipId,
+  univEwodChipId5,
+  univEwodChipId10,
   univEwodChipWithCoverPlate,
   univEwodChipWithoutCoverPlate,
+  controlSysId5,
+  testBoardId5,
+  pcbChipId5,
+  controlSysId10,
+  testBoardId10,
+  pcbChipId10,
   productIdsJson,
   getProductType
 } from '../../constants';
@@ -53,6 +61,34 @@ class Product extends React.Component {
             otherDetails: {
               withCoverPlateAssembled: false,
             },
+          });
+        }
+        if (shopifyProductId === univEwodChipId5) {
+          this.setState({
+            otherDetails: {
+              withCoverPlateAssembled: false,
+            },
+            bundleSize: "5",
+          });
+        }
+        if (shopifyProductId === univEwodChipId10) {
+          this.setState({
+            otherDetails: {
+              withCoverPlateAssembled: false,
+            },
+            bundleSize: "10",
+          });
+        }
+
+        if (shopifyProductId === controlSysId5 || shopifyProductId === testBoardId5 || shopifyProductId === pcbChipId5) {
+          this.setState({
+            bundleSize: "5",
+          });
+        }
+
+        if (shopifyProductId === controlSysId10 || shopifyProductId === testBoardId10 || shopifyProductId === pcbChipId10) {
+          this.setState({
+            bundleSize: "10",
           });
         }
       }).catch((err) => {
@@ -220,6 +256,7 @@ class Product extends React.Component {
         customServerOrderAttributes += `${k}: ${v}\n`;
       }
     }
+
     const variantId = _this.state.product.id !== productIdsJson['UNIVEWODCHIPID'][_this.state.bundleSize]
       ? _this.state.product.variants[0].id
       : (_this.state.otherDetails.withCoverPlateAssembled
@@ -246,8 +283,6 @@ class Product extends React.Component {
             // save lineItemId of the last item returned in checkout
             const lineItemIdDecoded = checkout.lineItems[checkout.lineItems.length-1].id;
             const lineItemId = Buffer.from(lineItemIdDecoded).toString('base64');
-            console.log(lineItemIdDecoded);
-            console.log(lineItemId);
 
             const data = {
               orderInfoId,
@@ -267,7 +302,7 @@ class Product extends React.Component {
                 url = getProductOrders.replace('id', orderInfoId);
                 API.Request(url, 'GET', {}, true)
                   .then((res) => {
-                    console.log(res);
+                    // console.log(res);
                     const quantity = res.data.reduce((prev, curr) => prev + curr.quantity, 0);
                     this.context.setProductQuantity(quantity);
                     this.context.setCartQuantity();
@@ -304,7 +339,6 @@ class Product extends React.Component {
 
   render() {
     const { product } = this.state;
-    // console.log(product)
     const desiredProductId = this.props.location.search.slice(4); // get id after id?=
     return (
       <div className="order-container">
@@ -328,12 +362,12 @@ class Product extends React.Component {
                   </div>
                   <div className="shop-right-bottom-content">
                     <div>
-                      {desiredProductId === univEwodChipId
+                      {(desiredProductId === univEwodChipId || desiredProductId === univEwodChipId5 || desiredProductId === univEwodChipId10)
                         ? (
                           <div className="chip-config">
                             <h3>Item Options</h3>
                             <div className="config-items">
-                              <input type="checkbox" onChange={(v) => this.handleOptionsChange('withCoverPlateAssembled', v.target.checked)} />
+                              <input type="checkbox" checked={JSON.stringify(this.state.otherDetails) === '{"withCoverPlateAssembled":true}'} onChange={(v) => this.handleOptionsChange('withCoverPlateAssembled', v.target.checked)} />
                               <span className="option-detail">With Cover Plate Assembled</span>
                             </div>
                           </div>
@@ -357,7 +391,7 @@ class Product extends React.Component {
                           </div>
                           <div className="div-product-bundlesize">
                             Bundle Size:&nbsp;
-                            <select id="bundlesize" name="bundlesize" onChange={(v) => this.handleChange('bundleSize', v.target.value)}>
+                            <select id="bundlesize" name="bundlesize" value={this.state.bundleSize} onChange={(v) => this.handleChange('bundleSize', v.target.value)}>
                               <option value="1">1</option>
                               <option value="5">5</option>
                               <option value="10">10</option>

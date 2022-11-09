@@ -81,6 +81,8 @@ export const addOrderChipToCart = `${ApiRootUrl}/orderInfos/id/addOrderChipToCar
 
 export const getProductOrders = `${ApiRootUrl}/orderInfos/id/orderProducts`;
 export const getChipOrders = `${ApiRootUrl}/orderInfos/id/orderChips`;
+export const updateChipOrderLineItem = `${ApiRootUrl}/orderInfos/id/updateChipLineItemId`;
+export const updateProductOrderLineItem = `${ApiRootUrl}/orderInfos/id/updateProductLineItemId`;
 export const modifyProductOrders = `${ApiRootUrl}/orderProducts/id`;
 export const modifyChipOrders = `${ApiRootUrl}/orderChips/id`;
 
