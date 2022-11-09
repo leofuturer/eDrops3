@@ -109,9 +109,9 @@ class BeforeCheckout extends React.Component {
                 instance.checkout.updateShippingAddress(this.state.shopifyCheckoutId, shippingAddr)
                   .then((res) => {
                     console.log(res);
-                    
 
-                    window.location.replace(`${this.state.shopifyCheckoutLink}`);
+                    window.location.replace(`/`);
+                    window.open(`${this.state.shopifyCheckoutLink}`, '_blank');
                   })
                   .catch((err) => {
                     _this.setState({
