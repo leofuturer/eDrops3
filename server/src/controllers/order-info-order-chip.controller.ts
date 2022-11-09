@@ -8,8 +8,10 @@ import {
   get,
   getModelSchemaRef, HttpErrors,
   param,
+  patch,
   post,
-  requestBody
+  requestBody,
+  response
 } from '@loopback/rest';
 import { OrderItemCreateInterceptor } from '../interceptors';
 import { OrderChip, OrderInfo } from '../models';
@@ -94,6 +96,55 @@ export class OrderInfoOrderChipController {
           this.orderInfoRepository.orderChips(id).patch({
             quantity: orderChips[0].quantity + orderChip.quantity,
             lastUpdated: orderChips[0].lastUpdated,
+          }, { id: orderChips[0].id })
+          .catch(err => {
+            console.error(err);
+          });
+        } else {
+          throw new HttpErrors.UnprocessableEntity(
+            'Unknown entries for product',
+          );
+        }
+      })
+      .catch(err => {
+        throw new HttpErrors.InternalServerError(err);
+      });
+  }
+
+  @patch('/orderInfos/{id}/updateChipLineItemId')
+  @response(204, {
+    description: 'OrderChip LineItemIdShopify PATCH success',
+  })
+  async patch(
+    @param.path.number('id') id: typeof OrderInfo.prototype.id,
+    @requestBody() body: { 
+      lineItemIdShopify: string; 
+      variantIdShopify: string; 
+      otherDetails: string;
+      updatedAt: string; 
+    },
+  ): Promise<void> {
+    this.orderInfoRepository
+      .orderChips(id)
+      .find({
+        where: {
+          variantIdShopify: body.variantIdShopify,
+          otherDetails: body.otherDetails,
+        },
+      })
+      .then(orderChips => {
+        if (orderChips.length > 1) {
+          throw new HttpErrors.UnprocessableEntity(
+            'More than one entry for product',
+          );
+        } else if (orderChips.length === 0) {
+          throw new HttpErrors.UnprocessableEntity(
+            'Entry for product does not exist',
+          );
+        } else if (orderChips.length === 1) {
+          this.orderInfoRepository.orderChips(id).patch({
+            lineItemIdShopify: body.lineItemIdShopify,
+            lastUpdated: body.updatedAt,
           }, { id: orderChips[0].id })
           .catch(err => {
             console.error(err);

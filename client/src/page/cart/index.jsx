@@ -8,7 +8,8 @@ import API from '../../api/api';
 import {
   getCustomerCart, getProductOrders,
   getChipOrders, modifyProductOrders,
-  modifyChipOrders,
+  modifyChipOrders, updateProductOrderLineItem, 
+  updateChipOrderLineItem,
 } from '../../api/serverConfig';
 import Cookies from 'js-cookie';
 import loadingGif from '../../../static/img/loading80px.gif';
@@ -116,6 +117,71 @@ class Cart extends React.Component {
     }
   }
 
+  updateLineItemCartHelper(instance, itemsToUpdate) {
+    const _this = this;
+    return new Promise((resolve, reject) => {
+      instance.checkout.updateLineItems(_this.state.shopifyCheckoutId, itemsToUpdate)
+        .then((checkout) => {
+          return resolve(checkout);
+        })
+        .catch((err) => {
+          console.error(err);
+          return reject();
+        });
+    });
+  }
+
+  updateLineItemDatabaseHelper(checkoutLineItem, orderInfoId) {
+    if(checkoutLineItem.title === 'EWOD Chip Fabrication Service') {
+      const url = updateChipOrderLineItem.replace('id', orderInfoId);
+      let otherDetails = '';
+      checkoutLineItem.customAttributes.forEach((entry) => {
+        otherDetails += `${entry.key}: ${entry.value}\n`;
+      });
+      const data = {
+        lineItemIdShopify: Buffer.from(checkoutLineItem.id).toString('base64'),
+        variantIdShopify: Buffer.from(checkoutLineItem.variant.id).toString('base64'), 
+        otherDetails: otherDetails,
+        updatedAt: new Date().toISOString(), 
+      };
+      return new Promise((resolve, reject) => {
+        API.Request(url, 'PATCH', data, true)
+          .then((checkout) => {
+            return resolve();
+          })
+          .catch((err) => {
+            console.error(err);
+            return reject();
+          });
+      });
+    } else {
+      const url = updateProductOrderLineItem.replace('id', orderInfoId);
+      let otherDetails = '';
+      checkoutLineItem.customAttributes.forEach((entry) => {
+        otherDetails += `${entry.key}: ${entry.value}\n`;
+      });
+      if(checkoutLineItem.variant.title === 'Without Cover Plate Assembled')
+        otherDetails += 'withCoverPlateAssembled: false\n';
+      if(checkoutLineItem.variant.title === 'With Cover Plate Assembled')
+      otherDetails += 'withCoverPlateAssembled: true\n';
+      const data = {
+        lineItemIdShopify: Buffer.from(checkoutLineItem.id).toString('base64'),
+        variantIdShopify: Buffer.from(checkoutLineItem.variant.id).toString('base64'), 
+        otherDetails: otherDetails,
+      };
+      return new Promise((resolve, reject) => {
+        API.Request(url, 'PATCH', data, true)
+          .then((checkout) => {
+            return resolve();
+          })
+          .catch((err) => {
+            console.error(err);
+            return reject();
+          });
+      });
+    }
+  }
+
   handleDelete(itemType, index) {
     this.setState({
       deleteLoading: true,
@@ -142,6 +208,17 @@ class Cart extends React.Component {
             }
             API.Request(url, 'DELETE', {}, true)
               .then((res) => {
+                for (let i = 0, p = Promise.resolve(); i < checkout.lineItems.length; i += 1) {
+                  // the for loop chains promises at each iteration together so that they execute synchronously
+                  p = p.then(() => this.updateLineItemDatabaseHelper(checkout.lineItems[i], array[index].orderInfoId))
+                    .catch((err) => {
+                      console.error(err);
+                      this.setState({
+                        deleteLoading: false,
+                      });
+                    });
+                }
+
                 if (itemType === 'product') {
                   const products = this.state.productOrders.filter((item) => item.id !== array[index].id);
                   this.setState({ productOrders: products });
