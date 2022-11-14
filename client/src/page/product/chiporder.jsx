@@ -266,19 +266,24 @@ class ChipOrder extends React.Component {
       Shopify.getInstance().getPrivateValue()
         .then((instance) => {
           instance.checkout.addLineItems(checkoutId, lineItemsToAdd)
-            .then((checkout) => {
+            .then((res) => {
             // .then((res) => {
-              // let lineItemId;
-              // for (let i = 0; i < res.lineItems.length; i++) {
-              //   if (Buffer.from(res.lineItems[i].variant.id).toString('base64') === variantId) {
-              //     lineItemId = Buffer.from(res.lineItems[i].id).toString('base64');
-              //     break;
-              //   }
-              // }
+              let lineItemId;
+              for (let i = 0; i < res.lineItems.length; i++) {
+                let otherDetails = '';
+                res.lineItems[i].customAttributes.forEach((entry) => {
+                  otherDetails += `${entry.key}: ${entry.value}\n`;
+                });
+                // if (Buffer.from(res.lineItems[i].variant.id).toString('base64') === variantId) {
+                if(customServerOrderAttributes == otherDetails) {
+                  lineItemId = Buffer.from(res.lineItems[i].id).toString('base64');
+                  break;
+                }
+              }
 
               // save lineItemId of the last item returned in checkout
-              const lineItemIdDecoded = checkout.lineItems[checkout.lineItems.length-1].id;
-              const lineItemId = Buffer.from(lineItemIdDecoded).toString('base64');
+              // const lineItemIdDecoded = checkout.lineItems[checkout.lineItems.length-1].id;
+              // const lineItemId = Buffer.from(lineItemIdDecoded).toString('base64');
 
               // select default foundry worker based on material
               let materialSpecificWorkerId = 0;
