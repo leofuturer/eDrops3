@@ -18,6 +18,7 @@ export * from './post-comment.model';
 export * from './post-comment-link.model';
 export * from './liked-post.model';
 export * from './liked-project.model';
+export * from './order-message.model';
 export * from './user-follower.model';
 export * from './project-file.model';
 export * from './project-link.model';
