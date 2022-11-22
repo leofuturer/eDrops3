@@ -138,19 +138,44 @@ class Cart extends React.Component {
       checkoutLineItem.customAttributes.forEach((entry) => {
         otherDetails += `${entry.key}: ${entry.value}\n`;
       });
+      const lineItemIdShopify = Buffer.from(checkoutLineItem.id).toString('base64');
+      const variantIdShopify = Buffer.from(checkoutLineItem.variant.id).toString('base64');
       const data = {
-        lineItemIdShopify: Buffer.from(checkoutLineItem.id).toString('base64'),
-        variantIdShopify: Buffer.from(checkoutLineItem.variant.id).toString('base64'), 
+        lineItemIdShopify: lineItemIdShopify,
+        variantIdShopify: variantIdShopify, 
         otherDetails: otherDetails,
         updatedAt: new Date().toISOString(), 
       };
       return new Promise((resolve, reject) => {
         API.Request(url, 'PATCH', data, true)
           .then((checkout) => {
-            return resolve();
+            // return resolve();
+            // https://stackoverflow.com/questions/29537299/how-can-i-update-state-item1-in-state-using-setstate
+            let index;
+            const array = this.state.chipOrders;
+            for(let i = 0; i < array.length; i += 1) {
+              if(array[i].otherDetails === otherDetails && array[i].variantIdShopify === variantIdShopify) {
+                index = i;
+                break;
+              }
+            }
+
+            this.setState(({chipOrders}) => ({
+              chipOrders: [
+                  ...chipOrders.slice(0,index),
+                  {
+                      ...chipOrders[index],
+                      lineItemIdShopify: lineItemIdShopify,
+                  },
+                  ...chipOrders.slice(index+1)
+              ]
+            }), () => resolve());
           })
           .catch((err) => {
             console.error(err);
+            this.setState({
+              deleteLoading: false,
+            });
             return reject();
           });
       });
@@ -164,18 +189,44 @@ class Cart extends React.Component {
         otherDetails += 'withCoverPlateAssembled: false\n';
       if(checkoutLineItem.variant.title === 'With Cover Plate Assembled')
       otherDetails += 'withCoverPlateAssembled: true\n';
+      const lineItemIdShopify = Buffer.from(checkoutLineItem.id).toString('base64');
+      const variantIdShopify = Buffer.from(checkoutLineItem.variant.id).toString('base64');
       const data = {
-        lineItemIdShopify: Buffer.from(checkoutLineItem.id).toString('base64'),
-        variantIdShopify: Buffer.from(checkoutLineItem.variant.id).toString('base64'), 
+        lineItemIdShopify: lineItemIdShopify,
+        variantIdShopify: variantIdShopify, 
         otherDetails: otherDetails,
       };
       return new Promise((resolve, reject) => {
         API.Request(url, 'PATCH', data, true)
           .then((checkout) => {
-            return resolve();
+            // return resolve();
+            // https://stackoverflow.com/questions/29537299/how-can-i-update-state-item1-in-state-using-setstate
+            let index;
+            const array = this.state.productOrders;
+            for(let i = 0; i < array.length; i += 1) {
+              if(array[i].otherDetails === otherDetails && array[i].variantIdShopify === variantIdShopify) {
+                index = i;
+                break;
+              }
+            }
+
+            this.setState(({productOrders}) => ({
+              productOrders: [
+                  ...productOrders.slice(0,index),
+                  {
+                      ...productOrders[index],
+                      lineItemIdShopify: lineItemIdShopify,
+                  },
+                  ...productOrders.slice(index+1)
+              ]
+            }), () => resolve());
+
           })
           .catch((err) => {
             console.error(err);
+            this.setState({
+              deleteLoading: false,
+            });
             return reject();
           });
       });
@@ -208,37 +259,33 @@ class Cart extends React.Component {
             }
             API.Request(url, 'DELETE', {}, true)
               .then((res) => {
-                for (let i = 0, p = Promise.resolve(); i < checkout.lineItems.length; i += 1) {
-                  // the for loop chains promises at each iteration together so that they execute synchronously
-                  p = p.then(() => this.updateLineItemDatabaseHelper(checkout.lineItems[i], array[index].orderInfoId))
-                    .catch((err) => {
-                      console.error(err);
-                      this.setState({
-                        deleteLoading: false,
-                      });
-                    });
-                }
+                let result = checkout.lineItems.reduce((p, nextItem) => {
+                  return  this.updateLineItemDatabaseHelper(nextItem, array[index].orderInfoId);
+                }, Promise.resolve());
 
-                if (itemType === 'product') {
-                  const products = this.state.productOrders.filter((item) => item.id !== array[index].id);
-                  this.setState({ productOrders: products });
-                } else if (itemType === 'chip') {
-                  const chips = this.state.chipOrders.filter((item) => item.id !== array[index].id);
-                  this.setState({ chipOrders: chips });
-                }
-                this.setState({
-                  deleteLoading: false,
+                result.then(e => {
+                  if (itemType === 'product') {
+                    const products = this.state.productOrders.filter((item) => item.id !== array[index].id);
+                    this.setState({ productOrders: products });
+                  } else if (itemType === 'chip') {
+                    const chips = this.state.chipOrders.filter((item) => item.id !== array[index].id);
+                    this.setState({ chipOrders: chips });
+                  }
+  
+                  if (itemType === 'product') {
+                    const quantity = this.state.productOrders.reduce((prev, curr) => prev + curr.quantity, 0);
+                    this.context.setProductQuantity(quantity);
+                  } else if (itemType === 'chip') {
+                    const quantity = this.state.chipOrders.reduce((prev, curr) => prev + curr.quantity, 0);
+                    this.context.setChipQuantity(quantity);
+                  }
+  
+                  this.context.setCartQuantity();
+
+                  this.setState({
+                    deleteLoading: false,
+                  });
                 });
-
-                if (itemType === 'product') {
-                  const quantity = this.state.productOrders.reduce((prev, curr) => prev + curr.quantity, 0);
-                  this.context.setProductQuantity(quantity);
-                } else if (itemType === 'chip') {
-                  const quantity = this.state.chipOrders.reduce((prev, curr) => prev + curr.quantity, 0);
-                  this.context.setChipQuantity(quantity);
-                }
-
-                this.context.setCartQuantity();
               })
               .catch((err) => {
                 console.error(err);
@@ -262,76 +309,79 @@ class Cart extends React.Component {
       });
   }
 
-  updateLineItemCartHelper(instance, itemsToUpdate) {
+  updateLineItemCartHelper(instance, type, item, itemsToUpdate) {
     const _this = this;
     return new Promise((resolve, reject) => {
       instance.checkout.updateLineItems(_this.state.shopifyCheckoutId, itemsToUpdate)
         .then((checkout) => {
-          return resolve(checkout);
+          let url;
+          // console.log(checkout.lineItems);
+          if (type === 'product') {
+            url = modifyProductOrders.replace('id', item.id);
+          } else if (type === 'chip') {
+            url = modifyChipOrders.replace('id', item.id);
+          }
+          const data = { quantity: parseInt(item.quantity) };
+          API.Request(url, 'PATCH', data, true)
+            .then((res) => {
+              this.setState((state) => ({ numModifiedItems: state.numModifiedItems + 1 }));
+              if (_this.state.numModifiedItems === _this.state.totalModifiedItems && _this.state.numModifiedItems > 0) {
+                this.setCartItems();    // updates number on cart icon
+
+                this.setState({
+                  saveInProgress: false,
+                });
+              }
+
+              return resolve();
+              
+            })
+            .catch((err) => {
+              console.error(err);
+              this.setState({
+                saveInProgress: false,
+              });
+            });
         })
         .catch((err) => {
           console.error(err);
+          this.setState({
+            saveInProgress: false,
+          });
           return reject();
         });
     });
   }
 
-  handleSaveForOrders(array, type) {
-    let url;
+  handleSaveForOrders(instance, array, type) {
+    const _this = this;
+    return array.filter(item => (_this.state.modifiedItems.has(item.lineItemIdShopify)))
+      .reduce((p, nextItem) => {
+  
+        const itemsToUpdate = [{
+          id: nextItem.lineItemIdShopify,
+          quantity: parseInt(nextItem.quantity),
+        }];
+
+        return p.then(() => {
+          return this.updateLineItemCartHelper(instance, type, nextItem, itemsToUpdate);
+        });
+
+      }, Promise.resolve());
+  }
+  
+  handleSave() {
     const _this = this;
     if (_this.state.modifiedItems.size > 0) {
       this.setState({
         saveInProgress: true,
       });
-
       Shopify.getInstance().getPrivateValue()
       .then((instance) => {
-        // https://stackoverflow.com/questions/40328932/javascript-es6-promise-for-loop
-        for (let i = 0, p = Promise.resolve(); i < array.length; i += 1) {
-          if (_this.state.modifiedItems.has(array[i].variantIdShopify) || _this.state.modifiedItems.has(array[i].lineItemIdShopify)) {
-            const itemsToUpdate = [{
-              id: array[i].lineItemIdShopify,
-              quantity: parseInt(array[i].quantity),
-            }];
-
-            // the for loop chains promises at each iteration together so that they execute synchronously
-            p = p.then(() => this.updateLineItemCartHelper(instance, itemsToUpdate)) // update line item in shopify cart
-                .then((checkout) => {           // update table in database
-                  // console.log(checkout.lineItems);
-                  if (type === 'product') {
-                    url = modifyProductOrders.replace('id', array[i].id);
-                  } else if (type === 'chip') {
-                    url = modifyChipOrders.replace('id', array[i].id);
-                  }
-                  const data = { quantity: parseInt(array[i].quantity) };
-                  API.Request(url, 'PATCH', data, true)
-                    .then((res) => {
-                      this.setState((state) => ({ numModifiedItems: state.numModifiedItems + 1 }));
-
-                      if (_this.state.numModifiedItems === _this.state.totalModifiedItems && _this.state.numModifiedItems > 0) {
-                        this.setCartItems();    // updates number on cart icon
-
-                        this.setState({
-                          saveInProgress: false,
-                        });
-                      }
-                      
-                    })
-                    .catch((err) => {
-                      console.error(err);
-                      this.setState({
-                        saveInProgress: false,
-                      });
-                    });
-                })
-                .catch((err) => {
-                  console.error(err);
-                  this.setState({
-                    saveInProgress: false,
-                  });
-                })          
-          }
-        }
+        const result = _this.handleSaveForOrders(instance, _this.state.productOrders, 'product');
+        result.then(e => {
+            _this.handleSaveForOrders(instance, _this.state.chipOrders, 'chip');
+        });
       })
       .catch((err) => {
         console.error(err);
@@ -340,12 +390,6 @@ class Cart extends React.Component {
         });
       });
     }
-  }
-  
-  handleSave() {
-    const _this = this;
-    _this.handleSaveForOrders(_this.state.productOrders, 'product');
-    _this.handleSaveForOrders(_this.state.chipOrders, 'chip');
   }
 
   handleCheckout() {
@@ -389,17 +433,9 @@ class Cart extends React.Component {
   }
 
   updateTotalModified() {
-    if (this.state.chipOrders.length > 0 && this.state.modifiedItems.has(this.state.chipOrders[0].variantIdShopify)) {
-      const num = (this.state.modifiedItems.size - 1) + this.state.chipOrders.length;
-      this.setState({
-        totalModifiedItems: num,
-      });
-    } else {
-      const num = this.state.modifiedItems.size;
-      this.setState({
-        totalModifiedItems: num,
-      });
-    }
+    this.setState({
+      totalModifiedItems: this.state.modifiedItems.size,
+    });
   }
 
   render() {
