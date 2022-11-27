@@ -1,7 +1,6 @@
 import { authenticate } from '@loopback/authentication';
 import { intercept } from '@loopback/core';
 import {
-  Filter,
   repository
 } from '@loopback/repository';
 import {
@@ -38,7 +37,7 @@ export class OrderInfoOrderChipController {
   async find(
     @param.path.number('id') id: number,
   ): Promise<OrderChip[]> {
-    let orderInfo = await this.orderInfoRepository.findById(id, {include: [{relation: 'orderChips' }]});
+    const orderInfo = await this.orderInfoRepository.findById(id, {include: [{relation: 'orderChips' }]});
     return orderInfo.orderChips ?? [];
   }
 

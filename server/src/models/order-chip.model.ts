@@ -1,5 +1,5 @@
 import {model, property, belongsTo} from '@loopback/repository';
-import {OrderItemBase} from '.';
+import {OrderItemBase} from './order-item-base.model';
 import {FileInfo} from './file-info.model';
 import {FoundryWorker} from './foundry-worker.model';
 

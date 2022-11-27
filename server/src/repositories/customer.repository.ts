@@ -1,39 +1,37 @@
-import {Getter, inject} from '@loopback/core';
+import { Getter, inject } from '@loopback/core';
 import {
   BelongsToAccessor,
   DefaultCrudRepository,
   HasManyRepositoryFactory,
-  repository,
+  repository
 } from '@loopback/repository';
-import {HttpErrors, Request, Response} from '@loopback/rest';
+import { HttpErrors, Request, Response } from '@loopback/rest';
 import AWS from 'aws-sdk';
-import {genSalt, hash} from 'bcryptjs';
-import {createHash} from 'crypto';
-import ejs from 'ejs';
+import { genSalt, hash } from 'bcryptjs';
+import { createHash } from 'crypto';
 import path from 'path';
-import {MysqlDsDataSource} from '../datasources';
+import { MysqlDsDataSource } from '../datasources';
 import {
   EMAIL_HOSTNAME,
   EMAIL_PORT,
-  EMAIL_SENDER,
+  EMAIL_SENDER
 } from '../lib/constants/emailConstants';
-import {calculate} from '../lib/toolbox/calculate';
+import { calculate } from '../lib/toolbox/calculate';
 import log from '../lib/toolbox/log';
-import {verifyHTML} from '../lib/views/verify';
 import {
   Customer,
   CustomerAddress,
   CustomerRelations,
   FileInfo,
   OrderInfo,
-  User,
+  User
 } from '../models';
-import {STORAGE_DIRECTORY} from '../services';
+import { STORAGE_DIRECTORY } from '../services';
 import SendGrid from '../services/send-grid.service';
-import {CustomerAddressRepository} from './customer-address.repository';
-import {FileInfoRepository} from './file-info.repository';
-import {OrderInfoRepository} from './order-info.repository';
-import {UserRepository} from './user.repository';
+import { CustomerAddressRepository } from './customer-address.repository';
+import { FileInfoRepository } from './file-info.repository';
+import { OrderInfoRepository } from './order-info.repository';
+import { UserRepository } from './user.repository';
 
 const CONTAINER_NAME = process.env.S3_BUCKET_NAME ?? 'edrop-v2-files';
 
@@ -122,7 +120,7 @@ export class CustomerRepository extends DefaultCrudRepository<
    */
   async createCustomer(
     customer: Omit<Customer & CustomerAddress, 'id'>,
-    createAddress: boolean = true,
+    createAddress = true,
   ): Promise<Customer> {
     const hashedPassword = await hash(customer.password, await genSalt());
     const userData: Partial<User> = {
@@ -254,7 +252,7 @@ export class CustomerRepository extends DefaultCrudRepository<
       throw new HttpErrors.NotFound('Customer not found');
     }
     const currentTime = new Date();
-    return await this.updateById(customerId, {
+    return this.updateById(customerId, {
       emailVerified:
         customer?.verificationToken === verificationToken &&
         (customer?.verificationTokenExpires ?? currentTime) > currentTime,

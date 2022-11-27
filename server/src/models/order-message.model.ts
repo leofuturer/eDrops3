@@ -27,20 +27,12 @@ export class OrderMessage extends Entity {
   })
   userConvId: number;
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> Adds date field to message table
   @property({
     type: 'date',
     required: true,
   })
   messageDate: Date;
-<<<<<<< HEAD
-=======
->>>>>>> Completes messaging API and database changes
-=======
->>>>>>> Adds date field to message table
+  
   // Define well-known properties here
 
   // Indexer property to allow additional data

@@ -1,33 +1,27 @@
 import {
   Count,
   CountSchema,
-  Filter,
-  FilterExcludingWhere,
-  repository,
-  Where,
+  Filter, repository,
+  Where
 } from '@loopback/repository';
 import {
-  post,
-  param,
-  get,
-  getModelSchemaRef,
-  patch,
-  put,
-  del,
-  requestBody,
-  response,
+  del, get,
+  getModelSchemaRef, param, patch, post, put, requestBody,
+  response
 } from '@loopback/rest';
-import {OrderMessage} from '../models';
-import {OrderMessageRepository} from '../repositories';
-const path = require('path');
-require('dotenv').config({ path: path.resolve(__dirname, '.env') });
+import dotenv from 'dotenv';
+import path from 'path';
+import Pusher from 'pusher';
+import { OrderMessage } from '../models';
+import { OrderMessageRepository } from '../repositories';
 
-const Pusher = require('pusher');
+dotenv.config({ path: path.resolve(__dirname, '.env') });
+
 const pusher = new Pusher({
-  appId: process.env.APP_PUSHER_API_ID,
-  key: process.env.APP_PUSHER_API_KEY,
-  secret:  process.env.APP_PUSHER_API_SECRET,
-  cluster: process.env.APP_PUSHER_API_CLUSTER,
+  appId: process.env.APP_PUSHER_API_ID as string,
+  key: process.env.APP_PUSHER_API_KEY as string,
+  secret:  process.env.APP_PUSHER_API_SECRET as string,
+  cluster: process.env.APP_PUSHER_API_CLUSTER as string,
   useTLS: true,
 });
 
@@ -58,14 +52,7 @@ export class OrderMessageController {
     const newMsgEntry = {
       message: orderMessage.message,
       userConvId: orderMessage.userConvId,
-<<<<<<< HEAD
-<<<<<<< HEAD
       date: orderMessage.messageDate,
-=======
->>>>>>> Completes messaging API and database changes
-=======
-      date: orderMessage.messageDate,
->>>>>>> Adds date field to message table
     };
     pusher.trigger(`chat-${orderMessage.orderId}`, 'new-message', newMsgEntry);
     return this.orderMessageRepository.create(orderMessage);

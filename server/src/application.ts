@@ -1,39 +1,27 @@
-import {BootMixin} from '@loopback/boot';
-import {ApplicationConfig} from '@loopback/core';
+import { S3Client } from '@aws-sdk/client-s3';
+import { AuthenticationComponent } from '@loopback/authentication';
+import { BootMixin } from '@loopback/boot';
+import { ApplicationConfig } from '@loopback/core';
+import { RepositoryMixin, SchemaMigrationOptions } from '@loopback/repository';
+import { RestApplication } from '@loopback/rest';
 import {
   RestExplorerBindings,
-  RestExplorerComponent,
+  RestExplorerComponent
 } from '@loopback/rest-explorer';
-import {RepositoryMixin, SchemaMigrationOptions} from '@loopback/repository';
-import {HttpErrors, RestApplication} from '@loopback/rest';
-import {ServiceMixin} from '@loopback/service-proxy';
-import path from 'path';
+import { ServiceMixin } from '@loopback/service-proxy';
+import fs from 'fs';
 import multer from 'multer';
 import multerS3 from 'multer-s3';
-import {S3Client} from '@aws-sdk/client-s3';
-// Loopback 3 mounted app imports
-// import {Lb3AppBooterComponent} from '@loopback/booter-lb3app';
-// Authentication service imports
-import {AuthenticationComponent} from '@loopback/authentication';
-// import {
-//   JWTAuthenticationComponent,
-//   SECURITY_SCHEME_SPEC,
-//   UserServiceBindings,
-// } from '@loopback/authentication-jwt';
-import {v4} from 'uuid';
+import path from 'path';
+import { v4 } from 'uuid';
 import {
   JWTAuthenticationComponent,
-  SECURITY_SCHEME_SPEC,
+  SECURITY_SCHEME_SPEC
 } from './components/jwt-authentication';
-// import {MysqlDsDataSource} from './datasources';
-import {clearDb, seedDb} from './lib/seed';
-import {CasbinAuthorizationComponent} from './components/casbin-authorization';
-// File service imports
-import {FILE_UPLOAD_SERVICE, STORAGE_DIRECTORY} from './services';
-import fs from 'fs';
-// import {MySequence} from './sequence';
+import { clearDb, seedDb } from './lib/seed';
+import { FILE_UPLOAD_SERVICE, STORAGE_DIRECTORY } from './services';
 
-export {ApplicationConfig};
+export { ApplicationConfig };
 
 export class EdropsBackendApplication extends BootMixin(
   ServiceMixin(RepositoryMixin(RestApplication)),
@@ -83,8 +71,6 @@ export class EdropsBackendApplication extends BootMixin(
     this.component(JWTAuthenticationComponent);
     // // Bind datasource
     // this.dataSource(MysqlDsDataSource, UserServiceBindings.DATASOURCE_NAME);
-    // Mount casbin authorization component
-    this.component(CasbinAuthorizationComponent);
   }
 
   addSecuritySpec(): void {

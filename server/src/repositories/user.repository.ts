@@ -1,42 +1,30 @@
-import {inject, Getter} from '@loopback/core';
+import { Getter, inject } from '@loopback/core';
 import {
-  DefaultCrudRepository,
-  repository,
-  HasManyRepositoryFactory,
-  HasOneRepositoryFactory,
-  HasManyThroughRepository,
-  HasManyThroughRepositoryFactory,
+  DefaultCrudRepository, HasManyRepositoryFactory, HasManyThroughRepositoryFactory, HasOneRepositoryFactory, repository
 } from '@loopback/repository';
-import {genSalt, hash} from 'bcryptjs';
-import {createHash} from 'crypto';
-import {MysqlDsDataSource} from '../datasources';
-import {
-  User,
-  UserRelations,
-  SavedPost,
-  SavedProject,
-  UserProfile,
-  Post,
-  Project,
-  LikedPost,
-  LikedProject,
-  UserFollower,
-} from '../models';
-import {SavedPostRepository} from './saved-post.repository';
-import {SavedProjectRepository} from './saved-project.repository';
-import {UserProfileRepository} from './user-profile.repository';
-import {PostRepository} from './post.repository';
-import {ProjectRepository} from './project.repository';
-import {LikedPostRepository} from './liked-post.repository';
-import {LikedProjectRepository} from './liked-project.repository';
-import {UserFollowerRepository} from './user-follower.repository';
+import { genSalt, hash } from 'bcryptjs';
+import { JwtPayload, sign, verify } from 'jsonwebtoken';
+import { MysqlDsDataSource } from '../datasources';
 import {
   EMAIL_HOSTNAME,
   EMAIL_PORT,
-  EMAIL_SENDER,
+  EMAIL_SENDER
 } from '../lib/constants/emailConstants';
+import {
+  LikedPost,
+  LikedProject, Post,
+  Project, SavedPost,
+  SavedProject, User, UserFollower, UserProfile, UserRelations
+} from '../models';
 import SendGrid from '../services/send-grid.service';
-import {JwtPayload, sign, verify} from 'jsonwebtoken';
+import { LikedPostRepository } from './liked-post.repository';
+import { LikedProjectRepository } from './liked-project.repository';
+import { PostRepository } from './post.repository';
+import { ProjectRepository } from './project.repository';
+import { SavedPostRepository } from './saved-post.repository';
+import { SavedProjectRepository } from './saved-project.repository';
+import { UserFollowerRepository } from './user-follower.repository';
+import { UserProfileRepository } from './user-profile.repository';
 
 export class UserRepository extends DefaultCrudRepository<
   User,

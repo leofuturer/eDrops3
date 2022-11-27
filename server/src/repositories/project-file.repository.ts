@@ -1,17 +1,16 @@
-import {inject, Getter} from '@loopback/core';
+import { Getter, inject } from '@loopback/core';
 import {
-  DefaultCrudRepository,
-  repository,
-  BelongsToAccessor,
+  BelongsToAccessor, DefaultCrudRepository,
+  repository
 } from '@loopback/repository';
-import {HttpErrors, Request, Response} from '@loopback/rest';
+import { HttpErrors, Request, Response } from '@loopback/rest';
 import AWS from 'aws-sdk';
-import {calculate} from '../lib/toolbox/calculate';
-import {MysqlDsDataSource} from '../datasources';
-import {ProjectFile, ProjectFileRelations, Project} from '../models';
-import {STORAGE_DIRECTORY} from '../services';
 import path from 'path';
-import {ProjectRepository} from './project.repository';
+import { MysqlDsDataSource } from '../datasources';
+import { calculate } from '../lib/toolbox/calculate';
+import { Project, ProjectFile, ProjectFileRelations } from '../models';
+import { STORAGE_DIRECTORY } from '../services';
+import { ProjectRepository } from './project.repository';
 
 const CONTAINER_NAME = process.env.S3_BUCKET_NAME ?? 'edrop-v2-files';
 
