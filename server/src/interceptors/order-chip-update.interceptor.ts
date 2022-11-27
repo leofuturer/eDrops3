@@ -1,25 +1,19 @@
 import {
   inject,
-  /* inject, */
   injectable,
   Interceptor,
   InvocationContext,
   InvocationResult,
   Provider,
-  ValueOrPromise,
+  ValueOrPromise
 } from '@loopback/core';
-import { repository } from '@loopback/repository'
-import { Request, RestBindings } from '@loopback/rest'
-import log from '../lib/toolbox/log'
-import { OrderChip, OrderInfo, FoundryWorker, FileInfo, Customer } from '../models'
-import { OrderChipRepository, OrderInfoRepository, FoundryWorkerRepository, FileInfoRepository, CustomerRepository } from '../repositories';
-import SendGrid from '../services/send-grid.service'
+import { repository } from '@loopback/repository';
+import { Request, RestBindings } from '@loopback/rest';
 import {
-  EMAIL_HOSTNAME,
-  EMAIL_PORT,
-  EMAIL_SENDER,
+  EMAIL_SENDER
 } from '../lib/constants/emailConstants';
-import { ConfigurationServicePlaceholders } from 'aws-sdk/lib/config_service_placeholders';
+import { CustomerRepository, FileInfoRepository, FoundryWorkerRepository, OrderChipRepository, OrderInfoRepository } from '../repositories';
+import SendGrid from '../services/send-grid.service';
 /**
  * This class will be bound to the application as an `Interceptor` during
  * `boot`
@@ -66,7 +60,7 @@ export class OrderChipUpdateInterceptor implements Provider<Interceptor> {
   ) {
     try {
       const key = Object.keys(this.request.body)[0];
-      const id = parseInt(this.request.url.split('/').slice(-1)[0]);
+      const id = parseInt(this.request.url.split('/').slice(-1)[0], 10);
 
       if(key !== 'workerId' && key !== 'status') {
         return await next();

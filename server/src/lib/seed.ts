@@ -1,20 +1,10 @@
-import {EdropsBackendApplication} from '../application';
+import { EdropsBackendApplication } from '../application';
 import {
   Admin,
   Customer,
   CustomerAddress,
   Post,
-  PostComment,
-  FileInfo,
-  Forum,
-  FoundryWorker,
-  OrderChip,
-  OrderInfo,
-  OrderItemBase,
-  OrderMessage,
-  OrderProduct,
-  Project,
-  User,
+  PostComment, User
 } from '../models';
 import {
   AdminRepository,
@@ -35,7 +25,7 @@ import {
   ProjectFileRepository,
   ProjectLinkRepository,
   ProjectRepository,
-  UserRepository,
+  UserRepository
 } from '../repositories';
 import {
   defaultAdmins,
@@ -45,23 +35,23 @@ import {
   defaultPostComments,
   defaultPosts,
   defaultProjects,
-  defaultUsers,
+  defaultUsers
 } from './data/index';
 
 export async function clearDb(this: EdropsBackendApplication): Promise<void> {
-  /** Clear Admin table **/
+  /* Clear Admin table */
   const adminRepo: AdminRepository = await this.getRepository(AdminRepository);
   await adminRepo.deleteAll();
   await adminRepo.execute('ALTER TABLE Admin AUTO_INCREMENT = ?', [1]); // resets auto increment
 
-  /** Clear Customer table **/
+  /* Clear Customer table */
   const customerRepo: CustomerRepository = await this.getRepository(
     CustomerRepository,
   );
   await customerRepo.deleteAll();
   await customerRepo.execute('ALTER TABLE Customer AUTO_INCREMENT = ?', [1]);
 
-  /** Clear CustomerAddress table **/
+  /* Clear CustomerAddress table */
   const customerAddressRepo: CustomerAddressRepository =
     await this.getRepository(CustomerAddressRepository);
   await customerAddressRepo.deleteAll();
@@ -70,7 +60,7 @@ export async function clearDb(this: EdropsBackendApplication): Promise<void> {
     [1],
   );
 
-  /** Clear FoundryWorker table **/
+  /* Clear FoundryWorker table */
   const foundryWorkerRepo: FoundryWorkerRepository = await this.getRepository(
     FoundryWorkerRepository,
   );
@@ -80,26 +70,26 @@ export async function clearDb(this: EdropsBackendApplication): Promise<void> {
     [1],
   );
 
-  /** Clear User table **/
+  /* Clear User table */
   const userRepo: UserRepository = await this.getRepository(UserRepository);
   await userRepo.deleteAll();
   await userRepo.execute('ALTER TABLE User AUTO_INCREMENT = ?', [1]);
 
-  /** Clear OrderInfo table **/
+  /* Clear OrderInfo table */
   const orderInfoRepo: OrderInfoRepository = await this.getRepository(
     OrderInfoRepository,
   );
   await orderInfoRepo.deleteAll();
   await orderInfoRepo.execute('ALTER TABLE OrderInfo AUTO_INCREMENT = ?', [1]);
 
-  /** Clear OrderChip table **/
+  /* Clear OrderChip table */
   const orderChipRepo: OrderChipRepository = await this.getRepository(
     OrderChipRepository,
   );
   await orderChipRepo.deleteAll();
   await orderChipRepo.execute('ALTER TABLE OrderChip AUTO_INCREMENT = ?', [1]);
 
-  /** Clear OrderItemBase table **/
+  /* Clear OrderItemBase table */
   const orderItemBaseRepo: OrderItemBaseRepository = await this.getRepository(
     OrderItemBaseRepository,
   );
@@ -113,12 +103,8 @@ export async function clearDb(this: EdropsBackendApplication): Promise<void> {
     OrderMessageRepository,
   );
   await orderMessageRepo.deleteAll();
-<<<<<<< HEAD
-  
-=======
   await orderMessageRepo.execute('ALTER TABLE OrderMessage AUTO_INCREMENT = ?', [1]);
 
->>>>>>> Completes messaging API and database changes
   const orderProductRepo: OrderProductRepository = await this.getRepository(
     OrderProductRepository,
   );
@@ -128,19 +114,19 @@ export async function clearDb(this: EdropsBackendApplication): Promise<void> {
     [1],
   );
 
-  /** Clear FileInfo table **/
+  /* Clear FileInfo table */
   const fileInfoRepo: FileInfoRepository = await this.getRepository(
     FileInfoRepository,
   );
   await fileInfoRepo.deleteAll();
   await fileInfoRepo.execute('ALTER TABLE FileInfo AUTO_INCREMENT = ?', [1]);
 
-  /** Clear Post table **/
+  /* Clear Post table */
   const postRepo: PostRepository = await this.getRepository(PostRepository);
   await postRepo.deleteAll();
   await postRepo.execute('ALTER TABLE Post AUTO_INCREMENT = ?', [1]);
 
-  /** Clear PostComment table **/
+  /* Clear PostComment table */
   const postCommentRepo: PostCommentRepository = await this.getRepository(
     PostCommentRepository,
   );
@@ -149,7 +135,7 @@ export async function clearDb(this: EdropsBackendApplication): Promise<void> {
     1,
   ]);
 
-  /** Clear PostCommentLink table */
+  /* Clear PostCommentLink table */
   const postCommentLinkRepo: PostCommentLinkRepository =
     await this.getRepository(PostCommentLinkRepository);
   await postCommentLinkRepo.deleteAll();
@@ -158,14 +144,14 @@ export async function clearDb(this: EdropsBackendApplication): Promise<void> {
     [1],
   );
 
-  /** Clear Project table **/
+  /* Clear Project table */
   const projectRepo: ProjectRepository = await this.getRepository(
     ProjectRepository,
   );
   await projectRepo.deleteAll();
   await projectRepo.execute('ALTER TABLE Project AUTO_INCREMENT = ?', [1]);
 
-  /** Clear ProjectComment table **/
+  /* Clear ProjectComment table */
   const projectCommentRepo: ProjectCommentRepository = await this.getRepository(
     ProjectCommentRepository,
   );
@@ -175,7 +161,7 @@ export async function clearDb(this: EdropsBackendApplication): Promise<void> {
     [1],
   );
 
-  /** Clear ProjectCommentLink table */
+  /* Clear ProjectCommentLink table */
   const projectCommentLinkRepo: ProjectCommentLinkRepository =
     await this.getRepository(ProjectCommentLinkRepository);
   await projectCommentLinkRepo.deleteAll();
@@ -184,7 +170,7 @@ export async function clearDb(this: EdropsBackendApplication): Promise<void> {
     [1],
   );
 
-  /** Clear ProjectFile table */
+  /* Clear ProjectFile table */
   const projectFileRepo: ProjectFileRepository = await this.getRepository(
     ProjectFileRepository,
   );
@@ -193,7 +179,7 @@ export async function clearDb(this: EdropsBackendApplication): Promise<void> {
     1,
   ]);
 
-  /** Clear ProjectLink table */
+  /* Clear ProjectLink table */
   const projectLinkRepo: ProjectLinkRepository = await this.getRepository(
     ProjectLinkRepository,
   );
@@ -204,13 +190,13 @@ export async function clearDb(this: EdropsBackendApplication): Promise<void> {
 }
 
 export async function seedDb(this: EdropsBackendApplication): Promise<void> {
-  /** Seed Admin table **/
+  /* Seed Admin table */
   const adminRepo: AdminRepository = await this.getRepository(AdminRepository);
   const admins: Admin[] = await Promise.all(
     defaultAdmins.map(admin => adminRepo.createAdmin(admin)),
   );
 
-  /** Seed Customer table **/
+  /* Seed Customer table */
   const customerRepo: CustomerRepository = await this.getRepository(
     CustomerRepository,
   );
@@ -220,7 +206,7 @@ export async function seedDb(this: EdropsBackendApplication): Promise<void> {
     ),
   );
 
-  /** Seed CustomerAddress table **/
+  /* Seed CustomerAddress table */
   const customerAddressRepo: CustomerAddressRepository =
     await this.getRepository(CustomerAddressRepository);
   const customerAddresses: CustomerAddress[] = await Promise.all(
@@ -231,7 +217,7 @@ export async function seedDb(this: EdropsBackendApplication): Promise<void> {
     ),
   );
 
-  /** Seed FoundryWorker table **/
+  /* Seed FoundryWorker table */
   const foundryWorkerRepo: FoundryWorkerRepository = await this.getRepository(
     FoundryWorkerRepository,
   );
@@ -241,19 +227,19 @@ export async function seedDb(this: EdropsBackendApplication): Promise<void> {
     ),
   );
 
-  /** Seed User table **/
+  /* Seed User table */
   const userRepo: UserRepository = await this.getRepository(UserRepository);
   const users: User[] = await Promise.all(
     defaultUsers.map(user => userRepo.createUser(user)),
   );
 
-  /** Seed Post table **/
+  /* Seed Post table */
   const postRepo: PostRepository = await this.getRepository(PostRepository);
   const posts: Post[] = await Promise.all(
     defaultPosts.map(post => postRepo.create(post)),
   );
 
-  /** Seed PostComment table **/
+  /* Seed PostComment table */
   const postCommentRepo: PostCommentRepository = await this.getRepository(
     PostCommentRepository,
   );
@@ -263,7 +249,7 @@ export async function seedDb(this: EdropsBackendApplication): Promise<void> {
     ),
   );
 
-  /** Seed Project table **/
+  /* Seed Project table */
   const projectRepo: ProjectRepository = await this.getRepository(
     ProjectRepository,
   );
@@ -271,7 +257,7 @@ export async function seedDb(this: EdropsBackendApplication): Promise<void> {
     defaultProjects.map(project => projectRepo.create(project)),
   );
 
-  /** Seed ProjectComment table **/
+  /* Seed ProjectComment table */
   // const projectCommentRepo: ProjectCommentRepository = await this.getRepository(
   //   ProjectCommentRepository,
   // );

@@ -6,7 +6,7 @@ import {
   Filter,
   FilterExcludingWhere,
   repository,
-  Where,
+  Where
 } from '@loopback/repository';
 import {
   del,
@@ -18,16 +18,15 @@ import {
   post,
   put,
   requestBody,
-  response,
+  response
 } from '@loopback/rest';
-import {SecurityBindings, securityId, UserProfile} from '@loopback/security';
+import { SecurityBindings, UserProfile } from '@loopback/security';
 import { compare } from 'bcryptjs';
 import fetch from 'node-fetch';
 import Client from 'shopify-buy';
 import Products from '../lib/constants/productConstants';
-import log from '../lib/toolbox/log';
-import {Admin, User, OrderChip} from '../models';
-import {AdminRepository, OrderProductRepository, OrderInfoRepository} from '../repositories';
+import { Admin, OrderChip, User } from '../models';
+import { AdminRepository, OrderInfoRepository, OrderProductRepository } from '../repositories';
 
 // @ts-ignore
 global.fetch = fetch;

@@ -36,7 +36,7 @@ export class OrderInfoOrderProductController {
     // @param.query.object('filter') filter?: Filter<OrderProduct>,
   ): Promise<OrderProduct[]> {
     // return this.orderInfoRepository.orderProducts(id).find(filter);
-    let orderInfo = await this.orderInfoRepository.findById(id, {include: [{relation: 'orderProducts' }]});
+    const orderInfo = await this.orderInfoRepository.findById(id, {include: [{relation: 'orderProducts' }]});
     return orderInfo.orderProducts ?? [];
   }
 

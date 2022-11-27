@@ -1,6 +1,6 @@
-import {authenticate} from '@loopback/authentication';
-import {inject, intercept} from '@loopback/core';
-import {Filter, FilterExcludingWhere, repository} from '@loopback/repository';
+import { authenticate } from '@loopback/authentication';
+import { inject, intercept } from '@loopback/core';
+import { Filter, FilterExcludingWhere, repository } from '@loopback/repository';
 import {
   del,
   get,
@@ -12,13 +12,13 @@ import {
   requestBody,
   Response,
   response,
-  RestBindings,
+  RestBindings
 } from '@loopback/rest';
-import {SecurityBindings, securityId, UserProfile} from '@loopback/security';
-import {compare, genSalt, hash} from 'bcryptjs';
-import {CustomerCreateInterceptor} from '../interceptors';
-import {Customer, CustomerAddress, OrderInfo, User} from '../models';
-import {CustomerRepository, UserRepository} from '../repositories';
+import { SecurityBindings, UserProfile } from '@loopback/security';
+import { compare } from 'bcryptjs';
+import { CustomerCreateInterceptor } from '../interceptors';
+import { Customer, CustomerAddress, OrderInfo } from '../models';
+import { CustomerRepository, UserRepository } from '../repositories';
 
 export class CustomerController {
   constructor(
@@ -26,13 +26,13 @@ export class CustomerController {
     public customerRepository: CustomerRepository,
     @repository(UserRepository)
     public userRepository: UserRepository,
-  ) {}
+  ) { }
 
   @intercept(CustomerCreateInterceptor.BINDING_KEY)
   @post('/customers')
   @response(200, {
     description: 'Customer model instance',
-    content: {'application/json': {schema: getModelSchemaRef(Customer)}},
+    content: { 'application/json': { schema: getModelSchemaRef(Customer) } },
   })
   async create(
     @requestBody({
@@ -61,7 +61,7 @@ export class CustomerController {
       'application/json': {
         schema: {
           type: 'array',
-          items: getModelSchemaRef(Customer, {includeRelations: true}),
+          items: getModelSchemaRef(Customer, { includeRelations: true }),
         },
       },
     },
@@ -77,13 +77,13 @@ export class CustomerController {
     description: 'Customer model instance',
     content: {
       'application/json': {
-        schema: getModelSchemaRef(Customer, {includeRelations: true}),
+        schema: getModelSchemaRef(Customer, { includeRelations: true }),
       },
     },
   })
   async findById(
     @param.path.string('id') id: string,
-    @param.filter(Customer, {exclude: 'where'})
+    @param.filter(Customer, { exclude: 'where' })
     filter?: FilterExcludingWhere<Customer>,
   ): Promise<Customer> {
     return this.customerRepository.findById(id, filter);
@@ -106,7 +106,7 @@ export class CustomerController {
     @requestBody({
       content: {
         'application/json': {
-          schema: getModelSchemaRef(Customer, {partial: true}),
+          schema: getModelSchemaRef(Customer, { partial: true }),
         },
       },
     })
@@ -147,12 +147,11 @@ export class CustomerController {
     if (!customer) {
       // Don't throw error if customer not found to prevent email enumeration
       // throw new HttpErrors.NotFound('Customer not found');
-    } else {
-      if (!customer.emailVerified) {
-        await this.customerRepository.sendVerificationEmail(
-          customer as Customer,
-        );
-      }
+    }
+    else if (!customer.emailVerified) {
+      await this.customerRepository.sendVerificationEmail(
+        customer as Customer,
+      );
     }
   }
 
@@ -161,7 +160,7 @@ export class CustomerController {
     description: 'Customer model instance',
     content: {
       'application/json': {
-        schema: getModelSchemaRef(Customer, {includeRelations: true}),
+        schema: getModelSchemaRef(Customer, { includeRelations: true }),
       },
     },
   })
@@ -259,8 +258,8 @@ export class CustomerController {
     },
   })
   async checkCredsTaken(
-    @requestBody() body: {username: string; email: string},
-  ): Promise<{usernameTaken: boolean; emailTaken: boolean}> {
+    @requestBody() body: { username: string; email: string },
+  ): Promise<{ usernameTaken: boolean; emailTaken: boolean }> {
     if (!body.username && !body.email) {
       throw new HttpErrors.NotFound('Missing username and/or email keys');
     }
@@ -291,7 +290,7 @@ export class CustomerController {
         throw new HttpErrors.InternalServerError(err);
       });
 
-    return {usernameTaken, emailTaken};
+    return { usernameTaken, emailTaken };
   }
 
   @authenticate('jwt')
@@ -306,14 +305,14 @@ export class CustomerController {
           type: 'object',
           schema: {
             properties: {
-              oldPassword: {type: 'string'},
-              newPassword: {type: 'string'},
+              oldPassword: { type: 'string' },
+              newPassword: { type: 'string' },
             },
           },
         },
       },
     })
-    data: {oldPassword: string; newPassword: string},
+    data: { oldPassword: string; newPassword: string },
     @inject(SecurityBindings.USER)
     userProfile: UserProfile,
   ): Promise<void> {
@@ -340,8 +339,8 @@ export class CustomerController {
           type: 'object',
           schema: {
             properties: {
-              newPassword: {type: 'string'},
-              accessToken: {type: 'string'},
+              newPassword: { type: 'string' },
+              accessToken: { type: 'string' },
             },
           },
         },
