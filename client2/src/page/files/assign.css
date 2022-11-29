@@ -1,0 +1,28 @@
+.ass-right-route-content {
+    width: 90%;
+    margin: 0 auto;
+}
+
+.ass-right-route-content .ass-profile-content {
+    margin-top: 60px;
+}
+
+.ass-profile-content h2 {
+    font-weight: 500px;
+    text-align: center;
+    padding-bottom: 20px;
+    border-bottom: 2px solid rgb(66, 139, 202);
+}
+
+.ass-content-show-table {
+    width: 95%;
+    margin: 30px auto 0;
+}
+
+.table-background {
+    margin-top: 20px;
+    background-color: white;
+    border: none;
+    border-radius: 5px;
+    box-shadow: 0px 1px 25px rgba(0, 0, 0, 0.1);
+}

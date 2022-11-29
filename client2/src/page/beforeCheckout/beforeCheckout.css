@@ -1,0 +1,67 @@
+.before-checkout-background { 
+    padding-top: 10px;
+    padding-bottom: 10px; 
+    width: 1000px;
+    box-shadow: 0 0 6px rgba(0, 0, 0, 0.1);
+    margin: 0 auto;
+    margin-top: 30px;
+}
+
+.before-checkout-background h3 {
+    text-align: center;
+    font-weight: bold;  
+    color:#e97730;
+}
+
+.checkout-address-card-view {
+    width: 200px;
+    height: 200px;
+}
+
+.checkout-button{
+    text-align: center;
+}
+
+.selected-address{
+    border-style: solid;
+    border-color: blue;
+}
+
+#address-list {
+    overflow: hidden;
+}
+
+.loading-GIF-checkout-button {
+    height: 20px;
+    width: 20px;
+    margin: 0 auto;
+    display: block;
+}
+/* 
+.modal-body{
+    padding: 0;
+} */
+
+.profile-content{
+    width: 100%;
+    margin-top: 0;
+    text-align: center;
+}
+
+.profile-content h3{
+    font-weight: bold;
+    color:#e97730;
+}
+
+.form-div{
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+/* .modal-header{
+    padding: 10px;
+} */
+
+.modal .form-div {
+    width: 100%;
+}
