@@ -1,0 +1,124 @@
+.login-input{
+    width: 1200px;
+    margin: 0 auto;
+    text-align: center;
+}
+.login-input h3{
+    font-weight: bold;
+    color:#e97730;
+}
+.div-login-contenth{
+    width: 900px;
+    height: 530px;
+    box-shadow: 0 0 6px rgba(0, 0, 0, 0.1);
+    margin: 0 auto;
+    margin-top:30px;
+}
+.border-h3{
+    width:350px;
+    border-bottom: 2px solid #e97730;
+    margin:0 auto;
+    padding-top:10px;
+    margin-bottom:20px;
+}
+.input-contenth {
+    width:900px;
+    height: 100px;
+    margin:0 auto;
+    position: relative;
+}
+.check-inline {
+    display: inline-block;
+    text-align: left;
+}
+.forget-pass {
+    font-size: 14px;
+    font-weight: 500;
+    display: inline-block;
+    text-align: right;
+}
+.check-inline .remeber{
+    font-size: 16px;
+}
+.login-btn{
+    clear: both;
+}
+.login-btn .input-btn{
+    margin-top:10px;
+    width:200px;
+    height:50px;
+    color:#fff;
+    border:none;
+    background-color: #e97730;
+    border-radius: 5px;
+    font-size: 18px;
+    font-weight: 500;
+}
+.hr-div-login{
+    border-top:1px solid #cccccc;
+    margin-top:50px;
+}
+
+.spanLine{
+    display: inline-block;
+    width:200px;
+    border:1px solid #e97730;
+}
+.spanTxt{
+    display: inline-block;
+    width:50px;
+    color:#e97730;
+    font-size: 16px;
+    font-weight: 500;
+}
+.border-div-goole{
+    display: inline-block;
+    border:1px solid #e97730;
+    color: #e97730;
+    font-size: 16px;
+    font-weight: 500;
+    height: 40px;
+    line-height: 40px;
+    width: 220px;
+    margin-left:15px;
+    margin-right:15px;
+    cursor: pointer;
+}
+.span-txt-padding{
+    padding-left: 10px;
+}
+.login-error {
+    padding-left: 5px;
+}
+.whitespace {
+    width: 25%;
+    display: inline-block;
+}
+
+.name-field .name-input {
+    display:inline-block;
+    width: 50%;
+}
+.pass-field .pass-input {
+    display:inline-block;
+    width: 50%;
+}
+.registrationError {
+    width: 25%;
+    display: inline-block;
+    vertical-align: middle;
+}
+.passwordError {
+    width: 25%;
+    display: inline-block;
+    vertical-align: middle;
+}
+.registrationError p, .passwordError p {
+    margin: 0;
+}
+.name-field .registrationError, .pass-field .passwordError {
+    text-align: left;
+}
+.name-field .registrationError p, .pass-field .passwordError p {
+    padding-left: 10px;
+}
