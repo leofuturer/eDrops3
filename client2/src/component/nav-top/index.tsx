@@ -77,13 +77,11 @@ function NavTop() {
               .then((res) => {
                 let quantity = res.data.reduce((prev: number, curr: { quantity: number }) => prev + curr.quantity, 0);
                 context.setProductQuantity(quantity);
-
                 url = getChipOrders.replace('id', orderInfoId);
                 API.Request(url, 'GET', {}, true)
                   .then((res) => {
                     quantity = res.data.reduce((prev: number, curr: { quantity: number }) => prev + curr.quantity, 0);
                     context.setChipQuantity(quantity);
-
                     context.setCartQuantity();
                   })
                   .catch((err) => {
@@ -105,96 +103,89 @@ function NavTop() {
   const drown = {
     display: show ? 'block' : 'none',
   };
-  const notLoggedIn = (cookies.userType === undefined);
   return (
     // At this time the className "header-div" has no use
     // <CartContext.Consumer>
     //   {(contextProps) => {
     <header className="h-[80px] bg-primary w-full">
-      <div className="flex flex-row justify-center items-center">
-        <NavLink to="/home" className="flex flex-row items-center"><h1 className="text-6xl font-bold hover:text-accent">eDrops</h1> <img className="website-logo" src="/img/edrop_logo_inverted.png" alt="" /></NavLink>
-        <ul className="ul-nav">
-          <li><NavLink to="/home" className="hover:text-accent">Home</NavLink></li>
-          <li><NavLink to="/allItems" className="hover:text-accent">Products</NavLink></li>
-          <li><NavLink to="/featureComing" className="hover:text-accent">Community</NavLink></li>
-          <li className="li-spacer">&nbsp;</li>
-          <li>
-            {cookies.userType === 'customer'
-              ? notLoggedIn
-                ? <NavLink to="/login" className="hover:text-accent"><i className="fa fa-shopping-cart" /></NavLink> // Cannot view cart if not logged in
-                : <NavLink to="/manage/cart" className="hover:text-accent"><i className="fa fa-shopping-cart" />
-                  <span className='badge' style={{ display: context.items ? 'inline-block' : 'none' }}>{context.items}
-                  </span>
-                </NavLink>
-              : null}
-          </li>
-          { /* Should we be using NavLink or href? NavLink prevents page reloading */}
-          <li><NavLink to="/featureComing"><i className="fa fa-search" /></NavLink></li>
-          {
-            cookies.userType === 'customer'
-              ? <li><NavLink to="/upload" className="hover:text-accent"><i className="fa fa-upload" /></NavLink></li>
-              : null
-          }
-          {
-            notLoggedIn ? null
-              : (cookies.userType === 'customer'
-                ? <li><NavLink to="/manage/files" className="hover:text-accent"><i className="fa fa-database" /></NavLink></li>
-                : (cookies.userType === 'admin'
-                  ? <li><NavLink to="/manage/allfiles" className="hover:text-accent"><i className="fa fa-database" /></NavLink></li>
-                  : null)
-              )
-          }
-          {
-            notLoggedIn ? <li><NavLink to="/login">Login</NavLink></li>
-              : (
-                <li className="li-username">
-                  {/* 4/23/2020: Only show username to avoid text that's too long, which will break the CSS */}
-                  <a onClick={() => showDrowpn()} style={{ cursor: 'pointer' }}>{cookies.username}</a>
-                  <div style={drown} className="div-drownup">
-                    <ul className="list-styled" style={{ height: '60px' }}>
-                      <li onClick={() => handleHideDrown()}>
+      <div className="flex flex-row justify-between items-center px-[20%] h-full text-3xl font-semibold">
+        <div className="flex flex-row items-center h-full space-x-8">
+          <NavLink to="/home" className="flex flex-row items-center"><h1 className="text-6xl font-bold hover:text-accent">eDrops</h1> <img className="website-logo" src="/img/edrop_logo_inverted.png" alt="" /></NavLink>
+          <NavLink to="/home" className="hover:text-accent">Home</NavLink>
+          <NavLink to="/allItems" className="hover:text-accent">Products</NavLink>
+          <NavLink to="/featureComing" className="hover:text-accent">Community</NavLink>
+        </div>
+        <div className="flex flex-row items-center h-full space-x-8">
+          {cookies.access_token ?
+            <>
+              {
+                cookies.userType === "customer" &&
+                <>
+                  { /* Should we be using NavLink or href? NavLink prevents page reloading */}
+                  {/* <NavLink to="/featureComing"><i className="fa fa-search" /></NavLink> */}
+                  <NavLink to="/manage/cart" className="hover:text-accent"><i className="fa fa-shopping-cart" />
+                    <span className="relative -top-20 -right-4 h-6 w-6 text-sm text-white flex items-center justify-center bg-[#d60000] rounded-[11px]">{context.items}</span>
+                  </NavLink>
+                  <NavLink to="/upload" className="hover:text-accent"><i className="fa fa-upload" /></NavLink>
+                  <NavLink to="/manage/files" className="hover:text-accent"><i className="fa fa-database" /></NavLink>
+                </>
+              }
+              {
+                cookies.userType === "admin" &&
+                <>
+                  <NavLink to="/manage/allfiles" className="hover:text-accent"><i className="fa fa-database" /></NavLink>
+                </>
+              }
+              <div className="">
+                {/* 4/23/2020: Only show username to avoid text that's too long, which will break the CSS */}
+                <div onClick={() => showDrowpn()} className="cursor-pointer">{cookies.username}</div>
+                {
+                  show &&
+                  <div className="relative top-12 -left-12">
+                    <div className="absolute bg-white flex flex-col space-y-4 w-[150%] p-4 text-lg text-black border">
+                      <div onClick={() => handleHideDrown()}>
                         <i className="fa fa-dashboard" style={{ paddingRight: '15px' }} />
                         <NavLink to="/manage/profile">Your Dashboard</NavLink>
-                      </li>
+                      </div>
                       {
                         cookies.userType === 'customer'
                           ? (
-                            <li onClick={() => handleHideDrown()}>
+                            <div onClick={() => handleHideDrown()}>
                               <i className="fa fa-upload" style={{ paddingRight: '15px' }} />
                               <NavLink to="/upload">Upload a file</NavLink>
-                            </li>
+                            </div>
                           )
                           : null
                       }
                       {
                         cookies.userType === 'customer'
                           ? (
-                            <li onClick={() => handleHideDrown()}>
+                            <div onClick={() => handleHideDrown()}>
                               <i className="fa fa-database" style={{ paddingRight: '15px' }} />
                               <NavLink to="/manage/files">Your Projects</NavLink>
-                            </li>
+                            </div>
                           )
                           : null
                       }
-                      <li onClick={() => signout()}>
+                      <div onClick={() => signout()}>
                         <i className="fa fa-sign-out" style={{ paddingRight: '15px' }} />
-                        <NavLink to="/home">Logout</NavLink>
-                      </li>
-                    </ul>
+                        <NavLink to="/home" className="hover:text-accent">Logout</NavLink>
+                      </div>
+                    </div>
                   </div>
-                </li>
-              )
+                }
+
+              </div>
+            </>
+            :
+            <>
+              <NavLink to="/login" className="hover:text-accent">Login</NavLink>
+              <NavLink to="/register" className="hover:text-accent">Sign Up</NavLink>
+            </>
           }
-          {
-            notLoggedIn
-              ? <li><NavLink to="/register">Sign Up</NavLink></li>
-              : null
-          }
-        </ul>
-        {/* </div> */}
+        </div>
       </div>
     </header>
-    //   }}
     // </CartContext.Consumer>
   );
 }
