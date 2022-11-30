@@ -32,7 +32,11 @@ const defaultMetadata = {
   ],
 };
 
-const SEO = ({ title, description, metadata = [] }) => {
+const SEO = ({ title, description, metadata = [] }: {
+  title?: string,
+  description?: string,
+  metadata?: { name: string, content: string }[],
+}) => {
   title = title || defaultMetadata.title;
   description = description || defaultMetadata.description;
   metadata = metadata || defaultMetadata.metadata;
