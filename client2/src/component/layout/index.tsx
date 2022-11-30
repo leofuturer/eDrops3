@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import NavTop from '../nav-top/index';
+import NavTop from '../nav/NavTop';
 import Footer from '../footer/index';
 import CartContextProvider from '../../context/CartContext';
 

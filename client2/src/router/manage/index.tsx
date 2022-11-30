@@ -1,9 +1,9 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Redirect, Route, Switch, withRouter,
 } from 'react-router-dom';
 
-import NavLeft from '../../component/nav-left/index';
+import NavLeft from '../../component/nav/NavLeft';
 // Customers
 import AddNewAddress from '../../page/address/addNewAddress';
 import Address from '../../page/address/index';
@@ -38,6 +38,7 @@ import Cookies from 'js-cookie';
 import { Shopify } from '../../App';
 import SEO from '../../component/header/seo';
 import { metadata } from './metadata.js';
+import { useCookies } from 'react-cookie';
 
 const routes = [
   // Pages for Admin:
@@ -173,26 +174,40 @@ const routes = [
   },
 ];
 
-class Manage extends React.Component {
-  constructor(props) {
-    super(props);
-  }
+function Manage() {
 
-  render() {
-    if (Cookies.get('userId') === undefined) {
-      return <Redirect to="/login" />;
+  const [cookies] = useCookies(['userType']);
+  const [redirect, setRedirect] = useState('/manage/profile');
+
+  useEffect(() => {
+    switch (cookies.userType) {
+      case 'admin':
+        setRedirect('/manage/all-orders');
+        break;
+      case 'customer':
+        setRedirect('/manage/profile');
+        break;
+      case 'foundryworker':
+        setRedirect('/manage/chip-orders');
+        break;
     }
-    return (
-      <div className="manage">
-        <SEO
-          title="eDrops | Dashboard"
-          description=""
-          metadata={metadata}
-        />
-        <div className="left-nav">
+  }, [cookies.userType]);
+
+  if (Cookies.get('userId') === undefined) {
+    return <Redirect to="/login" />;
+  }
+  return (
+    <div className="flex justify-center">
+      <SEO
+        title="eDrops | Dashboard"
+        description=""
+        metadata={metadata}
+      />
+      <div className="w-[1200px] grid grid-cols-4">
+        <div className="col-span-1">
           <NavLeft />
         </div>
-        <div className="right-content">
+        <div className="col-span-3">
           <Switch>
             {routes.map((route, index) => (
               route.path !== '/manage/cart'
@@ -213,28 +228,12 @@ class Manage extends React.Component {
             ))}
 
             {/* Forced redirections when none of the path above is matched */}
-            {
-              Cookies.get('userType') === 'customer'
-                ? <Redirect from="/manage" to="/manage/profile" />
-                : null
-            }
-            {
-              Cookies.get('userType') === 'admin'
-                ? <Redirect to="/manage/all-orders" />
-                : null
-            }
-            {
-              Cookies.get('userType') === 'worker'
-                ? <Redirect from="/manage" to="/manage/chip-orders" />
-                : null
-            }
+            <Redirect from="/manage" to={redirect} />
           </Switch>
         </div>
-        <div className="hr-div-login" />
       </div>
-    );
-  }
+    </div>
+  );
 }
 
-Manage = withRouter(Manage);
 export default Manage;

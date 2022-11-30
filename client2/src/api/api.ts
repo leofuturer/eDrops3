@@ -65,7 +65,6 @@ class API {
 					throw new Error("Invalid method");
 			}
 
-			console.log(options);
 			const res = await axios(options);
 			return res;
 		} catch (error) {

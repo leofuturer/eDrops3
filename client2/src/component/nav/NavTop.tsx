@@ -8,7 +8,6 @@ import {
   getProductOrders, getChipOrders
 } from '../../api/serverConfig';
 import API from '../../api/api';
-import './navTop.css'
 import { CartContext } from '../../context/CartContext'
 import hoistNonReactStatics from 'hoist-non-react-statics';
 
@@ -110,7 +109,10 @@ function NavTop() {
     <header className="h-[80px] bg-primary w-full">
       <div className="flex flex-row justify-between items-center px-[20%] h-full text-3xl font-semibold">
         <div className="flex flex-row items-center h-full space-x-8">
-          <NavLink to="/home" className="flex flex-row items-center"><h1 className="text-6xl font-bold hover:text-accent">eDrops</h1> <img className="website-logo" src="/img/edrop_logo_inverted.png" alt="" /></NavLink>
+          <NavLink to="/home" className="flex flex-row items-center">
+            <h1 className="text-6xl font-bold text-white hover:text-accent">eDrops</h1> 
+            <img className="max-h-[50px]" src="/img/edrop_logo_inverted.png" alt="" />
+          </NavLink>
           <NavLink to="/home" className="hover:text-accent">Home</NavLink>
           <NavLink to="/allItems" className="hover:text-accent">Products</NavLink>
           <NavLink to="/featureComing" className="hover:text-accent">Community</NavLink>
@@ -124,7 +126,9 @@ function NavTop() {
                   { /* Should we be using NavLink or href? NavLink prevents page reloading */}
                   {/* <NavLink to="/featureComing"><i className="fa fa-search" /></NavLink> */}
                   <NavLink to="/manage/cart" className="hover:text-accent"><i className="fa fa-shopping-cart" />
-                    <span className="relative -top-20 -right-4 h-6 w-6 text-sm text-white flex items-center justify-center bg-[#d60000] rounded-[11px]">{context.items}</span>
+                    <div className="relative">
+                      <span className="absolute -top-12 -right-4 h-6 w-6 text-sm text-white flex items-center justify-center bg-[#d60000] rounded-[11px]">{context.items}</span>
+                    </div>
                   </NavLink>
                   <NavLink to="/upload" className="hover:text-accent"><i className="fa fa-upload" /></NavLink>
                   <NavLink to="/manage/files" className="hover:text-accent"><i className="fa fa-database" /></NavLink>
