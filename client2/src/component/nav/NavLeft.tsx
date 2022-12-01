@@ -4,7 +4,7 @@ import AuthNavLink from './AuthNavLink';
 function NavLeft() {
   return (
     <div className="flex flex-col items-center space-y-8 py-8">
-      <h2 className="text-4xl font-bold">Account</h2>
+      <h2 className="text-4xl font-medium">Account</h2>
       <div className="flex flex-col space-y-4 text-3xl">
         <AuthNavLeftLink to="/manage/profile" userTypes={['admin', 'customer', 'worker']}>
           <i className="fa fa-book w-10 aspect-square" />
@@ -64,7 +64,7 @@ export default NavLeft;
 function AuthNavLeftLink({ to, children, userTypes }: { to: string, children: React.ReactNode, userTypes: string[] }) {
   return <AuthNavLink
     to={to}
-    activeClassName="border-primary text-primary"
+    activeClassName="border-primary_light text-primary_light"
     className="flex flex-row space-x-4 px-4 border-l-4"
     userTypes={userTypes}>
     {children}

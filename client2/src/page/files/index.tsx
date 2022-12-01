@@ -51,7 +51,7 @@ class Files extends React.Component {
 
     // Extra state if admin is retrieving files for a particular customer
     if (this.props.match.path === '/manage/admin-retrieve-user-files'
-            && Cookies.get('userType') === 'admin') {
+      && Cookies.get('userType') === 'admin') {
       Object.assign(this.state, {
         custId: this.props.location.state.userId,
         isCustomer: this.props.location.state.isCustomer,
@@ -77,8 +77,8 @@ class Files extends React.Component {
     }
     // Admin retrieves files for particular customer
     else if (this.props.match.path === '/manage/admin-retrieve-user-files'
-                && Cookies.get('userType') === 'admin'
-                && this.props.location.state.isCustomer) {
+      && Cookies.get('userType') === 'admin'
+      && this.props.location.state.isCustomer) {
       // get files for either foundry worker or user
       url = customerFileRetrieve.replace('id', this.props.location.state.userId);
     }
@@ -104,8 +104,8 @@ class Files extends React.Component {
     }
     // Admin retrieves files for particular customer
     else if (this.props.match.path === '/manage/admin-retrieve-user-files'
-                && Cookies.get('userType') === 'admin'
-                && this.props.location.state.isCustomer) {
+      && Cookies.get('userType') === 'admin'
+      && this.props.location.state.isCustomer) {
       url = `${adminDownloadFile}?access_token=${Cookies.get('access_token')}&fileId=${e.target.id}`;
       window.location = url;
     }
@@ -153,63 +153,56 @@ class Files extends React.Component {
 
   render() {
     return (
-      <div className="right-route-content">
+      <div className="flex flex-col items-center justify-center">
         <SEO
           title="eDrops | Files"
           description=""
           metadata={metadata}
         />
-        <div className="profile-content">
-          { this.props.match.path === '/manage/admin-retrieve-user-files'
+        <div className="w-full border-b-2 border-primary_light flex justify-center py-8">
+          {this.props.match.path === '/manage/admin-retrieve-user-files'
             ? (
-              <h2>
+              <h2 className="text-4xl">
                 Files for
                 {' '}
                 {this.state.username}
               </h2>
             )
-            : <h2>Files</h2>}
-
+            : <h2 className="text-4xl">Files</h2>}
         </div>
-        <div className="content-show-table row">
-          <div className="table-background">
-            <table className="table">
-              <thead>
-                <tr>
-                  <th>Upload Time</th>
-                  <th>File Name</th>
-                  {
-                    Cookies.get('userType') === 'customer'
-                      ? null
-                      : <th>Uploader</th>
-                  }
-                  <th>Size</th>
-                  <th>Download</th>
-                  {
-                    Cookies.get('userType') === 'customer'
-                      ? <th>Foundry Service</th>
-                      : null
-                  }
-                  {
-                    Cookies.get('userType') === 'customer'
-                      ? <th>Delete</th>
-                      : null
-                  }
-                </tr>
-              </thead>
-              <tbody>
-                {this.state.fileList.length !== 0
-                  ? this.state.fileList.map((item, index) => (
-                    <tr key={item.id} id={`fileInfoRow${item.id}`}>
-                      <td>{padZeroes(item.uploadTime)}</td>
-                      <td>{item.fileName}</td>
-                      {
-                        Cookies.get('userType') === 'customer'
-                          ? null
-                          : <th>{item.uploader}</th>
-                      }
-                      <td>{item.fileSize}</td>
-                      {/*
+        <div className="w-full py-8">
+          <table className="rounded-md shadow-box w-full border-collapse table-auto">
+            <thead className="">
+              <tr className="border-b-2">
+                <th className="p-2">Upload Time</th>
+                <th className="p-2">File Name</th>
+                {
+                  Cookies.get('userType') !== 'customer' &&
+                  <th>Uploader</th>
+                }
+                <th className="p-2">Size</th>
+                <th className="p-2">Download</th>
+                {
+                  Cookies.get('userType') === 'customer'
+                  && <>
+                    <th className="p-2">Foundry Service</th>
+                    <th className="p-2">Delete</th>
+                  </>
+                }
+              </tr>
+            </thead>
+            <tbody>
+              {this.state.fileList.length !== 0
+                ? this.state.fileList.map((item, index) => (
+                  <tr key={item.id}>
+                    <td className="p-2">{padZeroes(item.uploadTime)}</td>
+                    <td className="p-2">{item.fileName}</td>
+                    {
+                      Cookies.get('userType') !== 'customer' &&
+                      <td className="p-2">{item.uploader}</td>
+                    }
+                    <td className="p-2">{item.fileSize}</td>
+                    {/*
                         Cookies.get('userType') === "customer"
                         ? null
                         : (<td>
@@ -223,8 +216,8 @@ class Files extends React.Component {
                             </div>
                         </td>)
                       */
-                      }
-                      {/*
+                    }
+                    {/*
                         Cookies.get('userType') === "worker"
                         ? null
                         : (<td>
@@ -238,21 +231,22 @@ class Files extends React.Component {
                             </div>
                           </td>)
                       */
-                      }
-                      <td>
-                        <i className="fa fa-download" id={item.id} onClick={this.handleDownload} />
-                      </td>
-                      {
-                        Cookies.get('userType') === 'customer'
-                          ? (
-                            <td>
-                              <i className="fa fa-cart-plus" onClick={this.handleShop} />
-                            </td>
-                          )
-                          : null
-                      }
-
-                      {/*
+                    }
+                    <td className="p-2">
+                      <i className="fa fa-download" onClick={this.handleDownload} />
+                    </td>
+                    {
+                      Cookies.get('userType') === 'customer' &&
+                        <>
+                          <td className="p-2">
+                            <i className="fa fa-cart-plus" onClick={this.handleShop} />
+                          </td>
+                          <td className="p-2">
+                            <i className="fa fa-trash" id={`file${item.id}`} data-toggle="modal" data-target="#deleteModal" onClick={this.handleDeleteId} />
+                          </td>
+                        </>
+                    }
+                    {/*
                         Cookies.get('userType') === "worker"
                         ?
                           (
@@ -282,28 +276,17 @@ class Files extends React.Component {
                         :
                         null
                         */
-                      }
-                      {
-                        Cookies.get('userType') === 'customer'
-                          ? (
-                            <td>
-                              <i className="fa fa-trash" id={`file${item.id}`} data-toggle="modal" data-target="#deleteModal" onClick={this.handleDeleteId} />
-                            </td>
-                          )
-                          : null
-                      }
-                    </tr>
-                  ))
-                  : (
-                    <tr>
-                      <td>No files have been uploaded.</td>
-                    </tr>
-                  )}
-              </tbody>
-            </table>
-          </div>
+                    }
+                  </tr>
+                ))
+                : (
+                  <tr>
+                    <td className="p-2">No files have been uploaded.</td>
+                  </tr>
+                )}
+            </tbody>
+          </table>
         </div>
-
         {/* Modal */}
         <DeletePopup onDelete={this.handleDelete} />
       </div>

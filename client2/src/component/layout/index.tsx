@@ -4,7 +4,6 @@ import NavTop from '../nav/NavTop';
 import Footer from '../footer/index';
 import CartContextProvider from '../../context/CartContext';
 
-import './index.css';
 import SEO from '../header/seo';
 import { metadata } from './metadata';
 
