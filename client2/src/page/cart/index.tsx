@@ -2,7 +2,6 @@ import React from 'react';
 import { NavLink } from 'react-router-dom';
 import CartItem from './cartItem.js';
 import { Shopify } from '../../App';
-import './cart.css';
 import API from '../../api/api';
 import {
   getCustomerCart, getProductOrders,
@@ -454,69 +453,71 @@ class Cart extends React.Component {
         />
         {Cookies.get('userType') === 'customer'
           ? (
-            <div className="right-route-content">
-              <div className="profile-content">
-                <h2>Cart</h2>
+            <div className="flex flex-col items-center justify-center">
+              <div className="w-full border-b-2 border-primary_light flex justify-center py-8">
+                <h2 className="text-4xl font-medium">Cart</h2>
               </div>
               {this.state.productOrders.length + this.state.chipOrders.length > 0
                 ? (
-                  <div>
-                    <div className="left-right-wrapper">
-                      <div className="cart-info-text">
+                  <div className="flex flex-col py-8 w-full space-y-4">
+                    <div className="flex flex-row justify-between items-center">
+                      <p className="">
                         Use the "save" button to save any
                         changes to quantities. Deletions are saved immediately.
-                      </div>
-                      <div>
+                      </p>
+                      <div className="flex flex-row space-x-4 p-2 items-center">
                         {this.state.saveInProgress
-                          ? <img className="cart-loading-GIF" src="/img/loading80px.gif" alt="" />
+                          ? <img className="" src="/img/loading80px.gif" alt="" />
                           : (
-                            <span className="cart-save-btn">
-                              <input
-                                type="button"
-                                value="Save"
-                                className="btn btn-success"
-                                onClick={() => this.handleSave()}
-                              />
-                            </span>
+                            <button
+                              type="button"
+                              className="bg-green-600 rounded-lg text-white px-4 py-2"
+                              onClick={() => this.handleSave()}
+                            >
+                              Save
+                            </button>
                           )}
-                        <span className="btn-txt-padding">
-                          <input
-                            type="button"
-                            value="Checkout"
-                            className="btn btn-primary btn-padding"
-                            onClick={() => this.handleCheckout()}
-                          />
-                        </span>
+                        <button
+                          type="button"
+                          className="bg-primary rounded-lg text-white px-4 py-2"
+                          onClick={() => this.handleCheckout()}
+                        >
+                          Checkout
+                        </button>
                       </div>
                     </div>
-                    {
-                      this.state.productOrders.map((oneProduct, index) => (
-                        <CartItem
-                          key={index}
-                          info={oneProduct}
-                          onChange={(e) => this.handleQtyChange(e, 'product', index)}
-                          onDelete={() => this.handleDelete('product', index)}
-                          deleteLoading={this.state.deleteLoading}
-                        />
-                      ))
-                    }
-                    {
-                      this.state.chipOrders && this.state.chipOrders.map((oneProduct, index) => (
-                        <CartItem
-                          key={index}
-                          info={oneProduct}
-                          onChange={(e) => this.handleQtyChange(e, 'chip', index)}
-                          onDelete={() => this.handleDelete('chip', index)}
-                          deleteLoading={this.state.deleteLoading}
-                        />
-                      ))
-                    }
-                    <div className="cart-total-price">
-                      Total Price: $
-                      {totalPrice.toFixed(2)}
+                    <div className="flex flex-col space-y-2">
+                      {
+                        this.state.productOrders.map((oneProduct, index) => (
+                          <CartItem
+                            key={index}
+                            info={oneProduct}
+                            onChange={(e) => this.handleQtyChange(e, 'product', index)}
+                            onDelete={() => this.handleDelete('product', index)}
+                            deleteLoading={this.state.deleteLoading}
+                          />
+                        ))
+                      }
+                      {
+                        this.state.chipOrders && this.state.chipOrders.map((oneProduct, index) => (
+                          <CartItem
+                            key={index}
+                            info={oneProduct}
+                            onChange={(e) => this.handleQtyChange(e, 'chip', index)}
+                            onDelete={() => this.handleDelete('chip', index)}
+                            deleteLoading={this.state.deleteLoading}
+                          />
+                        ))
+                      }
                     </div>
-                    <div className="cart-total-price-info">
-                      Excludes tax and shipping and handling
+                    <div className="flex flex-col items-end px-4">
+                      <p className="">
+                        Total Price: $
+                        {totalPrice.toFixed(2)}
+                      </p>
+                      <p className="text-base">
+                        Excludes tax and shipping and handling
+                      </p>
                     </div>
                   </div>
                 )

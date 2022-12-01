@@ -1,5 +1,4 @@
 import React from 'react';
-import './itemCard.css';
 import { withRouter } from 'react-router';
 import { NavLink } from 'react-router-dom';
 
@@ -16,39 +15,25 @@ class ItemCard extends React.Component {
 
   render() {
     return (
-      <div className="card">
-        <NavLink to={`/product?id=${this.props.id}`}>
-          <div className="product-title">
-            <h4>{this.props.product.title}</h4>
-          </div>
+      <div className="border-md shadow-box p-4 flex flex-col items-center space-y-2">
+        <NavLink to={`/product?id=${this.props.id}`} className="text-center w-2/3">
+            <h4 className="text-2xl text-primary_light hover:text-primary">{this.props.product.title}</h4>
         </NavLink>
-
         <NavLink to={`/product?id=${this.props.id}`}>
           <img
-            className="product-img"
+            alt={this.props.product.title}
+            className="w-full aspect-square pointer-events-none"
             src={this.props.product.variants[0].image.src}
           />
         </NavLink>
-
-        <div className="product-text">
-          {/* { this.props.product.description.length > 150
-            ? (
-              <div>
-                {this.props.product.description.slice(0, 150)}
-                ...
-              </div>
-            )
-            : this.props.product.description} */}
+        <p className="line-clamp-4 text-lg">
           {this.props.product.description}
-        </div>
-
-        {/* <div className="product-price">
-          $
-          {this.props.product.variants[0].price}
-        </div> */}
-
+        </p>
+        <p className="product-price">
+          ${this.props.product.variants[0].price}
+        </p>
         <NavLink to={`/product?id=${this.props.id}`}>
-          <button className="btn btn-primary">Details</button>
+          <button type="button" className="bg-primary_light text-white px-4 py-2 rounded-md hover:bg-primary">Details</button>
         </NavLink>
       </div>
     );

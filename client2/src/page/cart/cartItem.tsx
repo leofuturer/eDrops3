@@ -1,5 +1,4 @@
 import React from 'react';
-import './cart.css';
 import { withRouter, NavLink } from 'react-router-dom';
 import API from '../../api/api';
 import { ewodFabServiceId } from '../../constants';
@@ -23,9 +22,9 @@ class CartItem extends React.Component {
     }
 
     return (
-      <div className="cart-item-card">
-        <div>
-          { this.props.info.productIdShopify === ewodFabServiceId
+      <div className="bg-white rounded-md shadow-box p-4 flex flex-row justify-between">
+        <div className="flex flex-col">
+          {this.props.info.productIdShopify === ewodFabServiceId
             ? (
               <NavLink to={{ pathname: '/chipfab', state: chipFabState }}>
                 <h3>{this.props.info.name}</h3>
@@ -36,52 +35,49 @@ class CartItem extends React.Component {
                 <h3>{this.props.info.name}</h3>
               </NavLink>
             )}
-
-        </div>
-        <div className="div-cart-product-quantity">
-          {'Quantity: '}
-          <input
-            type="number"
-            className="input-quantity"
-            value={this.props.info.quantity}
-            onChange={(e) => this.props.onChange(e)}
-          />
-        </div>
-        <div className="left-right-wrapper">
-          <div className="div-cart-price">
+          <div className="">
             Unit Price: $
             {this.props.info.price.toFixed(2)}
           </div>
-          <div className="div-cart-price">
+          {this.props.info.otherDetails.length !== 0
+            ? (
+              <div>
+                <div className="">{'Additional information: '}</div>
+                <div
+                  className=""
+                  dangerouslySetInnerHTML={{ __html: this.props.info.otherDetails.replace(/\n/g, '<br/>') }}
+                />
+              </div>
+            )
+            : null}
+          <div>
+            {this.props.deleteLoading
+              ? <img src="/img/loading80px.gif" alt="" />
+              : (
+                <button
+                  type="button"
+                  className="bg-red-700 px-4 py-2 text-white rounded-lg"
+                  onClick={() => this.props.onDelete()}
+                >Delete</button>
+              )}
+          </div>
+        </div>
+        <div className="flex flex-col justify-between">
+          <div className="flex flex-row items-center justify-between">
+            <label htmlFor="quantity" className="">Quantity</label>
+            <input
+              type="number"
+              id="quantity"
+              className="w-12 focus:outline-none"
+              value={this.props.info.quantity}
+              onChange={(e) => this.props.onChange(e)}
+            />
+          </div>
+          <div className="">
             Subtotal: $
             {(this.props.info.quantity * this.props.info.price).toFixed(2)}
           </div>
         </div>
-
-        { this.props.info.otherDetails.length !== 0
-          ? (
-            <div>
-              <div className="div-cart-more-info">{'Additional information: '}</div>
-              <div
-                className="div-cart-more-info-text"
-                dangerouslySetInnerHTML={{ __html: this.props.info.otherDetails.replace(/\n/g, '<br/>') }}
-              />
-            </div>
-          )
-          : null}
-        <div>
-          { this.props.deleteLoading
-            ? <img src="/img/loading80px.gif" alt="" />
-            : (
-              <input
-                type="button"
-                className="btn btn-danger"
-                value="Delete"
-                onClick={() => this.props.onDelete()}
-              />
-            )}
-        </div>
-
       </div>
 
     );
