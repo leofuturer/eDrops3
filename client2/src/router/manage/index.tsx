@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import {
-  Redirect, Route, Switch, withRouter,
+  Navigate,
+  redirect as routerRedirect, Route, Routes,
 } from 'react-router-dom';
 
 import NavLeft from '../../component/nav/NavLeft';
@@ -194,8 +195,9 @@ function Manage() {
   }, [cookies.userType]);
 
   if (Cookies.get('userId') === undefined) {
-    return <Redirect to="/login" />;
+    routerRedirect("/login");
   }
+
   return (
     <div className="flex justify-center">
       <SEO
@@ -208,28 +210,26 @@ function Manage() {
           <NavLeft />
         </div>
         <div className="col-span-3">
-          <Switch>
-            {routes.map((route, index) => (
-              route.path !== '/manage/cart'
-                ? (
-                  <Route
-                    exact
-                    key={index}
-                    path={route.path}
-                    component={route.component}
-                  />
-                ) : (
-                  <Route
-                    key={index}
-                    path={route.path}
-                    render={({ location, history }) => <Cart shopifyClient={Shopify.getInstance().getPrivateValue()} location={location} history={history} />}
-                  />
-                )
-            ))}
+          {routes.map((route, index) => (
+            route.path !== '/manage/cart'
+              ? (
+                <Route
+                  exact
+                  key={index}
+                  path={route.path}
+                  component={route.component}
+                />
+              ) : (
+                <Route
+                  key={index}
+                  path={route.path}
+                  render={({ location, history }) => <Cart shopifyClient={Shopify.getInstance().getPrivateValue()} location={location} history={history} />}
+                />
+              )
+          ))}
 
-            {/* Forced redirections when none of the path above is matched */}
-            <Redirect from="/manage" to={redirect} />
-          </Switch>
+          {/* Forced redirections when none of the path above is matched */}
+          <Route path="*" element={<Navigate to={redirect} replace />} />
         </div>
       </div>
     </div>

@@ -1,5 +1,4 @@
 import React from 'react';
-import { withRouter } from 'react-router';
 
 class OrderAddress extends React.Component {
   constructor(props) {
@@ -36,5 +35,4 @@ class OrderAddress extends React.Component {
   }
 }
 
-OrderAddress = withRouter(OrderAddress);
 export default OrderAddress;

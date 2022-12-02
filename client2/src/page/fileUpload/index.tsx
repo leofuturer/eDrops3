@@ -1,5 +1,5 @@
-import React from 'react';
-import { Redirect, withRouter } from 'react-router-dom';
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import { uploadFile, customerFileRetrieve } from '../../api/serverConfig';
 import API from '../../api/api';
@@ -7,71 +7,57 @@ import 'bootstrap-modal';
 import $ from 'jquery';
 import Cookies from 'js-cookie';
 
-import './fileUpload.css';
-
-import '../order/animate.css';
 import Dropzone from 'react-dropzone';
 import Progress from './progress';
 
-import SEO from '../../component/header/seo.js';
+import SEO from '../../component/header/seo';
 import { metadata } from './metadata';
 
-class Upload extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      currentIndex: 0,
-      currentIndex1: 0,
-      ptype: ['private', 'public'],
-      utype: ['mm', 'cm', 'in'],
-      public: 'private',
-      unit: 'mm',
-      checked: false,
-      originalName: '',
-      file: undefined,
-      fileInfo: undefined,
-      percentage: 0,
-    };
-    this.setCurrentIndex = this.setCurrentIndex.bind(this);
-    this.setCurrentIndex1 = this.setCurrentIndex1.bind(this);
-    this.handleShopping = this.handleShopping.bind(this);
-    this.handleLibrary = this.handleLibrary.bind(this);
-    this.handleRename = this.handleRename.bind(this);
-    this.handleCancel = this.handleCancel.bind(this);
-    this.onFileAccept = this.onFileAccept.bind(this);
-    this.onFileReject = this.onFileReject.bind(this);
-    this.onFileUpload = this.onFileUpload.bind(this);
-    this.uploadFileRequest = this.uploadFileRequest.bind(this);
-  }
+function Upload() {
+  const [file, setFile] = useState<File | undefined>(undefined);
+  const [fileInfo, setFileInfo] = useState(undefined);
+  const [originalName, setOriginalName] = useState('');
+  const [progress, setProgress] = useState(0);
 
-  setCurrentIndex(event) {
+  const pTypes = ['private', 'public'];
+  const uTypes = ['mm', 'cm', 'in'];
+  const [pType, setPType] = useState<'private' | 'public'>('private');
+  const [uType, setUType] = useState<'mm' | 'cm' | 'in'>('mm');
+  const [checked, setChecked] = useState(false);
+
+  const [showUpload, setShowUpload] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
+
+  const navigate = useNavigate();
+
+  function setCurrentIndex(index: number) {
     $('#file1').fileinput('destroy');
     this.setState({
-      currentIndex: parseInt(event.currentTarget.getAttribute('index'), 10),
-      public: this.state.ptype[event.currentTarget.getAttribute('index')],
+      currentIndex: index,
+      public: this.state.ptype[index],
     });
   }
 
-  setCurrentIndex1(event) {
+  function setCurrentIndex1(index) {
     $('#file1').fileinput('destroy');
     this.setState({
-      currentIndex1: parseInt(event.currentTarget.getAttribute('index'), 10),
-      unit: this.state.utype[event.currentTarget.getAttribute('index')],
+      currentIndex1: index,
+      unit: this.state.utype[index],
     });
   }
 
-  componentDidMount() {
+  function componentDidMount() {
     this.setState({});
   }
 
-  onFileAccept(acceptedFiles) {
+  function onFileAccept(acceptedFiles) {
     // console.log(acceptedFiles);
     this.setState({
       file: acceptedFiles[0],
     });
   }
 
-  onFileReject(rejectedFiles) {
+  function onFileReject(rejectedFiles) {
     rejectedFiles.map((rejFile) => {
       rejFile.errors.map((err) => {
         alert(`Upload error:\nFor file ${rejFile.file.name}: ${err.message}`);
@@ -79,7 +65,7 @@ class Upload extends React.Component {
     });
   }
 
-  onFileUpload() {
+  function onFileUpload() {
     if (this.state.file !== undefined) {
       const _this = this;
       const { file } = this.state;
@@ -120,7 +106,7 @@ class Upload extends React.Component {
     }
   }
 
-  uploadFileRequest(extraFields) {
+  function uploadFileRequest(extraFields) {
     const _this = this;
     for (let i = 0; i <= 70; i += 1) {
       setTimeout(() => {
@@ -171,164 +157,172 @@ class Upload extends React.Component {
       });
   }
 
-  handleShopping() {
+  function handleShopping() {
     $('#uploadDoneModal').modal('hide');
-    this.props.history.push('/chipfab', {
-      fileInfo: this.state.fileInfo,
+    navigate('/chipfab', {
+      state: {
+        fileInfo: fileInfo,
+      }
     });
   }
 
-  handleLibrary() {
-    this.props.history.push('/manage/files');
+  function handleLibrary() {
+    navigate('/manage/files');
   }
 
-  handleRename() {
-    const ind = this.state.originalName.lastIndexOf('.');
-    const oriname = this.state.originalName;
-    this.setState({ checked: true });
+  function handleRename() {
+    const ind = originalName.lastIndexOf('.');
+    const oriname = originalName;
+    setChecked(true);
     const date = new Date().toISOString().replace(/[^a-zA-Z0-9 ]/g, '');
-    this.uploadFileRequest({
-      isPublic: this.state.public,
-      unit: this.state.unit,
+    uploadFileRequest({
+      isPublic: pType,
+      unit: uType,
       newName: `${oriname.slice(0, ind)}(${date})${oriname.slice(ind)}`,
     });
   }
 
-  handleCancel() {
+  function handleCancel() {
     $('#file1').fileinput('clear');
     $('#confirmModal').modal('hide');
   }
 
-  render() {
-    if (Cookies.get('userId') === undefined) {
-      return <Redirect to="/login" />;
-    }
+  if (Cookies.get('userId') === undefined) {
+    return redirect('/login');
+  }
 
-    const ptypeList = [];
-    for (let i = 0; i < this.state.ptype.length; i++) {
-      ptypeList.push(
-        <li
-          key={i}
-          className={this.state.currentIndex === i ? 'li-active' : ''}
-          index={i}
-          onClick={this.setCurrentIndex}
-        >
-          {this.state.ptype[i]}
-        </li>,
-      );
-    }
-
-    const utypeList = [];
-    for (let i = 0; i < this.state.utype.length; i++) {
-      utypeList.push(<li key={i} className={this.state.currentIndex1 === i ? 'li-active' : ''} index={i} onClick={this.setCurrentIndex1}>{this.state.utype[i]}</li>);
-    }
-
+  const ptypeList = pTypes.map((p, i) => {
     return (
-      <div>
-        <div className="foundry-content">
-          <SEO
-            title="eDrops | Upload"
-            description=""
-            metadata={metadata}
-          />
-          <h1>File Upload</h1>
-          <h3>We accept DXF file as mask file</h3>
-          <div className="vu-content">
-            <div className="visibility-div">
-              <h4>Visibility</h4>
-              <ul className="list-unstyled list-inline v-ul">
-                {ptypeList}
-              </ul>
-              <p>
-                <input type="checkbox" />
-                <span className="span-txt">Let people copy this design with a link</span>
-              </p>
+      <div
+        key={i}
+        className={`${this.state.currentIndex === i && 'bg-primary_light text-white'} border py-4 px-8 cursor-pointer`}
+        onClick={() => this.setCurrentIndex(i)}
+      >
+        {p}
+      </div>
+    );
+  })
+
+  const utypeList = uTypes.map((u, i) => {
+    return (
+      <div
+        key={i}
+        className={`${this.state.currentIndex1 === i && 'bg-primary_light text-white'} border py-4 px-8 cursor-pointer`}
+        onClick={() => this.setCurrentIndex1(i)}
+      >
+        {u}
+      </div>
+    );
+  })
+
+  return (
+    <div className="flex flex-col items-center">
+      <SEO
+        title="eDrops | Upload"
+        description=""
+        metadata={metadata}
+      />
+      <div className="w-2/3 text-center flex flex-col items-center space-y-4">
+        <h1 className="text-5xl">File Upload</h1>
+        <h3 className="text-4xl">We accept DXF file as mask file</h3>
+        <div className="grid grid-cols-2 place-items-center w-full">
+          <div className="flex flex-col">
+            <h4 className="text-3xl">Visibility</h4>
+            <div className="flex flex-row space-x-4 justify-center">
+              {ptypeList}
             </div>
-            <div className="nuits-div">
-              <h4>Units</h4>
-              <ul className="list-unstyled list-inline u-ul">
-                {utypeList}
-              </ul>
+            <div className="flex flex-row space-x-2 items-center">
+              <input type="checkbox" id="copyLink" className="" />
+              <label htmlFor="copyLink" className="">Let people copy this design with a link</label>
             </div>
           </div>
-          <Dropzone
-            onDropAccepted={(acceptedFiles) => this.onFileAccept(acceptedFiles)}
-            onDropRejected={(rejectedFiles) => this.onFileReject(rejectedFiles)}
-            accept=".dxf, .DXF"
-            maxFiles={1}
-            maxSize={30 * 1000 * 1000} // file size limit in bytes (30 MB)
-            multiple={false}
-          >
-            {({ getRootProps, getInputProps }) => (
-              <div {...getRootProps()} className="file-upload-area">
-                <input {...getInputProps()} />
-                {this.state.percentage > 0 ? (
-                  <div className="progressContainer">
-                    <h3>{this.state.percentage < 101 ? 'Uploading...' : 'Completed!'}</h3>
-                    <div className="uploadProgressBar">
-                      <Progress now={this.state.percentage} />
-                    </div>
+          <div className="flex flex-col">
+            <h4 className="text-3xl">Units</h4>
+            <div className="flex flex-row space-x-4 justify-center">
+              {utypeList}
+            </div>
+          </div>
+        </div>
+        <Dropzone
+          onDropAccepted={(acceptedFiles) => this.onFileAccept(acceptedFiles)}
+          onDropRejected={(rejectedFiles) => this.onFileReject(rejectedFiles)}
+          accept=".dxf, .DXF"
+          maxFiles={1}
+          maxSize={30 * 1000 * 1000} // file size limit in bytes (30 MB)
+          multiple={false}
+        >
+          {({ getRootProps, getInputProps }) => (
+            <div {...getRootProps({
+              className: 'border-2 border-dashed border-black cursor-pointer w-full p-10',
+            })}>
+              <input {...getInputProps()} />
+              {this.state.percentage > 0 ? (
+                <div className="progressContainer">
+                  <h3>{this.state.percentage < 101 ? 'Uploading...' : 'Completed!'}</h3>
+                  <div className="uploadProgressBar">
+                    <Progress now={this.state.percentage} />
                   </div>
-                )
-                  : (
-                    <div className="fileUpload">
-                      <p className="file-upload-insns">
-                        Drag and drop DXF file here, or click to select file.
-                      </p>
-                      {this.state.file && <p>{this.state.file.name}</p>}
-                    </div>
-                  )}
-              </div>
-            )}
-          </Dropzone>
-          <input type="button" value="Upload File" className="input-btn" onClick={this.onFileUpload} />
-        </div>
-
-        {/* The modal */}
-        <div className="modal fade" id="uploadDoneModal" tabIndex="-1" role="dialog" aria-labelledby="uploadDoneModalLabel">
-          <div className="modal-dialog modal-dialog-centered" role="document">
-            <div className="modal-content">
-              <div className="modal-header">
-                <div className="modal-title" id="uploadDoneModalLabel">eDrops</div>
-                <button type="button" className="close" data-dismiss="modal" aria-label="Close">
-                  <span aria-hidden="true">&times;</span>
-                </button>
-              </div>
-              <div className="successMessage">
-                <div className="modal-body">
-                  The file has been uploaded to your library successfully!
                 </div>
-                <div className="modal-footer">
-                  <button type="button" className="btn btn-primary" onClick={this.handleShopping}>Proceed to fabrication</button>
-                  <button type="button" className="btn btn-secondary" data-dismiss="modal" onClick={this.handleLibrary}>Go to file library</button>
-                </div>
-              </div>
+              )
+                : (
+                  <div className="">
+                    <p className="text-2xl">
+                      Drag and drop DXF file here, or click to select file.
+                    </p>
+                    {this.state.file && <p>{this.state.file.name}</p>}
+                  </div>
+                )}
             </div>
-          </div>
-        </div>
+          )}
+        </Dropzone>
+        <button type="button" className="bg-secondary rounded-md py-4 px-8 text-white text-2xl w-max" onClick={this.onFileUpload} >
+          Upload File
+        </button>
+      </div>
 
-        <div className="modal fade" id="confirmModal" tabIndex="-1" role="dialog" aria-labelledby="confirmModalLabel">
-          <div className="modal-dialog modal-dialog-centered" role="document">
-            <div className="modal-content">
-              <div className="modal-header">
-                <div className="modal-title" id="confirmModalLabel">eDrops</div>
-              </div>
+      {/* The modal */}
+      <div className="modal fade" id="uploadDoneModal" tabIndex="-1" role="dialog" aria-labelledby="uploadDoneModalLabel">
+        <div className="modal-dialog modal-dialog-centered" role="document">
+          <div className="modal-content">
+            <div className="modal-header">
+              <div className="modal-title" id="uploadDoneModalLabel">eDrops</div>
+              <button type="button" className="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div className="successMessage">
               <div className="modal-body">
-                Duplicate file name! Would you like to upload another file, or you still want to
-                upload this file? (It would be recommended that you change a new name to avoid
-                confusion.)
+                The file has been uploaded to your library successfully!
               </div>
               <div className="modal-footer">
-                <button type="button" className="btn btn-primary" onClick={this.handleRename}>Upload this file</button>
-                <button type="button" className="btn btn-secondary" data-dismiss="modal" onClick={this.handleCancel}>Change file</button>
+                <button type="button" className="btn btn-primary" onClick={this.handleShopping}>Proceed to fabrication</button>
+                <button type="button" className="btn btn-secondary" data-dismiss="modal" onClick={this.handleLibrary}>Go to file library</button>
               </div>
             </div>
           </div>
         </div>
       </div>
-    );
-  }
+
+      <div className="modal fade" id="confirmModal" tabIndex="-1" role="dialog" aria-labelledby="confirmModalLabel">
+        <div className="modal-dialog modal-dialog-centered" role="document">
+          <div className="modal-content">
+            <div className="modal-header">
+              <div className="modal-title" id="confirmModalLabel">eDrops</div>
+            </div>
+            <div className="modal-body">
+              Duplicate file name! Would you like to upload another file, or you still want to
+              upload this file? (It would be recommended that you change a new name to avoid
+              confusion.)
+            </div>
+            <div className="modal-footer">
+              <button type="button" className="btn btn-primary" onClick={this.handleRename}>Upload this file</button>
+              <button type="button" className="btn btn-secondary" data-dismiss="modal" onClick={this.handleCancel}>Change file</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 }
 
-Upload = withRouter(Upload);
 export default Upload;

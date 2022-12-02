@@ -543,5 +543,4 @@ class Cart extends React.Component {
   }
 }
 
-Cart.contextType = CartContext;
 export default Cart;

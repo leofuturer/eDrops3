@@ -1,5 +1,5 @@
 import React from 'react';
-import { Redirect, withRouter } from 'react-router-dom';
+import { redirect } from 'react-router-dom';
 import Cookies from 'js-cookie';
 import {
   updateCustomerProfile, addCustomer, userSignUp, customerCredsTaken,
@@ -142,7 +142,7 @@ class AddOrEditUser extends React.Component {
 
   render() {
     if (Cookies.get('userId') === undefined) {
-      return <Redirect to="/login" />;
+      return redirect("/login");
     }
     if (this.props.match.path === '/manage/users/edituser') {
       var profileContent = 'Edit Customer';
@@ -332,5 +332,4 @@ class AddOrEditUser extends React.Component {
   }
 }
 
-AddOrEditUser = withRouter(AddOrEditUser);
 export default AddOrEditUser;

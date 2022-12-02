@@ -497,5 +497,4 @@ class ChipOrder extends React.Component {
   }
 }
 
-ChipOrder.contextType = CartContext;
 export default ChipOrder;

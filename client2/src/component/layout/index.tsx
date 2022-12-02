@@ -6,8 +6,9 @@ import CartContextProvider from '../../context/CartContext';
 
 import SEO from '../header/seo';
 import { metadata } from './metadata';
+import { Outlet } from 'react-router-dom';
 
-function Layout({ children }: { children: React.ReactNode }) {
+function Layout() {
 
   return (
     <div className="flex flex-col justify-between min-h-screen">
@@ -20,7 +21,7 @@ function Layout({ children }: { children: React.ReactNode }) {
         <CartContextProvider
         >
           <NavTop />
-          {children}
+          <Outlet />
         </CartContextProvider>
       </div>
       <Footer />

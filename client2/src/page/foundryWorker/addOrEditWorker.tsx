@@ -1,5 +1,5 @@
 import React from 'react';
-import { Redirect, withRouter } from 'react-router-dom';
+import { redirect } from 'react-router-dom';
 import Cookies from 'js-cookie';
 import {
   addFoundryWorker, editFoundryWorker, userSignUp,
@@ -153,7 +153,7 @@ class AddOrEditWorker extends React.Component {
 
   render() {
     if (Cookies.get('userId') === undefined) {
-      return <Redirect to="/login" />;
+      return redirect("/login");
     }
     let editWorker = false;
     if (this.props.match.path === '/manage/foundryworkers/editworker') {
@@ -458,5 +458,5 @@ class AddOrEditWorker extends React.Component {
     );
   }
 }
-AddOrEditWorker = withRouter(AddOrEditWorker);
+
 export default AddOrEditWorker;

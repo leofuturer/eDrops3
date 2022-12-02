@@ -1,5 +1,4 @@
 import React from 'react';
-import { withRouter } from 'react-router-dom';
 import API from '../../api/api';
 import { customerSignUp, customerCredsTaken, userSignUp } from '../../api/serverConfig';
 import constraints from './formConstraints';
@@ -484,5 +483,4 @@ class Register extends React.Component {
   }
 }
 
-Register = withRouter(Register);
 export default Register;

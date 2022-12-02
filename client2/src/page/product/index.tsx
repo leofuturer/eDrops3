@@ -1,5 +1,5 @@
-import React from 'react';
-import { withRouter, NavLink } from 'react-router-dom';
+import React, { useContext, useEffect, useRef, useState } from 'react';
+import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import './product.css';
 import Cookies from 'js-cookie';
 import {
@@ -25,117 +25,82 @@ import {
 } from '../../api/serverConfig';
 import API from '../../api/api';
 import { Shopify } from '../../App';
-import CartContext from '../../context/CartContext';
-import hoistNonReactpublics from 'hoist-non-react-statics';
+import { CartContext } from '../../context/CartContext';
 
-class Product extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      fetchedProduct: false,
-      product: undefined,
-      orderInfoId: undefined,
-      shopifyClientCheckoutId: undefined,
-      quantity: 1,
-      bundleSize: '1',
-      otherDetails: {},
-    };
-    this.handleGetCart = this.handleGetCart.bind(this);
-    this.addItemToCart = this.addItemToCart.bind(this);
-    this.handleOptionsChange = this.handleOptionsChange.bind(this);
-  }
+function Product() {
+  const context = useContext(CartContext);
 
-  fetchProductData(shopifyProductId) {
+  const [fetchedProduct, setFetchedProduct] = useState(false);
+  const [product, setProduct] = useState(undefined);
+  const [orderInfoId, setOrderInfoId] = useState(undefined);
+  const [shopifyClientCheckoutId, setShopifyClientCheckoutId] = useState(undefined);
+  const [quantity, setQuantity] = useState(1);
+  const [bundleSize, setBundleSize] = useState(1);
+  const [otherDetails, setOtherDetails] = useState({});
+  const [addedToCart, setAddedToCart] = useState(false);
+
+  const navigate = useNavigate();
+
+  function fetchProductData(shopifyProductId: string) {
     const url = `${returnOneItem}?productId=${shopifyProductId}`;
     API.Request(url, 'GET', {}, false)
       .then((res) => {
         // console.log(res);
-        this.setState({
-          product: res.data,
-          fetchedProduct: true,
-          addedToCart: true,
-        });
-        if (shopifyProductId === univEwodChipId) {
-          this.setState({
-            otherDetails: {
-              withCoverPlateAssembled: false,
-            },
+        setProduct(res.data);
+        setFetchedProduct(true);
+        setAddedToCart(true);
+        if ([univEwodChipId, univEwodChipId5, univEwodChipId10].includes(shopifyProductId)) {
+          setOtherDetails({
+            withCoverPlateAssembled: false,
           });
         }
-        if (shopifyProductId === univEwodChipId5) {
-          this.setState({
-            otherDetails: {
-              withCoverPlateAssembled: false,
-            },
-            bundleSize: "5",
-          });
+        if ([controlSysId5, testBoardId5, pcbChipId5, univEwodChipId5].includes(shopifyProductId)) {
+          setBundleSize(5);
         }
-        if (shopifyProductId === univEwodChipId10) {
-          this.setState({
-            otherDetails: {
-              withCoverPlateAssembled: false,
-            },
-            bundleSize: "10",
-          });
-        }
-
-        if (shopifyProductId === controlSysId5 || shopifyProductId === testBoardId5 || shopifyProductId === pcbChipId5) {
-          this.setState({
-            bundleSize: "5",
-          });
-        }
-
-        if (shopifyProductId === controlSysId10 || shopifyProductId === testBoardId10 || shopifyProductId === pcbChipId10) {
-          this.setState({
-            bundleSize: "10",
-          });
+        if ([controlSysId10, testBoardId10, pcbChipId10, univEwodChipId10].includes(shopifyProductId)) {
+          setBundleSize(10);
         }
       }).catch((err) => {
         console.error(err);
         // redirect to all items page if product ID is invalid
-        this.props.history.push('/allItems');
+        navigate('/allItems');
       });
   }
 
-  componentDidUpdate(oldProps) {
-    if (this.props.location.search !== oldProps.location.search) {
-      this.fetchProductData(this.props.location.search.slice(4));
-    }
-  }
+  const location = useLocation();
+  const ref = useRef(location);
 
-  componentDidMount() {
-    if (this.props.location.search === '') {
-      this.props.history.push('/allItems'); // redirect if no ID provided
+  useEffect(() => {
+    if (location.search !== ref.current.search) {
+      fetchProductData(location.search.slice(4));
+    }
+    ref.current.search = location.search;
+  }, []);
+
+  useEffect(() => {
+    if (location.search === '') {
+      navigate('/allItems'); // redirect if no ID provided
       return;
     } else {
-      this.fetchProductData(this.props.location.search.slice(4));
+      fetchProductData(location.search.slice(4));
     }
-  }
+  }, []);
 
-  handleChange(key, value) {
-    this.setState(
-      {
-        [key]: value,
-      },
-    );
-    if (key === 'bundleSize') {
-      let productType = getProductType(this.state.product.id);
-      this.fetchProductData(productIdsJson[productType][value]);
-    }
-    // console.log(this.state)
+  function handleBundleChange(bsize: number) {
+    setBundleSize(bsize)
+    const productType = getProductType(product.id);
+    fetchProductData(productIdsJson[productType][bsize]);
   }
 
 
-  handleOptionsChange(key, value) {
+  function handleOptionsChange(key: string, value: any) {
     const newData = {
       [key]: value,
     };
-    this.setState({
-      otherDetails: Object.assign({}, this.state.otherDetails, newData),
-    });
+    setOtherDetails(otherDetails => Object.assign({}, otherDetails, newData));
   }
 
-  handleGetCart() {
+  function handleGetCart() {
     /**
          * Do not allow if not logged in or nonpositive quantity to add.
          *
@@ -144,27 +109,22 @@ class Product extends React.Component {
          * Then, call addItemToCart() with orderInfo ID (our own cart id) and
          *      Shopify checkout ID
          */
-    const _this = this;
     if (Cookies.get('access_token') === undefined) {
       alert('Login required to add item to cart');
       return;
     }
-    if (parseInt(this.state.quantity) <= 0) {
+    if (quantity <= 0) {
       alert('Error: Quantity must be a positive number');
     } else {
-      _this.setState({
-        addedToCart: false,
-      });
+      setAddedToCart(false);
       let url = getCustomerCart.replace('id', Cookies.get('userId'));
       API.Request(url, 'GET', {}, true)
         .then((res) => {
           if (res.data.id) {
             // console.log(`Have cart already with ID ${res.data.id}`); console.log(res);
-            _this.setState({
-              orderInfoId: res.data.id,
-              shopifyClientCheckoutId: res.data.checkoutIdClient,
-            });
-            _this.addItemToCart(res.data.id,
+            setOrderInfoId(res.data.id);
+            setShopifyClientCheckoutId(res.data.checkoutIdClient);
+            addItemToCart(res.data.id,
               res.data.checkoutIdClient,
               parseInt(this.state.quantity));
           } else { // no cart, need to create one
@@ -244,7 +204,7 @@ class Product extends React.Component {
      * @param {string} shopifyClientCheckoutId - id of Shopify client checkout
      * @param {number} quantity - number of items to add
      */
-  addItemToCart(orderInfoId, shopifyClientCheckoutId, quantity) {
+  function addItemToCart(orderInfoId, shopifyClientCheckoutId, quantity) {
     // add to shopify cart, and then add to our own cart
     const _this = this;
     const customShopifyAttributes = [];
@@ -299,9 +259,9 @@ class Product extends React.Component {
                   .then((res) => {
                     // console.log(res);
                     const quantity = res.data.reduce((prev, curr) => prev + curr.quantity, 0);
-                    this.context.setProductQuantity(quantity);
-                    this.context.setCartQuantity();
-                    this.props.history.push('/manage/cart');
+                    context.setProductQuantity(quantity);
+                    context.setCartQuantity();
+                    navigate('/manage/cart');
                   })
                   .catch((err) => {
                     console.error(err);
@@ -332,95 +292,91 @@ class Product extends React.Component {
       });
   }
 
-  render() {
-    const { product } = this.state;
-    const desiredProductId = this.props.location.search.slice(4); // get id after id?=
-    return (
-      <div className="order-container">
-        <div className="shop-main-content">
-          {this.state.fetchedProduct
-            ? (
-              <div>
-                <div className="shop-left-content">
-                  <div className="div-img">
-                    <img src={product.variants[0].image.src} />
-                  </div>
+  const desiredProductId = location.search.slice(4); // get id after id?=
+  return (
+    <div className="order-container">
+      <div className="shop-main-content">
+        {fetchedProduct
+          ? (
+            <div>
+              <div className="shop-left-content">
+                <div className="div-img">
+                  <img src={product.variants[0].image.src} />
                 </div>
-                <div className="shop-right-content">
-                  <div className="shop-right-top-content">
-                    <NavLink to="/allItems">{'<< Return to all products'}</NavLink>
-                    <div><h2>{product.title}</h2></div>
-                    <div
-                      className="product-description"
-                      dangerouslySetInnerHTML={{ __html: product.descriptionHtml }}
-                    />
-                  </div>
-                  <div className="shop-right-bottom-content">
-                    <div>
-                      {(desiredProductId === univEwodChipId || desiredProductId === univEwodChipId5 || desiredProductId === univEwodChipId10)
-                        ? (
-                          <div className="chip-config">
-                            <h3>Item Options</h3>
-                            <div className="config-items">
-                              <input type="checkbox" checked={JSON.stringify(this.state.otherDetails) === '{"withCoverPlateAssembled":true}'} onChange={(v) => this.handleOptionsChange('withCoverPlateAssembled', v.target.checked)} />
-                              <span className="option-detail">With Cover Plate Assembled</span>
-                            </div>
+              </div>
+              <div className="shop-right-content">
+                <div className="shop-right-top-content">
+                  <NavLink to="/allItems">{'<< Return to all products'}</NavLink>
+                  <div><h2>{product.title}</h2></div>
+                  <div
+                    className="product-description"
+                    dangerouslySetInnerHTML={{ __html: product.descriptionHtml }}
+                  />
+                </div>
+                <div className="shop-right-bottom-content">
+                  <div>
+                    {(desiredProductId === univEwodChipId || desiredProductId === univEwodChipId5 || desiredProductId === univEwodChipId10)
+                      ? (
+                        <div className="chip-config">
+                          <h3>Item Options</h3>
+                          <div className="config-items">
+                            <input type="checkbox" id="coverPlate" checked={otherDetails.withCoverPlateAssembled} onChange={(v) => handleOptionsChange('withCoverPlateAssembled', v.target.checked)} />
+                            <label htmlFor="coverPlate" className="option-detail">With Cover Plate Assembled</label>
                           </div>
-                        )
-                        : null}
-
-                      <div className="div-price-quantity">
-                        <div className="div-product-price">
-                          Price: $
-                          {product.variants[0].price}
                         </div>
-                        <div className="div-product-selection">
-                          <div className="div-product-quantity">
-                            Quantity:&nbsp;
+                      )
+                      : null}
+
+                    <div className="div-price-quantity">
+                      <div className="div-product-price">
+                        Price: $
+                        {product.variants[0].price}
+                      </div>
+                      <div className="div-product-selection">
+                        <div className="div-product-quantity">
+                          <label htmlFor="quantity">Quantity:&nbsp;</label>
+                          <input
+                            type="number"
+                            id="quantity"
+                            className="input-quantity"
+                            value={quantity}
+                            onChange={(e) => setQuantity(e.target.valueAsNumber)}
+                          />
+                        </div>
+                        <div className="div-product-bundlesize">
+                          <label htmlFor="bundlesize">Bundle Size:&nbsp;</label>
+                          <select id="bundlesize" name="bundlesize" value={bundleSize} onChange={(e) => handleBundleChange(parseInt(e.target.value, 10))}>
+                            <option value="1">1</option>
+                            <option value="5">5</option>
+                            <option value="10">10</option>
+                          </select>
+                        </div>
+                      </div>
+                    </div>
+                    <div>
+                      {addedToCart
+                        ? (
+                          <div className="cart-btn">
                             <input
-                              type="number"
-                              className="input-quantity"
-                              value={this.state.quantity}
-                              onChange={(v) => this.handleChange('quantity', v.target.value)}
+                              type="button"
+                              value="Add to Cart"
+                              className="btn btn-primary btn-lg btn-block"
+                              onClick={() => handleGetCart()}
                             />
                           </div>
-                          <div className="div-product-bundlesize">
-                            Bundle Size:&nbsp;
-                            <select id="bundlesize" name="bundlesize" value={this.state.bundleSize} onChange={(v) => this.handleChange('bundleSize', v.target.value)}>
-                              <option value="1">1</option>
-                              <option value="5">5</option>
-                              <option value="10">10</option>
-                            </select>
-                          </div>
-                        </div>
-                      </div>
-                      <div>
-                        {this.state.addedToCart
-                          ? (
-                            <div className="cart-btn">
-                              <input
-                                type="button"
-                                value="Add to Cart"
-                                className="btn btn-primary btn-lg btn-block"
-                                onClick={(e) => this.handleGetCart()}
-                              />
-                            </div>
-                          )
-                          : <img className="loading-GIF" src="/img/loading80px.gif" alt="" />}
-                        <div className="tax-info">Note: Price excludes sales tax</div>
-                      </div>
+                        )
+                        : <img className="loading-GIF" src="/img/loading80px.gif" alt="" />}
+                      <div className="tax-info">Note: Price excludes sales tax</div>
                     </div>
                   </div>
                 </div>
               </div>
-            )
-            : <img className="loading-GIF" src="/img/loading80px.gif" alt="" />}
-        </div>
+            </div>
+          )
+          : <img className="loading-GIF" src="/img/loading80px.gif" alt="" />}
       </div>
-    );
-  }
+    </div>
+  );
 }
 
-// Product = withRouter(Product);
-Product.contextType = CartContext;
-export default hoistNonReactpublics(Product, withRouter(Product));
+export default Product;

@@ -1,6 +1,5 @@
 import Cookies from 'js-cookie';
 import React from 'react';
-import { withRouter } from 'react-router-dom';
 import API from '../../api/api';
 import { customerAddresses, getCustomerCart } from '../../api/serverConfig';
 import './address.css';
@@ -150,5 +149,4 @@ class AddNewAddress extends React.Component {
   }
 }
 
-AddNewAddress = withRouter(AddNewAddress);
 export default AddNewAddress;

@@ -1,5 +1,4 @@
 import React from 'react';
-import { withRouter } from 'react-router';
 import { NavLink } from 'react-router-dom';
 
 class ItemCard extends React.Component {
@@ -40,5 +39,4 @@ class ItemCard extends React.Component {
   }
 }
 
-ItemCard = withRouter(ItemCard);
 export default ItemCard;

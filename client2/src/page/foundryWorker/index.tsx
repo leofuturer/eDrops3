@@ -1,5 +1,4 @@
 import React from 'react';
-import { withRouter } from 'react-router-dom';
 import './foundryworker.css';
 import $ from 'jquery';
 import API from '../../api/api';
@@ -146,5 +145,4 @@ class FoundryWorker extends React.Component {
   }
 }
 
-FoundryWorker = withRouter(FoundryWorker);
 export default FoundryWorker;

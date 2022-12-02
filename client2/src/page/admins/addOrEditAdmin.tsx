@@ -1,5 +1,5 @@
 import React from 'react';
-import { Redirect, withRouter } from 'react-router-dom';
+import { redirect } from 'react-router-dom';
 import Cookies from 'js-cookie';
 import {
   updateAdminProfile, addAdmin, userSignUp, userBaseFind, updateUserBaseProfile, adminCredsTaken,
@@ -226,7 +226,7 @@ class AddOrEditAdmin extends React.Component {
 
   render() {
     if (Cookies.get('userId') === undefined) {
-      return <Redirect to="/login" />;
+      return redirect("/login");
     }
     if (this.props.match.path === '/manage/admins/editAdmin') {
       var profileContent = 'Edit Admin Info';
@@ -392,5 +392,4 @@ class AddOrEditAdmin extends React.Component {
   }
 }
 
-AddOrEditAdmin = withRouter(AddOrEditAdmin);
 export default AddOrEditAdmin;

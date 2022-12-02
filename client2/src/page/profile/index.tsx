@@ -1,5 +1,5 @@
 import React from 'react';
-import { Redirect, withRouter } from 'react-router-dom';
+import { redirect } from 'react-router-dom';
 import './profile.css';
 import Cookies from 'js-cookie';
 import {
@@ -208,7 +208,7 @@ class Profile extends React.Component {
 
   render() {
     if (Cookies.get('userId') === undefined) {
-      return <Redirect to="/login" />;
+      return redirect("/login");
     }
     let profileContent;
     // These codes are of no use at this time, but maybe useful when we plan to
@@ -367,5 +367,5 @@ class Profile extends React.Component {
     );
   }
 }
-Profile = withRouter(Profile);
+
 export default Profile;

@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import ShopifyClient from 'shopify-buy';
 // import { createBrowserHistory } from 'history';
 import API from './api/api';
@@ -8,7 +8,7 @@ import Pusher from 'pusher-js';
 import { customerGetApiToken } from './api/serverConfig';
 import 'bootstrap';
 // Router components
-import { MainRouter, SubRouter } from './router/routeMap.jsx';
+import RouteMap, { MainRouter, SubRouter } from './router/routeMap';
 
 // Singleton pattern with async call, see adeneo's response from here:
 // https://stackoverflow.com/questions/39553201/singleton-with-async-initialization
@@ -92,12 +92,9 @@ export const pusher = (function () {
 // The root APP of React
 function App() {
   return (
-    <Router>
-      <Switch>
-        <Route path="/subpage" component={SubRouter} />
-        <Route path="/" render={() => <MainRouter />} />
-      </Switch>
-    </Router>
+    <BrowserRouter>
+      <RouteMap />
+    </BrowserRouter>
   );
 }
 

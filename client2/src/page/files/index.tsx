@@ -1,5 +1,5 @@
 import React from 'react';
-import { NavLink, withRouter } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import Cookies from 'js-cookie';
 import $ from 'jquery';
 
@@ -123,7 +123,7 @@ class Files extends React.Component {
     }
   }
 
-  handleDelete(e) {
+  handleDelete() {
     const fileId = this.state.deleteId;
     const url = `${customerDeleteFile.replace('id', Cookies.get('userId'))}?fileId=${fileId}`;
     const fileInfoRowId = `fileInfoRow${fileId}`;
@@ -143,9 +143,7 @@ class Files extends React.Component {
       });
   }
 
-  handleDeleteId(e) {
-    const fileIdString = e.target.id;
-    const fileId = Number(fileIdString.replace(/[^0-9]/ig, ''));
+  handleDeleteId(fileId: number) {
     this.setState({
       deleteId: fileId,
     });
@@ -242,7 +240,7 @@ class Files extends React.Component {
                             <i className="fa fa-cart-plus" onClick={this.handleShop} />
                           </td>
                           <td className="p-2">
-                            <i className="fa fa-trash" id={`file${item.id}`} data-toggle="modal" data-target="#deleteModal" onClick={this.handleDeleteId} />
+                            <i className="fa fa-trash" data-toggle="modal" data-target="#deleteModal" onClick={() => this.handleDeleteId(item.id)} />
                           </td>
                         </>
                     }
@@ -294,5 +292,4 @@ class Files extends React.Component {
   }
 }
 
-Files = withRouter(Files);
 export default Files;

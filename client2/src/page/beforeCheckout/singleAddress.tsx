@@ -1,5 +1,4 @@
 import React from 'react';
-import { withRouter } from 'react-router';
 import '../address/address.css';
 import './beforeCheckout.css';
 
@@ -52,5 +51,4 @@ class SingleAddress extends React.Component {
   }
 }
 
-SingleAddress = withRouter(SingleAddress);
 export default SingleAddress;
