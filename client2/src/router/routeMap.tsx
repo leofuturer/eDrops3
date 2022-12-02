@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-  BrowserRouter as Router, Route, Switch, Redirect,
+  Route, Routes, redirect, Navigate,
 } from 'react-router-dom';
 
 import OrderDetail from '../page/order/orderDetail';
@@ -27,45 +27,36 @@ import BeforeCheckout from '../page/beforeCheckout/index';
 
 import FeatureComing from '../page/featureComing/index';
 
-export class MainRouter extends React.Component {
-  render() {
-    return (
-      <Layout>
-        <Switch>
-          <Route exact path="/">
-            <Redirect to="/home" />
-          </Route>
-          <Route path="/home" component={Home} />
-          <Route path="/upload" component={Upload} />
-          <Route path="/chipfab" component={ChipOrder} />
-          {/* The project page is currently unused */}
-          <Route path="/project" component={Project} />
-          <Route path="/manage" component={Manage} />
-          <Route path="/login" component={Login} />
-          <Route path="/register" component={Register} />
-          <Route path="/forgetPass" component={ForgetPass} />
-          <Route path="/checkEmail" component={CheckEmail} />
-          <Route path="/emailVerified" component={EmailVerified} />
-          <Route path="/emailVerifyInvalid" component={EmailVerifyInvalid} />
-          <Route path="/resetPassword" component={ResetPassword} />
-          <Route path="/beforeCheckout" component={BeforeCheckout} />
-          <Route path="/allItems" component={AllItems} />
-          <Route path="/product" component={Product} />
-          <Route path="/featureComing" component={FeatureComing} />
-          <Route component={PageNotFound} />
-        </Switch>
-      </Layout>
-    );
-  }
+function RouteMap() {
+  return (
+    <Routes>
+      <Route path="/" element={<Layout />}>
+        <Route index element={<Navigate to="/home" replace />} />
+        <Route path="home" element={<Home />} />
+        <Route path="upload" element={<Upload />} />
+        <Route path="chipfab" element={<ChipOrder />} />
+        {/* The project page is currently unused */}
+        <Route path="project" element={<Project />} />
+        <Route path="manage" element={<Manage />} />
+        <Route path="login" element={<Login />} />
+        <Route path="register" element={<Register />} />
+        <Route path="forgetPass" element={<ForgetPass />} />
+        <Route path="checkEmail" element={<CheckEmail />} />
+        <Route path="emailVerified" element={<EmailVerified />} />
+        <Route path="emailVerifyInvalid" element={<EmailVerifyInvalid />} />
+        <Route path="resetPassword" element={<ResetPassword />} />
+        <Route path="beforeCheckout" element={<BeforeCheckout />} />
+        <Route path="allItems" element={<AllItems />} />
+        <Route path="product" element={<Product />} />
+        <Route path="featureComing" element={<FeatureComing />} />
+        <Route path="*" element={<PageNotFound />} />
+      </Route >
+      <Route path="subpage">
+        <Route path="order-detail" element={<OrderDetail />} />
+        <Route path="order-chat" element={<OrderChat />} />
+      </Route>
+    </Routes>
+  );
 }
 
-export class SubRouter extends React.Component {
-  render() {
-    return (
-      <Switch>
-        <Route path="/subpage/order-detail" component={OrderDetail} />
-        <Route path="/subpage/order-chat" component={OrderChat} />
-      </Switch>
-    );
-  }
-}
+export default RouteMap;

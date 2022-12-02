@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { withRouter } from 'react-router-dom';
 import $ from 'jquery';
 import Cookies from 'js-cookie';
 import {
@@ -128,5 +127,4 @@ class Admins extends Component {
   }
 }
 
-Admins = withRouter(Admins);
 export default Admins;

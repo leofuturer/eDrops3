@@ -1,5 +1,4 @@
 import React from 'react';
-import { withRouter } from 'react-router';
 import './address.css';
 
 class AddressTemplate extends React.Component {
@@ -77,5 +76,4 @@ class AddressTemplate extends React.Component {
   }
 }
 
-AddressTemplate = withRouter(AddressTemplate);
 export default AddressTemplate;

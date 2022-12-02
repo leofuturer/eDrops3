@@ -1,5 +1,5 @@
 import React from 'react';
-import { NavLink, withRouter } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import './login.css';
 import Cookies from 'js-cookie';
 import $ from 'jquery';
@@ -250,5 +250,4 @@ class Login extends React.Component {
   }
 }
 
-Login = withRouter(Login);
 export default Login;

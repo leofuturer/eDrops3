@@ -1,5 +1,4 @@
 import React from 'react';
-import { withRouter } from 'react-router';
 import ItemCard from './itemCard';
 import { returnAllItems } from '../../api/serverConfig';
 import API from '../../api/api';
@@ -47,5 +46,4 @@ class AllItems extends React.Component {
   }
 }
 
-AllItems = withRouter(AllItems);
 export default AllItems;

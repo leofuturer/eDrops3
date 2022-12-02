@@ -1,6 +1,5 @@
 import React from 'react';
 import Cookies from 'js-cookie';
-import { withRouter } from 'react-router-dom';
 import { customerGetProfile, customerAddresses, modifyChipOrders } from '../../api/serverConfig';
 import API from '../../api/api';
 import SingleAddress from './singleAddress.js';
@@ -223,5 +222,4 @@ class BeforeCheckout extends React.Component {
   }
 }
 
-BeforeCheckout = withRouter(BeforeCheckout);
 export default BeforeCheckout;

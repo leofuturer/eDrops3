@@ -1,5 +1,4 @@
 import React from 'react';
-import { withRouter } from 'react-router-dom';
 import './address.css';
 import Cookies from 'js-cookie';
 import { customerAddresses } from '../../api/serverConfig';
@@ -161,5 +160,5 @@ class UpdateAddress extends React.Component {
     );
   }
 }
-UpdateAddress = withRouter(UpdateAddress);
+
 export default UpdateAddress;

@@ -1,8 +1,7 @@
 import React from 'react';
-import { withRouter, NavLink } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import API from '../../api/api';
 import { ewodFabServiceId } from '../../constants';
-import './order.css';
 
 // The order list page for both customer and worker
 class OrderItem extends React.Component {

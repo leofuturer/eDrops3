@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext } from 'react';
-import { withRouter, NavLink } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import Cookies from 'js-cookie';
 import { useCookies } from 'react-cookie';
 import {
@@ -196,6 +196,4 @@ function NavTop() {
   );
 }
 
-// NavTop = withRouter(NavTop);
-NavTop.contextType = CartContext;
-export default hoistNonReactStatics(NavTop, withRouter(NavTop));
+export default NavTop;

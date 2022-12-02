@@ -1,6 +1,4 @@
 import React from 'react';
-import { withRouter } from 'react-router-dom';
-import './order.css';
 import Cookies from 'js-cookie';
 import API from '../../api/api';
 import {
@@ -252,5 +250,4 @@ class ChipOrders extends React.Component {
   }
 }
 
-ChipOrders = withRouter(ChipOrders);
 export default ChipOrders;

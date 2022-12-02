@@ -1,5 +1,5 @@
 import React from 'react';
-import { Redirect, withRouter } from 'react-router-dom';
+import { redirect } from 'react-router-dom';
 import './changePass.css';
 import Cookies from 'js-cookie';
 import {
@@ -210,7 +210,7 @@ class FormsPage extends React.Component {
 
   render() {
     if (Cookies.get('userId') === undefined) {
-      return <Redirect to="/login" />;
+      return redirect("/login");
     }
     return (
       <div className="right-route-content">
@@ -276,5 +276,4 @@ class FormsPage extends React.Component {
     );
   }
 }
-FormsPage = withRouter(FormsPage);
 export default FormsPage;
