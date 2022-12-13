@@ -28,7 +28,6 @@ class Orders extends React.Component {
         username: this.props.location.state.username,
       });
     }
-    
   }
 
   componentDidMount() {
@@ -36,7 +35,7 @@ class Orders extends React.Component {
       isLoading: true,
     });
     if (this.props.match.path === '/manage/customer-orders') {
-      var url = `${customerOrderRetrieve.replace('id', Cookies.get('userId'))}`;
+      var url = `${customerOrderRetrieve.replace('id', Cookies.get('userId'))}?filter={"where": {"orderComplete": true}}`;
     } else if (this.props.match.path === '/manage/admin-retrieve-user-orders') {
       var url = `${getAllOrderInfos}?filter={"where": {"customerId": ${this.state.custId}, "orderComplete": true}}`;
     } else {
@@ -51,7 +50,6 @@ class Orders extends React.Component {
           orderList: res.data,
           isLoading: false,
         });
-        console.log(this.state.orderList);
       })
       .catch((err) => {
         console.error(err);
@@ -67,14 +65,6 @@ class Orders extends React.Component {
     const originalOrderId = e.target.id;
     const orderId = Number(originalOrderId.replace(/[^0-9]/ig, ''));
     const redirectUrl = `/subpage/order-detail?id=${orderId}`;
-    const strWindowFeatures = 'width=1200px, height=900px';
-    const WindowForOrderDetail = window.open(redirectUrl, '_blank', strWindowFeatures);
-  }
-
-  handleChat(e){
-    const originalOrderId = e.target.id;
-    const orderId = Number(originalOrderId.replace(/[^0-9]/ig, ''));
-    const redirectUrl = `/subpage/order-chat?id=${orderId}`;
     const strWindowFeatures = 'width=1200px, height=900px';
     const WindowForOrderDetail = window.open(redirectUrl, '_blank', strWindowFeatures);
   }
@@ -111,7 +101,6 @@ class Orders extends React.Component {
                     <th>Process Status</th>
                     <th>Total Price</th>
                     <th className="icon-center">Other Details</th>
-                    <th className="icon-center">Chat</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -127,9 +116,6 @@ class Orders extends React.Component {
                         </td>
                         <td className="icon-center">
                           <i className="fa fa-commenting" id={`worker-order${item.id}`} onClick={this.handleDetail} />
-                        </td>
-                        <td className="icon-center">
-                          <i className="fa fa-commenting" id={`worker-order${item.id}`} onClick={this.handleChat} />
                         </td>
                       </tr>
                     ))
