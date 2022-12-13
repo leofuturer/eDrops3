@@ -46,14 +46,6 @@ class AllOrders extends React.Component {
     WindowForOrderDetail._orderItemId = orderId;
   }
 
-  handleChat(e) {
-    const orderId = e.target.parentNode.parentNode.id;
-    const redirectUrl = `/subpage/order-chat?id=${orderId}`;
-    const strWindowFeatures = 'width=1200px, height=900px';
-    const WindowForOrderChat = window.open(redirectUrl, '_blank', strWindowFeatures);
-    WindowForOrderChat._orderItemId = orderId;
-  }
-
   render() {
     if (Cookies.get('userType') !== 'admin') {
       return <Redirect to="/login" />;
@@ -73,7 +65,6 @@ class AllOrders extends React.Component {
                   <th>Status</th>
                   <th>Price</th>
                   <th className="icon-center">Details</th>
-                  <th className="icon-center">Chat</th>
                 </tr>
               </thead>
               <tbody>
@@ -89,9 +80,6 @@ class AllOrders extends React.Component {
                       </td>
                       <td className="icon-center">
                         <i className="fa fa-commenting" onClick={this.handleDetail} />
-                      </td>
-                      <td className="icon-center">
-                        <i className="fa fa-commenting" onClick={this.handleChat} />
                       </td>
                     </tr>
                   ))

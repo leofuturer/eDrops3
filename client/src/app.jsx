@@ -4,7 +4,6 @@ import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import ShopifyClient from 'shopify-buy';
 // import { createBrowserHistory } from 'history';
 import API from './api/api';
-import Pusher from 'pusher-js';
 import { customerGetApiToken } from './api/serverConfig';
 import 'bootstrap';
 // Router components
@@ -53,44 +52,6 @@ const Shopify = (function () {
 }());
 
 export default Shopify;
-
-export const pusher = (function () {
-  let instance;
-  function init() {
-    function privateMethod(key) {
-      return new Pusher(key, {
-        cluster: 'us3',
-        encrypted: true,
-      });
-    }
-
-    const privateAsync = new Promise((resolve, reject) => {
-      API.Request(customerGetApiToken, 'GET', {}, true)
-        .then((res) => {
-          if (res.status === 200) {
-            resolve(privateMethod(res.data.info.key));
-          }
-        })
-        .catch((err) => {
-          console.error(err);
-          reject(err);
-        });
-    });
-
-    return {
-      getPrivateValue() { return privateAsync; },
-    };
-  }
-
-  return {
-    getInstance() {
-      if (!instance) {
-        instance = init();
-      }
-      return instance;
-    },
-  };
-}());
 
 // The root APP of React
 class App extends React.Component {

@@ -1,7 +1,3 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
 .order-container{
     width: 1200px;
     margin:0 auto;
@@ -40,7 +36,7 @@
     float: right;
     width:500px;
     height: 450px;
-    border:1px solid #ccc;
+    /*border:1px solid #ccc;*/
 }
 
 .div-quantity{
@@ -173,116 +169,4 @@ td i{
     overflow: hidden;
     width: 730px;
     margin: 0 auto;
-}
-
-body {
-    padding: 0;
-    margin: 0;
-    display: flex;
-    justify-content: center;
-}
-
-.message-container {
-    padding: 5% 5%;
-}
-
-.send {
-    position: relative;
-    display: block;
-    margin: 0 auto;
-}
-
-#message-input {
-    flex-grow: 1;   
-}
-
-.order-chat-title-container {
-    text-align: center;
-}
-/* CSS talk bubble */
-.chat {
-    --rad: 20px;
-    --rad-sm: 3px;
-    font: 16px/1.5 sans-serif;
-    display: flex;
-    flex-direction: column;
-    padding: 20px;
-    max-width: 500px;
-    margin: auto;
-    border: #42a5f5;
-    border-radius: 4px;
-    border-style: inset 
-}
-
-.msg {
-    position: relative;
-    max-width: 75%;
-    padding: 7px 15px;
-    margin-bottom: 2px;
-}
-
-.msg.sent {
-    border-radius: var(--rad) var(--rad-sm) var(--rad-sm) var(--rad);
-    background: #42a5f5;
-    color: #fff;
-    /* moves it to the right */
-    margin-left: auto;
-}
-
-.msg.rcvd {
-    border-radius: var(--rad-sm) var(--rad) var(--rad) var(--rad-sm);
-    background: #f1f1f1;
-    color: #555;
-    /* moves it to the left */
-    margin-right: auto;
-}
-
-/* Improve radius for messages group */
-.msg.sent:first-child,
-.msg.rcvd+.msg.sent {
-    border-top-right-radius: var(--rad);
-}
-
-.msg.rcvd:first-child,
-.msg.sent+.msg.rcvd {
-    border-top-left-radius: var(--rad);
-}
-
-.msg.sent::before {
-    right: 15px;
-}
-
-.msg.rcvd::before {
-    left: 15px;
-}
-
-.input-box{
-    border: 2px solid;
-    border-radius: 4px;
-}
-
-.chat-button{
-    display:block;
-    padding:0.3em 1.2em;
-    margin:0 auto;
-    border-radius:2em;
-    box-sizing: border-box;
-    text-decoration:none;
-    font-family:'Roboto',sans-serif;
-    font-weight:300;
-    color:#FFFFFF;
-    background-color:#4eb5f1;
-    text-align:center;
-    transition: all 0.2s;
-    position: relative;
-}
-
-.chat-button:hover{
-    background-color:#4095c6;
-}
-@media all and (max-width:30em){
-    .chat-button{
-        display:block;
-        margin:0.2em auto;
-    }
 }

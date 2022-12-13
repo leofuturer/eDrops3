@@ -4,7 +4,6 @@ import {
 } from 'react-router-dom';
 
 import OrderDetail from 'page/order/orderDetail.jsx';
-import OrderChat from 'page/order/orderChat.jsx';
 import Layout from '../component/layout/index.jsx';
 // Pages
 import Home from '../page/home/index.jsx';
@@ -64,7 +63,6 @@ export class SubRouter extends React.Component {
     return (
       <Switch>
         <Route path="/subpage/order-detail" component={OrderDetail} />
-        <Route path="/subpage/order-chat" component={OrderChat} />
       </Switch>
     );
   }
