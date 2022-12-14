@@ -37,7 +37,7 @@ import Cart from '../../page/cart/index';
 
 import Cookies from 'js-cookie';
 import { Shopify } from '../../App';
-import SEO from '../../component/header/seo';
+import SEO from '../../component/header/SEO';
 import { metadata } from './metadata.js';
 import { useCookies } from 'react-cookie';
 

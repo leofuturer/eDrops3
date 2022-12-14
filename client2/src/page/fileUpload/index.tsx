@@ -5,7 +5,7 @@ import { useCookies } from 'react-cookie';
 import { FileRejection, useDropzone } from 'react-dropzone';
 import API from '../../api/api';
 import { customerFileRetrieve, uploadFile } from '../../api/serverConfig';
-import SEO from '../../component/header/seo';
+import SEO from '../../component/header/SEO';
 import TwoChoiceModal from '../../component/modal/TwoChoiceModal';
 import { metadata } from './metadata';
 
@@ -175,7 +175,7 @@ function Upload() {
     return (
       <div
         key={i}
-        className={`${pType === p && 'bg-primary_light text-white'} border py-4 px-8 cursor-pointer`}
+        className={`${pType === p && 'bg-primary_light text-white'} border py-2 px-8 cursor-pointer`}
         onClick={() => setPType(p)}
       >
         {p}
@@ -187,7 +187,7 @@ function Upload() {
     return (
       <div
         key={i}
-        className={`${uType === u && 'bg-primary_light text-white'} border py-4 px-8 cursor-pointer`}
+        className={`${uType === u && 'bg-primary_light text-white'} border py-2 px-8 cursor-pointer`}
         onClick={() => setUType(u)}
       >
         {u}
@@ -202,23 +202,23 @@ function Upload() {
         description=""
         metadata={metadata}
       />
-      <div className="w-2/3 text-center flex flex-col items-center space-y-8 py-20">
-        <h1 className="text-5xl">File Upload</h1>
-        <h3 className="text-4xl">We accept DXF file as mask file</h3>
+      <div className="w-2/3 text-center flex flex-col items-center space-y-4 py-20">
+        <h1 className="text-4xl">File Upload</h1>
+        <h3 className="text-2xl">We accept DXF file as mask file</h3>
         <div className="grid grid-cols-2 place-items-center w-full">
-          <div className="flex flex-col">
-            <h4 className="text-3xl">Visibility</h4>
-            <div className="flex flex-row space-x-4 justify-center">
+          <div className="flex flex-col space-y-2">
+            <h4 className="text-lg">Visibility</h4>
+            <div className="flex flex-row space-x-4 justify-between text-sm">
               {ptypeList}
             </div>
             <div className="flex flex-row space-x-2 items-center">
-              <input type="checkbox" id="copyLink" className="p-0" />
-              <label htmlFor="copyLink" className="p-0">Let people copy this design with a link</label>
+              <input type="checkbox" id="copyLink" className="" />
+              <label htmlFor="copyLink" className="text-sm">Let people copy this design with a link</label>
             </div>
           </div>
-          <div className="flex flex-col">
-            <h4 className="text-3xl">Units</h4>
-            <div className="flex flex-row space-x-4 justify-center">
+          <div className="flex flex-col space-y-2">
+            <h4 className="text-lg">Units</h4>
+            <div className="flex flex-row space-x-4 justify-between text-sm">
               {utypeList}
             </div>
           </div>
@@ -237,14 +237,14 @@ function Upload() {
           )
             : (
               <div className="">
-                <p className="text-2xl">
+                <p className="text-xl">
                   Drag and drop DXF file here, or click to select file.
                 </p>
                 {file && <p>{file.name}</p>}
               </div>
             )}
         </div>
-        <button type="button" className="bg-secondary rounded-md py-4 px-8 text-white text-2xl w-max" onClick={onFileUpload} >
+        <button type="button" className="bg-secondary rounded-md py-4 px-8 text-white text-xl w-max" onClick={onFileUpload} >
           Upload File
         </button>
       </div>

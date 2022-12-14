@@ -4,7 +4,7 @@ import API from '../../api/api';
 import {
   customerOrderRetrieve, workerOrderRetrieve, getAllOrderInfos,
 } from '../../api/serverConfig';
-import SEO from '../../component/header/seo';
+import SEO from '../../component/header/SEO';
 import { metadata } from './metadata';
 
 // The order list page for both customer and worker

@@ -1,14 +1,11 @@
 import React from 'react';
-import './featureComing.css';
 
-class FeatureComing extends React.Component {
-  render() {
-    return (
-      <div className="feature-coming">
-        This feature is coming soon.
-      </div>
-    );
-  }
+function FeatureComing() {
+  return (
+    <div className="flex items-center justify-center py-40">
+      <p className="text-lg font-bold">This feature is coming soon.</p>
+    </div>
+  );
 }
 
 export default FeatureComing;

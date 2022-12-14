@@ -2,12 +2,11 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import ShopifyClient from 'shopify-buy';
-// import { createBrowserHistory } from 'history';
 import API from './api/api';
 import Pusher from 'pusher-js';
 import { customerGetApiToken } from './api/serverConfig';
 // Router components
-import RouteMap, { MainRouter, SubRouter } from './router/routeMap';
+import RouteMap from './router/routeMap';
 
 // Singleton pattern with async call, see adeneo's response from here:
 // https://stackoverflow.com/questions/39553201/singleton-with-async-initialization

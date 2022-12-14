@@ -6,7 +6,7 @@ import './register.css';
 
 import { closestParent, showErrorsOrSuccessForInput } from '../../utils/validate';
 
-import SEO from '../../component/header/seo.js';
+import SEO from '../../component/header/SEO.js';
 import { metadata } from './metadata.js';
 
 import validate from 'validate.js';

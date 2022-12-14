@@ -2,10 +2,10 @@ import React, { useState } from 'react';
 import { Outlet } from 'react-router-dom';
 
 import NavTop from '../nav/NavTop';
-import Footer from '../footer/index';
+import Footer from '../footer/Footer';
 import CartContextProvider from '../../context/CartContext';
 
-import SEO from '../header/seo';
+import SEO from '../header/SEO';
 import { metadata } from './metadata';
 
 function Layout() {
