@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Outlet } from 'react-router-dom';
 
 import NavTop from '../nav/NavTop';
 import Footer from '../footer/index';
@@ -6,7 +7,6 @@ import CartContextProvider from '../../context/CartContext';
 
 import SEO from '../header/seo';
 import { metadata } from './metadata';
-import { Outlet } from 'react-router-dom';
 
 function Layout() {
 

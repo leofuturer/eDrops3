@@ -6,7 +6,6 @@ import ShopifyClient from 'shopify-buy';
 import API from './api/api';
 import Pusher from 'pusher-js';
 import { customerGetApiToken } from './api/serverConfig';
-import 'bootstrap';
 // Router components
 import RouteMap, { MainRouter, SubRouter } from './router/routeMap';
 

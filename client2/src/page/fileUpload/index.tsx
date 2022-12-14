@@ -1,16 +1,12 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { redirect, useNavigate } from 'react-router-dom';
 
-import { uploadFile, customerFileRetrieve } from '../../api/serverConfig';
+import { useCookies } from 'react-cookie';
+import { FileRejection, useDropzone } from 'react-dropzone';
 import API from '../../api/api';
-import 'bootstrap-modal';
-import $ from 'jquery';
-import Cookies from 'js-cookie';
-
-import Dropzone from 'react-dropzone';
-import Progress from './progress';
-
+import { customerFileRetrieve, uploadFile } from '../../api/serverConfig';
 import SEO from '../../component/header/seo';
+import TwoChoiceModal from '../../component/modal/TwoChoiceModal';
 import { metadata } from './metadata';
 
 function Upload() {
@@ -19,10 +15,12 @@ function Upload() {
   const [originalName, setOriginalName] = useState('');
   const [progress, setProgress] = useState(0);
 
-  const pTypes = ['private', 'public'];
-  const uTypes = ['mm', 'cm', 'in'];
-  const [pType, setPType] = useState<'private' | 'public'>('private');
-  const [uType, setUType] = useState<'mm' | 'cm' | 'in'>('mm');
+  type p = 'private' | 'public';
+  type u = 'mm' | 'cm' | 'in';
+  const pTypes: p[] = ['private', 'public'];
+  const uTypes: u[] = ['mm', 'cm', 'in'];
+  const [pType, setPType] = useState<p>('private');
+  const [uType, setUType] = useState<u>('mm');
   const [checked, setChecked] = useState(false);
 
   const [showUpload, setShowUpload] = useState(false);
@@ -30,34 +28,29 @@ function Upload() {
 
   const navigate = useNavigate();
 
-  function setCurrentIndex(index: number) {
-    $('#file1').fileinput('destroy');
-    this.setState({
-      currentIndex: index,
-      public: this.state.ptype[index],
-    });
-  }
+  const [cookies, setCookie, removeCookie] = useCookies(['userId']);
 
-  function setCurrentIndex1(index) {
-    $('#file1').fileinput('destroy');
-    this.setState({
-      currentIndex1: index,
-      unit: this.state.utype[index],
-    });
-  }
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    onDropAccepted(files, event) {
+      onFileAccept(files);
+    },
+    onDropRejected(fileRejections, event) {
+      onFileReject(fileRejections);
+    },
+    accept: {
+      "application/dxf": ['.dxf']
+    },
+    maxFiles: 1,
+    maxSize: 30 * 1000 * 1000, // file size limit in bytes (30 MB)
+    multiple: false,
+  })
 
-  function componentDidMount() {
-    this.setState({});
-  }
-
-  function onFileAccept(acceptedFiles) {
+  function onFileAccept(acceptedFiles: File[]){
     // console.log(acceptedFiles);
-    this.setState({
-      file: acceptedFiles[0],
-    });
+    setFile(acceptedFiles[0]);
   }
 
-  function onFileReject(rejectedFiles) {
+  function onFileReject(rejectedFiles: FileRejection[]) {
     rejectedFiles.map((rejFile) => {
       rejFile.errors.map((err) => {
         alert(`Upload error:\nFor file ${rejFile.file.name}: ${err.message}`);
@@ -66,38 +59,33 @@ function Upload() {
   }
 
   function onFileUpload() {
-    if (this.state.file !== undefined) {
-      const _this = this;
-      const { file } = this.state;
-      const url = customerFileRetrieve.replace('id', Cookies.get('userId'));
+    if (file) {
+      const url = customerFileRetrieve.replace('id', cookies.userId);
       API.Request(url, 'GET', {}, true)
         .then((res) => {
           // console.log(res);
-          const promises = [];
-          res.data.forEach((e) => {
-            promises.push(
-              new Promise((resolve, reject) => {
-                if (e.fileName === file.name && !e.isDeleted && !_this.state.checked) {
-                  // console.log(e);
-                  _this.setState({ originalName: file.name });
-                  reject('Duplicate file found');
-                } else {
-                  resolve();
-                }
-              }),
-            );
-          });
+          const promises = res.data.map((e) =>
+            new Promise<void>((resolve, reject) => {
+              if (e.fileName === file.name && !e.isDeleted && !checked) {
+                // console.log(e);
+                setOriginalName(file.name);
+                reject('Duplicate file found');
+              } else {
+                resolve();
+              }
+            }
+            ));
           Promise.all(promises)
             .then(() => {
               // No duplicate files found
-              this.uploadFileRequest({
-                isPublic: this.state.public,
-                unit: this.state.unit,
+              uploadFileRequest({
+                isPublic: pType,
+                unit: uType,
               });
             })
-            .catch((msg) => {
-              // console.error(err);
-              $('#confirmModal').modal('show');
+            .catch((err) => {
+              console.error(err);
+              setShowConfirm(true);
             });
         })
         .catch((err) => {
@@ -106,51 +94,42 @@ function Upload() {
     }
   }
 
-  function uploadFileRequest(extraFields) {
-    const _this = this;
+  useEffect(() => {
+    if (progress > 100) {
+      setTimeout(() => {
+        setProgress(0);
+        setShowUpload(true);
+      }, 1000);
+    }
+  }, [progress])
+
+  function uploadFileRequest(extraFields: object) {
     for (let i = 0; i <= 70; i += 1) {
       setTimeout(() => {
-        _this.setState({
-          percentage: i,
-        });
+        setProgress(i);
       }, i * 10);
     }
-    const uploadUrl = uploadFile.replace('id', Cookies.get('userId'));
+    const uploadUrl = uploadFile.replace('id', cookies.userId);
     const formData = new FormData();
-    formData.append('www', this.state.file);
+    formData.append('www', file as File);
     formData.append('fields', JSON.stringify(extraFields));
     const headers = { 'Content-Type': 'multipart/form-data' };
     API.Request(uploadUrl, 'POST', formData, true, headers, true)
       .then((res) => {
         // console.log(res);
-        $('#confirmModal').modal('hide');
-        _this.setState({
-          fileInfo: res.data.fileInfo,
-        });
+        setShowConfirm(false);
+        setFileInfo(res.data.fileInfo);
         for (let i = 70; i <= 101; i += 1) {
           if (i <= 100) {
             setTimeout(() => {
-              _this.setState({
-                percentage: i,
-              });
+              setProgress(i)
             }, 10 * i);
           } else {
             setTimeout(() => {
-              _this.setState({ percentage: 101 }, () => {
-                setTimeout(() => {
-                  _this.setState({ percentage: 0 });
-                  $('#uploadDoneModal').modal('show');
-                }, 1000);
-              });
+              setProgress(101);
             }, 10 * i + 1000);
           }
         }
-        // setTimeout(() => {
-        //   _this.setState({
-        //     percentage: 0,
-        //   });
-        //   $('#uploadDoneModal').modal('show');
-        // }, 2000);
       })
       .catch((err) => {
         console.error(err);
@@ -158,7 +137,7 @@ function Upload() {
   }
 
   function handleShopping() {
-    $('#uploadDoneModal').modal('hide');
+    setShowUpload(false);
     navigate('/chipfab', {
       state: {
         fileInfo: fileInfo,
@@ -183,20 +162,21 @@ function Upload() {
   }
 
   function handleCancel() {
-    $('#file1').fileinput('clear');
-    $('#confirmModal').modal('hide');
+    setShowConfirm(false);
   }
 
-  if (Cookies.get('userId') === undefined) {
-    return redirect('/login');
-  }
+  useEffect(() => {
+    if (!cookies.userId) {
+      redirect('/login');
+    }
+  }, [cookies.userId])
 
   const ptypeList = pTypes.map((p, i) => {
     return (
       <div
         key={i}
-        className={`${this.state.currentIndex === i && 'bg-primary_light text-white'} border py-4 px-8 cursor-pointer`}
-        onClick={() => this.setCurrentIndex(i)}
+        className={`${pType === p && 'bg-primary_light text-white'} border py-4 px-8 cursor-pointer`}
+        onClick={() => setPType(p)}
       >
         {p}
       </div>
@@ -207,8 +187,8 @@ function Upload() {
     return (
       <div
         key={i}
-        className={`${this.state.currentIndex1 === i && 'bg-primary_light text-white'} border py-4 px-8 cursor-pointer`}
-        onClick={() => this.setCurrentIndex1(i)}
+        className={`${uType === u && 'bg-primary_light text-white'} border py-4 px-8 cursor-pointer`}
+        onClick={() => setUType(u)}
       >
         {u}
       </div>
@@ -222,7 +202,7 @@ function Upload() {
         description=""
         metadata={metadata}
       />
-      <div className="w-2/3 text-center flex flex-col items-center space-y-4">
+      <div className="w-2/3 text-center flex flex-col items-center space-y-8 py-20">
         <h1 className="text-5xl">File Upload</h1>
         <h3 className="text-4xl">We accept DXF file as mask file</h3>
         <div className="grid grid-cols-2 place-items-center w-full">
@@ -232,8 +212,8 @@ function Upload() {
               {ptypeList}
             </div>
             <div className="flex flex-row space-x-2 items-center">
-              <input type="checkbox" id="copyLink" className="" />
-              <label htmlFor="copyLink" className="">Let people copy this design with a link</label>
+              <input type="checkbox" id="copyLink" className="p-0" />
+              <label htmlFor="copyLink" className="p-0">Let people copy this design with a link</label>
             </div>
           </div>
           <div className="flex flex-col">
@@ -243,86 +223,60 @@ function Upload() {
             </div>
           </div>
         </div>
-        <Dropzone
-          onDropAccepted={(acceptedFiles) => this.onFileAccept(acceptedFiles)}
-          onDropRejected={(rejectedFiles) => this.onFileReject(rejectedFiles)}
-          accept=".dxf, .DXF"
-          maxFiles={1}
-          maxSize={30 * 1000 * 1000} // file size limit in bytes (30 MB)
-          multiple={false}
-        >
-          {({ getRootProps, getInputProps }) => (
-            <div {...getRootProps({
-              className: 'border-2 border-dashed border-black cursor-pointer w-full p-10',
-            })}>
-              <input {...getInputProps()} />
-              {this.state.percentage > 0 ? (
-                <div className="progressContainer">
-                  <h3>{this.state.percentage < 101 ? 'Uploading...' : 'Completed!'}</h3>
-                  <div className="uploadProgressBar">
-                    <Progress now={this.state.percentage} />
-                  </div>
-                </div>
-              )
-                : (
-                  <div className="">
-                    <p className="text-2xl">
-                      Drag and drop DXF file here, or click to select file.
-                    </p>
-                    {this.state.file && <p>{this.state.file.name}</p>}
-                  </div>
-                )}
+        <div {...getRootProps({
+          className: 'border-2 border-dashed border-black cursor-pointer w-full p-10',
+        })}>
+          <input {...getInputProps()} />
+          {progress > 0 ? (
+            <div className="progressContainer">
+              <h3>{progress < 101 ? 'Uploading...' : 'Completed!'}</h3>
+              <div className="uploadProgressBar">
+                <Progress now={progress} />
+              </div>
             </div>
-          )}
-        </Dropzone>
-        <button type="button" className="bg-secondary rounded-md py-4 px-8 text-white text-2xl w-max" onClick={this.onFileUpload} >
+          )
+            : (
+              <div className="">
+                <p className="text-2xl">
+                  Drag and drop DXF file here, or click to select file.
+                </p>
+                {file && <p>{file.name}</p>}
+              </div>
+            )}
+        </div>
+        <button type="button" className="bg-secondary rounded-md py-4 px-8 text-white text-2xl w-max" onClick={onFileUpload} >
           Upload File
         </button>
       </div>
 
-      {/* The modal */}
-      <div className="modal fade" id="uploadDoneModal" tabIndex="-1" role="dialog" aria-labelledby="uploadDoneModalLabel">
-        <div className="modal-dialog modal-dialog-centered" role="document">
-          <div className="modal-content">
-            <div className="modal-header">
-              <div className="modal-title" id="uploadDoneModalLabel">eDrops</div>
-              <button type="button" className="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-              </button>
-            </div>
-            <div className="successMessage">
-              <div className="modal-body">
-                The file has been uploaded to your library successfully!
-              </div>
-              <div className="modal-footer">
-                <button type="button" className="btn btn-primary" onClick={this.handleShopping}>Proceed to fabrication</button>
-                <button type="button" className="btn btn-secondary" data-dismiss="modal" onClick={this.handleLibrary}>Go to file library</button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      {showUpload && (
+        <TwoChoiceModal
+          content="The file has been uploaded to your library successfully!"
+          affirmativeText="Proceed to fabrication"
+          negativeText="Go to file library"
+          handleAffirmative={handleShopping}
+          handleNegative={handleLibrary} />
+      )}
 
-      <div className="modal fade" id="confirmModal" tabIndex="-1" role="dialog" aria-labelledby="confirmModalLabel">
-        <div className="modal-dialog modal-dialog-centered" role="document">
-          <div className="modal-content">
-            <div className="modal-header">
-              <div className="modal-title" id="confirmModalLabel">eDrops</div>
-            </div>
-            <div className="modal-body">
-              Duplicate file name! Would you like to upload another file, or you still want to
-              upload this file? (It would be recommended that you change a new name to avoid
-              confusion.)
-            </div>
-            <div className="modal-footer">
-              <button type="button" className="btn btn-primary" onClick={this.handleRename}>Upload this file</button>
-              <button type="button" className="btn btn-secondary" data-dismiss="modal" onClick={this.handleCancel}>Change file</button>
-            </div>
-          </div>
-        </div>
-      </div>
+      {showConfirm && (
+        <TwoChoiceModal
+          content="Duplicate file name! Would you like to upload another file or continue uploading this file? (It would be advisable to change the file name to avoid confusion)."
+          affirmativeText="Upload this file"
+          negativeText="Change file"
+          handleAffirmative={handleRename}
+          handleNegative={handleCancel} />
+      )}
     </div>
   );
 }
 
 export default Upload;
+
+function Progress({ now } : { now: number }) {
+  const progressClass = now < 101 ? 'progress-bar' : 'progress-bar progress-bar-success';
+  return (
+    <div className="progress progress-striped active">
+      <div role="progressbar progress-striped" style={{ width: now < 100 ? `${now}%` : '100%' }} className={progressClass} />
+    </div>
+  );
+};
