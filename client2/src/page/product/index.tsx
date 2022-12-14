@@ -26,13 +26,14 @@ import {
 import API from '../../api/api';
 import { Shopify } from '../../App';
 import { CartContext } from '../../context/CartContext';
+import { Product as ProductType } from 'shopify-buy';
 
 function Product() {
   const context = useContext(CartContext);
 
   const [fetchedProduct, setFetchedProduct] = useState(false);
-  const [product, setProduct] = useState(undefined);
-  const [orderInfoId, setOrderInfoId] = useState(undefined);
+  const [product, setProduct] = useState<ProductType>({} as ProductType);
+  const [orderInfoId, setOrderInfoId] = useState("");
   const [shopifyClientCheckoutId, setShopifyClientCheckoutId] = useState(undefined);
   const [quantity, setQuantity] = useState(1);
   const [bundleSize, setBundleSize] = useState(1);
@@ -126,7 +127,7 @@ function Product() {
             setShopifyClientCheckoutId(res.data.checkoutIdClient);
             addItemToCart(res.data.id,
               res.data.checkoutIdClient,
-              parseInt(this.state.quantity));
+              quantity);
           } else { // no cart, need to create one
             // create Shopify cart
             // console.log(`No cart currently exists, so need to create one`);
@@ -135,9 +136,7 @@ function Product() {
                 instance.checkout.create()
                   .then((res) => {
                     // console.log(res);
-                    _this.setState({
-                      shopifyClientCheckoutId: res.id,
-                    });
+                    setShopifyClientCheckoutId(res.id);
                     const lastSlash = res.webUrl.lastIndexOf('/');
                     const lastQuestionMark = res.webUrl.lastIndexOf('?');
 
@@ -160,39 +159,29 @@ function Product() {
                     API.Request(url, 'POST', data, true)
                       .then((res) => {
                         // console.log(res);
-                        _this.setState({
-                          orderInfoId: res.data.id,
-                        });
-                        _this.addItemToCart(res.data.id,
+                        setOrderInfoId(res.data.id);
+                        addItemToCart(res.data.id,
                           res.data.checkoutIdClient,
-                          parseInt(this.state.quantity));
+                          quantity);
                       })
                       .catch((err) => {
-                        _this.setState({
-                          addedToCart: true,
-                        });
+                        setAddedToCart(true);
                         console.error(err);
                       });
                   })
                   .catch((err) => {
-                    _this.setState({
-                      addedToCart: true,
-                    });
+                    setAddedToCart(true);
                     console.error(err);
                   });
               })
               .catch((err) => {
-                _this.setState({
-                  addedToCart: true,
-                });
+                setAddedToCart(true);
                 console.error(err);
               });
           }
         })
         .catch((err) => {
-          _this.setState({
-            addedToCart: true,
-          });
+          setAddedToCart(true);
           console.error(err);
         });
     }
@@ -204,23 +193,22 @@ function Product() {
      * @param {string} shopifyClientCheckoutId - id of Shopify client checkout
      * @param {number} quantity - number of items to add
      */
-  function addItemToCart(orderInfoId, shopifyClientCheckoutId, quantity) {
+  function addItemToCart(orderInfoId: number, shopifyClientCheckoutId: string, quantity: number) {
     // add to shopify cart, and then add to our own cart
-    const _this = this;
     const customShopifyAttributes = [];
     let customServerOrderAttributes = '';
-    for (const [k, v] of Object.entries(_this.state.otherDetails).sort((a, b) => a[0].localeCompare(b[0]))) {
+    for (const [k, v] of Object.entries(otherDetails).sort((a, b) => a[0].localeCompare(b[0]))) {
       if (v !== undefined) {
         customShopifyAttributes.push({ key: k, value: v });
         customServerOrderAttributes += `${k}: ${v}\n`;
       }
     }
 
-    const variantId = _this.state.product.id !== productIdsJson['UNIVEWODCHIPID'][_this.state.bundleSize]
-      ? _this.state.product.variants[0].id
-      : (_this.state.otherDetails.withCoverPlateAssembled
-        ? productIdsJson['UNIVEWODCHIPWITHCOVERPLATE'][_this.state.bundleSize]
-        : productIdsJson['UNIVEWODCHIPWITHOUTCOVERPLATE'][_this.state.bundleSize]);
+    const variantId = product.id !== productIdsJson['UNIVEWODCHIPID'][bundleSize]
+      ? product.variants[0].id
+      : (otherDetails.withCoverPlateAssembled
+        ? productIdsJson['UNIVEWODCHIPWITHCOVERPLATE'][bundleSize]
+        : productIdsJson['UNIVEWODCHIPWITHOUTCOVERPLATE'][bundleSize]);
     // console.log(variantId);
     const lineItemsToAdd = [{
       variantId,
@@ -241,13 +229,13 @@ function Product() {
 
             const data = {
               orderInfoId,
-              productIdShopify: _this.state.product.id,
+              productIdShopify: product.id,
               variantIdShopify: variantId,
               lineItemIdShopify: lineItemId,
-              description: _this.state.product.description,
+              description: product.description,
               quantity,
-              price: parseFloat(_this.state.product.variants[0].price),
-              name: _this.state.product.title,
+              price: parseFloat(product.variants[0].price),
+              name: product.title,
               otherDetails: customServerOrderAttributes,
             };
             // console.log(data);
@@ -266,115 +254,101 @@ function Product() {
                   .catch((err) => {
                     console.error(err);
                   });
-                _this.setState({
-                  addedToCart: true,
-                });
+                setAddedToCart(true);
               })
               .catch((err) => {
                 console.error(err);
-                _this.setState({
-                  addedToCart: true,
-                });
+                setAddedToCart(true);
               });
           })
           .catch((err) => {
             console.error(err);
-            _this.setState({
-              addedToCart: true,
-            });
+            setAddedToCart(true);
           });
       })
       .catch((err) => {
         console.error(err);
-        _this.setState({
-          addedToCart: true,
-        });
+        setAddedToCart(true);
       });
   }
 
   const desiredProductId = location.search.slice(4); // get id after id?=
   return (
-    <div className="order-container">
-      <div className="shop-main-content">
-        {fetchedProduct
-          ? (
-            <div>
-              <div className="shop-left-content">
-                <div className="div-img">
-                  <img src={product.variants[0].image.src} />
-                </div>
+    <div className="flex items-center justify-center p-10">
+      {fetchedProduct
+        ? (
+          <div className="grid grid-cols-2 w-2/3 gap-4">
+            <div className="col-span-1 flex flex-col">
+              <img alt={product.title} src={product.variants[0].image.src} className="w-full aspect-square" />
+            </div>
+            <div className="col-span-1 flex flex-col justify-between">
+              <div className="flex flex-col space-y-2">
+                <NavLink to="/allItems" className="text-primary_light hover:text-primary mb-4"><i className="fa fa-arrow-left" /> Return to all products</NavLink>
+                <h2 className="text-2xl">{product.title}</h2>
+                <p className="text-justify">
+                  {product.description}
+                </p>
               </div>
-              <div className="shop-right-content">
-                <div className="shop-right-top-content">
-                  <NavLink to="/allItems">{'<< Return to all products'}</NavLink>
-                  <div><h2>{product.title}</h2></div>
-                  <div
-                    className="product-description"
-                    dangerouslySetInnerHTML={{ __html: product.descriptionHtml }}
-                  />
-                </div>
-                <div className="shop-right-bottom-content">
-                  <div>
-                    {(desiredProductId === univEwodChipId || desiredProductId === univEwodChipId5 || desiredProductId === univEwodChipId10)
-                      ? (
-                        <div className="chip-config">
-                          <h3>Item Options</h3>
-                          <div className="config-items">
-                            <input type="checkbox" id="coverPlate" checked={otherDetails.withCoverPlateAssembled} onChange={(v) => handleOptionsChange('withCoverPlateAssembled', v.target.checked)} />
-                            <label htmlFor="coverPlate" className="option-detail">With Cover Plate Assembled</label>
-                          </div>
-                        </div>
-                      )
-                      : null}
-
-                    <div className="div-price-quantity">
-                      <div className="div-product-price">
-                        Price: $
-                        {product.variants[0].price}
-                      </div>
-                      <div className="div-product-selection">
-                        <div className="div-product-quantity">
-                          <label htmlFor="quantity">Quantity:&nbsp;</label>
-                          <input
-                            type="number"
-                            id="quantity"
-                            className="input-quantity"
-                            value={quantity}
-                            onChange={(e) => setQuantity(e.target.valueAsNumber)}
-                          />
-                        </div>
-                        <div className="div-product-bundlesize">
-                          <label htmlFor="bundlesize">Bundle Size:&nbsp;</label>
-                          <select id="bundlesize" name="bundlesize" value={bundleSize} onChange={(e) => handleBundleChange(parseInt(e.target.value, 10))}>
-                            <option value="1">1</option>
-                            <option value="5">5</option>
-                            <option value="10">10</option>
-                          </select>
-                        </div>
+              <div className="flex flex-col space-y-2">
+                {[univEwodChipId, univEwodChipId5, univEwodChipId10].includes(desiredProductId)
+                  ? (
+                    <div className="chip-config">
+                      <h3>Item Options</h3>
+                      <div className="config-items">
+                        <input type="checkbox" id="coverPlate" checked={otherDetails.withCoverPlateAssembled} onChange={(v) => handleOptionsChange('withCoverPlateAssembled', v.target.checked)} />
+                        <label htmlFor="coverPlate" className="option-detail">With Cover Plate Assembled</label>
                       </div>
                     </div>
-                    <div>
-                      {addedToCart
-                        ? (
-                          <div className="cart-btn">
-                            <input
-                              type="button"
-                              value="Add to Cart"
-                              className="btn btn-primary btn-lg btn-block"
-                              onClick={() => handleGetCart()}
-                            />
-                          </div>
-                        )
-                        : <img className="loading-GIF" src="/img/loading80px.gif" alt="" />}
-                      <div className="tax-info">Note: Price excludes sales tax</div>
+                  )
+                  : null}
+
+                <div className="flex justify-between items-center">
+                  <div className="text-lg font-bold">
+                    Price: $
+                    {product.variants[0].price}
+                  </div>
+                  <div className="flex space-x-4">
+                    <div className="flex space-x-1">
+                      <label htmlFor="quantity" className="font-bold">Quantity:</label>
+                      <input
+                        type="number"
+                        id="quantity"
+                        className="outline outline-1 rounded w-8 pl-1 h-full"
+                        value={quantity}
+                        min={1}
+                        onChange={(e) => setQuantity(e.target.valueAsNumber)}
+                      />
+                    </div>
+                    <div className="flex space-x-1">
+                      <label htmlFor="bundlesize" className="font-bold">Bundle Size:</label>
+                      <select id="bundlesize" name="bundlesize" value={bundleSize} onChange={(e) => handleBundleChange(parseInt(e.target.value, 10))}
+                        className="outline outline-1 rounded h-full">
+                        <option value="1">1</option>
+                        <option value="5">5</option>
+                        <option value="10">10</option>
+                      </select>
                     </div>
                   </div>
                 </div>
+                <div>
+                  {addedToCart
+                    ? (
+                      <button
+                        type="button"
+                        className="bg-primary_light hover:bg-primary text-white rounded-lg w-full px-4 py-2"
+                        onClick={handleGetCart}
+                      >
+                        Add to Cart
+                      </button>
+                    )
+                    : <img className="loading-GIF" src="/img/loading80px.gif" alt="" />}
+                </div>
+                <div className="text-sm text-gray-400">Note: Price excludes sales tax</div>
               </div>
             </div>
-          )
-          : <img className="loading-GIF" src="/img/loading80px.gif" alt="" />}
-      </div>
+          </div>
+        )
+        : <img className="loading-GIF" src="/img/loading80px.gif" alt="" />}
     </div>
   );
 }

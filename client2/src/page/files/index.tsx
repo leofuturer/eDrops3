@@ -12,7 +12,7 @@ import {
 } from '../../api/serverConfig';
 
 import './index.css';
-import SEO from '../../component/header/seo.js';
+import SEO from '../../component/header/SEO.js';
 import { metadata } from './metadata';
 import DeletePopup from '../../component/popup/deletePopup.js';
 

@@ -11,7 +11,7 @@ import {
 } from '../../api/serverConfig';
 import API from '../../api/api';
 
-import SEO from '../../component/header/seo.js';
+import SEO from '../../component/header/SEO.js';
 import { metadata } from './metadata.jsx';
 
 import validate from 'validate.js';

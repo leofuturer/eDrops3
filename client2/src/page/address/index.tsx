@@ -7,7 +7,7 @@ import { customerAddresses } from '../../api/serverConfig';
 import AddressTemplate from './addressTemplate.js';
 import DeletePopup from '../../component/popup/deletePopup.js';
 
-import SEO from '../../component/header/seo.js';
+import SEO from '../../component/header/SEO.js';
 import { metadata } from './metadata.jsx';
 
 class Address extends React.Component {

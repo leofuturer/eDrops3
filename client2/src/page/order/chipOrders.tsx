@@ -8,7 +8,7 @@ import {
 }
   from '../../api/serverConfig';
 
-import SEO from '../../component/header/seo.js';
+import SEO from '../../component/header/SEO.js';
 import { metadata } from './metadata.jsx';
 
 // List all chip orders for all user types

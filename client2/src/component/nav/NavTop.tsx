@@ -107,10 +107,10 @@ function NavTop() {
     // <CartContext.Consumer>
     //   {(contextProps) => {
     <header className="h-[80px] bg-primary w-full">
-      <div className="flex flex-row justify-between items-center px-[20%] h-full text-3xl font-semibold">
+      <div className="flex flex-row justify-between items-center px-[20%] h-full text-lg text-white font-semibold">
         <div className="flex flex-row items-center h-full space-x-8">
           <NavLink to="/home" className="flex flex-row items-center">
-            <h1 className="text-6xl font-bold text-white hover:text-accent">eDrops</h1>
+            <h1 className="text-2xl font-bold hover:text-accent">eDrops</h1>
             <img className="max-h-[50px]" src="/img/edrop_logo_inverted.png" alt="" />
           </NavLink>
           <NavLink to="/home" className="hover:text-accent">Home</NavLink>
