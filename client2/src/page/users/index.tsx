@@ -4,7 +4,7 @@ import {
   getAllCustomers, customerDeleteById, userBaseFind, userBaseDeleteById,
 } from '../../api/serverConfig';
 import API from '../../api/api';
-import DeletePopup from '../../component/popup/deletePopup.js';
+import DeleteModal from '../../component/modal/DeleteModal';
 
 class Users extends React.Component {
   constructor(props) {
@@ -145,7 +145,7 @@ class Users extends React.Component {
             </table>
           </div>
         </div>
-        <DeletePopup onDelete={this.handleDelete} />
+        <DeleteModal handleHide={() => {}} handleDelete={this.handleDelete} />
       </div>
     );
   }

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Cookies from 'js-cookie';
 import API from '../../api/api';
 import {
@@ -10,72 +10,71 @@ import {
 
 import SEO from '../../component/header/SEO.js';
 import { metadata } from './metadata.jsx';
+import { useLocation } from 'react-router-dom';
+import { useCookies } from 'react-cookie';
 
 // List all chip orders for all user types
-class ChipOrders extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      orderList: [],
-      isLoading: false,
-    };
-    if (this.props.match.path === '/manage/admin-retrieve-worker-orders'
-      && Cookies.get('userType') === 'admin') {
-      Object.assign(this.state, {
-        workerId: this.props.location.state.workerId,
-        isCustomer: this.props.location.state.isCustomer,
-      });
+function ChipOrders() {
+  const [orderList, setOrderList] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [workerId, setWorkerId] = useState('');
+  const [isCustomer, setIsCustomer] = useState(false);
+
+  const location = useLocation();
+
+  const [cookies] = useCookies(['userId', 'userType', 'access_token']);
+
+  useEffect(() => {
+    if (location.pathname === '/manage/admin-retrieve-worker-orders'
+      && cookies.userType === 'admin') {
+      setWorkerId(location.state.workerId);
+      setIsCustomer(location.state.isCustomer);
     }
+  }, [location.pathname, cookies.userType])
 
-    this.handleDownload = this.handleDownload.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
-    this.handleAssign = this.handleAssign.bind(this);
-  }
-
-  componentDidMount() {
-    this.setState({
-      isLoading: true,
-    });
-    let url = '';
-    if (Cookies.get('userType') === 'customer') {
-      url = customerGetChipOrders.replace('id', Cookies.get('userId'));
-    } else if (Cookies.get('userType') === 'worker') {
-      url = workerGetChipOrders.replace('id', Cookies.get('userId'));
-    } else if (Cookies.get('userType') === 'admin') {
-      url = adminGetChipOrders;
+  useEffect(() => {
+    setIsLoading(true);
+    let url;
+    switch (cookies.userType) {
+      default:
+      case 'customer':
+        url = customerGetChipOrders.replace('id', cookies.userId);
+        break;
+      case 'worker':
+        url = workerGetChipOrders.replace('id', cookies.userId);
+        break;
+      case 'admin':
+        url = adminGetChipOrders.replace('id', cookies.userId);
+        break;
     }
 
     API.Request(url, 'GET', {}, true)
       .then((res) => {
-        if (this.state.workerId) {
-          res.data = res.data.filter((orderChip) => orderChip.workerId === this.state.workerId);
+        if (workerId) {
+          res.data = res.data.filter((orderChip) => orderChip.workerId === workerId);
         }
-        this.setState({
-          orderList: res.data,
-          isLoading: false,
-        });
+        setOrderList(res.data);
+        setIsLoading(false);
       })
       .catch((err) => {
         console.error(err);
-        this.setState({
-          isLoading: false,
-        });
+        setIsLoading(false);
       });
-  }
+  }, []);
 
-  handleDownload(e) {
+  function handleDownload(e) {
     // console.log(e.target.id);
     let url = '';
     const itemId = Number(e.target.id.replace(/[^0-9]/ig, ''));
-    if (Cookies.get('userType') === 'customer') {
+    if (cookies.userType === 'customer') {
       // for customer, `id` is file ID
       url = downloadFileById.replace('id', Cookies.get('userId'));
       url += `?access_token=${Cookies.get('access_token')}&fileId=${itemId}`;
-    } else if (Cookies.get('userType') === 'worker') {
+    } else if (cookies.userType === 'worker') {
       // for worker, `id` is chipOrder ID (associated with that file)
       url = workerDownloadFile.replace('id', Cookies.get('userId'));
       url += `?access_token=${Cookies.get('access_token')}&chipOrderId=${itemId}`;
-    } else if (Cookies.get('userType') === 'admin') {
+    } else if (cookies.userType === 'admin') {
       // for admin, `id` is file ID
       url = adminDownloadFile;
       url += `?access_token=${Cookies.get('access_token')}&fileId=${itemId}`;
@@ -84,21 +83,21 @@ class ChipOrders extends React.Component {
     window.location = url;
   }
 
-  handleAssign(e) {
+  function handleAssign(e) {
     // Using the window.open() method to open a new window and display the page based on the passed in redirectUrl
     const orderIndex = Number(e.target.id.replace(/[^0-9]/ig, ''));
     const redirectUrl = '/manage/assign-orders';
     const strWindowFeatures = 'width=1200px, height=900px';
     const newWindow = window.open(redirectUrl, '_blank', strWindowFeatures);
-    newWindow._order = this.state.orderList[orderIndex];
+    newWindow._order = orderList[orderIndex];
   }
 
-  handleSubmit(e) {
+  function handleSubmit(e) {
     e.preventDefault();
     // const dropdown = document.getElementById('status-selection');
     // const selectedStatus = dropdown.options[dropdown.selectedIndex].value;
     // const chipOrderId = Number(e.target.id.replace(/[^0-9]/ig, ''));
-  
+
     const chipOrderId = Number(e.target.getAttribute('data-item-id'));
     const dropdown = document.getElementById(`status-selection-${chipOrderId}`);
     const selectedStatus = dropdown.options[dropdown.selectedIndex].value;
@@ -113,7 +112,7 @@ class ChipOrders extends React.Component {
       });
   }
 
-  handleChat(e) {
+  function handleChat(e) {
     const orderId = Number(e.target.id.replace(/[^0-9]/ig, ''))
     const redirectUrl = `/subpage/order-chat?id=${orderId}`;
     const strWindowFeatures = 'width=1200px, height=900px';
@@ -121,133 +120,114 @@ class ChipOrders extends React.Component {
     WindowForOrderChat._orderItemId = orderId;
   }
 
-  render() {
-    return (
-      <div>
-        <SEO
-          title="eDrops | Chip Orders"
-          description=""
-          metadata={metadata}
-        />
-        <div className="right-route-content">
-          <div className="profile-content">
-            <h2>Chip Orders</h2>
-          </div>
-          <div className="content-show-table row">
-            <div className="table-background">
-              <table className="table">
-                <thead>
-                  <tr>
-                    <th>ID</th>
-                    {
-                      !(Cookies.get('userType') === 'customer')
-                        ? <th>Uploader</th> // admin or worker
-                        : null
-                    }
-                    <th>Last Updated</th>
-                    {
-                      !(Cookies.get('userType') === 'worker')
-                        ? <th>Worker</th> // customer or admin
-                        : null
-                    }
-                    {
-                      Cookies.get('userType') === 'customer'
-                        ? <th>Process Status</th> // customer
-                        : <th className="icon-center">Edit Status</th> // worker or admin
-                    }
-                    <th className="icon-center">Qty</th>
-                    <th className="icon-center">Mask File</th>
-                    <th className="icon-center">Chat</th>
-                    {
-                      Cookies.get('userType') === 'admin'
-                        ? <th className="icon-center">Assign Order</th> // admin
-                        : null
-                    }
-                  </tr>
-                </thead>
-                <tbody>
-                  {this.state.orderList.length !== 0
-                    ? this.state.orderList.map((item, index) => (
-                      <tr key={index} id={item.id}>
-                        <td>{item.id}</td>
-                        {
-                          (Cookies.get('userType') !== 'customer')
-                            ? <td>{item.customerName}</td>
-                            : null
-                        }
-                        <td>{item.lastUpdated.substring(0, item.lastUpdated.indexOf('T'))}</td>
-                        {
-                          (Cookies.get('userType') !== 'worker')
-                            ? <td>{item.workerName}</td>
-                            : null
-                        }
-                        {
-                          Cookies.get('userType') === 'customer'
-                            ? <td>{item.status}</td>
-                            : (
-                              <td className="icon-center">
-                                <form
-                                  id="edit-order-status-form"
-                                  className="edit-order-status-form"
-                                  onSubmit={this.handleSubmit}
-                                  data-item-id={item.id}
-                                >
-                                  <select id={`status-selection-${item.id}`} className="order-status" name="status" defaultValue={item.status}>
-                                    <option value="Fabrication request received">Fab Req Received</option>
-                                    <option value="Project Started">Project Started</option>
-                                    <option value="Project Completed">Project Completed</option>
-                                    <option value="Item Shipped">Item Shipped</option>
-                                  </select>
-                                  <input type="submit" id={`allOrder${index}`} />
-                                </form>
-                              </td>
-                            )
-                        }
-                        <td className="icon-center">
-                          {item.quantity}
-                        </td>
-                        <td className="icon-center">
-                          {
-                            Cookies.get('userType') === 'worker'
-                              ? <i className="fa fa-download" onClick={this.handleDownload} id={`download${item.id}`} />
-                              : <i className="fa fa-download" onClick={this.handleDownload} id={`download${item.fileInfoId}`} />
-                          }
-                        </td>
-                        <td className="icon-center">
-                          <i className="fa fa-commenting" onClick={this.handleChat} id={`order${item.orderId}`}/>
-                        </td>
-                        {
-                          Cookies.get('userType') === 'admin'
-                            ? (
-                              <td className="icon-center">
-                                <i className="fa fa-users" id={`allOrder${index}`} onClick={this.handleAssign} />
-                              </td>
-                            )
-                            : null
-                        }
-                      </tr>
-                    ))
-                    : (
-                      <tr>
-                        <td>
-                          {
-                            this.state.isLoading
-                              ? <img src="/img/loading80px.gif" alt="" className="loading-icon" />
-                              : (Cookies.get('userType') === 'worker'
-                                ? 'No orders have been assigned to you yet.'
-                                : 'No orders have been placed.')
-                          }
-                        </td>
-                      </tr>
-                    )}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
+  return (
+    <div className="flex flex-col items-center justify-center">
+      <SEO
+        title="eDrops | Chip Orders"
+        description=""
+        metadata={metadata}
+      />
+      <div className="w-full border-b-2 border-primary_light flex justify-center py-8">
+        <h2 className="text-2xl">Chip Orders</h2>
       </div>
-    );
-  }
+      <div className="w-full py-8">
+        <table className="rounded-md shadow-box w-full border-collapse table-auto">
+          <thead className="">
+            <tr className="border-b-2">
+              <th className="p-2">ID</th>
+              {
+                !(cookies.userType === 'customer')
+                  ? <th>Uploader</th> // admin or worker
+                  : null
+              }
+              <th className="p-2">Last Updated</th>
+              {
+                !(cookies.userType === 'worker')
+                  ? <th>Worker</th> // customer or admin
+                  : null
+              }
+              {
+                cookies.userType === 'customer'
+                  ? <th>Process Status</th> // customer
+                  : <th className="icon-center">Edit Status</th> // worker or admin
+              }
+              <th className="p-2">Qty</th>
+              <th className="p-2">Mask File</th>
+              <th className="p-2">Chat</th>
+              {
+                cookies.userType === 'admin'
+                  ? <th className="p-2">Assign Order</th> // admin
+                  : null
+              }
+            </tr>
+          </thead>
+          <tbody>
+            {orderList.length !== 0
+              ? orderList.map((item, index) => (
+                <tr key={item.id}>
+                  <td className="p-2">{item.id}</td>
+                  {cookies.userType !== 'customer' && <td className="p-2">{item.customerName}</td>}
+                  <td className="p-2">{item.lastUpdated.substring(0, item.lastUpdated.indexOf('T'))}</td>
+                  {cookies.userType !== 'worker' && <td className="p-2">{item.workerName}</td>}
+                  {cookies.userType === 'customer'
+                    ? <td className="p-2">{item.status}</td>
+                    : (
+                      <td className="p-2">
+                        <form
+                          id="edit-order-status-form"
+                          className="edit-order-status-form"
+                          onSubmit={handleSubmit}
+                          data-item-id={item.id}
+                        >
+                          <select id={`status-selection-${item.id}`} className="order-status" name="status" defaultValue={item.status}>
+                            <option value="Fabrication request received">Fab Req Received</option>
+                            <option value="Project Started">Project Started</option>
+                            <option value="Project Completed">Project Completed</option>
+                            <option value="Item Shipped">Item Shipped</option>
+                          </select>
+                          <input type="submit" id={`allOrder${index}`} />
+                        </form>
+                      </td>
+                    )
+                  }
+                  <td className="p-2">
+                    {item.quantity}
+                  </td>
+                  <td className="p-2">
+                    {
+                      cookies.userType === 'worker'
+                        ? <i className="fa fa-download" onClick={handleDownload} id={`download${item.id}`} />
+                        : <i className="fa fa-download" onClick={handleDownload} id={`download${item.fileInfoId}`} />
+                    }
+                  </td>
+                  <td className="p-2">
+                    <i className="fa fa-commenting" onClick={handleChat} id={`order${item.orderId}`} />
+                  </td>
+                  {cookies.userType === 'admin' &&
+                    <td className="p-2">
+                      <i className="fa fa-users" id={`allOrder${index}`} onClick={handleAssign} />
+                    </td>
+                  }
+                </tr>
+              ))
+              : (
+                <tr>
+                  <td className="p-2">
+                    {
+                      isLoading
+                        ? <img src="/img/loading80px.gif" alt="" className="loading-icon" />
+                        : (cookies.userType === 'worker'
+                          ? 'No orders have been assigned to you yet.'
+                          : 'No orders have been placed.')
+                    }
+                  </td>
+                </tr>
+              )}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
 }
 
 export default ChipOrders;

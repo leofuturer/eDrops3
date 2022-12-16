@@ -1,59 +1,42 @@
-import React from 'react';
-import { redirect } from 'react-router-dom';
-import './changePass.css';
-import Cookies from 'js-cookie';
-import {
-  customerChangePass, FoundryWorkerChangePass, AdminChangePass, userChangePass,
-} from '../../api/serverConfig';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import API from '../../api/api';
+import { AdminChangePass, customerChangePass, FoundryWorkerChangePass } from '../../api/serverConfig';
 
+import { useCookies } from 'react-cookie';
 import validate from 'validate.js';
 
-class FormsPage extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      oldPassword: '',
-      newPassword: '',
-      confirmPassword: '',
-      isLoading: false,
-    };
-    this.handleChangePass = this.handleChangePass.bind(this);
-    this.handleValidate = this.handleValidate.bind(this);
-    this.showErrors = this.showErrors.bind(this);
-    this.showSuccess = this.showSuccess.bind(this);
-    this.addError = this.addError.bind(this);
-    this.clearMessage = this.clearMessage.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
-  }
+function ChangePassword() {
+  const [oldPassword, setOldPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [errors, setErrors] = useState({});
+  const [isLoading, setIsLoading] = useState(false);
 
-  handleChange(key, value) {
-    this.setState(
-      {
-        [key]: value,
-      },
-    );
-  }
+  const navigate = useNavigate();
 
-  handleChangePass(e) {
-    this.setState({
-      isLoading: true,
-    });
-    const _this = this;
+  const [cookies] = useCookies(['userType']);
+
+  function handleChangePass(e) {
+    setIsLoading(false);
     const data = {
-      oldPassword: this.state.oldPassword,
-      newPassword: this.state.newPassword,
+      oldPassword,
+      newPassword,
     };
     let url = '';
-    if (Cookies.get('userType') === 'customer') {
-      url = customerChangePass;
-    } else if (Cookies.get('userType') === 'worker') {
-      url = FoundryWorkerChangePass;
-    } else if (Cookies.get('userType') === 'admin') {
-      url = AdminChangePass;
+    switch (cookies.userType) {
+      case 'customer':
+        url = customerChangePass;
+        break;
+      case 'worker':
+        url = FoundryWorkerChangePass;
+        break;
+      case 'admin':
+        url = AdminChangePass;
+        break;
     }
-    const validateResult = _this.handleSubmit();
-    if (validateResult) {
+    // check if errors is empty
+    if (!errors) {
       API.Request(url, 'POST', data, true)
         // .then((res) => {
         //   const userToken = Cookies.get('access_token');
@@ -62,39 +45,35 @@ class FormsPage extends React.Component {
         //     .then((res) => {
         //       alert('Password successfully changed');
         //       Cookies.set('access_token', userToken);
-        //       this.props.history.push('/manage/profile');
+        //       props.history.push('/manage/profile');
         //     }).catch((error) => {
         //       // Reset user base password failed
         //       console.error(error);
-        //       this.setState({
+        //       setState({
         //         isLoading: false,
         //       });
         //     });
         // })
         .then((res) => {
           alert('Password successfully changed');
-          this.props.history.push('/manage/profile');
+          navigate('/manage/profile');
         })
         .catch((error) => {
           console.error(error.response.data.error.message);
           if (error.response.data.error.message === 'Invalid current password') {
             const ele = document.getElementsByName('oldPassword');
             const errors = ['The current password is incorrect!'];
-            this.clearMessage(ele[0]);
-            this.showErrors(ele[0], errors);
+            clearMessage(ele[0]);
+            showErrors(ele[0], errors);
           }
-          this.setState({
-            isLoading: false,
-          });
+          setIsLoading(false);
         });
     } else {
-      this.setState({
-        isLoading: false,
-      });
+      setIsLoading(false);
     }
   }
 
-  handleValidate(e) {
+  function handleValidate(e) {
     const constraints = {
       oldPassword: {
         presence: true,
@@ -103,11 +82,11 @@ class FormsPage extends React.Component {
         presence: true,
         length: {
           minimum: 6,
-          maximun: 20,
+          maximum: 20,
         },
         format: {
           pattern: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[^]{8,16}$/,
-          message: 'should at least contain a capital letter, a lowercase letter and a number',
+          message: 'must contain at least one capital letter, one lowercase letter, and one number',
         },
       },
       confirmPassword: {
@@ -118,162 +97,71 @@ class FormsPage extends React.Component {
         },
       },
     };
-    const formToValidate = e.target.parentNode.parentNode;
-    const errors = validate(formToValidate, constraints) || {};
-    const ele = e.target;
-    this.clearMessage(ele);
-    if (errors && errors[ele.name]) {
-      this.showErrors(ele, errors[ele.name]);
-    } else {
-      this.showSuccess(ele);
-    }
+    const checkedErrors = validate({
+      oldPassword,
+      newPassword,
+      confirmPassword,
+    }, constraints) || {};
+    setErrors(checkedErrors);
   }
 
-  showErrors(ele, errors) {
-    const _this = this;
-    ele.parentNode.classList.add('has-error');
-    errors.forEach((err, index) => {
-      _this.addError(ele, err);
-    });
-  }
-
-  showSuccess(ele) {
-    ele.parentNode.classList.add('has-success');
-    const message = document.createElement('p');
-    const messageDiv = ele.nextSibling;
-    message.innerHTML = 'Looks good!';
-    message.classList.add('text-success');
-    messageDiv.appendChild(message);
-  }
-
-  addError(input, error) {
-    const block = document.createElement('p');
-    const messageDiv = input.nextSibling;
-    block.innerHTML = error;
-    block.classList.add('error');
-    block.classList.add('help-block');
-    messageDiv.appendChild(block);
-  }
-
-  clearMessage(ele) {
-    const formGroup = ele.parentNode;
-    formGroup.classList.remove('has-error');
-    formGroup.classList.remove('has-success');
-    const messageDiv = formGroup.querySelector('.messages-wide');
-    while (messageDiv.hasChildNodes()) {
-      messageDiv.removeChild(messageDiv.firstChild);
-    }
-  }
-
-  handleSubmit(e) {
-    const _this = this;
-    const constraints = {
-      oldPassword: {
-        presence: true,
-      },
-      newPassword: {
-        presence: true,
-        length: {
-          minimum: 8,
-        },
-        format: {
-          pattern: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[^]{8,}$/,
-          message: 'should at least contain a capital letter, a lowercase letter and a number',
-        },
-      },
-      confirmPassword: {
-        presence: true,
-        equality: {
-          attribute: 'newPassword',
-          message: '^Two passwords do not match',
-        },
-      },
-    };
-    const formToValidate = document.querySelector('form');
-    const errors = validate(formToValidate, constraints) || null;
-    const inputsToValidate = document.querySelectorAll('.needValidation');
-    inputsToValidate.forEach((input, index) => {
-      _this.clearMessage(input);
-    });
-    inputsToValidate.forEach((input, index) => {
-      if (errors && errors[input.name]) {
-        _this.showErrors(input, errors[input.name]);
-      } else {
-        _this.showSuccess(input);
-      }
-    });
-    if (errors) {
-      return false;
-    }
-    return true;
-  }
-
-  render() {
-    if (Cookies.get('userId') === undefined) {
-      return redirect("/login");
-    }
-    return (
-      <div className="right-route-content">
-        <div className="profile-content">
-          <h2>Change Password</h2>
-          <div style={{ marginTop: '50px' }}>
-            <form action="">
-              <div className="form-group">
-                <label>Old Password</label>
-                <input
-                  type="password"
-                  name="oldPassword"
-                  className="form-control needValidation"
-                  placeholder="Old Password"
-                  autoComplete="current-password"
-                  onChange={(v) => this.handleChange('oldPassword', v.target.value)}
-                  onBlur={this.handleValidate}
-                />
-                <div className="messages-wide" />
-              </div>
-              <div className="form-group">
-                <label>New Password</label>
-                <input
-                  type="password"
-                  name="newPassword"
-                  className="form-control needValidation"
-                  placeholder="New Password"
-                  autoComplete="new-password"
-                  onChange={(v) => this.handleChange('newPassword', v.target.value)}
-                  onBlur={this.handleValidate}
-                />
-                <div className="messages-wide" />
-              </div>
-              <div className="form-group">
-                <label>Confirm Password</label>
-                <input
-                  type="password"
-                  name="confirmPassword"
-                  className="form-control needValidation"
-                  placeholder="Confirm Password"
-                  autoComplete="new-password"
-                  onChange={(v) => this.handleChange('confirmPassword', v.target.value)}
-                  onBlur={this.handleValidate}
-                />
-                <div className="messages-wide" />
-              </div>
-              {this.state.isLoading
-                ? <img className="loading-GIF" src="/img/loading80px.gif" alt="" />
-                : (
-                  <div className="form-group text-right" style={{ marginTop: '30px' }}>
-                    <input
-                      type="button"
-                      value="Save"
-                      className="btn btn-success"
-                      onClick={this.handleChangePass}
-                    />
-                  </div>
-                )}
-            </form>
-          </div>
-        </div>
+  return (
+    <div className="flex flex-col items-center justify-center">
+      <div className="w-full border-b-2 border-primary_light flex justify-center py-8">
+        <h2 className="text-2xl">Change Password</h2>
       </div>
-    );
-  }
+      <div className="w-full py-8 grid grid-cols-4 gap-2">
+        <label className="col-span-1">Old Password</label>
+        <input
+          type="password"
+          name="oldPassword"
+          className="col-span-1"
+          placeholder="Old Password"
+          autoComplete="current-password"
+          value={oldPassword}
+          onChange={(e) => setOldPassword(e.target.value)}
+          onBlur={handleValidate}
+        />
+        <div className="col-span-2" />
+        <label>New Password</label>
+        <input
+          type="password"
+          name="newPassword"
+          className="col-span-1"
+          placeholder="New Password"
+          autoComplete="new-password"
+          value={newPassword}
+          onChange={(e) => setNewPassword(e.target.value)}
+          onBlur={handleValidate}
+        />
+        <div className="col-span-2" />
+        <label>Confirm Password</label>
+        <input
+          type="password"
+          name="confirmPassword"
+          className="col-span-1"
+          placeholder="Confirm Password"
+          autoComplete="new-password"
+          value={confirmPassword}
+          onChange={(e) => setConfirmPassword(e.target.value)}
+          onBlur={handleValidate}
+        />
+        <div className="col-span-2" />
+        {isLoading
+          ? <img className="loading-GIF" src="/img/loading80px.gif" alt="" />
+          : (
+            <div className="">
+              <button
+                type="button"
+                className="bg-green-500 text-white rounded-lg px-4 py-2"
+                onClick={handleChangePass}
+              >
+                Save
+              </button>
+            </div>
+          )}
+      </div>
+    </div>
+  );
 }
-export default FormsPage;
+export default ChangePassword;

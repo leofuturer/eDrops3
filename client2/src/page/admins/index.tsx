@@ -5,7 +5,7 @@ import {
   deleteAdminById, userBaseFind, userBaseDeleteById, findAdminByWhere,
 } from '../../api/serverConfig';
 import API from '../../api/api';
-import DeletePopup from '../../component/popup/deletePopup.js';
+import DeleteModal from '../../component/modal/DeleteModal';
 
 class Admins extends Component {
   constructor(props) {
@@ -121,7 +121,7 @@ class Admins extends Component {
             </table>
           </div>
         </div>
-        <DeletePopup onDelete={this.handleDelete} />
+        <DeleteModal handleHide={() => {}} handleDelete={this.handleDelete} />
       </div>
     );
   }
