@@ -5,15 +5,6 @@ import {
   CustomerAddress,
   Post,
   PostComment,
-  FileInfo,
-  Forum,
-  FoundryWorker,
-  OrderChip,
-  OrderInfo,
-  OrderItemBase,
-  OrderMessage,
-  OrderProduct,
-  Project,
   User,
 } from '../models';
 import {
@@ -25,7 +16,6 @@ import {
   OrderChipRepository,
   OrderInfoRepository,
   OrderItemBaseRepository,
-  OrderMessageRepository,
   OrderProductRepository,
   PostCommentLinkRepository,
   PostCommentRepository,
@@ -109,16 +99,7 @@ export async function clearDb(this: EdropsBackendApplication): Promise<void> {
     [1],
   );
 
-  const orderMessageRepo: OrderMessageRepository = await this.getRepository(
-    OrderMessageRepository,
-  );
-  await orderMessageRepo.deleteAll();
-<<<<<<< HEAD
-  
-=======
-  await orderMessageRepo.execute('ALTER TABLE OrderMessage AUTO_INCREMENT = ?', [1]);
-
->>>>>>> Completes messaging API and database changes
+  /** Clear OrderProduct table **/
   const orderProductRepo: OrderProductRepository = await this.getRepository(
     OrderProductRepository,
   );

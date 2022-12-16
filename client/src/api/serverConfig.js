@@ -92,9 +92,6 @@ export const workerOrderRetrieve = `${ApiRootUrl}/foundryWorkers/id/workerOrders
 export const editOrderStatus = `${ApiRootUrl}/orderChips/id`;
 export const assignOrders = `${ApiRootUrl}/orderChips/id`;
 
-export const getOrderMessagesById = `${ApiRootUrl}/orderMessages/id`;
-export const addOrderMessage = `${ApiRootUrl}/orderMessages`;
-
 // For chip order page
 export const adminGetChipOrders = `${ApiRootUrl}/admins/orderChips`;
 export const customerGetChipOrders = `${ApiRootUrl}/customers/id/orderChips`;

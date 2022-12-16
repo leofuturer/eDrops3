@@ -372,8 +372,9 @@ class Product extends React.Component {
 
                       <div className="div-price-quantity">
                         <div className="div-product-price">
-                          Price: $
-                          {product.variants[0].price}
+                          Price: Coming soon
+                          {/* Price: $
+                          {product.variants[0].price} */}
                         </div>
                         <div className="div-product-selection">
                           <div className="div-product-quantity">
@@ -401,9 +402,10 @@ class Product extends React.Component {
                             <div className="cart-btn">
                               <input
                                 type="button"
-                                value="Add to Cart"
+                                value="Coming soon"
+                                // value="Add to Cart"
                                 className="btn btn-primary btn-lg btn-block"
-                                onClick={(e) => this.handleGetCart()}
+                                // onClick={(e) => this.handleGetCart()}
                               />
                             </div>
                           )
