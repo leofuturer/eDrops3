@@ -2,7 +2,6 @@ import React from 'react';
 import API from '../../api/api';
 import { customerSignUp, customerCredsTaken, userSignUp } from '../../api/serverConfig';
 import constraints from './formConstraints';
-import './register.css';
 
 import { closestParent, showErrorsOrSuccessForInput } from '../../utils/validate';
 

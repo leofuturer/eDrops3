@@ -1,7 +1,5 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
-import './product.css';
-import Cookies from 'js-cookie';
 import {
   univEwodChipId,
   univEwodChipId5,
@@ -27,6 +25,8 @@ import API from '../../api/api';
 import { Shopify } from '../../App';
 import { CartContext } from '../../context/CartContext';
 import { Product as ProductType } from 'shopify-buy';
+import { useCookies } from 'react-cookie';
+import { Buffer } from 'buffer';
 
 function Product() {
   const context = useContext(CartContext);
@@ -39,8 +39,18 @@ function Product() {
   const [bundleSize, setBundleSize] = useState(1);
   const [otherDetails, setOtherDetails] = useState({});
   const [addedToCart, setAddedToCart] = useState(false);
+  const [withCoverPlateAssembled, setWithCoverPlateAssembled] = useState(false);
 
   const navigate = useNavigate();
+
+  const [cookies] = useCookies(['userId', 'access_token'])
+
+  useEffect(() => {
+    setOtherDetails(otherDetails => ({
+      ...otherDetails,
+      withCoverPlateAssembled: withCoverPlateAssembled
+    }))
+  }, [withCoverPlateAssembled])
 
   function fetchProductData(shopifyProductId: string) {
     const url = `${returnOneItem}?productId=${shopifyProductId}`;
@@ -93,7 +103,6 @@ function Product() {
     fetchProductData(productIdsJson[productType][bsize]);
   }
 
-
   function handleOptionsChange(key: string, value: any) {
     const newData = {
       [key]: value,
@@ -110,81 +119,77 @@ function Product() {
          * Then, call addItemToCart() with orderInfo ID (our own cart id) and
          *      Shopify checkout ID
          */
-    if (Cookies.get('access_token') === undefined) {
+    if (!cookies.access_token) {
       alert('Login required to add item to cart');
       return;
     }
-    if (quantity <= 0) {
-      alert('Error: Quantity must be a positive number');
-    } else {
-      setAddedToCart(false);
-      let url = getCustomerCart.replace('id', Cookies.get('userId'));
-      API.Request(url, 'GET', {}, true)
-        .then((res) => {
-          if (res.data.id) {
-            // console.log(`Have cart already with ID ${res.data.id}`); console.log(res);
-            setOrderInfoId(res.data.id);
-            setShopifyClientCheckoutId(res.data.checkoutIdClient);
-            addItemToCart(res.data.id,
-              res.data.checkoutIdClient,
-              quantity);
-          } else { // no cart, need to create one
-            // create Shopify cart
-            // console.log(`No cart currently exists, so need to create one`);
-            Shopify.getInstance().getPrivateValue()
-              .then((instance) => {
-                instance.checkout.create()
-                  .then((res) => {
-                    // console.log(res);
-                    setShopifyClientCheckoutId(res.id);
-                    const lastSlash = res.webUrl.lastIndexOf('/');
-                    const lastQuestionMark = res.webUrl.lastIndexOf('?');
+    setAddedToCart(false);
+    API.Request(getCustomerCart.replace('id', cookies.userId), 'GET', {}, true)
+      .then((res) => {
+        console.log(res);
+        if (res.data.id) {
+          // console.log(`Have cart already with ID ${res.data.id}`); console.log(res);
+          setOrderInfoId(res.data.id);
+          setShopifyClientCheckoutId(res.data.checkoutIdClient);
+          addItemToCart(res.data.id,
+            res.data.checkoutIdClient,
+            quantity);
+        } else {
+          // no cart, need to create one
+          // create Shopify cart
+          // console.log(`No cart currently exists, so need to create one`);
+          Shopify.getInstance().getPrivateValue()
+            .then((instance) => {
+              instance.checkout.create()
+                .then((res) => {
+                  console.log(res);
+                  setShopifyClientCheckoutId(res.id);
+                  const lastSlash = res.webUrl.lastIndexOf('/');
+                  const lastQuestionMark = res.webUrl.lastIndexOf('?');
 
-                    const shopifyCheckoutToken = res.webUrl.slice(lastSlash + 1, lastQuestionMark);
-                    // console.log(shopifyCheckoutToken);
-                    const data = {
-                      checkoutIdClient: res.id,
-                      checkoutToken: shopifyCheckoutToken,
-                      checkoutLink: res.webUrl,
-                      createdAt: res.createdAt,
-                      lastModifiedAt: res.updatedAt,
-                      orderComplete: false,
-                      status: 'Order in progress',
-                      // "customerId": Cookies.get('userId'),
-                      shippingAddressId: 0, // 0 to indicate no address selected yet (pk cannot be 0)
-                      billingAddressId: 0,
-                    };
-                    // and then create orderInfo in our backend
-                    url = manipulateCustomerOrders.replace('id', Cookies.get('userId'));
-                    API.Request(url, 'POST', data, true)
-                      .then((res) => {
-                        // console.log(res);
-                        setOrderInfoId(res.data.id);
-                        addItemToCart(res.data.id,
-                          res.data.checkoutIdClient,
-                          quantity);
-                      })
-                      .catch((err) => {
-                        setAddedToCart(true);
-                        console.error(err);
-                      });
-                  })
-                  .catch((err) => {
-                    setAddedToCart(true);
-                    console.error(err);
-                  });
-              })
-              .catch((err) => {
-                setAddedToCart(true);
-                console.error(err);
-              });
-          }
-        })
-        .catch((err) => {
-          setAddedToCart(true);
-          console.error(err);
-        });
-    }
+                  const shopifyCheckoutToken = res.webUrl.slice(lastSlash + 1, lastQuestionMark);
+                  // console.log(shopifyCheckoutToken);
+                  const data = {
+                    checkoutIdClient: res.id,
+                    checkoutToken: shopifyCheckoutToken,
+                    checkoutLink: res.webUrl,
+                    createdAt: res.createdAt,
+                    lastModifiedAt: res.updatedAt,
+                    orderComplete: false,
+                    status: 'Order in progress',
+                    // "customerId": cookies.userId,
+                    shippingAddressId: 0, // 0 to indicate no address selected yet (pk cannot be 0)
+                    billingAddressId: 0,
+                  };
+                  // and then create orderInfo in our backend
+                  API.Request(manipulateCustomerOrders.replace('id', cookies.userId), 'POST', data, true)
+                    .then((res) => {
+                      // console.log(res);
+                      setOrderInfoId(res.data.id);
+                      addItemToCart(res.data.id,
+                        res.data.checkoutIdClient,
+                        quantity);
+                    })
+                    .catch((err) => {
+                      setAddedToCart(true);
+                      console.error(err);
+                    });
+                })
+                .catch((err) => {
+                  setAddedToCart(true);
+                  console.error(err);
+                });
+            })
+            .catch((err) => {
+              setAddedToCart(true);
+              console.error(err);
+            });
+        }
+      })
+      .catch((err) => {
+        setAddedToCart(true);
+        console.error(err);
+      });
   }
 
   /**
@@ -219,7 +224,7 @@ function Product() {
         instance.checkout.addLineItems(shopifyClientCheckoutId, lineItemsToAdd)
           .then((res) => {
             let lineItemId;
-            // console.log(res);
+            console.log(res);
             for (let i = 0; i < res.lineItems.length; i++) {
               if (Buffer.from(res.lineItems[i].variant.id).toString('base64') === variantId) {
                 lineItemId = Buffer.from(res.lineItems[i].id).toString('base64');
@@ -295,7 +300,7 @@ function Product() {
                     <div className="chip-config">
                       <h3>Item Options</h3>
                       <div className="config-items">
-                        <input type="checkbox" id="coverPlate" checked={otherDetails.withCoverPlateAssembled} onChange={(v) => handleOptionsChange('withCoverPlateAssembled', v.target.checked)} />
+                        <input type="checkbox" id="coverPlate" checked={withCoverPlateAssembled} onChange={(e) => setWithCoverPlateAssembled(e.target.checked)} />
                         <label htmlFor="coverPlate" className="option-detail">With Cover Plate Assembled</label>
                       </div>
                     </div>

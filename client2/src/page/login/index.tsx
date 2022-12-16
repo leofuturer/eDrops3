@@ -1,73 +1,29 @@
-import React from 'react';
-import { NavLink } from 'react-router-dom';
-import './login.css';
-import Cookies from 'js-cookie';
-import $ from 'jquery';
-import {
-  userLogin,
-  customerLogin,
-  AdminLogin,
-  FoundryWorkerLogin,
-} from '../../api/serverConfig';
+import { useState } from 'react';
+import { NavLink, useNavigate } from 'react-router-dom';
 import API from '../../api/api';
+import {
+  userLogin
+} from '../../api/serverConfig';
 
 import SEO from '../../component/header/SEO.js';
 import { metadata } from './metadata.jsx';
 
+import { useCookies } from 'react-cookie';
 import validate from 'validate.js';
 
-class Login extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      usernameOrEmail: '',
-      password: '',
-      isLoading: false,
-    };
-    this.handleLogin = this.handleLogin.bind(this);
-    this.handleNameEmailValidation = this.handleNameEmailValidation.bind(this);
-    this.showError = this.showError.bind(this);
-    this.clearReminder = this.clearReminder.bind(this);
-    this.componentDidMount = this.componentDidMount.bind(this);
-    this.showErrorMessage = this.showErrorMessage.bind(this);
-    this.enterPressed = this.enterPressed.bind(this);
-  }
+function Login() {
+  const [usernameOrEmail, setUsernameOrEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [errors, setErrors] = useState({});
+  const [loginError, setLoginError] = useState(false);
 
-  componentDidMount() {
-    $('.pass-input').val('');
-    $('.name-input').val('');
-  }
+  const navigate = useNavigate();
 
-  handleChange(key, value) {
-    this.setState({
-      [key]: value,
-    });
-  }
+  const [cookies, setCookie] = useCookies(['userId', 'userType', 'username', 'base_access_token', 'access_token']);
 
-  clearReminder() {
-    const blocks = document.querySelectorAll('.error.help-block');
-    const formToValidate = document.querySelector('.input-contenth');
-    formToValidate.classList.remove('has-error');
-    blocks.forEach((block, index) => {
-      block.remove();
-    });
-    const radioDiv = document.querySelector('.radio-group');
-    radioDiv.classList.remove('has-error');
-  }
-
-  showError(input, error) {
-    if (error) {
-      const messages = input.nextSibling;
-      const block = document.createElement('p');
-      block.classList.add('help-block');
-      block.classList.add('error');
-      block.innerHTML = error;
-      messages.appendChild(block);
-    }
-  }
-
-  handleNameEmailValidation(e) {
-    const _this = this;
+  function handleNameEmailValidation(): boolean {
     const constraints = {
       usernameOrEmail: {
         presence: true,
@@ -76,155 +32,118 @@ class Login extends React.Component {
         presence: true,
       },
     };
-    const formToValidate = document.querySelector('.input-contenth');
-    const errors = validate(formToValidate, constraints) || null;
-    if (errors) {
-      const inputToValidate = document.querySelectorAll('.need-validation');
-      formToValidate.classList.add('has-error');
-      inputToValidate.forEach((input, index) => {
-        _this.showError(input, errors && errors[input.name]);
-      });
-      // validation fails
-      return false;
-    }
-    // validation succeeds
-    return true;
+    const errors = validate({
+      usernameOrEmail: usernameOrEmail,
+      password: password,
+    }, constraints) || {};
+    setErrors(errors);
+    return !errors.usernameOrEmail && !errors.password;
   }
 
-  showErrorMessage() {
-    const block = document.createElement('p');
-    document.querySelector('.pass-field').classList.add('has-error');
-    block.classList.add('help-block');
-    block.classList.add('error');
-    block.innerHTML = 'Login error. Please check login credentials and ensure email is verified.';
-    document.querySelector('.passwordError').appendChild(block);
-  }
-
-  enterPressed(e) {
+  function enterPressed(e) {
     const code = e.keyCode || e.which;
     if (code === 13) { // the ENTER key
-      this.handleLogin();
+      handleLogin();
     }
   }
 
-  handleLogin() {
-    this.setState({
-      isLoading: true,
-    });
-    const _this = this;
+  function handleLogin() {
+    setIsLoading(true);
     let data;
-    if (/@/.test(this.state.usernameOrEmail)) {
+    if (/@/.test(usernameOrEmail)) {
       data = {
-        email: this.state.usernameOrEmail,
-        password: this.state.password,
+        email: usernameOrEmail,
+        password: password,
       };
     } else {
       data = {
-        username: this.state.usernameOrEmail,
-        password: this.state.password,
+        username: usernameOrEmail,
+        password: password,
       };
     }
     let url; // URLs for backend requests
-    _this.clearReminder();
-    const nameEmailResult = _this.handleNameEmailValidation();
+    setLoginError(false);
+    const nameEmailResult = handleNameEmailValidation();
     if (nameEmailResult) {
       API.Request(userLogin, 'POST', data, false)
         .then((res) => {
           // console.log(res);
-          Cookies.set('base_access_token', res.data.token);
-          Cookies.set('access_token', res.data.token);
-          Cookies.set('userId', res.data.userId);
-          Cookies.set('userType', res.data.userType);
-          Cookies.set('username', res.data.username);
-          _this.props.history.push('/home');
+          setCookie('base_access_token', res.data.token);
+          setCookie('access_token', res.data.token);
+          setCookie('userId', res.data.userId);
+          setCookie('userType', res.data.userType);
+          setCookie('username', res.data.username);
+          navigate('/home');
         }).catch((err) => {
           console.error(err);
           if (err.response.status === 401) {
-            this.showErrorMessage();
+            setLoginError(true);
           }
         }).finally(() => {
-          this.setState({
-            isLoading: false,
-          });
+          setIsLoading(false);
         });
     } else {
-      this.setState({
-        isLoading: false,
-      });
+      setIsLoading(false);
     }
   }
 
-  render() {
-    return (
-      <div>
-        <SEO
-          title="eDrops | Login"
-          description=""
-          metadata={metadata}
-        />
-        <div className="login-input">
-          <div className="div-login-contenth">
-            <h3>Login</h3>
-            <div className="border-h3" />
-            <form action="">
-              <div className="input-contenth">
-                <div className="form-group">
-                  <div>
-                    <span>Don't have an account? </span>
-                    <NavLink to="/register" id="sign-up">Register now</NavLink>
-                  </div>
-                </div>
-                <div className="form-group name-field">
-                  <div className="whitespace" />
-                  <input
-                    type="text"
-                    name="usernameOrEmail"
-                    className="form-control name-input need-validation"
-                    placeholder="Username or Email"
-                    onChange={(v) => this.handleChange('usernameOrEmail', v.target.value)}
-                  />
-                  <div className="registrationError messages" />
-                </div>
-                <div className="form-group pass-field">
-                  <div className="whitespace" />
-                  <input
-                    type="password"
-                    name="password"
-                    className="form-control pass-input need-validation"
-                    placeholder="Password"
-                    autoComplete="password"
-                    onChange={(v) => this.handleChange('password', v.target.value)}
-                    onKeyPress={(e) => this.enterPressed(e)}
-                  />
-                  <div className="passwordError messages" />
-                </div>
-
-                <div className="form-group row radio-group">
-                  <div className="col-md-3 col-sm-3 col-xs-3" />
-                  <div className="messages-radio col-md-3 col-sm-3 col-xs-3" />
-                </div>
-
-                <div className="form-group login-btn">
-                  {
-                    this.state.isLoading
-                      ? <img src="/img/loading80px.gif" alt="" />
-                      : (
-                        <input
-                          type="button"
-                          value="Login"
-                          className="input-btn"
-                          onClick={this.handleLogin}
-                        />
-                      )
-                  }
-                </div>
-                <div className="form-group row">
-                  <div className="forget-pass col" style={{ marginLeft: '30px' }}>
-                    <NavLink to="/forgetPass" id="forget-pass">Forgot Password?</NavLink>
-                  </div>
-                </div>
-
-                {/*
+  return (
+    <div className="flex items-center justify-center py-20">
+      <SEO
+        title="eDrops | Login"
+        description=""
+        metadata={metadata}
+      />
+      <div className="flex flex-col shadow-box-sm rounded-lg py-4 px-20 space-y-2">
+        <h3 className="text-secondary text-2xl text-center font-bold border-b-2 pb-2 border-secondary">Login</h3>
+        <div className="border-h3" />
+        <form className="flex flex-col space-y-4">
+          <p className="text-sm text-center">Don't have an account? <NavLink to="/register" className="text-primary_light hover:text-primary">Register now</NavLink></p>
+          <div className="">
+            <input
+              type="text"
+              name="usernameOrEmail"
+              className="w-full outline outline-1 outline-gray-300 rounded shadow-inner focus:outline-primary_light focus:shadow-primary_light focus:shadow-box-sm px-2 py-1"
+              placeholder="Username or Email"
+              autoComplete="username"
+              value={usernameOrEmail}
+              onChange={(e) => setUsernameOrEmail(e.target.value)}
+            />
+            <div className="registrationError messages" />
+          </div>
+          <div className="relative flex items-center">
+            <input
+              type={showPassword ? 'text' : 'password'}
+              name="password"
+              className="w-full outline outline-1 outline-gray-300 rounded shadow-inner focus:outline-primary_light focus:shadow-primary_light focus:shadow-box-sm px-2 py-1"
+              placeholder="Password"
+              autoComplete="current-password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              onKeyDown={(e) => enterPressed(e)}
+              onBlur={() => setShowPassword(false)}
+            />
+            <i className="fa fa-eye absolute right-2 cursor-pointer text-gray-600" onClick={() => setShowPassword(!showPassword)} />
+            <div className="passwordError messages" />
+          </div>
+          <div className="flex justify-center items-center">
+            {
+              isLoading
+                ? <img src="/img/loading80px.gif" alt="" />
+                : (
+                  <button
+                    type="button"
+                    className="bg-secondary text-white rounded-lg px-4 py-2 w-full"
+                    onClick={handleLogin}
+                  >
+                    Login
+                  </button>
+                )
+            }
+          </div>
+          <p className="text-red-600 text-center">{loginError && "Login error. Please check login credentials and ensure email is verified."}</p>
+          <NavLink to="/forgetPass" className="text-center text-primary_light hover:text-primary text-sm">Forgot Password?</NavLink>
+          {/*
                   <div className="form-group">
                     <div className="border-div-goole">
                         <i className="fa fa-google"></i>
@@ -236,18 +155,11 @@ class Login extends React.Component {
                     </div>
                   </div>
                 */}
-                <div className="form-group">
-                  <span>If you have trouble logging in to your account, </span>
-                  <a href="mailto:service@edrops.org">contact us.</a>
-                </div>
-              </div>
-            </form>
-          </div>
-        </div>
-        <div className="hr-div-login" />
+          <p className="text-center text-sm">If you experience trouble logging in to your account, please <a href="mailto:service@edrops.org">contact us.</a></p>
+        </form>
       </div>
-    );
-  }
+    </div>
+  );
 }
 
 export default Login;

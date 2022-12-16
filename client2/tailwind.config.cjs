@@ -13,6 +13,7 @@ module.exports = {
       },
       boxShadow: {
         'box': '0px 0px 15px rgba(0, 0, 0, 0.25)',
+        'box-sm': '0px 0px 5px rgba(0, 0, 0, 0.25)',
       }
     },
     fontFamily: {

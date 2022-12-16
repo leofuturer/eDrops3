@@ -1,5 +1,4 @@
 import React from 'react';
-import './foundryworker.css';
 import $ from 'jquery';
 import API from '../../api/api';
 import {
