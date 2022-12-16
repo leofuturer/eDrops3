@@ -2,7 +2,6 @@ import Cookies from 'js-cookie';
 import React from 'react';
 import API from '../../api/api';
 import { customerAddresses, getCustomerCart } from '../../api/serverConfig';
-import './address.css';
 
 class AddNewAddress extends React.Component {
   constructor(props) {

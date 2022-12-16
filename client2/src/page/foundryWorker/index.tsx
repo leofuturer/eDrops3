@@ -5,7 +5,7 @@ import API from '../../api/api';
 import {
   getAllFoundryWorkers, editFoundryWorker, userBaseFind, userBaseDeleteById,
 } from '../../api/serverConfig';
-import DeletePopup from '../../component/popup/deletePopup.js';
+import DeleteModal from '../../component/modal/DeleteModal';
 
 class FoundryWorker extends React.Component {
   constructor(props) {
@@ -139,7 +139,7 @@ class FoundryWorker extends React.Component {
             </table>
           </div>
         </div>
-        <DeletePopup onDelete={this.handleDelete} />
+        <DeleteModal handleHide={() => {}} handleDelete={this.handleDelete} />
       </div>
     );
   }

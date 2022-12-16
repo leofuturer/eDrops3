@@ -41,7 +41,7 @@ import Orders from '../page/order';
 import AssignOrders from '../page/order/assignOrders';
 import Address from '../page/address';
 import Profile from '../page/profile';
-import FormsPage from '../page/changePass';
+import ChangePassword from '../page/changePass';
 import AddNewAddress from '../page/address/addNewAddress';
 import UpdateAddress from '../page/address/updateAddress';
 import Cart from '../page/cart';
@@ -77,15 +77,18 @@ function RouteMap() {
         <Route path="project" element={<Project />} />
         <Route path="manage" element={<ManageLayout />}>
           {/* Pages for admins */}
-          <Route path="foundryworkers" element={<FoundryWorker />}>
+          <Route path="foundryworkers" >
+            <Route index element={<FoundryWorker />} />
             <Route path="addfoundryworker" element={<AddOrEditWorker />} />
             <Route path="editworker" element={<AddOrEditWorker />} />
           </Route>
-          <Route path="users" element={<Users />} >
+          <Route path="users">
+            <Route index element={<Users />} />
             <Route path="addNewUser" element={<AddOrEditUser />} />
             <Route path="edituser" element={<AddOrEditUser />} />
           </Route>
-          <Route path="admins" element={<Admins />} >
+          <Route path="admins"  >
+            <Route index element={<Admins />} />
             <Route path="addNewAdmin" element={<AddOrEditAdmin />} />
             <Route path="editAdmin" element={<AddOrEditAdmin />} />
           </Route>
@@ -96,15 +99,16 @@ function RouteMap() {
           <Route path="admin-retrieve-user-orders" element={<Orders />} />
           <Route path="assign-orders" element={<AssignOrders />} />
           {/* Pages for customers */}
-          <Route path="address" element={<Address />} >
+          <Route path="address">
+            <Route index element={<Address />} />
             <Route path="newAddress" element={<AddNewAddress />} />
-            <Route path="updateAddress" element={<UpdateAddress />} />
+            <Route path="updateaddress" element={<UpdateAddress />} />
           </Route>
           <Route path="profile" element={<Profile />} />
-          <Route path="changepwd" element={<FormsPage />} />
+          <Route path="changepwd" element={<ChangePassword />} />
           <Route path="files" element={<Files />} />
           <Route path="customer-orders" element={<Orders />} />
-          <Route path="cart" element={<Cart shopifyClient={Shopify.getInstance().getPrivateValue()} /> } />
+          <Route path="cart" element={<Cart shopifyClient={Shopify.getInstance().getPrivateValue()} />} />
           {/* Pages for foundry workers */}
           <Route path="foundryworkprofile" element={<Profile />} />
           <Route path="chip-orders" element={<ChipOrders />} />

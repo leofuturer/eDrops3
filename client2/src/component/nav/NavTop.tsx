@@ -13,7 +13,6 @@ import hoistNonReactStatics from 'hoist-non-react-statics';
 
 function NavTop() {
   const [show, setShow] = useState(false);
-  const [drownH, setDrownH] = useState('60px');
 
   const context = useContext(CartContext);
   const [cookies, setCookie, removeCookie] = useCookies(['username', 'userType', 'userId', 'access_token']);
@@ -25,6 +24,7 @@ function NavTop() {
   }, [cookies.username]);
 
   function signout() {
+    setShow(false);
     // let url = '';
     // if (Cookies.get('userType') === 'admin') {
     //   url = AdminLogout;
@@ -51,17 +51,6 @@ function NavTop() {
     //   .catch((err) => {
     //     console.error(err);
     //   });
-  }
-
-  function handleHideDrown() {
-    setShow(false);
-  }
-
-  function showDrowpn() {
-    if (cookies.userType !== 'customer') {
-      setDrownH('60px');
-    }
-    setShow(!show);
   }
 
   function setUpCartItems() {
@@ -98,14 +87,7 @@ function NavTop() {
     }
   }
 
-
-  const drown = {
-    display: show ? 'block' : 'none',
-  };
   return (
-    // At this time the className "header-div" has no use
-    // <CartContext.Consumer>
-    //   {(contextProps) => {
     <header className="h-[80px] bg-primary w-full">
       <div className="flex flex-row justify-between items-center px-[20%] h-full text-lg text-white font-semibold">
         <div className="flex flex-row items-center h-full space-x-8">
@@ -120,13 +102,12 @@ function NavTop() {
         <div className="flex flex-row items-center h-full space-x-8">
           {cookies.access_token ?
             <>
-              {
-                cookies.userType === "customer" &&
+              {cookies.userType === "customer" &&
                 <>
                   { /* Should we be using NavLink or href? NavLink prevents page reloading */}
                   {/* <NavLink to="/featureComing"><i className="fa fa-search" /></NavLink> */}
                   <NavLink to="/manage/cart" className="hover:text-accent"><i className="fa fa-shopping-cart" />
-                    {context.items && context.items > 0 &&
+                    {context.items > 0 &&
                       <div className="relative">
                         <span className="absolute -top-12 -right-4 h-6 w-6 text-sm text-white flex items-center justify-center bg-[#d60000] rounded-[11px]">{context.items}</span>
                       </div>
@@ -136,51 +117,37 @@ function NavTop() {
                   <NavLink to="/manage/files" className="hover:text-accent"><i className="fa fa-database" /></NavLink>
                 </>
               }
-              {
-                cookies.userType === "admin" &&
+              {cookies.userType === "admin" &&
                 <>
                   <NavLink to="/manage/allfiles" className="hover:text-accent"><i className="fa fa-database" /></NavLink>
                 </>
               }
               <div className="">
                 {/* 4/23/2020: Only show username to avoid text that's too long, which will break the CSS */}
-                <div onClick={() => showDrowpn()} className="cursor-pointer">{cookies.username}</div>
+                <div onClick={() => setShow(!show)} className="cursor-pointer hover:text-accent">{cookies.username}</div>
                 {
                   show &&
-                  <div className="relative top-12 -left-12">
-                    <div className="absolute bg-white flex flex-col space-y-4 w-[150%] p-4 text-lg text-black border">
-                      <div onClick={() => handleHideDrown()}>
-                        <i className="fa fa-dashboard" style={{ paddingRight: '15px' }} />
-                        <NavLink to="/manage/profile">Your Dashboard</NavLink>
-                      </div>
-                      {
-                        cookies.userType === 'customer'
-                          ? (
-                            <div onClick={() => handleHideDrown()}>
-                              <i className="fa fa-upload" style={{ paddingRight: '15px' }} />
-                              <NavLink to="/upload">Upload a file</NavLink>
-                            </div>
-                          )
-                          : null
+                  <div className="relative top-8 -translate-x-1/2">
+                    <div className="absolute bg-white flex flex-col space-y-4 w-[200%] p-4 text-sm text-black border">
+                      <NavLink to="/manage/profile"
+                        onClick={() => setShow(false)}
+                        className="flex space-x-2 items-center hover:text-accent"><i className="fa fa-dashboard" /><p>Your Dashboard</p></NavLink>
+                      {cookies.userType === 'customer' &&
+                        <>
+                          <NavLink to="/upload"
+                            onClick={() => setShow(false)}
+                            className="flex space-x-2 items-center hover:text-accent"><i className="fa fa-upload" /><p>Upload a file</p></NavLink>
+                          <NavLink to="/manage/files"
+                            onClick={() => setShow(false)}
+                            className="flex space-x-2 items-center hover:text-accent"><i className="fa fa-database" /><p>Your Projects</p></NavLink>
+                        </>
                       }
-                      {
-                        cookies.userType === 'customer'
-                          ? (
-                            <div onClick={() => handleHideDrown()}>
-                              <i className="fa fa-database" style={{ paddingRight: '15px' }} />
-                              <NavLink to="/manage/files">Your Projects</NavLink>
-                            </div>
-                          )
-                          : null
-                      }
-                      <div onClick={() => signout()}>
-                        <i className="fa fa-sign-out" style={{ paddingRight: '15px' }} />
-                        <NavLink to="/home" className="hover:text-accent">Logout</NavLink>
-                      </div>
+                      <NavLink to="/home"
+                        onClick={() => signout()}
+                        className="flex space-x-2 items-center hover:text-accent"><i className="fa fa-sign-out" /><p>Logout</p></NavLink>
                     </div>
                   </div>
                 }
-
               </div>
             </>
             :

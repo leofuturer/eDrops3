@@ -1,52 +1,45 @@
-import React from 'react';
-import './address.css';
+import React, { useEffect, useState } from 'react';
 import Cookies from 'js-cookie';
 import $ from 'jquery';
 import API from '../../api/api';
 import { customerAddresses } from '../../api/serverConfig';
 import AddressTemplate from './addressTemplate.js';
-import DeletePopup from '../../component/popup/deletePopup.js';
 
 import SEO from '../../component/header/SEO.js';
 import { metadata } from './metadata.jsx';
+import DeleteModal from '../../component/modal/DeleteModal';
+import { useNavigate } from 'react-router-dom';
+import { useCookies } from 'react-cookie';
 
-class Address extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      addressList: [],
-      isLoading: true,
-    };
-    this.handleAddNewAddress = this.handleAddNewAddress.bind(this);
-    this.handleUpdateAddress = this.handleUpdateAddress.bind(this);
-    this.handleDelete = this.handleDelete.bind(this);
-    this.handleDeleteAddress = this.handleDeleteAddress.bind(this);
-    this.componentDidMount = this.componentDidMount.bind(this);
+function Address() {
+  const [addressList, setAddressList] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [showDelete, setShowDelete] = useState(false);
+  const [addrIndex, setAddrIndex] = useState(0);
+
+  const navigate = useNavigate();
+
+  const [cookies] = useCookies(['userId'])
+
+  function handleAddNewAddress() {
+    navigate('/manage/address/newAddress');
   }
 
-  handleAddNewAddress() {
-    const _this = this;
-    _this.props.history.push('/manage/address/newAddress');
+  function handleUpdateAddress() {
+    navigate('/manage/address/updateAddress');
   }
 
-  handleUpdateAddress() {
-    const _this = this;
-    _this.props.history.push('/manage/address/updateAddress');
+  function handleDeleteAddress(addrIndex) {
+    setAddrIndex(addrIndex);
+    setShowDelete(true);
   }
 
-  handleDeleteAddress(addrIndex) {
-    this.setState({ addrIndex });
-    $('#deleteModal').modal('show');
-  }
-
-  handleDelete() {
+  function handleDelete() {
     // console.log(this.state.addressList);
     // console.log(addrIndex);
-    const _this = this;
-    const address = _this.state.addressList[_this.state.addrIndex];
+    const address = addressList[addrIndex];
     const addressId = address.id;
-    let url = customerAddresses.replace('id', Cookies.get('userId'));
-    url += `/${addressId}`;
+    const url = `customerAddresses.replace('id', cookies.userId)/${addressId}?access_token=${Cookies.get('access_token')}`;
 
     // Use axios to send request
     /*
@@ -65,8 +58,6 @@ class Address extends React.Component {
         */
 
     // Use ajax to send request --- works well
-
-    url += `?access_token=${Cookies.get('access_token')}`;
     const xhr = new XMLHttpRequest();
     const classSelector = `.card${address.id}`;
     xhr.onreadystatechange = function () {
@@ -79,8 +70,8 @@ class Address extends React.Component {
     xhr.open('DELETE', url, true);
     xhr.send();
 
-    const addresses = this.state.addressList.filter((i) => i.id !== addressId);
-    this.setState({ addressList: addresses });
+    const addresses = addressList.filter((i) => i.id !== addressId);
+    setAddressList(addresses);
     // console.log(addresses);
     // Use jquery ajax to send request
     /*
@@ -96,70 +87,58 @@ class Address extends React.Component {
         */
   }
 
-  componentDidMount() {
-    const _this = this;
-    const url = customerAddresses.replace('id', Cookies.get('userId'));
+  useEffect(() => {
+    const url = customerAddresses.replace('id', cookies.userId);
     const data = {};
     API.Request(url, 'GET', data, true)
       .then((res) => {
         // console.log(res.data);
-        _this.setState({
-          addressList: res.data,
-          isLoading: false,
-        });
+        setAddressList(res.data);
+        setIsLoading(false);
       })
       .catch((err) => {
         console.log(err);
       });
-  }
+  }, []);
 
-  render() {
-    return (
-      <div className="right-route-content">
-        <SEO
-          title="eDrops | Addresses"
-          description=""
-          metadata={metadata}
-        />
-        <div className="profile-content">
-          <h2>Address Book</h2>
-        </div>
-        <div id="address-list">
-          { this.state.isLoading
-            ? <img className="loading-GIF" src="/img/loading80px.gif" alt="" />
-            : (
-              <div>
-                {
-                    this.state.addressList.map((oneAddress, index) => (
-                      <AddressTemplate
-                        key={index}
-                        addressTem={oneAddress}
-                        addressNum={index + 1}
-                        onDeletion={() => this.handleDeleteAddress(index)}
-                      />
-                    ))
-                  }
-                <div className="col-lg-6 col-md-6 col-sm-6 col-xs-6">
-                  <div className="card-view">
-                    <div className="row row-add-new">
-                      <div className="col-md-4 col-sm-4 col-xs-4" />
-                      <div className="col-md-4 col-sm-4 col-xs-4">
-                        <button className="btn btn-success" onClick={this.handleAddNewAddress}>
-                          <i>+</i>
-                          <span className="btn-txt-padding">Add New</span>
-                        </button>
-                      </div>
-                      <div className="col-md-4 col-sm-4 col-xs-4" />
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
-        </div>
-        <DeletePopup onDelete={this.handleDelete} />
+  return (
+    <div className="flex flex-col items-center justify-center">
+      <SEO
+        title="eDrops | Addresses"
+        description=""
+        metadata={metadata}
+      />
+      <div className="w-full border-b-2 border-primary_light flex justify-center py-8">
+        <h2 className="text-2xl">Address Book</h2>
       </div>
-    );
-  }
+      <div className="w-full py-4 flex flex-col items-end space-y-4">
+        <button type="button"
+          className="bg-green-500 rounded-lg text-white px-4 py-2 text-lg flex space-x-2 items-center"
+          onClick={handleAddNewAddress}>
+          <i className="fa fa-plus" /><p>Add New</p>
+        </button>
+        {isLoading
+          ? <img className="loading-GIF" src="/img/loading80px.gif" alt="" />
+          : (
+            <div className="grid grid-cols-2 w-full gap-4">
+              {addressList.map((oneAddress, index) => (
+                <AddressTemplate
+                  key={index}
+                  address={oneAddress}
+                  addressNum={index + 1}
+                  onDeletion={() => this.handleDeleteAddress(index)}
+                />
+              ))}
+            </div>
+          )}
+      </div>
+      {showDelete &&
+        <DeleteModal
+          handleHide={() => setShowDelete(false)}
+          handleDelete={handleDelete} />
+      }
+    </div>
+  );
 }
 
 export default Address;
