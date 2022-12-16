@@ -3,7 +3,6 @@ import Cookies from 'js-cookie';
 import { customerGetProfile, customerAddresses, modifyChipOrders } from '../../api/serverConfig';
 import API from '../../api/api';
 import SingleAddress from './singleAddress.js';
-import './beforeCheckout.css';
 import AddNewAddress from '../address/addNewAddress.js';
 import { Shopify } from '../../App';
 

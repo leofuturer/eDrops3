@@ -7,3 +7,8 @@
 body {
   font-family: 'Work Sans', sans-serif;
 }
+
+/* Disable Microsoft Edge's password reveal button */
+::-ms-reveal {
+  display: none
+}

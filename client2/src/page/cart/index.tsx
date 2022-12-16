@@ -401,8 +401,7 @@ function Cart() {
                 <div className="flex flex-col py-8 w-full space-y-4">
                   <div className="flex flex-row justify-between items-center">
                     <p className="">
-                      Use the "save" button to save any
-                      changes to quantities. Deletions are saved immediately.
+                      Use the "save" button to save any changes to quantities.<br/> Deletions are saved immediately.
                     </p>
                     <div className="flex flex-row space-x-4 p-2 items-center">
                       {saveInProgress

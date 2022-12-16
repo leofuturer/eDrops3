@@ -1,5 +1,4 @@
 import React from 'react';
-import './beforeCheckout.css';
 
 class SingleAddress extends React.Component {
   constructor(props) {

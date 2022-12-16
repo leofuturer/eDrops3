@@ -109,7 +109,7 @@ function NavTop() {
                   <NavLink to="/manage/cart" className="hover:text-accent"><i className="fa fa-shopping-cart" />
                     {context.items > 0 &&
                       <div className="relative">
-                        <span className="absolute -top-12 -right-4 h-6 w-6 text-sm text-white flex items-center justify-center bg-[#d60000] rounded-[11px]">{context.items}</span>
+                        <span className="absolute -top-10 -right-4 h-5 w-5 text-sm text-white flex items-center justify-center bg-red-600 rounded-xl">{context.items}</span>
                       </div>
                     }
                   </NavLink>

@@ -7,7 +7,6 @@ import {
 import API from '../../api/api';
 import { addConstraints, editConstraints } from './formConstraints';
 import { closestParent, showErrorsOrSuccessForInput } from '../../utils/validate';
-import './admin.css';
 import { formatPhoneNumber } from '../../utils/phone';
 
 import validate from 'validate.js';

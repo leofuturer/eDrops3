@@ -13,7 +13,6 @@
 */
 
 import React from 'react';
-import './chiporder.css';
 import Cookies from 'js-cookie';
 import {
   getCustomerCart, manipulateCustomerOrders, addOrderChipToCart,

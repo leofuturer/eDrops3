@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
-import $ from 'jquery';
 
 import API from '../../api/api';
 import {
@@ -11,7 +10,6 @@ import {
   adminDownloadFile,
 } from '../../api/serverConfig';
 
-import './index.css';
 import SEO from '../../component/header/SEO.js';
 import { metadata } from './metadata';
 import DeleteModal from '../../component/modal/DeleteModal.js';

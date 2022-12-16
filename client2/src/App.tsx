@@ -25,7 +25,7 @@ export const Shopify = (function () {
       API.Request(customerGetApiToken, 'GET', {}, true)
         .then((res) => {
           if (res.status === 200) {
-            resolve(privateMethod(res.data.token, res.data.domain));
+            resolve(privateMethod(res.data.info.token, res.data.info.domain));
           }
         })
         .catch((err) => {

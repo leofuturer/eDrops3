@@ -2,7 +2,6 @@ import React from 'react';
 import Cookies from 'js-cookie';
 import { downloadFileById } from '../../api/serverConfig';
 import API from '../../api/api';
-import './chiporder.css';
 import { Helper } from 'dxf';
 
 class DXFPreview extends React.Component {

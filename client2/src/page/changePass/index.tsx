@@ -10,7 +10,14 @@ function ChangePassword() {
   const [oldPassword, setOldPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [errors, setErrors] = useState({});
+  const [showOldPassword, setShowOldPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [errors, setErrors] = useState<{
+    oldPassword?: string[];
+    newPassword?: string[];
+    confirmPassword?: string[];
+  }>({});
   const [isLoading, setIsLoading] = useState(false);
 
   const navigate = useNavigate();
@@ -73,7 +80,7 @@ function ChangePassword() {
     }
   }
 
-  function handleValidate(e) {
+  function handleValidate() {
     const constraints = {
       oldPassword: {
         presence: true,
@@ -103,6 +110,7 @@ function ChangePassword() {
       confirmPassword,
     }, constraints) || {};
     setErrors(checkedErrors);
+    console.log(checkedErrors)
   }
 
   return (
@@ -111,42 +119,47 @@ function ChangePassword() {
         <h2 className="text-2xl">Change Password</h2>
       </div>
       <div className="w-full py-8 grid grid-cols-4 gap-2">
-        <label className="col-span-1">Old Password</label>
-        <input
-          type="password"
-          name="oldPassword"
-          className="col-span-1"
-          placeholder="Old Password"
-          autoComplete="current-password"
-          value={oldPassword}
-          onChange={(e) => setOldPassword(e.target.value)}
-          onBlur={handleValidate}
-        />
-        <div className="col-span-2" />
-        <label>New Password</label>
-        <input
-          type="password"
-          name="newPassword"
-          className="col-span-1"
-          placeholder="New Password"
-          autoComplete="new-password"
-          value={newPassword}
-          onChange={(e) => setNewPassword(e.target.value)}
-          onBlur={handleValidate}
-        />
-        <div className="col-span-2" />
-        <label>Confirm Password</label>
-        <input
-          type="password"
-          name="confirmPassword"
-          className="col-span-1"
-          placeholder="Confirm Password"
-          autoComplete="new-password"
-          value={confirmPassword}
-          onChange={(e) => setConfirmPassword(e.target.value)}
-          onBlur={handleValidate}
-        />
-        <div className="col-span-2" />
+        <label htmlFor="oldPassword" className="col-span-1">Old Password</label>
+        <div className="relative col-span-1 flex items-center">
+          <input
+            type={showOldPassword ? 'text' : 'password'}
+            id="oldPassword"
+            className={`w-full px-1 shadow-inner focus:shadow-box-sm rounded outline outline-1 ${errors.oldPassword ? 'outline-red-500 focus:shadow-red-500' : 'outline-gray-400 focus:shadow-primary'}`}
+            autoComplete="current-password"
+            value={oldPassword}
+            onChange={(e) => setOldPassword(e.target.value)}
+            onBlur={() => { handleValidate(); setShowOldPassword(false) }}
+          />
+          <i className={`fa ${showOldPassword ? 'fa-eye-slash' : 'fa-eye'} absolute right-1 text-gray-600 cursor-pointer`} onClick={() => setShowOldPassword(!showOldPassword)} />
+        </div>
+        <p className="col-span-2 text-red-500 text-xs">{errors.oldPassword && errors.oldPassword[0]}</p>
+        <label htmlFor="newPassword" className="col-span-1">New Password</label>
+        <div className="relative col-span-1 flex items-center">
+          <input
+            type={showNewPassword ? 'text' : 'password'}
+            id="newPassword"
+            className={`w-full px-1 shadow-inner focus:shadow-box-sm rounded outline outline-1 ${errors.newPassword ? 'outline-red-500 focus:shadow-red-500' : 'outline-gray-400 focus:shadow-primary'}`}
+            autoComplete="new-password"
+            value={newPassword}
+            onChange={(e) => setNewPassword(e.target.value)}
+            onBlur={() => { handleValidate(); setShowNewPassword(false) }}
+          />
+          <i className={`fa ${showNewPassword ? 'fa-eye-slash' : 'fa-eye'} absolute right-1 text-gray-600 cursor-pointer`} onClick={() => setShowNewPassword(!showNewPassword)} />
+        </div>
+        <p className="col-span-2 text-red-500 text-xs">{errors.newPassword && errors.newPassword[0]}</p>
+        <label htmlFor="confirmPassword" className="col-span-1">Confirm Password</label>
+        <div className="relative col-span-1 flex items-center">
+          <input
+            type={showConfirmPassword ? 'text' : 'password'}
+            id="confirmPassword"
+            className={`w-full px-1 shadow-inner focus:shadow-box-sm rounded outline outline-1 ${errors.confirmPassword ? 'outline-red-500 focus:shadow-red-500' : 'outline-gray-400 focus:shadow-primary'}`}
+            autoComplete="new-password"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+            onBlur={() => { handleValidate(); setShowConfirmPassword(false) }}
+          /><i className={`fa ${showConfirmPassword ? 'fa-eye-slash' : 'fa-eye'} absolute right-1 text-gray-600 cursor-pointer`} onClick={() => setShowConfirmPassword(!showConfirmPassword)} />
+        </div>
+        <p className="col-span-2 text-red-500 text-xs">{errors.confirmPassword && errors.confirmPassword[0]}</p>
         {isLoading
           ? <img className="loading-GIF" src="/img/loading80px.gif" alt="" />
           : (
