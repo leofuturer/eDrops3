@@ -451,7 +451,7 @@ class ChipOrder extends React.Component {
               </p>
             </div>
             <div className="div-shop-quantity">
-              <label>Quantity:&nbsp;</label>
+              {/* <label>Quantity:&nbsp;</label>
               { this.state.product !== undefined
                 ? (
                   <div>
@@ -473,7 +473,7 @@ class ChipOrder extends React.Component {
                     </span>
                   </div>
                 )
-                : null}
+                : null} */}
               <p className="cart-btn">
                 {
                                     this.state.isLoading
@@ -482,8 +482,9 @@ class ChipOrder extends React.Component {
                                         <input
                                           type="button"
                                           className="btn btn-primary btn-lg btn-block"
-                                          value="Add to Cart"
-                                          onClick={(e) => this.addVariantToCart(variantId, this.state.quantity)}
+                                          value="Coming soon"
+                                          // value="Add to Cart"
+                                          // onClick={(e) => this.addVariantToCart(variantId, this.state.quantity)}
                                         />
                                       )
                                 }
