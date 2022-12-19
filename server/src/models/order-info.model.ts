@@ -2,26 +2,26 @@ import {Entity, model, property, hasMany} from '@loopback/repository';
 import {OrderProduct} from './order-product.model';
 import {OrderChip} from './order-chip.model';
 
-@model({
-  settings: {
-    validateUpsert: true,
-    plural: 'orderInfos',
-    idInjection: true,
-    remoting: {
-      sharedMethods: {
-        '*': false,
-        findById: true,
-        find: true,
-        'prototype.addOrderProductToCart': true,
-        'prototype.addOrderChipToCart': true,
-        newOrderCreated: true,
-        'prototype.__get__orderProducts': true,
-        'prototype.__get__orderChips': true
-      }
-    },
-    mysql: {table: 'orderInfo'}
-  }
-})
+// @model({
+//   settings: {
+//     validateUpsert: true,
+//     plural: 'orderInfos',
+//     idInjection: true,
+//     remoting: {
+//       sharedMethods: {
+//         '*': false,
+//         findById: true,
+//         find: true,
+//         'prototype.addOrderProductToCart': true,
+//         'prototype.addOrderChipToCart': true,
+//         newOrderCreated: true,
+//         'prototype.__get__orderProducts': true,
+//         'prototype.__get__orderChips': true
+//       }
+//     },
+//   }
+// })
+@model({ settings: { description: 'Order information' } })
 export class OrderInfo extends Entity {
   @property({
     type: 'number',
@@ -203,10 +203,10 @@ export class OrderInfo extends Entity {
   })
   shippingAddressId?: number;
 
-  @hasMany(() => OrderProduct, {keyTo: 'orderId'})
+  @hasMany(() => OrderProduct)
   orderProducts: OrderProduct[];
 
-  @hasMany(() => OrderChip, {keyTo: 'orderId'})
+  @hasMany(() => OrderChip)
   orderChips: OrderChip[];
   // Define well-known properties here
 

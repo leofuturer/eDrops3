@@ -2,25 +2,32 @@ import React from 'react';
 import { withRouter, NavLink } from 'react-router-dom';
 import './product.css';
 import Cookies from 'js-cookie';
-import hoistNonReactStatics from 'hoist-non-react-statics';
-import { Buffer } from 'buffer';
 import {
   univEwodChipId,
+  univEwodChipId5,
+  univEwodChipId10,
   univEwodChipWithCoverPlate,
   univEwodChipWithoutCoverPlate,
+  controlSysId5,
+  testBoardId5,
+  pcbChipId5,
+  controlSysId10,
+  testBoardId10,
+  pcbChipId10,
   productIdsJson,
-  getProductType,
+  getProductType
 } from '../../constants';
 import {
   getCustomerCart,
   manipulateCustomerOrders,
   addOrderProductToCart, returnOneItem,
-  getProductOrders,
+  getProductOrders
 } from '../../api/serverConfig';
 import API from '../../api/api';
 import Shopify from '../../app.jsx';
 import loadingGif from '../../../static/img/loading80px.gif';
 import CartContext from '../../context/CartContext';
+import hoistNonReactStatics from 'hoist-non-react-statics';
 
 class Product extends React.Component {
   constructor(props) {
@@ -43,6 +50,7 @@ class Product extends React.Component {
     const url = `${returnOneItem}?productId=${shopifyProductId}`;
     API.Request(url, 'GET', {}, false)
       .then((res) => {
+        // console.log(res);
         this.setState({
           product: res.data,
           fetchedProduct: true,
@@ -53,6 +61,34 @@ class Product extends React.Component {
             otherDetails: {
               withCoverPlateAssembled: false,
             },
+          });
+        }
+        if (shopifyProductId === univEwodChipId5) {
+          this.setState({
+            otherDetails: {
+              withCoverPlateAssembled: false,
+            },
+            bundleSize: "5",
+          });
+        }
+        if (shopifyProductId === univEwodChipId10) {
+          this.setState({
+            otherDetails: {
+              withCoverPlateAssembled: false,
+            },
+            bundleSize: "10",
+          });
+        }
+
+        if (shopifyProductId === controlSysId5 || shopifyProductId === testBoardId5 || shopifyProductId === pcbChipId5) {
+          this.setState({
+            bundleSize: "5",
+          });
+        }
+
+        if (shopifyProductId === controlSysId10 || shopifyProductId === testBoardId10 || shopifyProductId === pcbChipId10) {
+          this.setState({
+            bundleSize: "10",
           });
         }
       }).catch((err) => {
@@ -71,6 +107,7 @@ class Product extends React.Component {
   componentDidMount() {
     if (this.props.location.search === '') {
       this.props.history.push('/allItems'); // redirect if no ID provided
+      return;
     } else {
       this.fetchProductData(this.props.location.search.slice(4));
     }
@@ -83,11 +120,12 @@ class Product extends React.Component {
       },
     );
     if (key === 'bundleSize') {
-      const productType = getProductType(this.state.product.id);
+      let productType = getProductType(this.state.product.id);
       this.fetchProductData(productIdsJson[productType][value]);
     }
     // console.log(this.state)
   }
+
 
   handleOptionsChange(key, value) {
     const newData = {
@@ -218,11 +256,12 @@ class Product extends React.Component {
         customServerOrderAttributes += `${k}: ${v}\n`;
       }
     }
-    const variantId = _this.state.product.id !== productIdsJson.UNIVEWODCHIPID[_this.state.bundleSize]
+
+    const variantId = _this.state.product.id !== productIdsJson['UNIVEWODCHIPID'][_this.state.bundleSize]
       ? _this.state.product.variants[0].id
       : (_this.state.otherDetails.withCoverPlateAssembled
-        ? productIdsJson.UNIVEWODCHIPWITHCOVERPLATE[_this.state.bundleSize]
-        : productIdsJson.UNIVEWODCHIPWITHOUTCOVERPLATE[_this.state.bundleSize]);
+        ? productIdsJson['UNIVEWODCHIPWITHCOVERPLATE'][_this.state.bundleSize]
+        : productIdsJson['UNIVEWODCHIPWITHOUTCOVERPLATE'][_this.state.bundleSize]);
     // console.log(variantId);
     const lineItemsToAdd = [{
       variantId,
@@ -235,13 +274,12 @@ class Product extends React.Component {
             let lineItemId;
             // console.log(res);
             for (let i = 0; i < res.lineItems.length; i++) {
-              // console.log('lineItemId:', Buffer.from(res.lineItems[i].variant.id).toString('base64'));
               if (Buffer.from(res.lineItems[i].variant.id).toString('base64') === variantId) {
                 lineItemId = Buffer.from(res.lineItems[i].id).toString('base64');
-                // console.log('lineItemId:', lineItemId);
                 break;
               }
             }
+
             const data = {
               orderInfoId,
               productIdShopify: _this.state.product.id,
@@ -260,6 +298,7 @@ class Product extends React.Component {
                 url = getProductOrders.replace('id', orderInfoId);
                 API.Request(url, 'GET', {}, true)
                   .then((res) => {
+                    // console.log(res);
                     const quantity = res.data.reduce((prev, curr) => prev + curr.quantity, 0);
                     this.context.setProductQuantity(quantity);
                     this.context.setCartQuantity();
@@ -305,7 +344,7 @@ class Product extends React.Component {
               <div>
                 <div className="shop-left-content">
                   <div className="div-img">
-                    <img src={this.state.product.variants[0].image.src} />
+                    <img src={product.variants[0].image.src} />
                   </div>
                 </div>
                 <div className="shop-right-content">
@@ -319,12 +358,12 @@ class Product extends React.Component {
                   </div>
                   <div className="shop-right-bottom-content">
                     <div>
-                      {desiredProductId === univEwodChipId
+                      {(desiredProductId === univEwodChipId || desiredProductId === univEwodChipId5 || desiredProductId === univEwodChipId10)
                         ? (
                           <div className="chip-config">
                             <h3>Item Options</h3>
                             <div className="config-items">
-                              <input type="checkbox" onChange={(v) => this.handleOptionsChange('withCoverPlateAssembled', v.target.checked)} />
+                              <input type="checkbox" checked={JSON.stringify(this.state.otherDetails) === '{"withCoverPlateAssembled":true}'} onChange={(v) => this.handleOptionsChange('withCoverPlateAssembled', v.target.checked)} />
                               <span className="option-detail">With Cover Plate Assembled</span>
                             </div>
                           </div>
@@ -333,8 +372,9 @@ class Product extends React.Component {
 
                       <div className="div-price-quantity">
                         <div className="div-product-price">
-                          Price: $
-                          {product.variants[0].price}
+                          Price: Coming soon
+                          {/* Price: $
+                          {product.variants[0].price} */}
                         </div>
                         <div className="div-product-selection">
                           <div className="div-product-quantity">
@@ -348,7 +388,7 @@ class Product extends React.Component {
                           </div>
                           <div className="div-product-bundlesize">
                             Bundle Size:&nbsp;
-                            <select id="bundlesize" name="bundlesize" onChange={(v) => this.handleChange('bundleSize', v.target.value)}>
+                            <select id="bundlesize" name="bundlesize" value={this.state.bundleSize} onChange={(v) => this.handleChange('bundleSize', v.target.value)}>
                               <option value="1">1</option>
                               <option value="5">5</option>
                               <option value="10">10</option>
@@ -362,14 +402,14 @@ class Product extends React.Component {
                             <div className="cart-btn">
                               <input
                                 type="button"
-                                value="Add to Cart"
+                                value="Coming soon"
+                                // value="Add to Cart"
                                 className="btn btn-primary btn-lg btn-block"
-                                onClick={(e) => this.handleGetCart()}
+                                // onClick={(e) => this.handleGetCart()}
                               />
                             </div>
                           )
                           : <img className="loading-GIF" src={loadingGif} alt="" />}
-
                         <div className="tax-info">Note: Price excludes sales tax</div>
                       </div>
                     </div>

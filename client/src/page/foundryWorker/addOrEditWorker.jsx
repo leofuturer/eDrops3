@@ -83,13 +83,13 @@ class AddOrEditWorker extends React.Component {
     if (this.state.password !== '') {
       Object.assign(data, {
         password: this.state.password,
-        confirmPassword: this.state.confirmPassword,
+        // confirmPassword: this.state.confirmPassword,
       });
     }
     if (this.props.match.path === '/manage/foundryworkers/addfoundryworker') {
       API.Request(addFoundryWorker, 'POST', data, true)
         .then((res) => {
-          console.log(res);
+          // console.log(res);
           const obj = {
             email: this.state.email,
             username: this.state.username,
@@ -107,25 +107,30 @@ class AddOrEditWorker extends React.Component {
     } else {
       const { workerId } = this.props.location.state;
       let url = editFoundryWorker.replace('id', workerId);
+      // console.log(workerId);
       API.Request(url, 'PATCH', data, true)
         .then((res) => {
-          url = `${userBaseFind}?filter={"where": {"email": "${data.email}"}}`;
-          API.Request(url, 'GET', {}, true)
-            .then((res) => {
-              const userBaseId = res.data[0].id;
-              url = updateUserBaseProfile.replace('id', userBaseId);
-              API.Request(url, 'PATCH', data, true)
-                .then((res) => {
-                  _this.props.history.push('/manage/foundryworkers');
-                })
-                .catch((err) => {
-                  console.error(err);
-                });
-            })
-            .catch((err) => {
-              console.error(err);
-            });
+          _this.props.history.push('/manage/foundryworkers');
         })
+        // .then((res) => {
+        //   url = `${userBaseFind}?filter={"where": {"email": "${data.email}"}}`;
+        //   API.Request(url, 'GET', {}, true)
+        //     .then((res) => {
+        //       // console.log(res.data[0]);
+        //       const userBaseId = res.data[0].id;
+        //       url = updateUserBaseProfile.replace('id', userBaseId);
+        //       API.Request(url, 'PATCH', data, true)
+        //         .then((res) => {
+        //           _this.props.history.push('/manage/foundryworkers');
+        //         })
+        //         .catch((err) => {
+        //           console.error(err);
+        //         });
+        //     })
+        //     .catch((err) => {
+        //       console.error(err);
+        //     });
+        // })
         .catch((err) => {
           console.error(err);
         });
@@ -151,8 +156,10 @@ class AddOrEditWorker extends React.Component {
     if (Cookies.get('userId') === undefined) {
       return <Redirect to="/login" />;
     }
+    let editWorker = false;
     if (this.props.match.path === '/manage/foundryworkers/editworker') {
       var profileContent = 'Edit Foundry Worker Profile';
+      editWorker = true;
     } else {
       var profileContent = 'Add new Foundry Worker';
     }
@@ -178,6 +185,7 @@ class AddOrEditWorker extends React.Component {
                       autoComplete="email"
                       className="form-control needValidation"
                       placeholder="Email"
+                      readOnly={editWorker}
                       value={this.state.email}
                       onChange={(v) => this.handleChange('email', v.target.value)}
                       onBlur={this.handleValidateInput}
@@ -199,6 +207,7 @@ class AddOrEditWorker extends React.Component {
                       autoComplete="username"
                       className="form-control needValidation"
                       placeholder="Username"
+                      readOnly={editWorker}
                       value={this.state.username}
                       onChange={(v) => this.handleChange('username', v.target.value)}
                       onBlur={this.handleValidateInput}

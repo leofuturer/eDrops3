@@ -17,7 +17,7 @@ import './chiporder.css';
 import Cookies from 'js-cookie';
 import {
   getCustomerCart, manipulateCustomerOrders, addOrderChipToCart,
-  getChipOrders, getWorkerId,
+  getChipOrders, getWorkerId, customerGetName
 } from '../../api/serverConfig';
 import API from '../../api/api';
 import {
@@ -44,6 +44,10 @@ class ChipOrder extends React.Component {
       GLASSID: 0,
       PAPERID: 0,
       PCBID: 0,
+      GLASSNAME: 'edrop glassfab',
+      PAPERNAME: 'edrop paperfab',
+      PCBNAME: 'edrop pcbfab',
+      customerName: '',
     };
     this.shopifyClient = null;
     this.setCurrentIndex = this.setCurrentIndex.bind(this);
@@ -55,34 +59,58 @@ class ChipOrder extends React.Component {
     const GLASSFW = 'glassfab';
     const PAPERFW = 'paperfab';
     const PCBFW = 'pcbfab';
+    // const url = `${getWorkerId}?username=${}`
     // fetch IDs of default foundry workers
-    API.Request(getWorkerId, 'GET', { username: GLASSFW }, true)
+    API.Request(getWorkerId, 'GET', { username: GLASSFW }, true, undefined, true)
       .then((res) => {
         this.setState({
           GLASSID: res.data,
         });
       })
       .catch((err) => {
-        console.log(err);
+        console.error(err);
       });
-    API.Request(getWorkerId, 'GET', { username: PAPERFW }, true)
+    API.Request(getWorkerId, 'GET', { username: PAPERFW }, true, undefined, true)
       .then((res) => {
         this.setState({
           PAPERID: res.data,
         });
       })
       .catch((err) => {
-        console.log(err);
+        console.error(err);
       });
-    API.Request(getWorkerId, 'GET', { username: PCBFW }, true)
+
+    API.Request(getWorkerId, 'GET', { username: PCBFW }, true, undefined, true)
       .then((res) => {
         this.setState({
           PCBID: res.data,
         });
       })
       .catch((err) => {
-        console.log(err);
+        console.error(err);
       });
+    
+    API.Request(getWorkerId, 'GET', { username: PCBFW }, true, undefined, true)
+      .then((res) => {
+        this.setState({
+          PCBID: res.data,
+        });
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+
+    let url = customerGetName.replace('id', Cookies.get('userId'));
+    API.Request(url, 'GET', {}, true)
+      .then((res) => {
+        // console.log(res);
+        this.setState({
+          customerName: `${res.data.firstName} ${res.data.lastName}`,
+        });
+      })
+      .catch((err) => {
+        console.error(err)
+      })
 
     if (Cookies.get('access_token') === undefined) {
       alert('Login required for this page');
@@ -93,7 +121,7 @@ class ChipOrder extends React.Component {
     } else {
       const _this = this;
       // TODO: instead of building client, use Shopify.getInstance().getPrivateValue()
-      let url = getCustomerCart.replace('id', Cookies.get('userId'));
+      url = getCustomerCart.replace('id', Cookies.get('userId'));
       _this.setState({
         fileInfo: this.props.location.state.fileInfo,
       });
@@ -239,13 +267,24 @@ class ChipOrder extends React.Component {
         .then((instance) => {
           instance.checkout.addLineItems(checkoutId, lineItemsToAdd)
             .then((res) => {
+            // .then((res) => {
               let lineItemId;
               for (let i = 0; i < res.lineItems.length; i++) {
-                if (res.lineItems[i].variant.id === variantId) {
-                  lineItemId = res.lineItems[i].id;
+                let otherDetails = '';
+                res.lineItems[i].customAttributes.forEach((entry) => {
+                  otherDetails += `${entry.key}: ${entry.value}\n`;
+                });
+                // if (Buffer.from(res.lineItems[i].variant.id).toString('base64') === variantId) {
+                if(customServerOrderAttributes == otherDetails) {
+                  lineItemId = Buffer.from(res.lineItems[i].id).toString('base64');
                   break;
                 }
               }
+
+              // save lineItemId of the last item returned in checkout
+              // const lineItemIdDecoded = checkout.lineItems[checkout.lineItems.length-1].id;
+              // const lineItemId = Buffer.from(lineItemIdDecoded).toString('base64');
+
               // select default foundry worker based on material
               let materialSpecificWorkerId = 0;
               switch (this.state.materialVal) {
@@ -257,6 +296,21 @@ class ChipOrder extends React.Component {
                   break;
                 case 'PCB':
                   materialSpecificWorkerId = this.state.PCBID;
+                  break;
+                default:
+              }
+
+              // select default foundry worker name
+              let materialSpecificWorkerName = '';
+              switch (this.state.materialVal) {
+                case 'ITO Glass':
+                  materialSpecificWorkerName = this.state.GLASSNAME;
+                  break;
+                case 'Paper':
+                  materialSpecificWorkerName = this.state.PAPERNAME;
+                  break;
+                case 'PCB':
+                  materialSpecificWorkerName = this.state.PCBNAME;
                   break;
                 default:
               }
@@ -277,13 +331,15 @@ class ChipOrder extends React.Component {
                 lastUpdated: new Date().toISOString(),
                 fileInfoId: this.state.fileInfo.id,
                 workerId: materialSpecificWorkerId,
+                workerName: materialSpecificWorkerName,
+                customerName: this.state.customerName,
               };
-              // console.log(res);
+
               let url = addOrderChipToCart.replace('id', _this.state.orderInfoId);
               API.Request(url, 'POST', data, true)
                 .then((res) => {
                   url = getChipOrders.replace('id', _this.state.orderInfoId);
-                  API.Request(url, 'GET', {}, true)
+                  API.Request(url, 'GET', {}, true, undefined, true)
                     .then((res) => {
                       const quantity = res.data.reduce((prev, curr) => prev + curr.quantity, 0);
                       this.context.setChipQuantity(quantity);
@@ -344,7 +400,7 @@ class ChipOrder extends React.Component {
         </li>,
       );
     }
-
+    // console.log(this.state.fileInfo);
     return (
       <div className="order-container">
         <div className="shop-main-content">
@@ -395,7 +451,7 @@ class ChipOrder extends React.Component {
               </p>
             </div>
             <div className="div-shop-quantity">
-              <label>Quantity:&nbsp;</label>
+              {/* <label>Quantity:&nbsp;</label>
               { this.state.product !== undefined
                 ? (
                   <div>
@@ -417,7 +473,7 @@ class ChipOrder extends React.Component {
                     </span>
                   </div>
                 )
-                : null}
+                : null} */}
               <p className="cart-btn">
                 {
                                     this.state.isLoading
@@ -426,8 +482,9 @@ class ChipOrder extends React.Component {
                                         <input
                                           type="button"
                                           className="btn btn-primary btn-lg btn-block"
-                                          value="Add to Cart"
-                                          onClick={(e) => this.addVariantToCart(variantId, this.state.quantity)}
+                                          value="Coming soon"
+                                          // value="Add to Cart"
+                                          // onClick={(e) => this.addVariantToCart(variantId, this.state.quantity)}
                                         />
                                       )
                                 }

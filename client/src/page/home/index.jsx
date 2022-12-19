@@ -5,28 +5,26 @@ import './home.css';
 import IMG_2943 from '../../../static/img/IMG_2943.jpg';
 import IMG_2941 from '../../../static/img/IMG_2941.jpg';
 import IMG_2936 from '../../../static/img/IMG_2936.jpg';
-import { controlSysId } from '../../constants';
+import pcb_chip from '../../../static/img/pcb_chip.jpg';
+import control_board from '../../../static/img/control_board.jpg';
+import { controlSysId, testBoardId, pcbChipId } from '../../constants';
 import SEO from '../../component/header/seo.jsx';
 import { metadata } from './metadata.jsx';
 
 class Home extends React.Component {
   render() {
     const controlSysPageLink = `/product?id=${controlSysId}`;
+    const pcbChipPageLink = `/product?id=${pcbChipId}`;
+    const testBoardPageLink = `/product?id=${testBoardId}`;
     return (
       <div>
-        <SEO
-          title="eDrops | Home"
+        <SEO title="eDrops | Home"
           description=""
-          metadata={metadata}
-        />
+          metadata={metadata} />
         <div className="clearfix objectImg">
           <div className="col-md-4 cadImg">
             <div className="txt">
-              <h1>
-                EWOD
-                <br />
-                CAD
-              </h1>
+              <h1>DMF<br /> CAD</h1>
               <div className="txt-bg">
                 <a href="http://cad.edrops.org" target="_blank" rel="noopener noreferrer">
                   DESIGN CHIP
@@ -36,11 +34,7 @@ class Home extends React.Component {
           </div>
           <div className="col-md-4 foundryImg">
             <div className="txt">
-              <h1>
-                Foundry
-                <br />
-                Service
-              </h1>
+              <h1>Foundry<br />Service</h1>
               <div className="txt-bg">
                 {
                   Cookies.get('userType') === 'customer'
@@ -52,11 +46,7 @@ class Home extends React.Component {
           </div>
           <div className="col-md-4 ewodImg">
             <div className="txt">
-              <h1>
-                EWOD Control
-                <br />
-                System
-              </h1>
+              <h1>DMF<br />Control System</h1>
               <div className="txt-bg">
                 <NavLink to={controlSysPageLink}>VIEW DETAILS</NavLink>
               </div>
@@ -71,28 +61,28 @@ class Home extends React.Component {
           </div>
           <div className="content-icon clearfix">
             <div className="icon-div">
-              <figure className="figure-img">
-                <a href="">
+              <NavLink to={controlSysPageLink}>
+                <figure className="figure-img">
                   <img src={IMG_2943} alt="" />
-                </a>
-                <h4>EWOD Control System</h4>
-              </figure>
+                  <h4>Digital Microfluidics Control System</h4>
+                </figure>
+              </NavLink>
             </div>
             <div className="icon-div icon-center">
-              <figure className="figure-img">
-                <a href="">
-                  <img src={IMG_2941} alt="" />
-                </a>
-                <h4>EWOD Chip v1</h4>
-              </figure>
+              <NavLink to={pcbChipPageLink}>
+                <figure className="figure-img">
+                  <img src={pcb_chip} alt="" />
+                  <h4>PCB-based Digital Microfluidics Chip</h4>
+                </figure>
+              </NavLink>
             </div>
             <div className="icon-div">
-              <figure className="figure-img">
-                <a href="">
-                  <img src={IMG_2936} alt="" />
-                </a>
-                <h4>EWOD Chip v2</h4>
-              </figure>
+              <NavLink to={testBoardPageLink}>
+                <figure className="figure-img">
+                  <img src={control_board} alt="" />
+                  <h4>Control System Inspection Board</h4>
+                </figure>
+              </NavLink>
             </div>
           </div>
         </div>

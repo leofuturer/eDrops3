@@ -1,24 +1,29 @@
-import { authenticate } from '@loopback/authentication';
-import { inject } from '@loopback/core';
+import {authenticate} from '@loopback/authentication';
+import {inject} from '@loopback/core';
+import {Filter, FilterExcludingWhere, repository} from '@loopback/repository';
 import {
-  Filter,
-  FilterExcludingWhere, repository
-} from '@loopback/repository';
-import {
-  del, get,
-  getModelSchemaRef, param, patch, post, requestBody,
+  del,
+  get,
+  getModelSchemaRef,
+  HttpErrors,
+  param,
+  patch,
+  post,
+  requestBody,
   response,
-  SchemaObject
+  SchemaObject,
 } from '@loopback/rest';
-import { SecurityBindings, securityId, UserProfile } from '@loopback/security';
-import { genSalt, hash } from 'bcryptjs';
+import {SecurityBindings, securityId, UserProfile} from '@loopback/security';
+import {compare, genSalt, hash} from 'bcryptjs';
 import {
-  Credentials, JWTService,
-  MyUserService, TokenServiceBindings,
-  UserServiceBindings
+  Credentials,
+  JWTService,
+  MyUserService,
+  TokenServiceBindings,
+  UserServiceBindings,
 } from '../components/jwt-authentication';
-import { User } from '../models';
-import { UserRepository } from '../repositories';
+import {User} from '../models';
+import {UserRepository} from '../repositories';
 
 const CredentialsSchema: SchemaObject = {
   type: 'object',
@@ -157,9 +162,18 @@ export class UserController {
   })
   async login(
     @requestBody(CredentialsRequestBody) credentials: Credentials,
-  ): Promise<{token: string, username: string, userId: string, userType: string}> {
+  ): Promise<{
+    token: string;
+    username: string;
+    userId: string;
+    userType: string;
+  }> {
     // ensure the user exists, and the password is correct
     const user = await this.userService.verifyCredentials(credentials);
+
+    if (!user.emailVerified) {
+      throw new HttpErrors.Unauthorized('Email is not verified');
+    }
 
     // convert a User object into a UserProfile object (reduced set of properties)
     const userProfile = this.userService.convertToUserProfile(user);
@@ -167,7 +181,12 @@ export class UserController {
     // create a JSON Web Token based on the user profile
     const token = await this.jwtService.generateToken(userProfile);
 
-    return {token, username: userProfile.name as string, userId: userProfile.id, userType: userProfile.userType};
+    return {
+      token,
+      username: userProfile.name as string,
+      userId: userProfile.id,
+      userType: userProfile.userType,
+    };
   }
 
   @authenticate('jwt')
@@ -221,58 +240,138 @@ export class UserController {
     @requestBody({
       content: {
         'application/json': {
-          schema: getModelSchemaRef(User, {
-            title: 'NewUser',
-            exclude: ['id'],
-          }),
+          type: 'object',
+          schema: {
+            properties: {
+              email: {type: 'string', format: 'email'},
+            },
+          },
         },
       },
     })
-    userBase: Omit<User, 'id'>,
+    data: {
+      email: string;
+    },
   ): Promise<void> {
-    return;
-    // return this.userBaseRepository.reset(userBase);
-  }
-  
-  @post('/users/changePassword')
-  @response(200, {
-    description: 'User CHANGE PASSWORD success',
-  })
-  async changePassword(
-    @requestBody({
-      content: {
-        'application/json': {
-          schema: getModelSchemaRef(User, {
-            title: 'NewUser',
-            exclude: ['id'],
-          }),
-        },
-      },
-    })
-    user: Omit<User, 'id'>,
-  ): Promise<void> {
-    return;
-    // return this.userBaseRepository.changePassword(user);
+    this.userRepository.sendResetEmail(data.email);
   }
 
-  @post('/users/resetPassword')
+  // @authenticate('jwt')
+  // @post('/users/changePassword')
+  // @response(200, {
+  //   description: 'User CHANGE PASSWORD success',
+  // })
+  // async changePassword(
+  //   @requestBody({
+  //     content: {
+  //       'application/json': {
+  //         type: 'object',
+  //         schema: {
+  //           properties: {
+  //             oldPassword: {type: 'string'},
+  //             newPassword: {type: 'string'},
+  //           },
+  //         },
+  //       },
+  //     },
+  //   })
+  //   data: {oldPassword: string; newPassword: string},
+  //   @inject(SecurityBindings.USER)
+  //   userProfile: UserProfile,
+  // ): Promise<void> {
+  //   const user = await this.userRepository.findById(userProfile.id);
+
+  //   const passwordMatched = await compare(data.oldPassword, user.password);
+  //   if (!passwordMatched) {
+  //     throw new HttpErrors.Unauthorized('Wrong password');
+  //   }
+  //   await this.userRepository.changePassword(
+  //     userProfile.id,
+  //     data.newPassword,
+  //   );
+  // }
+
+  // @post('/users/resetPassword')
+  // @response(200, {
+  //   description: 'User RESET PASSWORD success',
+  // })
+  // async resetPassword(
+  //   @requestBody({
+  //     content: {
+  //       'application/json': {
+  //         type: 'object',
+  //         schema: {
+  //           properties: {
+  //             newPassword: {type: 'string'},
+  //             accessToken: {type: 'string'},
+  //           },
+  //         },
+  //       },
+  //     },
+  //   })
+  //   data: {
+  //     newPassword: string;
+  //     accessToken: string;
+  //   },
+  // ): Promise<void> {
+  //   const id = await this.userRepository.verifyResetToken(data.accessToken);
+  //   if (!id) {
+  //     return;
+  //   }
+  //   await this.userRepository.changePassword(id, data.newPassword);
+  // }
+
+  @post('/users/credsTaken')
   @response(200, {
-    description: 'User RESET PASSWORD success',
-  })
-  async resetPassword(
-    @requestBody({
-      content: {
-        'application/json': {
-          schema: getModelSchemaRef(User, {
-            title: 'NewUser',
-            exclude: ['id'],
-          }),
+    description: 'Check if creds are taken',
+    content: {
+      'application/json': {
+        schema: {
+          properties: {
+            usernameTaken: {
+              type: 'boolean',
+            },
+            emailTaken: {
+              type: 'boolean',
+            },
+          },
         },
       },
-    })
-    user: Omit<User, 'id'>,
-  ): Promise<void> {
-    return;
-    // return this.userBaseRepository.resetPassword(user);
+    },
+  })
+  async checkCredsTaken(
+    @requestBody() body: {username: string; email: string},
+  ): Promise<{usernameTaken: boolean; emailTaken: boolean}> {
+    if (!body.username && !body.email) {
+      throw new HttpErrors.NotFound('Missing username and/or email keys');
+    }
+
+    const usernameTaken = await this.userRepository
+      .findOne({
+        where: {
+          username: body.username,
+        },
+      })
+      .then(user => {
+        return !!user;
+      })
+      .catch(err => {
+        throw new HttpErrors.InternalServerError(err);
+      });
+
+    const emailTaken = await this.userRepository
+      .findOne({
+        where: {
+          email: body.email,
+        },
+      })
+      .then(user => {
+        return !!user;
+      })
+      .catch(err => {
+        throw new HttpErrors.InternalServerError(err);
+      });
+
+    return {usernameTaken, emailTaken};
   }
 }

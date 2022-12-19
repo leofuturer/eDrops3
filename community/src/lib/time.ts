@@ -1,5 +1,4 @@
 function timeAgo(date : Date) : string {
-    console.log('date', typeof date);
     const millisecondsAgo = ((new Date()).getTime() - date.getTime())
     const minutesAgo = Math.round(millisecondsAgo / (1000 * 60));
     if(minutesAgo < 60)

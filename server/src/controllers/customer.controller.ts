@@ -1,3 +1,4 @@
+import {authenticate} from '@loopback/authentication';
 import {inject, intercept} from '@loopback/core';
 import {Filter, FilterExcludingWhere, repository} from '@loopback/repository';
 import {
@@ -13,14 +14,18 @@ import {
   response,
   RestBindings,
 } from '@loopback/rest';
+import {SecurityBindings, securityId, UserProfile} from '@loopback/security';
+import {compare, genSalt, hash} from 'bcryptjs';
 import {CustomerCreateInterceptor} from '../interceptors';
 import {Customer, CustomerAddress, OrderInfo, User} from '../models';
-import {CustomerRepository} from '../repositories';
+import {CustomerRepository, UserRepository} from '../repositories';
 
 export class CustomerController {
   constructor(
     @repository(CustomerRepository)
     public customerRepository: CustomerRepository,
+    @repository(UserRepository)
+    public userRepository: UserRepository,
   ) {}
 
   @intercept(CustomerCreateInterceptor.BINDING_KEY)
@@ -35,7 +40,7 @@ export class CustomerController {
         'application/json': {
           schema: {
             type: 'object',
-          }
+          },
           // schema: getModelSchemaRef(Customer, {
           //   title: 'NewCustomer',
           //   exclude: ['id'],
@@ -140,9 +145,15 @@ export class CustomerController {
       },
     });
     if (!customer) {
-      throw new HttpErrors.NotFound('Customer not found');
+      // Don't throw error if customer not found to prevent email enumeration
+      // throw new HttpErrors.NotFound('Customer not found');
+    } else {
+      if (!customer.emailVerified) {
+        await this.customerRepository.sendVerificationEmail(
+          customer as Customer,
+        );
+      }
     }
-    await this.customerRepository.sendVerificationEmail(customer as Customer);
   }
 
   @get('/customers/verify')
@@ -157,22 +168,23 @@ export class CustomerController {
   async verify(
     @param.query.string('customerId') customerId: string,
     @param.query.string('token') verificationToken: string,
-    @inject(RestBindings.Http.RESPONSE) response: Response
+    @inject(RestBindings.Http.RESPONSE) response: Response,
   ): Promise<Customer> {
-    const customer = await this.customerRepository.verifyEmail(customerId, verificationToken);
-    console.log(customer);
+    const customer = await this.customerRepository.verifyEmail(
+      customerId,
+      verificationToken,
+    );
+    // console.log(customer);
     if (!customer) {
       throw new HttpErrors.NotFound('Customer not found');
     }
-    if(customer.emailVerified) {
-      response.redirect('/emailVerified')
-    }
-    else {
-      response.redirect('/emailVerifyInvalid')
+    if (customer.emailVerified) {
+      response.redirect('/emailVerified');
+    } else {
+      response.redirect('/emailVerifyInvalid');
     }
     return customer;
   }
-
 
   @get('/customers/getApi')
   @response(200, {
@@ -198,14 +210,8 @@ export class CustomerController {
   })
   async getApiToken(): Promise<object> {
     return {
-      info: {
-        token: (process.env.SHOPIFY_STORE !== 'test'
-          ? process.env.SHOPIFY_TOKEN
-          : process.env.SHOPIFY_TOKEN_TEST) as string,
-        domain: (process.env.SHOPIFY_STORE !== 'test'
-          ? process.env.SHOPIFY_DOMAIN
-          : process.env.SHOPIFY_DOMAIN_TEST) as string,
-      },
+      token: process.env.SHOPIFY_TOKEN as string,
+      domain: process.env.SHOPIFY_DOMAIN as string,
     };
   }
 
@@ -274,7 +280,72 @@ export class CustomerController {
       .catch(err => {
         throw new HttpErrors.InternalServerError(err);
       });
-    
+
     return {usernameTaken, emailTaken};
+  }
+
+  @authenticate('jwt')
+  @post('/customers/changePassword')
+  @response(200, {
+    description: 'Customer CHANGE PASSWORD success',
+  })
+  async changePassword(
+    @requestBody({
+      content: {
+        'application/json': {
+          type: 'object',
+          schema: {
+            properties: {
+              oldPassword: {type: 'string'},
+              newPassword: {type: 'string'},
+            },
+          },
+        },
+      },
+    })
+    data: {oldPassword: string; newPassword: string},
+    @inject(SecurityBindings.USER)
+    userProfile: UserProfile,
+  ): Promise<void> {
+    const user = await this.customerRepository.findById(userProfile.id);
+
+    const passwordMatched = await compare(data.oldPassword, user.password);
+    if (!passwordMatched) {
+      throw new HttpErrors.Unauthorized('Invalid current password');
+    }
+    await this.customerRepository.changePassword(
+      userProfile.id,
+      data.newPassword,
+    );
+  }
+
+  @post('/customers/resetPassword')
+  @response(200, {
+    description: 'Customer RESET PASSWORD success',
+  })
+  async resetPassword(
+    @requestBody({
+      content: {
+        'application/json': {
+          type: 'object',
+          schema: {
+            properties: {
+              newPassword: {type: 'string'},
+              accessToken: {type: 'string'},
+            },
+          },
+        },
+      },
+    })
+    data: {
+      newPassword: string;
+      accessToken: string;
+    },
+  ): Promise<void> {
+    const id = await this.userRepository.verifyResetToken(data.accessToken);
+    if (!id) {
+      return;
+    }
+    await this.customerRepository.changePassword(id, data.newPassword);
   }
 }

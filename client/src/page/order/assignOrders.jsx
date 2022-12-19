@@ -1,7 +1,7 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 import OrderItem, { orderItem } from './orderItem.jsx';
-import { getAllFoundryWorkers, assignOrders } from '../../api/serverConfig';
+import { getAllFoundryWorkers, assignOrders, foundryWorkerGetName } from '../../api/serverConfig';
 import API from '../../api/api';
 
 class AssignOrders extends React.Component {
@@ -9,7 +9,7 @@ class AssignOrders extends React.Component {
     super(props);
     this.state = {
       workerList: [],
-      assignId: -1,
+      assignId: '',
       chipOrder: undefined,
     };
     this.handleAssign = this.handleAssign.bind(this);
@@ -31,23 +31,29 @@ class AssignOrders extends React.Component {
 
   handleAssignId(e) {
     this.setState({
-      assignId: Number(e.target.id.replace(/[^0-9]/ig, '')),
+      assignId: e.target.id.match(/(?<=file).*/)[0],
     });
   }
 
   handleAssign(e) {
-    const data = {
-      workerId: this.state.assignId,
-    };
-
-    const url = assignOrders.replace('id', window._order.id);
-    API.Request(url, 'PATCH', data, true)
+    let url = foundryWorkerGetName.replace('id', this.state.assignId);
+    API.Request(url, 'GET', {}, true)
       .then((res) => {
-        window.opener.location.href = window.opener.location.href;
-        window.close();
-      })
-      .catch((err) => {
-        console.log(err);
+        const data = {
+          workerId: this.state.assignId,
+          workerName: `${res.data.firstName} ${res.data.lastName}`,
+        };
+    
+
+        url = assignOrders.replace('id', window._order.id);
+        API.Request(url, 'PATCH', data, true)
+          .then((res) => {
+            window.opener.location.href = window.opener.location.href;
+            window.close();
+          })
+          .catch((err) => {
+            console.log(err);
+          });
       });
   }
 

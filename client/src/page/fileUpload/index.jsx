@@ -29,6 +29,7 @@ class Upload extends React.Component {
       checked: false,
       originalName: '',
       file: undefined,
+      fileInfo: undefined,
       percentage: 0,
     };
     this.setCurrentIndex = this.setCurrentIndex.bind(this);
@@ -130,7 +131,7 @@ class Upload extends React.Component {
     }
     const uploadUrl = uploadFile.replace('id', Cookies.get('userId'));
     const formData = new FormData();
-    formData.append('file', this.state.file);
+    formData.append('www', this.state.file);
     formData.append('fields', JSON.stringify(extraFields));
     const headers = { 'Content-Type': 'multipart/form-data' };
     API.Request(uploadUrl, 'POST', formData, true, headers, true)

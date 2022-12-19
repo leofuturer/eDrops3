@@ -1,12 +1,17 @@
 import {Entity, model, property} from '@loopback/repository';
 
+// @model({
+//   settings: {
+//     validateUpsert: true,
+//     idInjection: true,
+//     remoting: {sharedMethods: {'*': false, find: true}},
+//   }
+// })
 @model({
   settings: {
-    validateUpsert: true,
-    idInjection: true,
-    remoting: {sharedMethods: {'*': false, find: true}},
-    mysql: {table: 'fileInfo'}
-  }
+    description: 'File information',
+    scope: {where: {isDeleted: false}},
+  },
 })
 export class FileInfo extends Entity {
   @property({
