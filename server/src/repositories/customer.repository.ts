@@ -5,17 +5,19 @@ import {
   HasManyRepositoryFactory,
   repository,
 } from '@loopback/repository';
-import {HttpErrors} from '@loopback/rest';
+import {HttpErrors, Request, Response} from '@loopback/rest';
+import AWS from 'aws-sdk';
 import {genSalt, hash} from 'bcryptjs';
 import {createHash} from 'crypto';
 import ejs from 'ejs';
-import {Request, Response} from '@loopback/rest';
+import path from 'path';
 import {MysqlDsDataSource} from '../datasources';
 import {
   EMAIL_HOSTNAME,
   EMAIL_PORT,
   EMAIL_SENDER,
 } from '../lib/constants/emailConstants';
+import {calculate} from '../lib/toolbox/calculate';
 import log from '../lib/toolbox/log';
 import {verifyHTML} from '../lib/views/verify';
 import {
@@ -26,15 +28,12 @@ import {
   OrderInfo,
   User,
 } from '../models';
+import {STORAGE_DIRECTORY} from '../services';
 import SendGrid from '../services/send-grid.service';
 import {CustomerAddressRepository} from './customer-address.repository';
 import {FileInfoRepository} from './file-info.repository';
 import {OrderInfoRepository} from './order-info.repository';
 import {UserRepository} from './user.repository';
-import {calculate} from '../lib/toolbox/calculate';
-import {STORAGE_DIRECTORY} from '../services';
-import path from 'path';
-import AWS from 'aws-sdk';
 
 const CONTAINER_NAME = process.env.S3_BUCKET_NAME ?? 'edrop-v2-files';
 
@@ -104,22 +103,30 @@ export class CustomerRepository extends DefaultCrudRepository<
       this.customerAddresses.inclusionResolver,
     );
 
-    AWS.config.update({
-      accessKeyId: process.env.S3_AWS_ACCESS_KEY_ID ?? 'AKIA5XCJPLK6K2H3WJ5Z',
-      secretAccessKey:
-        process.env.S3_SECRET_ACCESS_KEY ??
-        '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',
-      region: process.env.S3_AWS_DEFAULT_REGION ?? 'us-west-1',
-    });
+    if (process.env.NODE_ENV === 'production') {
+      AWS.config.update({
+        accessKeyId: process.env.S3_AWS_ACCESS_KEY_ID,
+        secretAccessKey: process.env.S3_SECRET_ACCESS_KEY,
+        region: process.env.S3_AWS_DEFAULT_REGION,
+      });
 
-    this.s3 = new AWS.S3();
+      this.s3 = new AWS.S3();
+    }
   }
 
+  /**
+   * Create a new customer and its associated user instance
+   * @param customer      Customer to be created
+   * @param createAddress Whether to create a default address for the customer (mainly used for initial seeding)
+   * @returns             Created customer instance
+   */
   async createCustomer(
     customer: Omit<Customer & CustomerAddress, 'id'>,
+    createAddress: boolean = true,
   ): Promise<Customer> {
     const hashedPassword = await hash(customer.password, await genSalt());
-    const userData: Omit<User, 'id'> = {
+    const userData: Partial<User> = {
+      id: customer.id,
       realm: customer.realm,
       username: customer.username,
       password: hashedPassword,
@@ -143,26 +150,28 @@ export class CustomerRepository extends DefaultCrudRepository<
     const customerInstance = await this.create(customerData).catch(err => {
       throw new HttpErrors.InternalServerError(err.message);
     });
-    const customerAddressData: Omit<CustomerAddress, 'id'> = {
-      street: customer.street ?? 'Not provided during signup',
-      streetLine2: customer.streetLine2 ?? 'Not provided during signup',
-      country: customer.country ?? 'Not provided during signup',
-      state: customer.state ?? 'Not provided during signup',
-      city: customer.city ?? 'Not provided during signup',
-      zipCode: customer.zipCode ?? 'Not provided during signup',
-      isDefault: customer.isDefault ?? true,
-    };
-    log.info('Customer instance created, now associating address with it');
-    this.customerAddresses(customerInstance.id)
-      .create(customerAddressData)
-      .then(() => {
-        this.sendVerificationEmail(customerInstance);
-      })
-      .catch(err => {
-        // roll back the customer creation
-        this.deleteById(customerInstance?.id);
-        console.error(err);
-      });
+    if (createAddress) {
+      const customerAddressData: Omit<CustomerAddress, 'id'> = {
+        street: customer.street || 'Not provided during signup',
+        streetLine2: customer.streetLine2 || 'Not provided during signup',
+        country: customer.country || 'Not provided during signup',
+        state: customer.state || 'Not provided during signup',
+        city: customer.city || 'Not provided during signup',
+        zipCode: customer.zipCode || 'Not provided during signup',
+        isDefault: customer.isDefault || true,
+      };
+      log.info('Customer instance created, now associating address with it');
+      this.customerAddresses(customerInstance.id)
+        .create(customerAddressData)
+        .then(() => {
+          this.sendVerificationEmail(customerInstance);
+        })
+        .catch(err => {
+          // roll back the customer creation
+          this.deleteById(customerInstance?.id);
+          console.error(err);
+        });
+    }
     return customerInstance;
   }
 
@@ -190,15 +199,15 @@ export class CustomerRepository extends DefaultCrudRepository<
         ? `https://${EMAIL_HOSTNAME}`
         : `http://${EMAIL_HOSTNAME}:${EMAIL_PORT}`;
 
-    const EMAIL_TEMPLATE = ejs.render(
-      verifyHTML,
-      {
-        text: `Hello ${customer.username}! Thanks for registering to use eDrops. Please verify your email by clicking on the following link:`,
-        email: EMAIL_SENDER,
-        verifyHref: `${baseURL}/api/customers/verify?customerId=${customer.id}&token=${verificationTokenHash}`,
-      },
-      {},
-    );
+    // const EMAIL_TEMPLATE = ejs.render(
+    //   verifyHTML,
+    //   {
+    //     text: `Hello ${customer.username}! Thanks for registering to use eDrops. Please verify your email by clicking on the following link:`,
+    //     email: EMAIL_SENDER,
+    //     verifyHref: `${baseURL}/api/customers/verify?customerId=${customer.id}&token=${verificationTokenHash}`,
+    //   },
+    //   {},
+    // );
     // console.log(EMAIL_TEMPLATE);
     const sendGridOptions = {
       personalizations: [
@@ -209,24 +218,25 @@ export class CustomerRepository extends DefaultCrudRepository<
           to: [
             {
               email: customer.email,
-              name: customer.username,
+              // name: customer.username,
             },
           ],
-          subject: '[eDrops] Email Verification',
+          // subject: '[eDrops] Email Verification',
+          dynamic_template_data:{
+            firstName: customer.firstName,
+            lastName: customer.lastName,
+            text: "Thanks for registering to use eDrops. Please verify your email by clicking on the following link:",
+            verifyLink: `${baseURL}/api/customers/verify?customerId=${customer.id}&token=${verificationTokenHash}`,
+          }
         },
       ],
+      template_id: "d-0fdd579fca2e4125a687db6e13be290d",
       from: {
         email: EMAIL_SENDER,
       },
       reply_to: {
         email: EMAIL_SENDER,
       },
-      content: [
-        {
-          type: 'text/html',
-          value: EMAIL_TEMPLATE,
-        },
-      ],
     };
 
     this.sendGrid.send(
@@ -244,17 +254,24 @@ export class CustomerRepository extends DefaultCrudRepository<
       throw new HttpErrors.NotFound('Customer not found');
     }
     const currentTime = new Date();
-    if (
-      customer?.verificationToken === verificationToken &&
-      (customer?.verificationTokenExpires ?? currentTime) > currentTime
-    ) {
-      this.updateById(customerId, {
-        emailVerified: true,
-      });
-    } else {
-      throw new HttpErrors.BadRequest('Invalid verification token');
-    }
-    return customer;
+    return await this.updateById(customerId, {
+      emailVerified:
+        customer?.verificationToken === verificationToken &&
+        (customer?.verificationTokenExpires ?? currentTime) > currentTime,
+    }).then(
+      async() => { 
+        // Update associated User instance
+        const userRepository = await this.userRepositoryGetter();
+        await userRepository.updateById(customerId, {
+          emailVerified:
+            customer?.verificationToken === verificationToken &&
+            (customer?.verificationTokenExpires ?? currentTime) > currentTime,
+        });
+        return this.findById(customerId)
+      }
+    ).catch(err => {
+      throw new HttpErrors.InternalServerError(err.message);
+    });
   }
 
   async getCustomerCart(
@@ -337,8 +354,9 @@ export class CustomerRepository extends DefaultCrudRepository<
     );
 
     const fields = request.body;
-    const file = await this.fileInfos(id).create(fileInfos[0]);
-    return {files, fields};
+    const fileInfo = await this.fileInfos(id).create(fileInfos[0]);
+    // return {files, fields};
+    return {fileInfo, fields};
   }
 
   async uploadS3(
@@ -389,37 +407,19 @@ export class CustomerRepository extends DefaultCrudRepository<
     );
 
     const fields = request.body;
-    const file = await this.fileInfos(id).create(fileInfos[0]);
-    return {files, fields};
+    const fileInfo = await this.fileInfos(id).create(fileInfos[0]);
+    // return {files, fields};
+    return {fileInfo, fields};
   }
 
   async downloadDisk(filename: string, response: Response): Promise<Response> {
-    const file = path.resolve(this.storageDirectory, filename);
+    const file = path.resolve(`${this.storageDirectory}/www/`, filename);
     if (!file.startsWith(this.storageDirectory))
       throw new HttpErrors.BadRequest(`Invalid file id: ${filename}`);
     response.download(file, filename);
     return response;
   }
 
-  /*
-  fieldname: 'file',
-  originalname: 'a.dxf',
-  encoding: '7bit',
-  mimetype: 'application/octet-stream',
-  size: 0,
-  bucket: 'edrop-v2-files',
-  key: 'bd11882f-95d0-4d11-b628-74628043eed2.dxf',
-  acl: 'private',
-  contentType: 'application/octet-stream',
-  contentDisposition: null,
-  contentEncoding: null,
-  storageClass: 'STANDARD',
-  serverSideEncryption: null,
-  metadata: { fieldname: 'file', originalname: 'a.dxf' },
-  location: 'https://edrop-v2-files.s3.us-west-1.amazonaws.com/bd11882f-95d0-4d11-b628-74628043eed2.dxf',
-  etag: '"d41d8cd98f00b204e9800998ecf8427e"',
-  versionId: undefined
-  */
   async downloadS3(filename: string, response: Response): Promise<Response> {
     const file = await this.s3
       .getObject({
@@ -431,8 +431,16 @@ export class CustomerRepository extends DefaultCrudRepository<
     response.writeHead(200, {
       'Content-Type': file.ContentType,
       'Content-Disposition': file.ContentDisposition,
-    })
+    });
     response.end(file.Body);
     return response;
+  }
+
+  async changePassword(userId: string, newPassword: string): Promise<void> {
+    const hashedPassword = await hash(newPassword, await genSalt());
+    await this.updateById(userId, {password: hashedPassword});
+
+    const userRepository = await this.userRepositoryGetter();
+    await userRepository.updateById(userId, {password: hashedPassword});
   }
 }

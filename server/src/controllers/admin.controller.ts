@@ -1,3 +1,5 @@
+import { authenticate } from '@loopback/authentication';
+import { inject } from '@loopback/core';
 import {
   Count,
   CountSchema,
@@ -18,23 +20,21 @@ import {
   requestBody,
   response,
 } from '@loopback/rest';
+import {SecurityBindings, securityId, UserProfile} from '@loopback/security';
+import { compare } from 'bcryptjs';
 import fetch from 'node-fetch';
 import Client from 'shopify-buy';
 import Products from '../lib/constants/productConstants';
 import log from '../lib/toolbox/log';
-import {Admin, User} from '../models';
-import {AdminRepository, OrderProductRepository} from '../repositories';
+import {Admin, User, OrderChip} from '../models';
+import {AdminRepository, OrderProductRepository, OrderInfoRepository} from '../repositories';
 
 // @ts-ignore
 global.fetch = fetch;
 
 const client = Client.buildClient({
-  storefrontAccessToken: (process.env.SHOPIFY_STORE !== 'test'
-    ? process.env.SHOPIFY_TOKEN
-    : process.env.SHOPIFY_TOKEN_TEST) as string,
-  domain: (process.env.SHOPIFY_STORE !== 'test'
-    ? process.env.SHOPIFY_DOMAIN
-    : process.env.SHOPIFY_DOMAIN_TEST) as string,
+  storefrontAccessToken: process.env.SHOPIFY_TOKEN as string,
+  domain: process.env.SHOPIFY_DOMAIN as string,
 });
 
 export class AdminController {
@@ -43,6 +43,12 @@ export class AdminController {
     public adminRepository: AdminRepository,
     @repository(OrderProductRepository)
     public orderProduct: OrderProductRepository,
+    // @repository(OrderChipRepository)
+    // public orderChip: OrderChipRepository,
+    @repository(OrderInfoRepository)
+    public orderInfo: OrderInfoRepository,
+    // @repository(FoundryWorkerRepository)
+    // public foundryWorkerRepository: FoundryWorkerRepository,
   ) {}
 
   @post('/admins')
@@ -169,10 +175,10 @@ export class AdminController {
   async returnAllItems(): Promise<Client.Product[]> {
     const productIds = [
       Products.CONTROLSYSID,
+      Products.PCBCHIPID,
       Products.TESTBOARDID,
-      Products.UNIVEWODCHIPID,
     ];
-    console.log(productIds);
+    // console.log(productIds);
     return client.product
       .fetchMultiple(productIds)
       .then((res: Client.Product[]) => {
@@ -214,6 +220,7 @@ export class AdminController {
     return client.product
       .fetch(productId)
       .then((res: Client.Product) => {
+        console.log(res);
         return {
           ...res,
           id: Buffer.from(res.id as string, 'utf-8').toString('base64'),
@@ -231,6 +238,28 @@ export class AdminController {
       });
   }
 
+  @get('/admins/orderChips')
+  @response(200, {
+    description: 'Array of OrderChip model instances',
+    content: {
+      'application/json': {
+        schema: {
+          type: 'array',
+        },
+      },
+    },
+  })
+  async getChipOrders(
+  ): Promise<OrderChip[]> {
+    let allOrderChips: OrderChip[] = [];
+    const completedOrders = await this.orderInfo.find({ include: [{relation: 'orderChips'}], where: {orderComplete : true} });
+    completedOrders.map((orderInfo) => {
+      allOrderChips = allOrderChips.concat.apply(allOrderChips, orderInfo.orderChips);
+    });
+
+    return allOrderChips;
+  }
+
   @get('/admins/getApi')
   @response(200, {
     description: 'Get API token',
@@ -238,15 +267,11 @@ export class AdminController {
       'application/json': {
         schema: {
           properties: {
-            info: {
-              properties: {
-                token: {
-                  type: 'string',
-                },
-                domain: {
-                  type: 'string',
-                },
-              },
+            token: {
+              type: 'string',
+            },
+            domain: {
+              type: 'string',
             },
           },
         },
@@ -254,14 +279,12 @@ export class AdminController {
     },
   })
   async getApiToken(): Promise<object> {
-    return {
-      token: (process.env.SHOPIFY_STORE !== 'test'
-        ? process.env.SHOPIFY_TOKEN
-        : process.env.SHOPIFY_TOKEN_TEST) as string,
-      domain: (process.env.SHOPIFY_STORE !== 'test'
-        ? process.env.SHOPIFY_DOMAIN
-        : process.env.SHOPIFY_DOMAIN_TEST) as string,
+    const info = {
+      token: process.env.SHOPIFY_TOKEN as string,
+      domain: process.env.SHOPIFY_DOMAIN as string,
     };
+    console.log(info);
+    return info;
   }
 
   @post('/admins/credsTaken')
@@ -312,5 +335,40 @@ export class AdminController {
       });
 
     return {usernameTaken, emailTaken};
+  }
+
+  @authenticate('jwt')
+  @post('/admins/changePassword')
+  @response(200, {
+    description: 'Admin CHANGE PASSWORD success',
+  })
+  async changePassword(
+    @requestBody({
+      content: {
+        'application/json': {
+          type: 'object',
+          schema: {
+            properties: {
+              oldPassword: {type: 'string'},
+              newPassword: {type: 'string'},
+            },
+          },
+        },
+      },
+    })
+    data: {oldPassword: string; newPassword: string},
+    @inject(SecurityBindings.USER)
+    userProfile: UserProfile,
+  ): Promise<void> {
+    const user = await this.adminRepository.findById(userProfile.id);
+
+    const passwordMatched = await compare(data.oldPassword, user.password);
+    if (!passwordMatched) {
+      throw new HttpErrors.Unauthorized('Invalid current password');
+    }
+    await this.adminRepository.changePassword(
+      userProfile.id,
+      data.newPassword,
+    );
   }
 }

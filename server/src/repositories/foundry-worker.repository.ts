@@ -32,11 +32,12 @@ export class FoundryWorkerRepository extends DefaultCrudRepository<
     foundryWorker: Omit<FoundryWorker & User, 'id'>
   ) : Promise<FoundryWorker> {
     const hashedPassword = await hash(foundryWorker.password, await genSalt())
-    const userData = {
+    const userData: Partial<User> = {
+      id: foundryWorker.id,
       realm: foundryWorker.realm,
       username: foundryWorker.username,
       password: hashedPassword,
-      userType: 'foundryWorker',
+      userType: 'worker',
       email: foundryWorker.email,
       emailVerified: foundryWorker.emailVerified,
       verificationToken: foundryWorker.verificationToken,
@@ -59,5 +60,13 @@ export class FoundryWorkerRepository extends DefaultCrudRepository<
     }
     const foundryWorkerInstance = await this.create(foundryWorkerData);
     return foundryWorkerInstance;
+  }
+
+  async changePassword(userId: string, newPassword: string): Promise<void> {
+    const hashedPassword = await hash(newPassword, await genSalt());
+    await this.updateById(userId, {password: hashedPassword});
+
+    const userRepository = await this.userRepositoryGetter();
+    await userRepository.updateById(userId, {password: hashedPassword});
   }
 }

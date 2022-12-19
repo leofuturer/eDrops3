@@ -1,18 +1,7 @@
-import { async } from 'validate.js';
-import API from './api/api';
-import { getApiToken } from './api/serverConfig';
+// import API from './api/api';
+// import { getApiToken } from './api/serverConfig';
 
-let mode;
-(async () => {
-  mode = await API.Request(getApiToken, 'GET', {}, false).then(
-    (res) => {
-      if (res.data.domain === 'edrops-store.myshopify.com') {
-        return 'production';
-      }
-      return 'test';
-    },
-  );
-})();
+let mode = true; // true for production, false for development
 
 // product IDs (first is production store, second is test store)
 export const controlSysId = mode ? 'Z2lkOi8vc2hvcGlmeS9Qcm9kdWN0LzcwMTE4ODI2OTY4ODA=' : 'Z2lkOi8vc2hvcGlmeS9Qcm9kdWN0LzQ1OTU3Njc0NDM0OTA=';
@@ -24,6 +13,10 @@ export const testBoardId10 = mode ? 'Z2lkOi8vc2hvcGlmeS9Qcm9kdWN0LzcwNDA3NzQ1NzA
 export const univEwodChipId = mode ? 'Z2lkOi8vc2hvcGlmeS9Qcm9kdWN0LzcwMTE4ODI1OTg1NzY=' : 'Z2lkOi8vc2hvcGlmeS9Qcm9kdWN0LzQ1OTk0ODUwMzg2MjY=';
 export const univEwodChipId5 = mode ? 'Z2lkOi8vc2hvcGlmeS9Qcm9kdWN0LzcwNDA3NzU0NTQ4OTY=' : 'Z2lkOi8vc2hvcGlmeS9Qcm9kdWN0LzY5ODA1MjQ3MzY1NDY=';
 export const univEwodChipId10 = mode ? 'Z2lkOi8vc2hvcGlmeS9Qcm9kdWN0LzcwNDA3NzU1ODU5Njg=' : 'Z2lkOi8vc2hvcGlmeS9Qcm9kdWN0LzY5ODA1MjQ3MDM3Nzg=';
+export const pcbChipId = mode ? 'Z2lkOi8vc2hvcGlmeS9Qcm9kdWN0LzcxODgyMjMzNjEyMDA=' : 'Z2lkOi8vc2hvcGlmeS9Qcm9kdWN0LzQ1OTk0ODUwMzg2MjY=';
+export const pcbChipId5 = mode ? 'Z2lkOi8vc2hvcGlmeS9Qcm9kdWN0LzcxODgyMjQzNzcwMDg=' : 'Z2lkOi8vc2hvcGlmeS9Qcm9kdWN0LzY5ODA1MjQ3MzY1NDY=';
+export const pcbChipId10 = mode ? 'Z2lkOi8vc2hvcGlmeS9Qcm9kdWN0LzcxODgyMjQ0MDk3NzY=' : 'Z2lkOi8vc2hvcGlmeS9Qcm9kdWN0LzY5ODA1MjQ3MDM3Nzg=';
+/* Note PCB chip ID same as universal EWOD chip ID for test store only as product is only on production store  */
 
 // product variant IDs (first is production store, second is test store)
 export const univEwodChipWithCoverPlate = mode ? 'Z2lkOi8vc2hvcGlmeS9Qcm9kdWN0VmFyaWFudC80MTIzMzA5MjgwNDc4NA==' : 'Z2lkOi8vc2hvcGlmeS9Qcm9kdWN0VmFyaWFudC8zMjIzMDM1NzQ5OTkzOA==';
@@ -66,6 +59,11 @@ export const productIdsJson = {
     5: univEwodChipWithoutCoverPlate5,
     10: univEwodChipWithoutCoverPlate10,
   },
+  PCBCHIPID: {
+    1: pcbChipId,
+    5: pcbChipId5,
+    10: pcbChipId10,
+  },
 };
 
 export function getProductType(id) {
@@ -82,6 +80,10 @@ export function getProductType(id) {
     case univEwodChipId5:
     case univEwodChipId10:
       return 'UNIVEWODCHIPID';
+    case pcbChipId:
+    case pcbChipId5:
+    case pcbChipId10:
+      return 'PCBCHIPID';
     default:
       return '';
   }

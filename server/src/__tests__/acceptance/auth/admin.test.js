@@ -1,5 +1,4 @@
 /* eslint-disable no-undef */
-/* eslint-disable space-before-function-paren */
 
 const request = require('supertest');
 

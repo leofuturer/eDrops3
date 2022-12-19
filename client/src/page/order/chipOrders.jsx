@@ -50,7 +50,7 @@ class ChipOrders extends React.Component {
 
     API.Request(url, 'GET', {}, true)
       .then((res) => {
-        console.log(res);
+        // console.log(res);
         if (this.state.workerId) {
           res.data = res.data.filter((orderChip) => orderChip.workerId === this.state.workerId);
         }
@@ -99,17 +99,21 @@ class ChipOrders extends React.Component {
 
   handleSubmit(e) {
     e.preventDefault();
-    const dropdown = document.getElementById('status-selection');
+    // const dropdown = document.getElementById('status-selection');
+    // const selectedStatus = dropdown.options[dropdown.selectedIndex].value;
+    // const chipOrderId = Number(e.target.id.replace(/[^0-9]/ig, ''));
+  
+    const chipOrderId = Number(e.target.getAttribute('data-item-id'));
+    const dropdown = document.getElementById(`status-selection-${chipOrderId}`);
     const selectedStatus = dropdown.options[dropdown.selectedIndex].value;
-    const chipOrderId = Number(e.target.id.replace(/[^0-9]/ig, ''));
-    const url = editOrderStatus.replace('id', this.state.orderList[chipOrderId].id);
+    const url = editOrderStatus.replace('id', chipOrderId);
     const data = { status: selectedStatus };
     API.Request(url, 'PATCH', data, true)
       .then((res) => {
         alert('Status updated!');
       })
       .catch((err) => {
-        console.log(err);
+        console.error(err);
       });
   }
 
@@ -181,9 +185,10 @@ class ChipOrders extends React.Component {
                                   id="edit-order-status-form"
                                   className="edit-order-status-form"
                                   onSubmit={this.handleSubmit}
+                                  data-item-id={item.id}
                                 >
-                                  <select id="status-selection" className="order-status" name="status" defaultValue={item.status}>
-                                    <option value="Fab Req Received">Fab Req Received</option>
+                                  <select id={`status-selection-${item.id}`} className="order-status" name="status" defaultValue={item.status}>
+                                    <option value="Fabrication request received">Fab Req Received</option>
                                     <option value="Project Started">Project Started</option>
                                     <option value="Project Completed">Project Completed</option>
                                     <option value="Item Shipped">Item Shipped</option>

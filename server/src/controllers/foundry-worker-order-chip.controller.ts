@@ -12,7 +12,7 @@ import {
 } from '@loopback/rest';
 import { SecurityBindings, UserProfile } from '@loopback/security';
 import { OrderChip } from '../models';
-import { FoundryWorkerRepository, OrderChipRepository } from '../repositories';
+import { FoundryWorkerRepository, OrderChipRepository, OrderInfoRepository } from '../repositories';
 
 export class FoundryWorkerOrderChipController {
   constructor(
@@ -20,6 +20,8 @@ export class FoundryWorkerOrderChipController {
     protected foundryWorkerRepository: FoundryWorkerRepository,
     @repository(OrderChipRepository)
     protected orderChipRepository: OrderChipRepository,
+    @repository(OrderInfoRepository)
+    protected orderInfoRepository: OrderInfoRepository,
     @inject(RestBindings.Http.RESPONSE) protected response: Response,
     @inject(SecurityBindings.USER, {optional: true})
     protected user: UserProfile,
@@ -41,7 +43,7 @@ export class FoundryWorkerOrderChipController {
     @param.path.string('id') id: string,
     @param.query.object('filter') filter?: Filter<OrderChip>,
   ): Promise<OrderChip[]> {
-    return this.foundryWorkerRepository.orderChips(id).find(filter);
+    return await this.foundryWorkerRepository.orderChips(id).find(filter);
   }
 
   @get('/foundryWorkers/{id}/downloadFile')

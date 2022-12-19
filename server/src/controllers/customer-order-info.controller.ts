@@ -8,6 +8,7 @@ import {
   requestBody,
   response
 } from '@loopback/rest';
+import { ConfigurationServicePlaceholders } from 'aws-sdk/lib/config_service_placeholders';
 import { Customer, OrderChip, OrderInfo } from '../models';
 import { CustomerRepository, OrderInfoRepository } from '../repositories';
 
@@ -32,23 +33,14 @@ export class CustomerOrderInfoController {
     },
   })
   async find(
-    @param.path.string('id') id: string,
-    @param.query.object('filter') filter?: Filter<OrderInfo>,
+    @param.path.string('id') id: typeof Customer.prototype.id,
   ): Promise<OrderChip[]> {
     let allOrderChips: OrderChip[] = [];
-    this.customerRepository
-      .orderInfos(id)
-      .find(filter)
-      .then(orderInfos => {
-        orderInfos.forEach(orderInfo => {
-          this.orderInfoRepository
-            .orderChips(orderInfo.id)
-            .find()
-            .then(orderChips => {
-              allOrderChips = allOrderChips.concat(orderChips);
-            });
-        });
-      });
+    const customerOrders = await this.customerRepository.orderInfos(id).find({include: [{relation : 'orderChips'}]});
+    customerOrders.map((orderInfo) => {
+      allOrderChips = allOrderChips.concat.apply(allOrderChips, orderInfo.orderChips);
+    });
+
     return allOrderChips;
   }
 
@@ -58,7 +50,7 @@ export class CustomerOrderInfoController {
         description: 'Get customer orders',
         content: {
           'application/json': {
-            schema: {type: 'array', items: getModelSchemaRef(OrderChip)},
+            schema: {type: 'array', items: getModelSchemaRef(OrderInfo)},
           },
         },
       },

@@ -1,20 +1,20 @@
 import {model, property} from '@loopback/repository';
 import {OrderItemBase} from '.';
 
-@model({
-  settings: {
-    plural: 'orderProducts',
-    remoting: {
-      sharedMethods: {
-        '*': false,
-        deleteById: true,
-        'prototype.patchAttributes': true,
-        'prototype.replaceById': true,
-      },
-    },
-    mysql: {table: 'orderProduct'},
-  },
-})
+// @model({
+//   settings: {
+//     plural: 'orderProducts',
+//     remoting: {
+//       sharedMethods: {
+//         '*': false,
+//         deleteById: true,
+//         'prototype.patchAttributes': true,
+//         'prototype.replaceById': true,
+//       },
+//     },
+//   },
+// })
+@model({settings: {description: 'Product order information'}})
 export class OrderProduct extends OrderItemBase {
   // @property({
   //   type: 'number',

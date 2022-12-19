@@ -1,32 +1,43 @@
-import {model, property, hasMany, belongsTo, Entity} from '@loopback/repository';
+import {
+  model,
+  property,
+  hasMany,
+  belongsTo,
+  Entity,
+} from '@loopback/repository';
 import {User} from '.';
 import {OrderChip} from './order-chip.model';
 
+// @model({
+//   settings: {
+//     validateUpsert: true,
+//     idInjection: true,
+//     remoting: {
+//       sharedMethods: {
+//         '*': false,
+//         create: true,
+//         findById: true,
+//         deleteById: true,
+//         'prototype.patchAttributes': true,
+//         'prototype.replaceById': true,
+//         find: true,
+//         login: true,
+//         logout: true,
+//         resetPassword: true,
+//         setPassword: true,
+//         changePassword: true,
+//         'prototype.downloadFile': true,
+//         'prototype.getChipOrders': true,
+//         getWorkerID: true
+//       }
+//     },
+//   }
+// })
 @model({
   settings: {
-    validateUpsert: true,
-    idInjection: true,
-    remoting: {
-      sharedMethods: {
-        '*': false,
-        create: true,
-        findById: true,
-        deleteById: true,
-        'prototype.patchAttributes': true,
-        'prototype.replaceById': true,
-        find: true,
-        login: true,
-        logout: true,
-        resetPassword: true,
-        setPassword: true,
-        changePassword: true,
-        'prototype.downloadFile': true,
-        'prototype.getChipOrders': true,
-        getWorkerID: true
-      }
-    },
-    mysql: {table: 'foundryWorker'}
-  }
+    description: 'Additional foundry worker information',
+    forceId: false,
+  },
 })
 export class FoundryWorker extends User {
   // @property({
@@ -36,7 +47,7 @@ export class FoundryWorker extends User {
   //   updateOnly: true,
   // })
   // id?: number;
-  
+
   @property({
     type: 'string',
   })
