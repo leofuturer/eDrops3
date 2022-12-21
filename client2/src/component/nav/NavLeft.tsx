@@ -23,11 +23,11 @@ function NavLeft() {
           <p className="">Cart</p>
         </AuthNavLeftLink>
         <AuthNavLeftLink to="/manage/customer-orders" userTypes={['customer']}>
-          <i className="fa fa-money aspect-square" />
+          <i className="fa fa-money-bill aspect-square" />
           <p className="">Orders</p>
         </AuthNavLeftLink>
         <AuthNavLeftLink to="/manage/all-orders" userTypes={['admin']}>
-          <i className="fa fa-money aspect-square" />
+          <i className="fa fa-money-bill aspect-square" />
           <p className="">Orders</p>
         </AuthNavLeftLink>
         <AuthNavLeftLink to="/manage/files" userTypes={['customer']}>
