@@ -1,4 +1,3 @@
-import React, { Component } from 'react';
 import $ from 'jquery';
 import Cookies from 'js-cookie';
 import {
@@ -6,125 +5,101 @@ import {
 } from '../../api/serverConfig';
 import API from '../../api/api';
 import DeleteModal from '../../component/modal/DeleteModal';
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Admin } from '../../types';
+import { useCookies } from 'react-cookie';
 
-class Admins extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      adminList: [],
-    };
-    this.handleAddAdmin = this.handleAddAdmin.bind(this);
-    this.componentDidMount = this.componentDidMount.bind(this);
-    this.handleEditAdmin = this.handleEditAdmin.bind(this);
-    this.handleDeleteAdmin = this.handleDeleteAdmin.bind(this);
-    this.handleDelete = this.handleDelete.bind(this);
+function Admins() {
+  const [adminList, setAdminList] = useState<Admin[]>([]);
+  const [showDelete, setShowDelete] = useState(false);
+  const [deleteAdmin, setDeleteAdmin] = useState<Admin>({} as Admin);
+
+  const navigate = useNavigate();
+
+  const [cookies] = useCookies(['userId'])
+
+  function handleAddAdmin() {
+    navigate('/manage/admins/addNewAdmin');
   }
 
-  handleAddAdmin() {
-    const _this = this;
-    _this.props.history.push('/manage/admins/addNewAdmin');
-  }
-
-  componentDidMount() {
-    const url = findAdminByWhere;
-    API.Request(url, 'GET', {}, true)
-      .then((response) => {
-        this.setState({ adminList: response.data });
+  useEffect(() => {
+    API.Request(findAdminByWhere, 'GET', {}, true)
+      .then((res) => {
+        setAdminList(res.data);
       })
       .catch((err) => console.log(err));
-  }
+  }, []);
 
-  handleEditAdmin(e) {
-    const admin = JSON.parse(e.target.getAttribute('admin'));
-    this.props.history.push('/manage/admins/editAdmin', {
-      adminId: admin.id,
-      adminInfo: admin,
+  function handleEditAdmin(admin: Admin) {
+    navigate('/manage/admins/editAdmin', {
+      state: {
+        adminId: admin.id,
+        adminInfo: admin,
+      },
     });
   }
 
-  handleDeleteAdmin(e) {
-    const admin = JSON.parse(e.target.getAttribute('admin'));
-    this.setState({ deleteAdmin: admin });
+  function handleDeleteAdmin(admin: Admin) {
+    setShowDelete(true);
+    setDeleteAdmin(admin);
   }
 
-  handleDelete() {
-    const admin = this.state.deleteAdmin;
-    let url = `${userBaseFind}?filter={"where": {"email": "${admin.email}"}}`;
-    API.Request(url, 'GET', {}, true)
-      .then((res) => {
-        const userBaseId = res.data[0].id;
-        url = userBaseDeleteById.replace('id', userBaseId);
-        API.Request(url, 'DELETE', {}, true)
-          .then((res) => {
-            const url = deleteAdminById.replace('id', admin.id);
-            const classSelector = `#admin${admin.id}`;
-            API.Request(url, 'DELETE', {}, true)
-              .then((response) => {
-                $(classSelector).remove();
-              })
-              .catch((err) => {
-                console.error(err);
-              });
-          })
-          .catch((err) => {
-            console.error(err);
-          });
-      })
-      .catch((err) => {
-        console.error(err);
-      });
+  function handleDelete() {
+    API.Request(`${userBaseFind}?filter={"where": {"email": "${deleteAdmin.email}"}}`, 'GET', {}, true)
+      .then((res) => API.Request(userBaseDeleteById.replace('id', res.data[0].id), 'DELETE', {}, true))
+      .then((res) => API.Request(deleteAdminById.replace('id', deleteAdmin.id), 'DELETE', {}, true))
+      .then((res) => setAdminList(adminList.filter((admin) => admin.id !== deleteAdmin.id)))
+      .catch((err) => console.error(err));
   }
 
-  render() {
-    return (
-      <div className="right-route-content">
-        <div className="profile-content">
-          <h2>All Admins</h2>
-        </div>
-        <div className="content-show-table row">
-          <div>
-            <button className="btn btn-primary" onClick={this.handleAddAdmin}>Add New Admin</button>
-          </div>
-          <div className="table-background">
-            <table className="table">
-              <thead>
-                <tr>
-                  <th>ID</th>
-                  <th>Phone</th>
-                  <th>Realm</th>
-                  <th>Login username</th>
-                  <th>E-mail</th>
-                  <th>Edit</th>
-                  <th>Delete</th>
-                </tr>
-              </thead>
-              <tbody>
-                {this.state.adminList.map((admin) => (
-                  <tr id={`admin${admin.id}`} key={admin.id}>
-                    <td>{admin.id}</td>
-                    <td>{admin.phoneNumber}</td>
-                    <td>{admin.realm == null ? 'Null' : admin.realm}</td>
-                    <td>{admin.username}</td>
-                    <td>{admin.email}</td>
-                    <td>
-                      <i className="fa fa-edit" admin={JSON.stringify(admin)} onClick={this.handleEditAdmin} />
-                    </td>
-                    {admin.id !== parseInt(Cookies.get('userId'))
-                      && (
-                      <td>
-                        <i className="fa fa-trash" admin={JSON.stringify(admin)} data-toggle="modal" data-target="#deleteModal" onClick={this.handleDeleteAdmin} />
-                      </td>
-                      )}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-        <DeleteModal handleHide={() => {}} handleDelete={this.handleDelete} />
+  return (
+    <div className="right-route-content">
+      <div className="profile-content">
+        <h2>All Admins</h2>
       </div>
-    );
-  }
+      <div className="content-show-table row">
+        <div>
+          <button type="button" className="btn btn-primary" onClick={handleAddAdmin}>Add New Admin</button>
+        </div>
+        <div className="table-background">
+          <table className="table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Phone</th>
+                <th>Realm</th>
+                <th>Login username</th>
+                <th>E-mail</th>
+                <th>Edit</th>
+                <th>Delete</th>
+              </tr>
+            </thead>
+            <tbody>
+              {adminList.map((admin: Admin) => (
+                <tr id={`admin${admin.id}`} key={admin.id}>
+                  <td>{admin.id}</td>
+                  <td>{admin.phoneNumber}</td>
+                  <td>{admin.realm == null ? 'Null' : admin.realm}</td>
+                  <td>{admin.username}</td>
+                  <td>{admin.email}</td>
+                  <td>
+                    <i className="fa fa-edit" onClick={() => handleEditAdmin(admin)} />
+                  </td>
+                  {admin.id !== cookies.userId && (
+                    <td>
+                      <i className="fa fa-trash" onClick={() => handleDeleteAdmin(admin)} />
+                    </td>
+                  )}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+      {showDelete && <DeleteModal handleHide={() => setShowDelete(false)} handleDelete={handleDelete} />}
+    </div>
+  );
 }
 
 export default Admins;

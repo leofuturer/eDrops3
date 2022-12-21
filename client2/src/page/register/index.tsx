@@ -1,485 +1,108 @@
-import React from 'react';
+import { ErrorMessage, Field, Form, Formik, FormikConfig } from 'formik';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { ValidationError } from 'yup';
 import API from '../../api/api';
-import { customerSignUp, customerCredsTaken, userSignUp } from '../../api/serverConfig';
-import constraints from './formConstraints';
+import { customerSignUp } from '../../api/serverConfig';
+import FormGroup from '../../component/form/FormGroup';
+import SEO from '../../component/header/SEO';
+import { SignupSchema, SignupSubmitSchema } from '../../schemas';
+import { Address, Customer } from '../../types';
+import { metadata } from './metadata';
 
-import { closestParent, showErrorsOrSuccessForInput } from '../../utils/validate';
+function Register() {
+  const [requestInProgress, setRequestInProgress] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
+  const navigate = useNavigate();
 
-import SEO from '../../component/header/SEO.js';
-import { metadata } from './metadata.js';
-
-import validate from 'validate.js';
-
-class Register extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      street: '',
-      streetLine2: '',
-      firstName: '',
-      lastName: '',
-      phoneNumber: '',
-      country: 'United States',
-      state: '',
-      city: '',
-      zipCode: '',
-      customerType: 'person',
-      username: '',
-      email: '',
-      password: '',
-      confirmPassword: '',
-      requestInProgress: false,
-      errorMessage: '',
-    };
-    this.handleRegister = this.handleRegister.bind(this);
-    this.handleChange = this.handleChange.bind(this);
-    this.handleValidateInput = this.handleValidateInput.bind(this);
-    this.handleCheckConfirmPassword = this.handleCheckConfirmPassword.bind(this);
-    this.handleFormSubmit = this.handleFormSubmit.bind(this);
-  }
-
-  handleChange(key, value) {
-    this.setState(
-      {
-        [key]: value,
-      },
-    );
-  }
-
-  handleValidateInput(e) {
-    const ele = e.target;
-    const form = closestParent(e.target, 'vertical-form');
-    const errors = validate(form, constraints) || {};
-    showErrorsOrSuccessForInput(ele, errors[ele.name]);
-
-    // check for duplicates
-    const data = {
-      username: `${e.target.id === 'inputUsername' && e.target.value}`,
-      email: `${e.target.id === 'inputEmail' && e.target.value}`,
-    };
-    const url = customerCredsTaken;
-    API.Request(url, 'POST', data, false)
-      .then((res) => {
-        if (res.data.usernameTaken) {
-          errors.username = ['Account already exists with this username'];
-          const input1 = document.getElementById('inputUsername');
-          showErrorsOrSuccessForInput(input1, errors.username);
-        }
-        if (res.data.emailTaken) {
-          errors.email = ['Account already exists with this email'];
-          const emailInput = document.getElementById('inputEmail');
-          showErrorsOrSuccessForInput(emailInput, errors.email);
-        }
-      });
-  }
-
-  handleFormSubmit(e) {
-    const form = document.querySelector('.vertical-form');
-    const errors = {};
-    this.setState({
-      requestInProgress: true,
-    });
-    validate.async(form, constraints, { cleanAttributes: false })
-      .then((success) => {
-        const data = {
-          username: document.getElementById('inputUsername').value,
-          email: document.getElementById('inputEmail').value,
-        };
-        const url = customerCredsTaken;
-        API.Request(url, 'POST', data, false).then((res) => {
-          if (res.data.usernameTaken) {
-            errors.username = ['Account already exists with this username'];
-            const input1 = document.getElementById('inputUsername');
-            showErrorsOrSuccessForInput(input1, errors.username);
-            this.setState({
-              requestInProgress: false,
-            });
-          }
-          if (res.data.emailTaken) {
-            errors.email = ['Account already exists with this email'];
-            const emailInput = document.getElementById('inputEmail');
-            showErrorsOrSuccessForInput(emailInput, errors.email);
-            this.setState({
-              requestInProgress: false,
-            });
-          } else if (!res.data.emailTaken && !res.data.usernameTaken) {
-            this.handleRegister(e);
-          }
-        });
-      })
-      .catch((errors) => {
-        form.querySelectorAll('input.needValidation').forEach((input, index) => {
-          if (this) {
-            showErrorsOrSuccessForInput(input, errors && errors[input.name]);
-          }
-        });
-        this.setState({
-          requestInProgress: false,
-        });
-      });
-  }
-
-  handleCheckConfirmPassword() {
-    if (this.state.confirmPassword !== '') {
-      const conf = document.getElementsByTagName('input')[3];
-      conf.focus();
-      conf.blur();
-    }
-  }
-
-  handleRegister(e) {
-    const customerData = {
-      firstName: this.state.firstName,
-      lastName: this.state.lastName,
-      phoneNumber: this.state.phoneNumber,
-      customerType: this.state.customerType,
-      username: this.state.username,
-      email: this.state.email,
-      password: this.state.password,
-      street: this.state.street,
-      streetLine2: this.state.streetLine2,
-      country: this.state.country,
-      state: this.state.state,
-      city: this.state.city,
-      zipCode: this.state.zipCode,
-      isDefault: true,
-    };
-
+  function handleRegister(customerData: Omit<Address, 'id'> & Customer) {
     API.Request(customerSignUp, 'POST', customerData, false)
       .then((res) => {
-        this.props.history.push('/checkEmail');
-        this.setState({
-          errorMessage: '',
-        });
+        navigate('/checkEmail');
+        setErrorMessage('');
       })
       .catch((error) => {
         console.error(error);
-        this.setState({
-          requestInProgress: false,
-          errorMessage: 'There was an error when registering your account. Please try again.',
-        });
+        setRequestInProgress(false);
+        setErrorMessage('There was an error when registering your account. Please try again.');
       });
   }
 
-  render() {
-    return (
-      <div>
-        <SEO
-          title="eDrops | Register"
-          description=""
-          metadata={metadata}
-        />
-        <div className="login-input">
-          <div className="register-login-content">
-            <h3>Sign Up</h3>
-            <div className="border-h3" />
-            <div className="form-div-register">
-              <form id="main" className="vertical-form" action="" noValidate>
-                <div className="input-content-register">
-                  <div className="text-left reminder">
-                    <small className="text-muted">Fields with * are required</small>
-                  </div>
-                  <div className="form-group row">
-                    <label htmlFor="inputEmail" className="col-md-2 col-sm-2 col-xs-2 control-label">
-                      <span>Email*</span>
-                    </label>
-                    <div className="col-md-6 col-sm-6 col-xs-6 text-left">
-                      <input
-                        id="inputEmail"
-                        type="email"
-                        name="email"
-                        autoComplete="email"
-                        className="form-control needValidation"
-                        placeholder="Email"
-                        onChange={(v) => this.handleChange('email', v.target.value)}
-                        onBlur={this.handleValidateInput}
-                      />
-                    </div>
-                    <div className="col-md-4 col-sm-4 col-xs-4 messages">
-                      <small className="text-muted">Valid Email Required</small>
-                    </div>
-                  </div>
-                  <div className="form-group row">
-                    <label className="col-md-2 col-sm-2 col-xs-2 control-label">
-                      <span>Username*</span>
-                    </label>
-                    <div className="col-md-6 col-sm-6 col-xs-6">
-                      <input
-                        type="text"
-                        id="inputUsername"
-                        name="username"
-                        autoComplete="username"
-                        className="form-control needValidation"
-                        placeholder="Username"
-                        onChange={(v) => this.handleChange('username', v.target.value)}
-                        onBlur={this.handleValidateInput}
-                      />
-                    </div>
-                    <div className="col-md-4 col-sm-4 col-xs-4 messages">
-                      <small className="text-muted">Username must be at least 4 characters and only contain a-zA-Z0-9_</small>
-                    </div>
-                  </div>
-                  <div className="form-group row">
-                    <label className="col-md-2 col-sm-2 col-xs-2 control-label">
-                      <span>Password*</span>
-                    </label>
-                    <div className="col-md-6 col-sm-6 col-xs-6 text-left">
-                      <input
-                        type="password"
-                        name="password"
-                        className="form-control needValidation"
-                        placeholder="Password"
-                        autoComplete="new-password"
-                        onChange={(v) => this.handleChange('password', v.target.value)}
-                        onBlur={(e) => {
-                          this.handleValidateInput(e);
-                          this.handleCheckConfirmPassword();
-                        }}
-                      />
-                    </div>
-                    <div className="col-md-4 col-sm-4 col-xs-4 messages">
-                      <small className="text-muted">
-                        Password must contain at least a number, capital
-                        letter and lowercase letter, and at least 8 characters
-                      </small>
-                    </div>
-                  </div>
-                  <div className="form-group row">
-                    <label className="col-md-2 col-sm-2 col-xs-2 control-label">
-                      <span>Confirm Password*</span>
-                    </label>
-                    <div className="col-md-6 col-sm-6 col-xs-6 text-left">
-                      <input
-                        type="password"
-                        name="confirmPassword"
-                        className="form-control needValidation"
-                        placeholder="Confirm Password"
-                        autoComplete="new-password"
-                        onChange={(v) => this.handleChange('confirmPassword', v.target.value)}
-                        onBlur={this.handleValidateInput}
-                      />
-                    </div>
-                    <div className="col-md-4 col-sm-4 col-xs-4 messages">
-                      <small className="text-muted">Please retype your password</small>
-                    </div>
-                  </div>
-
-                  <div className="form-group row">
-                    <label className="col-md-2 col-sm-2 col-xs-2 control-label">
-                      <span>First Name*</span>
-                    </label>
-                    <div className="col-md-6 col-sm-6 col-xs-6">
-                      <input
-                        type="text"
-                        className="form-control needValidation"
-                        name="firstName"
-                        placeholder="First Name"
-                        autoComplete="given-name"
-                        onChange={(v) => this.handleChange('firstName', v.target.value)}
-                        onBlur={this.handleValidateInput}
-                      />
-                    </div>
-                    {/* does name="firstName" need to be added here? */}
-                    <div className="col-md-4 col-sm-4 col-xs-4 messages">
-                      <small className="text-muted" />
-                    </div>
-                  </div>
-                  <div className="form-group row">
-                    <label className="col-md-2 col-sm-2 col-xs-2 control-label">
-                      <span>Last Name*</span>
-                    </label>
-                    <div className="col-md-6 col-sm-6 col-xs-6">
-                      <input
-                        type="text"
-                        className="form-control needValidation"
-                        name="lastName"
-                        placeholder="Last Name"
-                        autoComplete="family-name"
-                        onChange={(v) => this.handleChange('lastName', v.target.value)}
-                        onBlur={this.handleValidateInput}
-                      />
-                    </div>
-                    {/* does name="lastname" need to be added here? */}
-                    <div className="col-md-4 col-sm-4 col-xs-4 messages">
-                      <small className="text-muted" />
-                    </div>
-                  </div>
-                  <div className="form-group row">
-                    <label className="col-md-2 col-sm-2 col-xs-2 control-label">
-                      <span>User Type*</span>
-                    </label>
-                    <div className="col-md-6 col-sm-6 col-xs-6 text-left">
-                      <label className="radio-inline">
-                        <input
-                          type="radio"
-                          name="userType"
-                          value="Person"
-                          onClick={(v) => this.handleChange('userType', v.target.value)}
-                          onBlur={this.handleValidateInput}
-                        />
-                        <span className="txt-radio">Person</span>
-                      </label>
-                      <label className="radio-inline" style={{ marginLeft: '80px' }}>
-                        <input
-                          type="radio"
-                          name="userType"
-                          value="Company"
-                          onClick={(v) => this.handleChange('userType', v.target.value)}
-                          onBlur={this.handleValidateInput}
-                        />
-                        <span className="txt-radio">Company</span>
-                      </label>
-                    </div>
-                    <div className="col-md-4 col-sm-4 col-xs-4 messages">
-                      <small className="text-muted">Personal or associated with a company</small>
-                    </div>
-                  </div>
-                  <div className="form-group row">
-                    <label className="col-md-2 col-sm-2 col-xs-2 control-label">
-                      <span>Phone Number</span>
-                    </label>
-                    <div className="col-md-6 col-sm-6 col-xs-6 text-left">
-
-                      <input
-                        type="text"
-                        name="phoneNumber"
-                        className="form-control needValidation"
-                        placeholder="Phone Number"
-                        autoComplete="tel"
-                        onChange={(v) => this.handleChange('phoneNumber', v.target.value)}
-                        onBlur={this.handleValidateInput}
-                      />
-                    </div>
-                    <div className="col-md-4 col-sm-4 col-xs-4 messages">
-                      <small className="text-muted">Include area code, and if outside the US, country code</small>
-                    </div>
-                    {/* <div className="col-md-4 col-sm-4 col-xs-4 messages-unset"></div> */}
-                  </div>
-
-                  <div className="form-group row">
-                    <label className="col-md-2 col-sm-2 col-xs-2 control-label">
-                      <span>Street Line 1</span>
-                    </label>
-                    <div className="col-md-6 col-sm-6 col-xs-6 text-left">
-                      <input
-                        type="text"
-                        className="form-control"
-                        placeholder="Street"
-                        autoComplete="address-line1"
-                        onChange={(v) => this.handleChange('street', v.target.value)}
-                      />
-                    </div>
-                    <div className="col-md-4 col-sm-4 col-xs-4 messages-unset" />
-                  </div>
-
-                  <div className="form-group row">
-                    <label className="col-md-2 col-sm-2 col-xs-2 control-label">
-                      <span>Street Line 2</span>
-                    </label>
-                    <div className="col-md-6 col-sm-6 col-xs-6 text-left">
-                      <input
-                        type="text"
-                        className="form-control"
-                        placeholder="Street Line 2 (optional)"
-                        autoComplete="address-line2"
-                        onChange={(v) => this.handleChange('streetLine2', v.target.value)}
-                      />
-                    </div>
-                    <div className="col-md-4 col-sm-4 col-xs-4 messages-unset" />
-                  </div>
-
-                  <div className="form-group row">
-                    <label className="col-md-2 col-sm-2 col-xs-2 control-label">
-                      <span>City</span>
-                    </label>
-                    <div className="col-md-6 col-sm-6 col-xs-6 text-left">
-                      <input
-                        type="text"
-                        className="form-control"
-                        placeholder="City"
-                        autoComplete="address-level2"
-                        onChange={(v) => this.handleChange('city', v.target.value)}
-                      />
-                    </div>
-                    <div className="col-md-4 col-sm-4 col-xs-4 messages-unset" />
-                  </div>
-
-                  <div className="form-group row">
-                    <label className="col-md-2 col-sm-2 col-xs-2 control-label">
-                      <span>State or Province</span>
-                    </label>
-                    <div className="col-md-6 col-sm-6 col-xs-6 text-left">
-                      <input
-                        type="text"
-                        className="form-control"
-                        placeholder="State or Province"
-                        autoComplete="address-level1"
-                        onChange={(v) => this.handleChange('state', v.target.value)}
-                      />
-                    </div>
-                    <div className="col-md-4 col-sm-4 col-xs-4 messages-unset" />
-                  </div>
-
-                  <div className="form-group row">
-                    <label className="col-md-2 col-sm-2 col-xs-2 control-label">
-                      <span>Zip or Postal Code</span>
-                    </label>
-                    <div className="col-md-6 col-sm-6 col-xs-6 text-left">
-                      <input
-                        type="text"
-                        className="form-control"
-                        placeholder="Zip or Postal Code"
-                        autoComplete="postal-code"
-                        onChange={(v) => this.handleChange('zipCode', v.target.value)}
-                      />
-                    </div>
-                    <div className="col-md-4 col-sm-4 col-xs-4 messages-unset" />
-                  </div>
-
-                  <div className="form-group row">
-                    <label className="col-md-2 col-sm-2 col-xs-2 control-label">
-                      <span>Country</span>
-                    </label>
-                    <div className="col-md-6 col-sm-6 col-xs-6 text-left">
-                      <input
-                        type="text"
-                        className="form-control"
-                        placeholder="Country"
-                        autoComplete="country-name"
-                        onChange={(v) => this.handleChange('country', v.target.value)}
-                      />
-                    </div>
-                    <div className="col-md-4 col-sm-4 col-xs-4 messages-unset" />
-                  </div>
-
-                  <div className="form-group login-btn">
-                    {
-                      this.state.requestInProgress
-                        ? <img src="/img/loading80px.gif" alt="" />
-                        : (
-                          <input
-                            type="button"
-                            value="Sign Up"
-                            className="input-btn"
-                            onClick={this.handleFormSubmit}
-                          />
-                        )
-                    }
-                  </div>
-                  <div className="form-group">
-                    <small className="text-muted text-center text-danger w-100">
-                      {this.state.errorMessage}
-                    </small>
-                  </div>
-                </div>
-              </form>
+  return (
+    <div className="flex items-center justify-center py-20">
+      <SEO
+        title="eDrops | Register"
+        description=""
+        metadata={metadata}
+      />
+      <div className="flex flex-col shadow-box-sm rounded-lg py-4 w-1/2 px-20 space-y-2">
+        <h3 className="text-secondary text-2xl text-center font-bold border-b-2 pb-2 border-secondary">Sign Up</h3>
+        <Formik
+          validationSchema={SignupSchema}
+          initialValues={{
+            street: '',
+            streetLine2: '',
+            firstName: '',
+            lastName: '',
+            phoneNumber: '',
+            country: '',
+            state: '',
+            city: '',
+            zipCode: '',
+            customerType: 'person',
+            username: '',
+            email: '',
+            password: '',
+            confirmPassword: '',
+          }}
+          onSubmit={(values, actions) => SignupSubmitSchema.validate(values, { abortEarly: false }).then(() => {
+            handleRegister({...values, isDefault: true })
+          }).catch(
+            (err) => {
+              const errors = err.inner.reduce((acc: object, curr: ValidationError) => {
+                return {
+                  ...acc,
+                  [curr.path as string]: curr.message,
+                };
+              }, {});
+              actions.setErrors(errors);
+            }
+          )}
+        >
+          <Form className="flex flex-col space-y-2">
+            <p className="text-xs text-gray-500">Fields with * are required</p>
+            <FormGroup name="email" required type="email" />
+            <FormGroup name="username" required />
+            <FormGroup name="password" required type="password" />
+            <FormGroup name="confirmPassword" required type="password" />
+            <FormGroup name="firstName" required />
+            <FormGroup name="lastName" required />
+            <div className="grid grid-cols-4 gap-4 items-center">
+              <label htmlFor="customerType" className="text-sm font-bold">User Type*</label>
+              <Field id="customerType" name="customerType" as="select" className="outline outline-1 shadow-inner focus:shadow-box-sm  rounded px-1 py-1 col-span-2 outline-gray-400 focus:shadow-primary_light focus:outline-primary_light">
+                <option value="person">Person</option>
+                <option value="business">Company</option>
+              </Field>
+              <ErrorMessage name="customerType" component="p" className="text-red-700 text-xs w-36 text-center" />
             </div>
-          </div>
+            <FormGroup name="phoneNumber" />
+            <FormGroup name="streetLine1" displayName="Street" />
+            <FormGroup name="streetLine2" />
+            <FormGroup name="city" />
+            <FormGroup name="stateOrProvince" displayName="State or Province" />
+            <FormGroup name="zipOrPostalCode" displayName="Zip or Postal Code" />
+            <FormGroup name="country" />
+            <button type="submit" className="bg-secondary text-white rounded-lg px-4 py-2">Submit</button>
+          </Form>
+        </Formik>
+        <div className="form-group">
+          <small className="text-muted text-center text-danger w-100">
+            {errorMessage}
+          </small>
         </div>
-        <div className="hr-div-login" />
       </div>
-    );
-  }
+    </div >
+  );
 }
 
 export default Register;

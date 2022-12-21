@@ -1,184 +1,105 @@
-import React from 'react';
-import './forgetPass.css';
-import { userForgetPass, customerResendVerifyEmail } from '../../api/serverConfig';
+import { Field, FieldProps, Form, Formik } from 'formik';
+import { useState } from 'react';
+import * as Yup from 'yup';
 import API from '../../api/api';
-import constraints from './formConstraints';
+import { customerResendVerifyEmail, userForgetPass } from '../../api/serverConfig';
+import MessageLayout from '../../component/layout/MessageLayout';
 
-import { closestParent, showErrorsOrSuccessForInput } from '../../utils/validate';
+function ForgetPass() {
+  const [successMessage, setSuccessMessage] = useState(false);
 
-import validate from 'validate.js';
-
-// This page also allows for the resending of the email verification message.
-
-class FormsPage extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      email: '',
-      requestInProgressReset: false,
-      requestInProgressResend: false,
-      successMessage: false,
-    };
-    this.handleHelp = this.handleHelp.bind(this);
-    this.handleValidateInput = this.handleValidateInput.bind(this);
-  }
-
-  handleChange(key, value) {
-    this.setState({
-      [key]: value,
-    });
-  }
-
-  handleValidateInput(e) {
-    const ele = e.target;
-    const form = closestParent(e.target, 'vertical-form');
-    const errors = validate(form, constraints) || {};
-    showErrorsOrSuccessForInput(ele, errors[ele.name]);
-  }
-
-  handleHelp(e) {
-    const helpType = e;
+  function handleHelp(email: string, helpType: 'resetPassword' | 'resendEmail') {
     const data = {
-      email: this.state.email,
+      email: email,
     };
-    if (this.state.email !== '') {
-      if (helpType === 'resetPassword') {
-        this.setState({
-          requestInProgressReset: true,
-          successMessage: false,
-        });
+    switch (helpType) {
+      case 'resetPassword':
         API.Request(userForgetPass, 'POST', data, false)
           .then((res) => {
-            this.setState({
-              requestInProgressReset: false,
-              successMessage: true,
-            });
           }).catch((err) => {
             if (process.env.NODE_ENV === 'dev') {
               console.error(err); // Maybe take out as attackers can view console & brute force emails
             }
+          }).finally(() => {
             // Display a success message either way so attackers can't brute-force customer emails
-            this.setState({
-              requestInProgressReset: false,
-              successMessage: true,
-            });
+            setSuccessMessage(true);
           });
-      } else {
-        this.setState({
-          requestInProgressResend: true,
-          successMessage: false,
-        });
+        break;
+      case 'resendEmail':
         API.Request(customerResendVerifyEmail, 'POST', data, false)
           .then((res) => {
-            this.setState({
-              requestInProgressResend: false,
-              successMessage: true,
-            });
           })
           .catch((err) => {
             if (process.env.NODE_ENV === 'dev') {
               console.error(err); // Maybe take out as attackers can view console & brute force emails
             }
+          }).finally(() => {
             // Display a success message either way so attackers can't brute-force customer emails
-            this.setState({
-              requestInProgressResend: false,
-              successMessage: true,
-            });
-          });
-      }
+            setSuccessMessage(true);
+          });;
+        break;
     }
   }
 
-  handleFormSubmit(e) {
-    const v = e.target.id;
-    const form = document.querySelector('.vertical-form');
-    const errors = {};
-    this.setState({
-      requestInProgress: true,
-    });
-    validate.async(form, constraints, { cleanAttributes: false })
-      .then((success) => {
-        // console.log(v.target.id);
-        this.handleHelp(v);
-      })
-      .catch((errors) => {
-        form.querySelectorAll('input.needValidation').forEach((input, index) => {
-          if (this) {
-            showErrorsOrSuccessForInput(input, errors && errors[input.name]);
+  let submitAction: 'resetPassword' | 'resendEmail' = 'resetPassword';
+  return (
+    <MessageLayout
+      title="Account Assistance"
+      message="Please provide the email used during sign up to request help. If you do not receive an email, please check the spam folder or ensure it is typed correctly."
+    >
+      <Formik
+        initialValues={{ email: '' }}
+        validationSchema={Yup.object().shape({
+          email: Yup.string().required('Email is required').email('Email is invalid'),
+        })}
+        onSubmit={(values, { setSubmitting }) => {
+          switch (submitAction) {
+            case 'resetPassword':
+              handleHelp(values.email, 'resetPassword');
+              break;
+            case 'resendEmail':
+              handleHelp(values.email, 'resendEmail');
+              break;
           }
-        });
-      });
-  }
-
-  render() {
-    return (
-      <div>
-        <div className="background">
-          <h3>Account Assistance</h3>
-          <div className="border-h3" />
-          <div className="help-text">
-            Please provide the email used during sign up
-            to request help. If you do not receive an email,
-            please check the spam folder or ensure it is typed
-            correctly.
-          </div>
-          <div className="input-content">
-            <form className="vertical-form" action="">
-              <div className="form-group text-left">
+        }}
+      >
+        {({ handleSubmit }) => (
+          <Form className="flex flex-col space-y-2 w-1/2">
+            <Field
+              name="email"
+            >
+              {({
+                field,
+                meta,
+              }: FieldProps) => (
                 <input
                   type="text"
-                  name="email"
-                  className="form-control needValidation"
+                  className={`w-full outline outline-1 outline-gray-400 rounded shadow-inner focus:shadow-box-sm px-2 py-1 ${meta.touched ? meta.error ? 'outline-red-700 focus:shadow-red-700' : 'outline-green-600 focus:shadow-green-600' : 'outline-gray-400 focus:shadow-primary_light focus:outline-primary_light'}`}
                   placeholder="Email"
-                  onChange={(v) => this.handleChange('email', v.target.value)}
-                  onBlur={this.handleValidateInput}
+                  autoComplete="email"
+                  {...field}
                 />
-                <div className="messages pad" />
-              </div>
-              <div className="form-group login-btn">
-                {
-                  this.state.requestInProgressReset
-                    ? <img src="/img/loading80px.gif" alt="" />
-                    : (
-                      <input
-                        type="button"
-                        id="resetPassword"
-                        value="Reset Password"
-                        className="input-btn"
-                        onClick={(e) => this.handleFormSubmit(e)}
-                      />
-                    )
-                }
-              </div>
-              <div className="form-group login-btn">
-                {
-                  this.state.requestInProgressResend
-                    ? <img src="/img/loading80px.gif" alt="" />
-                    : (
-                      <input
-                        type="button"
-                        id="resendVerifyEmail"
-                        value="Resend Verification Email"
-                        className="input-btn"
-                        onClick={(e) => this.handleFormSubmit(e)}
-                      />
-                    )
-                }
-              </div>
-            </form>
-          </div>
-          {this.state.successMessage
-            ? (
-              <div className="help-text">
-                If there is an account associated with that email, the requested link has been sent. Please check
-                your email for further instructions.
-              </div>
-            )
-            : null}
-        </div>
-      </div>
-    );
-  }
+              )}
+            </Field>
+            <button type="button" className="bg-secondary text-white px-4 py-2 rounded" onClick={() => { submitAction = 'resetPassword'; handleSubmit() }}>
+              Reset Password
+            </button>
+            <button type="button" className="bg-secondary text-white px-4 py-2 rounded" onClick={() => { submitAction = 'resendEmail'; handleSubmit() }}>
+              Resend Verification Email
+            </button>
+          </Form>
+        )}
+      </Formik>
+      {
+        successMessage && (
+          <p className="">
+            If there is an account associated with that email, the requested link has been sent. Please check
+            your email for further instructions.
+          </p>
+        )
+      }
+    </MessageLayout >
+  );
 }
 
-export default FormsPage;
+export default ForgetPass;

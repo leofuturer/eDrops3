@@ -1,9 +1,7 @@
 import React from 'react';
-import './resetPassword.css';
 import { NavLink } from 'react-router-dom';
 import { customerResetPass } from '../../api/serverConfig';
 import API from '../../api/api';
-import constraints from '../register/formConstraints';
 
 import { closestParent, showErrorsOrSuccessForInput } from '../../utils/validate';
 
