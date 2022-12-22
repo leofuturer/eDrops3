@@ -1,42 +1,37 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Cookies from 'js-cookie';
 import { downloadFileById } from '../../api/serverConfig';
 import API from '../../api/api';
 import { Helper } from 'dxf';
+import { useCookies } from 'react-cookie';
 
-class DXFPreview extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      isLoading: true,
-    };
-  }
+function DXFPreview({ fileInfo }: { fileInfo: any }) {
+  const [isLoading, setIsLoading] = useState(true);
+  const [svg, setSvg] = useState('');
 
-  componentDidMount() {
-    const _this = this;
-    let url = downloadFileById.replace('id', Cookies.get('userId'));
-    url += `?fileId=${_this.props.fileInfo.id}`;
+  const [cookies] = useCookies(['userId', 'userType', 'access_token']);
 
-    API.Request(url, 'GET', {}, true)
+  useEffect(() => {
+    API.Request(`${downloadFileById.replace('id', cookies.userId)}?fileId=${fileInfo.id}`, 'GET', {}, true)
       .then((res) => {
         // dxf.config.verbose = true //for debugging purposes
         const helper = new Helper(res.data);
         // console.log(`Number of entities: ${helper.denormalised.length}`);
         const svg = helper.toSVG();
-        this.setState({ isLoading: false });
-        document.getElementById('svg').innerHTML = svg;
-        _this.rescaleSvg(svg);
+        setSvg(svg);
+        setIsLoading(false);
+        // rescaleSvg(svg);
       })
       .catch((err) => {
         console.error(err);
       });
-  }
+  }, []);
 
   /**
      * Modify the styling of the SVG that will be inserted
      * @param svg - the SVG HTML element in string form
     */
-  rescaleSvg(svg) {
+  function rescaleSvg(svg) {
     const viewIndex = svg.indexOf('viewBox');
     const firstQuote = svg.indexOf('"', viewIndex);
     const secondQuote = svg.indexOf('"', firstQuote + 1);
@@ -53,21 +48,14 @@ class DXFPreview extends React.Component {
     svgElem.style.borderColor = 'black';
   }
 
-  handleChange(key, value) {
-    this.setState({
-      [key]: value,
-    });
-  }
-
-  render() {
-    return (
-      <div style={{ textAlign: 'center' }}>
-        {this.state.isLoading
-          ? <img src="/img/loading80px.gif" alt="" />
-          : <div id="svg" className="dxf-preview" />}
-      </div>
-    );
-  }
+  return (
+    <div className="text-center">
+      {isLoading
+        ? <img src="/img/loading80px.gif" alt="" />
+        : <div dangerouslySetInnerHTML={{ '__html': svg }} className="h-[500px]" />
+      }
+    </div>
+  );
 }
 
 export default DXFPreview;

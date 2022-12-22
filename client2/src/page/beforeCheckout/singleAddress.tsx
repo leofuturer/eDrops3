@@ -1,52 +1,34 @@
 import React from 'react';
+import { Address } from '../../types';
 
-class SingleAddress extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-
-  render() {
-    const address = this.props.addressTem;
-    return (
-      <div onClick={this.props.onClick}>
-        <div className="col-lg-6 col-md-6 col-sm-6 col-xs-6">
-          <div className={`card-view ${this.props.selected}`} style={{ minHeight: '200px' }}>
-            <div className="row">
-              <div className="col-md-6 col-sm-6 col-xs-6">
-                <h4>
-                  Address
-                  {' '}
-                  {this.props.addressNum}
-                </h4>
-              </div>
-              { address.isDefault
-                ? (
-                  <div className="col-md-6 col-sm-6 col-xs-6 text-right">
-                    <div>
-                      <span className="text-span">Default Shipping</span>
-                      <i className="fa fa-cube fa-inline" />
-                    </div>
-                    <div>
-                      <span className="text-span">Default Billing</span>
-                      <i className="fa fa-credit-card fa-inline" />
-                    </div>
-                  </div>
-                )
-                : null}
+function SingleAddress({ address, addressNum, selected, onClick }: { address: Address, addressNum: number, selected: boolean, onClick: () => void }) {
+  return (
+    <div className={`flex flex-col bg-white rounded-lg p-4 shadow-box space-y-2 ${selected ? 'outline outline-primary_light' : ''}`} onClick={onClick}>
+      <div className="flex flex-row justify-between items-center">
+        <h3 className="text-xl">Address {addressNum}</h3>
+        {address.isDefault && (
+          <div className="text-sm">
+            <div className="flex justify-between items-center space-x-2">
+              <span className="">Default Shipping</span>
+              <i className="fa fa-cube fa-inline" />
             </div>
-            <div className="row">
-              <div className="row-txt-padding">{address.street}</div>
-              <div className="row-txt-padding">{address.streetLine2}</div>
-              <div className="row-txt-padding">{address.city}</div>
-              <div className="row-txt-padding">{address.state}</div>
-              <div className="row-txt-padding">{address.country}</div>
-              <div className="row-txt-padding">{address.zipCode}</div>
+            <div className="flex justify-between items-center space-x-2">
+              <span className="">Default Billing</span>
+              <i className="fa fa-credit-card fa-inline" />
             </div>
           </div>
-        </div>
+        )}
       </div>
-    );
-  }
+      <div className="flex flex-col text-sm">
+        <div className="">{address.street}</div>
+        <div className="">{address.streetLine2}</div>
+        <div className="">{address.city}</div>
+        <div className="">{address.state}</div>
+        <div className="">{address.country}</div>
+        <div className="">{address.zipCode}</div>
+      </div>
+    </div >
+  );
 }
 
 export default SingleAddress;

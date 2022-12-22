@@ -18,8 +18,7 @@ function Layout() {
         metadata={metadata}
       />
       <div className="min-h-full h-full">
-        <CartContextProvider
-        >
+        <CartContextProvider>
           <NavTop />
           <Outlet />
         </CartContextProvider>

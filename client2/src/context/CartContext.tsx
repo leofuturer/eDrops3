@@ -1,8 +1,7 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 interface Cart {
   items: number;
-  setCartQuantity: () => void;
   setProductQuantity: (quantity: number) => void;
   setChipQuantity: (quantity: number) => void;
 }
@@ -12,11 +11,12 @@ const useCart = () => {
   const [productItems, setProductItems] = useState(0);
   const [chipItems, setChipItems] = useState(0);
 
+  useEffect(() => {
+    setCartItems(productItems + chipItems);
+  }, [productItems, chipItems]);
+
   return {
     items: cartItems,
-    setCartQuantity: () => {
-      setCartItems(productItems + chipItems);
-    },
     setProductQuantity: (quantity: number) => {
       setProductItems(quantity);
     },

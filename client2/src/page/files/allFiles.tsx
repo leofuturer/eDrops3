@@ -52,7 +52,7 @@ function AllFiles() {
               <td>
                 <i
                   className="fa fa-download"
-                  onClick={this.handleDownload}
+                  onClick={handleDownload}
                 />
               </td>
               <td>{item.isDeleted ? 'Yes' : 'No'}</td>

@@ -26,10 +26,10 @@ body {
   }
 
   .table-info th {
-    @apply p-2
+    @apply p-2 text-center
   }
 
   .table-info td {
-    @apply p-2
+    @apply p-2 text-center
   }
 }

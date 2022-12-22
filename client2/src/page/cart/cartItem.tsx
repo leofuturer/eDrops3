@@ -64,6 +64,7 @@ function CartItem({ info, deleteLoading, onDelete, onChange }: { info: { product
           <input
             type="number"
             id="quantity"
+            min={1}
             className="w-12 focus:outline-none"
             value={info.quantity}
             onChange={(e) => onChange(e)}

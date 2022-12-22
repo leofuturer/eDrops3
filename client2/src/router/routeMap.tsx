@@ -45,7 +45,7 @@ import ChangePassword from '../page/changePass';
 import AddNewAddress from '../page/address/addNewAddress';
 import UpdateAddress from '../page/address/updateAddress';
 import Cart from '../page/cart';
-import { Shopify } from '../App';
+import { ShopifyContext } from '../App';
 import ManageLayout from '../component/layout/ManageLayout';
 
 function RouteMap() {
@@ -108,7 +108,7 @@ function RouteMap() {
           <Route path="changepwd" element={<ChangePassword />} />
           <Route path="files" element={<Files />} />
           <Route path="customer-orders" element={<Orders />} />
-          <Route path="cart" element={<Cart shopifyClient={Shopify.getInstance().getPrivateValue()} />} />
+          <Route path="cart" element={<Cart />} />
           {/* Pages for foundry workers */}
           <Route path="foundryworkprofile" element={<Profile />} />
           <Route path="chip-orders" element={<ChipOrders />} />

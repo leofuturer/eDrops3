@@ -12,7 +12,7 @@
     it becomes a lineItem in that "checkout"
 */
 
-import React from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import Cookies from 'js-cookie';
 import {
   getCustomerCart, manipulateCustomerOrders, addOrderChipToCart,
@@ -23,477 +23,376 @@ import {
   ewodFabServiceId,
   ewodFabServiceVariantId,
 } from '../../constants';
-import { Shopify } from '../../App';
-import DXFPreview from './dxf_preview.js';
-import CartContext from '../../context/CartContext';
+import { ShopifyContext } from '../../App';
+import DXFPreview from './dxf_preview';
+import { CartContext } from '../../context/CartContext';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { useCookies } from 'react-cookie';
 
-class ChipOrder extends React.Component {
-  constructor(props) {
-    super(props);
+function ChipOrder() {
+  const [cIndex, setCIndex] = useState(0);
+  const [material, setMaterial] = useState(['ITO Glass', 'Paper', 'PCB']);
+  const [materialVal, setMaterialVal] = useState('ITO Glass');
+  const [quantity, setQuantity] = useState(1);
+  const [wcpb, setWcpb] = useState(false);
+  const [fileInfo, setFileInfo] = useState({});
+  const [isLoading, setIsLoading] = useState(false);
+  const [GLASSID, setGLASSID] = useState(0);
+  const [PAPERID, setPAPERID] = useState(0);
+  const [PCBID, setPCBID] = useState(0);
+  const [customerName, setCustomerName] = useState('');
+  const [product, setProduct] = useState({});
+  const [orderInfoId, setOrderInfoId] = useState(undefined);
+  const [shopifyClientCheckoutId, setShopifyClientCheckoutId] = useState(undefined);
 
-    this.state = {
-      cIndex: 0,
-      material: ['ITO Glass', 'Paper', 'PCB'],
-      materialVal: 'ITO Glass',
-      quantity: 1,
-      wcpb: false,
-      fileInfo: this.props.location.state.fileInfo,
-      isLoading: false,
-      GLASSID: 0,
-      PAPERID: 0,
-      PCBID: 0,
-      GLASSNAME: 'edrop glassfab',
-      PAPERNAME: 'edrop paperfab',
-      PCBNAME: 'edrop pcbfab',
-      customerName: '',
-    };
-    this.shopifyClient = null;
-    this.setCurrentIndex = this.setCurrentIndex.bind(this);
-    this.addVariantToCart = this.addVariantToCart.bind(this);
-  }
+  const location = useLocation();
+  const navigate = useNavigate();
 
-  componentDidMount() {
+  const shopify = useContext(ShopifyContext);
+  const cart = useContext(CartContext);
+
+  const [cookies] = useCookies(['userId']);
+
+  useEffect(() => {
+    if (location.state.fileInfo) setFileInfo(location.state.fileInfo);
+  }, [location]);
+
+  useEffect(() => {
     // usernames of default foundry workers
     const GLASSFW = 'glassfab';
     const PAPERFW = 'paperfab';
     const PCBFW = 'pcbfab';
     // const url = `${getWorkerId}?username=${}`
     // fetch IDs of default foundry workers
-    API.Request(getWorkerId, 'GET', { username: GLASSFW }, true, undefined, true)
-      .then((res) => {
-        this.setState({
-          GLASSID: res.data,
-        });
-      })
-      .catch((err) => {
-        console.error(err);
-      });
-    API.Request(getWorkerId, 'GET', { username: PAPERFW }, true, undefined, true)
-      .then((res) => {
-        this.setState({
-          PAPERID: res.data,
-        });
-      })
-      .catch((err) => {
-        console.error(err);
-      });
-
-    API.Request(getWorkerId, 'GET', { username: PCBFW }, true, undefined, true)
-      .then((res) => {
-        this.setState({
-          PCBID: res.data,
-        });
-      })
-      .catch((err) => {
-        console.error(err);
-      });
-
-    API.Request(getWorkerId, 'GET', { username: PCBFW }, true, undefined, true)
-      .then((res) => {
-        this.setState({
-          PCBID: res.data,
-        });
-      })
-      .catch((err) => {
-        console.error(err);
-      });
-
-    let url = customerGetName.replace('id', Cookies.get('userId'));
-    API.Request(url, 'GET', {}, true)
+    Promise.all([
+      API.Request(getWorkerId, 'GET', { username: GLASSFW }, true, undefined, true),
+      API.Request(getWorkerId, 'GET', { username: PAPERFW }, true, undefined, true),
+      API.Request(getWorkerId, 'GET', { username: PCBFW }, true, undefined, true),
+    ]).then(([res1, res2, res3]) => {
+      setGLASSID(res1.data);
+      setPAPERID(res2.data);
+      setPCBID(res3.data);
+    }).catch((err) => {
+      console.error(err);
+    });
+    API.Request(customerGetName.replace('id', cookies.userId), 'GET', {}, true)
       .then((res) => {
         // console.log(res);
-        this.setState({
-          customerName: `${res.data.firstName} ${res.data.lastName}`,
-        });
+        setCustomerName(`${res.data.firstName} ${res.data.lastName}`);
       })
       .catch((err) => {
         console.error(err)
       })
 
-    if (Cookies.get('access_token') === undefined) {
-      alert('Login required for this page');
-      this.props.history.push('/login');
-    } else if (this.props.location.state === undefined) {
+    if (!location.state.fileInfo) {
       alert('Please pick a file for fabrication');
-      this.props.history.push('/manage/files');
+      navigate('/manage/files');
     } else {
-      const _this = this;
       // TODO: instead of building client, use Shopify.getInstance().getPrivateValue()
-      url = getCustomerCart.replace('id', Cookies.get('userId'));
-      _this.setState({
-        fileInfo: this.props.location.state.fileInfo,
-      });
-      Shopify.getInstance().getPrivateValue()
-        .then((instance) => {
-          instance.product.fetch(ewodFabServiceId) // hard coded for chip order
-            .then((product) => {
-              _this.setState({
-                // eslint-disable-next-line object-shorthand
-                product: product,
-              });
-            })
-            .catch((err) => {
-              console.error(err);
-            });
-        })
-        .catch((err) => {
-          console.error(err);
-          // redirect to all items page if product ID is invalid
-          this.props.history.push('/allItems');
-        });
-      API.Request(url, 'GET', {}, true)
-        .then((res) => {
-          if (res.data.id) {
-            // console.log(`Have cart already with ID ${res.data.id}`);
-            _this.setState({
-              orderInfoId: res.data.id,
-              shopifyClientCheckoutId: res.data.checkoutIdClient,
-            });
-          } else { // no cart, need to create one
-            // create Shopify cart
-            // console.log(`No cart currently exists, so need to create one`);
-            Shopify.getInstance().getPrivateValue()
-              .then((instance) => {
-                instance.checkout.create()
+      setFileInfo(location.state.fileInfo);
+      if (shopify) {
+        shopify.product.fetch(ewodFabServiceId) // hard coded for chip order
+          .then((product) => {
+            setProduct(product);
+          })
+          .catch((err) => {
+            console.error(err);
+            // redirect to all items page if product ID is invalid
+            navigate('/allItems');
+          });
+        API.Request(getCustomerCart.replace('id', cookies.userId), 'GET', {}, true)
+          .then((res) => {
+            if (res.data.id) {
+              // console.log(`Have cart already with ID ${res.data.id}`);
+              setOrderInfoId(res.data.id);
+              setShopifyClientCheckoutId(res.data.checkoutIdClient);
+            } else { // no cart, need to create one
+              // create Shopify cart
+              // console.log(`No cart currently exists, so need to create one`);
+              shopify.checkout.create().then((res) => {
+                // console.log(res);
+                setShopifyClientCheckoutId(res.id);
+                const lastSlash = res.webUrl.lastIndexOf('/');
+                const lastQuestionMark = res.webUrl.lastIndexOf('?');
+                const shopifyCheckoutToken = res.webUrl.slice(lastSlash + 1, lastQuestionMark);
+                const data = {
+                  checkoutIdClient: res.id,
+                  checkoutToken: shopifyCheckoutToken,
+                  checkoutLink: res.webUrl,
+                  createdAt: res.createdAt,
+                  lastModifiedAt: res.updatedAt,
+                  orderComplete: false,
+                  status: 'Order in progress',
+                  shippingAddressId: 0, // 0 to indicate no address selected yet (pk cannot be 0)
+                  billingAddressId: 0,
+                };
+                // and then create orderInfo in our backend
+                API.Request(manipulateCustomerOrders.replace('id', cookies.userId), 'POST', data, true)
                   .then((res) => {
                     // console.log(res);
-                    _this.setState({
-                      shopifyClientCheckoutId: res.id,
-                    });
-                    const lastSlash = res.webUrl.lastIndexOf('/');
-                    const lastQuestionMark = res.webUrl.lastIndexOf('?');
-                    const shopifyCheckoutToken = res.webUrl.slice(lastSlash + 1, lastQuestionMark);
-                    const data = {
-                      checkoutIdClient: res.id,
-                      checkoutToken: shopifyCheckoutToken,
-                      checkoutLink: res.webUrl,
-                      createdAt: res.createdAt,
-                      lastModifiedAt: res.updatedAt,
-                      orderComplete: false,
-                      status: 'Order in progress',
-                      shippingAddressId: 0, // 0 to indicate no address selected yet (pk cannot be 0)
-                      billingAddressId: 0,
-                    };
-                    // and then create orderInfo in our backend
-                    url = manipulateCustomerOrders.replace('id', Cookies.get('userId'));
-                    API.Request(url, 'POST', data, true)
-                      .then((res) => {
-                        // console.log(res);
-                        _this.setState({
-                          orderInfoId: res.data.id,
-                        });
-                      })
-                      .catch((err) => {
-                        console.error(err);
-                      });
+                    setOrderInfoId(res.data.id);
                   })
                   .catch((err) => {
                     console.error(err);
                   });
               })
-              .catch((err) => {
-                console.error(err);
-              });
-          }
-        })
-        .catch((err) => {
-          console.error(err);
-        });
+                .catch((err) => {
+                  console.error(err);
+                });
+            }
+          })
+          .catch((err) => {
+            console.error(err);
+          });
+      }
     }
-  }
+  }, []);
 
-  handleChange(key, value) {
-    this.setState(
-      {
-        [key]: value,
-      },
-    );
-  }
 
   /*
         This function realize the functionality of adding the manufacture service to the cart
-
+  
         We create a virtual product called "EWOD Chip Manufacturing Service" in Shopify development store
         and here we are actually add this product with some customized options
         set in the Shopify development store by the "customAttribute" (a feature provided by Shopify -> Product)
         to the "shopifyClient.checkout.lineItems", an API provided by js-buy-sdk.
-
-        Then later in the cart.jsx, when "shopifyClient.checkout.webUrl" is opened by a new "window" Object,
+  
+        Then later in the jsx, when "shopifyClient.checkout.webUrl" is opened by a new "window" Object,
         all the items added to the "shopifyClient.checkout.lineItems" will be added to the created order(taken care of by js-buy-sdk)
         automatically when customers checkout in that page.
-
+  
         @variantId: The variantId here is the variantId of the product set by the development
                     we hard code it in the "render()" function below and pass the value in
         @quantity: The quantity seleted by customer, put in from frontend page
     */
-  addVariantToCart(variantId, quantity) {
-    this.setState({
-      isLoading: true,
-    });
-    if (quantity < 1) {
-      alert('Quantity must be at least 1');
-      this.setState({
-        isLoading: false,
-      });
-    } else {
-      const _this = this;
-      const wcpbVal = _this.state.wcpb.toString();
-      const lineItemsToAdd = [{
-        variantId,
-        quantity: parseInt(quantity, 10),
-        customAttributes: [
-          {
-            key: 'material',
-            value: _this.state.materialVal,
-          },
-          {
-            key: 'withCoverPlateAssembled',
-            value: wcpbVal,
-          },
-          {
-            key: 'fileName',
-            value: _this.state.fileInfo.fileName,
-          },
-        ],
-      }];
-      let customServerOrderAttributes = '';
-      customServerOrderAttributes += `material: ${_this.state.materialVal}\n`;
-      customServerOrderAttributes += `withCoverPlateAssembled: ${wcpbVal}\n`;
-      customServerOrderAttributes += `fileName: ${_this.state.fileInfo.fileName}\n`;
-      const checkoutId = _this.state.shopifyClientCheckoutId;
-      Shopify.getInstance().getPrivateValue()
-        .then((instance) => {
-          instance.checkout.addLineItems(checkoutId, lineItemsToAdd)
-            .then((res) => {
-              // .then((res) => {
-              let lineItemId;
-              for (let i = 0; i < res.lineItems.length; i++) {
-                let otherDetails = '';
-                res.lineItems[i].customAttributes.forEach((entry) => {
-                  otherDetails += `${entry.key}: ${entry.value}\n`;
-                });
-                // if (Buffer.from(res.lineItems[i].variant.id).toString('base64') === variantId) {
-                if (customServerOrderAttributes == otherDetails) {
-                  lineItemId = Buffer.from(res.lineItems[i].id).toString('base64');
-                  break;
-                }
-              }
+  function addVariantToCart(variantId, quantity) {
+    setIsLoading(true);
+    const wcpbVal = wcpb.toString();
+    const lineItemsToAdd = [{
+      variantId,
+      quantity: parseInt(quantity, 10),
+      customAttributes: [
+        {
+          key: 'material',
+          value: materialVal,
+        },
+        {
+          key: 'withCoverPlateAssembled',
+          value: wcpbVal,
+        },
+        {
+          key: 'fileName',
+          value: fileInfo.fileName,
+        },
+      ],
+    }];
+    const customAttrs = {
+      material: materialVal,
+      withCoverPlateAssembled: wcpbVal,
+      fileName: fileInfo.fileName,
+    };
+    const checkoutId = shopifyClientCheckoutId;
+    shopify && shopify.checkout.addLineItems(checkoutId, lineItemsToAdd)
+      .then((res) => {
+        // .then((res) => {
+        let lineItemId;
+        for (let i = 0; i < res.lineItems.length; i++) {
+          let otherDetails = '';
+          const attrs = res.lineItems[i].customAttributes;
+          // if (Buffer.from(res.lineItems[i].variant.id).toString('base64') === variantId) {
+          if (customAttrs.material === attrs.material && customAttrs.withCoverPlateAssembled === attrs.withCoverPlateAssembled && customAttrs.fileName === attrs.fileName) {
+            lineItemId = Buffer.from(res.lineItems[i].id).toString('base64');
+            break;
+          }
+        }
 
-              // save lineItemId of the last item returned in checkout
-              // const lineItemIdDecoded = checkout.lineItems[checkout.lineItems.length-1].id;
-              // const lineItemId = Buffer.from(lineItemIdDecoded).toString('base64');
+        // save lineItemId of the last item returned in checkout
+        // const lineItemIdDecoded = checkout.lineItems[checkout.lineItems.length-1].id;
+        // const lineItemId = Buffer.from(lineItemIdDecoded).toString('base64');
 
-              // select default foundry worker based on material
-              let materialSpecificWorkerId = 0;
-              switch (this.state.materialVal) {
-                case 'ITO Glass':
-                  materialSpecificWorkerId = this.state.GLASSID;
-                  break;
-                case 'Paper':
-                  materialSpecificWorkerId = this.state.PAPERID;
-                  break;
-                case 'PCB':
-                  materialSpecificWorkerId = this.state.PCBID;
-                  break;
-                default:
-              }
+        // select default foundry worker based on material
+        let materialSpecificWorkerId = 0;
+        switch (materialVal) {
+          case 'ITO Glass':
+            materialSpecificWorkerId = GLASSID;
+            break;
+          case 'Paper':
+            materialSpecificWorkerId = PAPERID;
+            break;
+          case 'PCB':
+            materialSpecificWorkerId = PCBID;
+            break;
+          default:
+        }
 
-              // select default foundry worker name
-              let materialSpecificWorkerName = '';
-              switch (this.state.materialVal) {
-                case 'ITO Glass':
-                  materialSpecificWorkerName = this.state.GLASSNAME;
-                  break;
-                case 'Paper':
-                  materialSpecificWorkerName = this.state.PAPERNAME;
-                  break;
-                case 'PCB':
-                  materialSpecificWorkerName = this.state.PCBNAME;
-                  break;
-                default:
-              }
+        // select default foundry worker name
+        let materialSpecificWorkerName = '';
+        switch (materialVal) {
+          case 'ITO Glass':
+            materialSpecificWorkerName = 'edrop glassfab';
+            break;
+          case 'Paper':
+            materialSpecificWorkerName = 'edrop paperfab';
+            break;
+          case 'PCB':
+            materialSpecificWorkerName = 'edrop pcbfab';
+            break;
+          default:
+        }
 
-              // create our own chip order here...
-              const data = {
-                orderInfoId: _this.state.orderInfoId,
-                productIdShopify: ewodFabServiceId,
-                variantIdShopify: variantId,
-                lineItemIdShopify: lineItemId,
-                name: _this.state.product.title,
-                description: _this.state.product.description,
-                quantity,
-                price: parseFloat(_this.state.product.variants[0].price),
-                otherDetails: customServerOrderAttributes,
-                process: this.state.materialVal,
-                coverPlate: wcpbVal,
-                lastUpdated: new Date().toISOString(),
-                fileInfoId: this.state.fileInfo.id,
-                workerId: materialSpecificWorkerId,
-                workerName: materialSpecificWorkerName,
-                customerName: this.state.customerName,
-              };
+        // create our own chip order here...
+        const data = {
+          orderInfoId: orderInfoId,
+          productIdShopify: ewodFabServiceId,
+          variantIdShopify: variantId,
+          lineItemIdShopify: lineItemId,
+          name: product.title,
+          description: product.description,
+          quantity,
+          price: parseFloat(product.variants[0].price),
+          otherDetails: customAttrs,
+          process: materialVal,
+          coverPlate: wcpbVal,
+          lastUpdated: new Date().toISOString(),
+          fileInfoId: fileInfo.id,
+          workerId: materialSpecificWorkerId,
+          workerName: materialSpecificWorkerName,
+          customerName: customerName,
+        };
 
-              let url = addOrderChipToCart.replace('id', _this.state.orderInfoId);
-              API.Request(url, 'POST', data, true)
-                .then((res) => {
-                  url = getChipOrders.replace('id', _this.state.orderInfoId);
-                  API.Request(url, 'GET', {}, true, undefined, true)
-                    .then((res) => {
-                      const quantity = res.data.reduce((prev, curr) => prev + curr.quantity, 0);
-                      this.context.setChipQuantity(quantity);
-                      this.context.setCartQuantity();
-                      this.props.history.push('/manage/cart');
-                    })
-                    .catch((err) => {
-                      console.error(err);
-                    });
-                  this.setState({
-                    isLoading: false,
-                  });
-                })
-                .catch((err) => {
-                  console.error(err);
-                  this.setState({
-                    isLoading: false,
-                  });
-                });
-            })
-            .catch((err) => {
-              console.error(err);
-              this.setState({
-                isLoading: false,
+        let url = addOrderChipToCart.replace('id', orderInfoId);
+        API.Request(url, 'POST', data, true)
+          .then((res) => {
+            url = getChipOrders.replace('id', orderInfoId);
+            API.Request(url, 'GET', {}, true, undefined, true)
+              .then((res) => {
+                const quantity = res.data.reduce((prev, curr) => prev + curr.quantity, 0);
+                cart.setChipQuantity(quantity);
+                navigate('/manage/cart');
+              })
+              .catch((err) => {
+                console.error(err);
               });
-            });
-        })
-        .catch((err) => {
-          console.error(err);
-          this.setState({
-            isLoading: false,
+            setIsLoading(false);
+          })
+          .catch((err) => {
+            console.error(err);
+            setIsLoading(false);
           });
-        });
-    }
+      })
+      .catch((err) => {
+        console.error(err);
+        setIsLoading(false);
+      });
   }
 
-  setCurrentIndex(event) {
-    this.setState({
-      cIndex: parseInt(event.currentTarget.getAttribute('index'), 10),
-    });
-    this.state.materialVal = this.state.material[event.currentTarget.getAttribute('index')];
+  function setCurrentIndex(index: number) {
+    setCIndex(index);
+    setMaterialVal(material[index]);
   }
 
-  render() {
-    const tabShow = [];
-    const variantId = ewodFabServiceVariantId;
-    for (let i = 0; i < this.state.material.length; i++) {
-      tabShow.push(
-        <li
-          key={i}
-          className={this.state.cIndex === i ? 'active' : ''}
-          index={i}
-          onClick={this.setCurrentIndex}
-        >
-          <a data-toggle="tab">
-            {this.state.material[i]}
-          </a>
-        </li>,
-      );
-    }
-    // console.log(this.state.fileInfo);
-    return (
-      <div className="order-container">
-        <div className="shop-main-content">
-          <div className="shop-left-content">
-            {/* DY - replace temporary image above with a preview of the uploaded PDF */}
-            <div className="div-img">
-              <DXFPreview fileInfo={this.props.location.state.fileInfo} />
-            </div>
-            <div className="preview-disclaimer">
-              Disclaimer: The image above is only intended as a preview and is not guaranteed to be entirely accurate.
-              The original DXF file will be transmitted to the foundry.
-            </div>
-            <div className="shop-material">
-              <h2>Process</h2>
-              <div className="col-sm-3 col-md-3 col-lg-3" id="shop-left-align">
-                <ul id="myTab" className="nav nav-pills nav-stacked">
-                  {tabShow}
-                </ul>
-              </div>
-              <div className="col-sm-9 col-md-9 col-lg-9">
-                <div className="tab-content">
-                  <div className={this.state.cIndex === 0 ? 'tab-pane fade in active' : 'tab-pane fade in'}>
-                    ITO glass is good substrate choice for optical applications. The ITO layer has
-                    thickness of 200 nm. The glass is soda-lime glass with thickness of 0.7 nm. The
-                    whole substrate is 4 inches in diameter.
-                  </div>
-                  <div className={this.state.cIndex === 1 ? 'tab-pane fade in active' : 'tab-pane fade in'}>
-                    Paper is good substrate choice for optical applications. The ITO layer has a
-                    thickness of 200 nm. The glass is soda-lime glass with thickness of 0.7 nm. The
-                    whole substrate is 4 inches in diameter.
-                  </div>
-                  <div className={this.state.cIndex === 2 ? 'tab-pane fade in active' : 'tab-pane fade in'}>
-                    PCB has thickness of 200 nm, which enables multiple layers of patterns. The
-                    whole substrate is 4 inches in diameter.
-                  </div>
-                </div>
-              </div>
-            </div>
+  const variantId = ewodFabServiceVariantId;
+  // console.log(fileInfo);
+  return (
+    <div className="container flex justify-center py-10">
+      <div className="grid grid-cols-2 md:w-2/3">
+        <div className="flex flex-col">
+          {/* DY - replace temporary image above with a preview of the uploaded PDF */}
+          <div className="h-[500px]">
+            <DXFPreview fileInfo={location.state.fileInfo} />
           </div>
-          <div className="shop-right-content">
-            <div className="div-filename">{'File to be fabricated: '}</div>
-            <div>{this.state.fileInfo.fileName}</div>
-            <div className="shop-config">
-              <h2>Chip Configuration Options</h2>
-              <p className="config-items">
-                <input type="checkbox" onChange={(v) => this.handleChange('wcpb', v.target.checked)} />
-                <span style={{ paddingLeft: '10px' }}>With Cover Plate Assembled</span>
+          <p className="text-xs text-center">
+            Disclaimer: The image above is only intended as a preview and is not guaranteed to be entirely accurate.
+            The original DXF file will be transmitted to the foundry.
+          </p>
+          <div className="grid grid-cols-3">
+            <h2 className="col-span-3 text-2xl">Process</h2>
+            <div className="col-span-1 flex flex-col">
+              {material.map((material, i) => (
+                <button
+                  type="button"
+                  key={i}
+                  className={`${cIndex === i ? 'bg-primary_light text-white' : 'hover:bg-gray-400 text-primary_light hover:text-primary'} rounded-md px-4 py-2 `}
+                  onClick={() => setCurrentIndex(i)}
+                >
+                  <a data-toggle="tab">
+                    {material}
+                  </a>
+                </button>
+              ))}
+            </div>
+            <div className="col-span-2">
+              <p className={cIndex === 0 ? 'tab-pane fade in active' : 'tab-pane fade in'}>
+                ITO glass is good substrate choice for optical applications. The ITO layer has
+                thickness of 200 nm. The glass is soda-lime glass with thickness of 0.7 nm. The
+                whole substrate is 4 inches in diameter.
+              </p>
+              <p className={cIndex === 1 ? 'tab-pane fade in active' : 'tab-pane fade in'}>
+                Paper is good substrate choice for optical applications. The ITO layer has a
+                thickness of 200 nm. The glass is soda-lime glass with thickness of 0.7 nm. The
+                whole substrate is 4 inches in diameter.
+              </p>
+              <p className={cIndex === 2 ? 'tab-pane fade in active' : 'tab-pane fade in'}>
+                PCB has thickness of 200 nm, which enables multiple layers of patterns. The
+                whole substrate is 4 inches in diameter.
               </p>
             </div>
-            <div className="div-shop-quantity">
-              <label>Quantity:&nbsp;</label>
-              {this.state.product !== undefined
-                ? (
-                  <div>
-                    <input
-                      type="number"
-                      className="input-quantity"
-                      value={this.state.quantity}
-                      onChange={(v) => this.handleChange('quantity', parseInt(v.target.value))}
-                    />
-                    {' '}
-                    X $
-                    {this.state.product.variants[0].price}
-                    {' '}
-                    =
-                    <span>
-                      {' '}
-                      $
-                      {(this.state.quantity * this.state.product.variants[0].price).toFixed(2)}
-                    </span>
-                  </div>
-                )
-                : null}
-              <p className="cart-btn">
-                {
-                  this.state.isLoading
-                    ? <img src="/img/loading80px.gif" alt="" className="loading-icon" />
-                    : (
-                      <input
-                        type="button"
-                        className="btn btn-primary btn-lg btn-block"
-                        value="Add to Cart"
-                        onClick={(e) => this.addVariantToCart(variantId, this.state.quantity)}
-                      />
-                    )
-                }
-              </p>
-            </div>
-            <div className="tax-info">Note: Price excludes sales tax</div>
           </div>
         </div>
-        <div className="hr-div-login" />
+        <div className="flex flex-col">
+          <div className="">File to be fabricated:</div>
+          <div>{fileInfo.fileName}</div>
+          <div className="shop-config">
+            <h2 className="text-2xl">Chip Configuration Options</h2>
+            <p className="flex items-center space-x-2">
+              <input id="wcpb" type="checkbox" onChange={(e) => setWcpb(!wcpb)} checked={wcpb} />
+              <label htmlFor="wcpb">With Cover Plate Assembled</label>
+            </p>
+          </div>
+          <div className="flex items-center">
+            <label htmlFor="quantity">Quantity:&nbsp;</label>
+            {product && (
+              <div>
+                <input
+                  id="quantity"
+                  type="number"
+                  min={1}
+                  className="input-quantity"
+                  value={quantity}
+                  onChange={(e) => setQuantity(e.target.valueAsNumber)}
+                />
+                {' '}
+                X $
+                {product.variants[0].price}
+                {' '}
+                =
+                <span>
+                  {' '}
+                  $
+                  {(quantity * product.variants[0].price).toFixed(2)}
+                </span>
+              </div>
+            )}
+          </div>
+          <div className="flex justify-center items-center">
+            {isLoading
+              ? <img src="/img/loading80px.gif" alt="" className="loading-icon" />
+              : (
+                <button
+                  type="button"
+                  className="bg-primary_light text-white px-4 py-2 rounded w-full"
+                  onClick={(e) => addVariantToCart(variantId, quantity)}
+                >
+                  Add to Cart
+                </button>
+              )
+            }
+          </div>
+          <div className="">Note: Price excludes sales tax</div>
+        </div>
       </div>
-    );
-  }
+    </div>
+  );
 }
 
 export default ChipOrder;
