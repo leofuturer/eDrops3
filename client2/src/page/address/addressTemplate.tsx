@@ -40,7 +40,7 @@ function AddressTemplate({ address, addressNum, onDeletion }: { address: Address
         <div className="">{address.country}</div>
         <div className="">{address.zipCode}</div>
       </div>
-      <div className="flex flex-row">
+      <div className="flex flex-row space-x-4">
         <button
           type="button"
           className="bg-primary_light hover:bg-primary text-white rounded-md px-4 py-1 flex space-x-2 items-center"
@@ -51,7 +51,7 @@ function AddressTemplate({ address, addressNum, onDeletion }: { address: Address
         </button>
         {!address.isDefault &&
           <button type="button" className="bg-red-700 text-white rounded-md px-4 py-1 flex space-x-2 items-center">
-            <i className="fa fa-trash-o" />
+            <i className="fa fa-trash" />
             <p className="" onClick={onDeletion}>Delete</p>
           </button>
         }

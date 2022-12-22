@@ -1,106 +1,106 @@
 /* eslint-disable */
-import React from 'react';
-import queryString from 'query-string';
-import Cookies from 'js-cookie';
+import { useContext, useEffect, useState } from 'react';
+import { useCookies } from 'react-cookie';
+import { useSearchParams } from 'react-router-dom';
 import API from '../../api/api';
-import { pusher } from '../../App';
 import {
-  customerGetProfile,
-  adminGetProfile,
-  foundryWorkerGetProfile,
-  getOrderMessagesById,
-  addOrderMessage,
+  addOrderMessage, adminGetProfile, customerGetProfile, foundryWorkerGetProfile,
+  getOrderMessagesById
 } from '../../api/serverConfig';
+import { PusherContext } from '../../App';
 
 // Customers have chat_id of 1
 // Admins/workers have chat_id of 0
 
-class OrderChat extends React.Component {
-  constructor(props) {
-    super(props);
-    window.orderChat = this;
-    this.state = {
-      orderId: queryString.parse(this.props.location.search, { ignoreQueryPrefix: true }).id,
-    };
-    this.afterSubmission = this.afterSubmission.bind(this); //  otherwise, can't get the username
-  }
-  
-  componentDidMount() {
-    const _this = this;
+interface Message {
+  message: string;
+  userConvId: number;
+}
+
+function OrderChat() {
+  const pusher = useContext(PusherContext);
+
+  const [orderId, setOrderId] = useState('');
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [userTypeId, setUserTypeId] = useState(0);
+
+
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [cookies] = useCookies(['userType', 'userId'])
+
+  useEffect(() => {
+    setOrderId(searchParams.get('id') as string);
+  }, [searchParams]);
+
+  useEffect(() => {
     // For real time notifications
-    pusher.getInstance().getPrivateValue()
-    .then((instance) => {
-      const channel = instance.subscribe(`chat-${this.state.orderId}`);
-      channel.bind('new-message', data => {
-        this.appendMessageToContainer(data.message, data.userConvId);
-      });
-    })
-    
-    const userType = Cookies.get('userType');
-    let InitUrl;
-    let userTypeId;
-    if (userType === 'customer') {
-      InitUrl = customerGetProfile;
-      userTypeId = 1;
-    } else if (userType === 'admin') {
-      InitUrl = adminGetProfile;
-      userTypeId = 0;
-      const element = document.getElementById('send-container');
-      element.remove();
-    } else {
-      InitUrl = foundryWorkerGetProfile;
-      userTypeId = 0;
+    if (pusher) {
+      const channel = pusher.subscribe(`chat-${orderId}`);
+      channel.bind('new-message', (data: Message) => appendMessageToContainer(data.message, data.userConvId));
+
+      let initUrl;
+      let userTypeId: number;
+      switch (cookies.userType) {
+        case 'customer':
+          initUrl = customerGetProfile;
+          userTypeId = 1;
+          break;
+        case 'admin':
+          initUrl = adminGetProfile;
+          userTypeId = 0;
+          const element = document.getElementById('send-container');
+          element.remove();
+          break;
+        default:
+        case 'foundryWorker':
+          initUrl = foundryWorkerGetProfile;
+          userTypeId = 0;
+          break;
+      }
+      API.Request(initUrl.replace('id', cookies.userId), 'GET', {}, true)
+        .then((res) => {
+          setUserTypeId(userTypeId);
+          loadMessages();
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     }
-    const userURL = InitUrl.replace('id', Cookies.get('userId'));
-    API.Request(userURL, 'GET', {}, true)
-    .then((res) => {
-      this.setState({
-        userType: userTypeId,
+  }, []);
+
+  function loadMessages() {
+    API.Request(getOrderMessagesById.replace('id', orderId), 'GET', {}, true)
+      .then((res) => {
+        console.log(res.data);
+        setMessages(res.data);
+        messages.forEach((msg) => {
+          appendMessageToContainer(msg);
+        });
+      })
+      .catch((err) => {
+        console.log(err);
       });
-      this.loadMessages()
-    })
-    .catch((err) => {
-      console.log(err);
-    });
   }
-  
-  loadMessages() {
-    const messageUrl = getOrderMessagesById.replace('id', this.state.orderId);
-    API.Request(messageUrl, 'GET', {}, true)
-    .then((res) => {
-      console.log(res.data);
-      this.setState({
-        messages: res.data,
-      });
-      this.state.messages.forEach( (element) => {
-        this.appendMessageToContainer(element.message, element.userConvId);
-      });
-    })
-    .catch((err) => {
-      console.log(err);
-    });
-  }
-  
-  appendMessageToContainer(msg, id){
-    const message = msg;
+
+  function appendMessageToContainer(msg: Message) {
+    const { message, userConvId: id } = msg;
     const messageContainer = document.getElementById('chat');
-    if (message != null && message != ''){
+    if (message != null && message != '') {
       const messageBubble = document.createElement('div');
       messageBubble.classList.add('msg');
-      let user;
-      id === 0 ? user = "Worker" : user = "Customer";
+      const user = id === 0 ? 'Worker' : 'Customer';
       messageBubble.innerText = user + ": " + message;
-      if (id === this.state.userType){
+      if (id === userTypeId) {
         messageBubble.classList.add('sent');
       }
-      else{
+      else {
         messageBubble.classList.add('rcvd');
       }
       messageContainer.append(messageBubble);
     }
   }
-  
-  afterSubmission(event){
+
+  function afterSubmission(event) {
     event.preventDefault();
     var messageInput = document.getElementById('message-input');
     var msg = messageInput.value;
@@ -109,35 +109,33 @@ class OrderChat extends React.Component {
       "message": String(msg),
       "userConvId": Number(this.state.userType),
       "messageDate": new Date(),
-    }; 
-    
+    };
+
     const appendUrl = addOrderMessage;//.replace('id', this.state.orderId);
     API.Request(appendUrl, 'POST', data, false)
-    .then((res) => {
-      messageInput.value = '';
-    })
-    .catch((err) => {
-      console.log(err);
-    });
+      .then((res) => {
+        messageInput.value = '';
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   }
-  
-  render() {
-    return (
-      <div className="order-chat-frame">
-        <div className="order-chat-title-container">
-          <h2>Order Chat for Order #{this.state.orderId}</h2>
-          <p>Use the chat below to communicate about the order!</p>
-        </div>
-        <div className="chat" id="chat">
-        </div>
-        <form id="send-container" onSubmit={this.afterSubmission}>
-          <input type="text" size="50" className="input-box send" placeholder="Type your message here..." id="message-input"></input>
-          <button type="submit" className="send chat-button" id="send-button">Send</button>
-        </form>
-      </div> 
-      );
-    }
-  }
-  
-  export default OrderChat;
-  
+
+  return (
+    <div className="order-chat-frame">
+      <div className="order-chat-title-container">
+        <h2>Order Chat for Order #{orderId}</h2>
+        <p>Use the chat below to communicate about the order!</p>
+      </div>
+      <div className="chat" id="chat">
+      </div>
+      <form id="send-container" onSubmit={afterSubmission}>
+        <input type="text" size={50} className="input-box send" placeholder="Type your message here..." id="message-input"></input>
+        <button type="submit" className="send chat-button" id="send-button">Send</button>
+      </form>
+    </div>
+  );
+}
+
+export default OrderChat;
+

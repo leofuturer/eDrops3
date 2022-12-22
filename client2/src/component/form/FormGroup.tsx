@@ -23,7 +23,7 @@ function FormGroup({ name, displayName, required = false, type = "text"}: { name
           </>
         )}
       </Field>
-      <ErrorMessage name={name} component="p" className="text-red-700 text-xs w-36 text-center" />
+      <ErrorMessage name={name} component="p" className="text-red-700 text-xs text-center" />
     </div >
   )
 }

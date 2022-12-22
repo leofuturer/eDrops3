@@ -1,18 +1,16 @@
-import React, { useEffect, useState } from 'react';
-import Cookies from 'js-cookie';
-import $ from 'jquery';
+import { useEffect, useState } from 'react';
+import { useCookies } from 'react-cookie';
+import { useNavigate } from 'react-router-dom';
 import API from '../../api/api';
 import { customerAddresses } from '../../api/serverConfig';
-import AddressTemplate from './addressTemplate.js';
-
-import SEO from '../../component/header/SEO.js';
-import { metadata } from './metadata.jsx';
+import SEO from '../../component/header/SEO';
 import DeleteModal from '../../component/modal/DeleteModal';
-import { useNavigate } from 'react-router-dom';
-import { useCookies } from 'react-cookie';
+import { Address as AddressType } from '../../types';
+import AddressTemplate from './addressTemplate';
+import { metadata } from './metadata';
 
 function Address() {
-  const [addressList, setAddressList] = useState([]);
+  const [addressList, setAddressList] = useState<AddressType[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [showDelete, setShowDelete] = useState(false);
   const [addrIndex, setAddrIndex] = useState(0);
@@ -29,68 +27,32 @@ function Address() {
     navigate('/manage/address/updateAddress');
   }
 
-  function handleDeleteAddress(addrIndex) {
+  function handleDeleteAddress(addrIndex: number) {
     setAddrIndex(addrIndex);
     setShowDelete(true);
   }
 
   function handleDelete() {
-    // console.log(this.state.addressList);
-    // console.log(addrIndex);
     const address = addressList[addrIndex];
     const addressId = address.id;
-    const url = `customerAddresses.replace('id', cookies.userId)/${addressId}?access_token=${Cookies.get('access_token')}`;
+    const where = {
+      id: addressId,
+    }
+    const url = `${customerAddresses.replace('id', cookies.userId)}?where=${JSON.stringify(where)}`;
 
     // Use axios to send request
-    /*
-        let data = {};
-        let classSelector = '.card' + address.id;
-        API.Request(url, 'DELETE', data, true)
-        .then((res) => {
-            //console.log(res);
-            $(classSelector).remove();
-            console.log('Address deleted');
-            console.log(url);
-        })
-        .catch((err) => {
-            console.log(err);
-        })
-        */
-
-    // Use ajax to send request --- works well
-    const xhr = new XMLHttpRequest();
-    const classSelector = `.card${address.id}`;
-    xhr.onreadystatechange = function () {
-      if (this.readyState === 4 && this.status === 204) {
-        // console.log('111');
-        $(classSelector).remove();
-        // console.log(this.responseText);
-      }
-    };
-    xhr.open('DELETE', url, true);
-    xhr.send();
-
-    const addresses = addressList.filter((i) => i.id !== addressId);
-    setAddressList(addresses);
-    // console.log(addresses);
-    // Use jquery ajax to send request
-    /*
-        let address = _this.props.addressTem;
-        url += '?access_token=' + Cookies.get('access_token');
-        let classSelector = '.card' + address.id;
-        $.ajax({
-           url: url,
-           success: function() {
-               $(classSelector).remove();
-           }
-        });
-        */
+    API.Request(url, 'DELETE', {}, true)
+      .then((res) => {
+        console.log(res);
+        setAddressList(addressList.filter((addr) => addr.id !== addressId));
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   }
 
   useEffect(() => {
-    const url = customerAddresses.replace('id', cookies.userId);
-    const data = {};
-    API.Request(url, 'GET', data, true)
+    API.Request(customerAddresses.replace('id', cookies.userId), 'GET', {}, true)
       .then((res) => {
         // console.log(res.data);
         setAddressList(res.data);
@@ -126,7 +88,7 @@ function Address() {
                   key={index}
                   address={oneAddress}
                   addressNum={index + 1}
-                  onDeletion={() => this.handleDeleteAddress(index)}
+                  onDeletion={() => handleDeleteAddress(index)}
                 />
               ))}
             </div>
@@ -135,7 +97,8 @@ function Address() {
       {showDelete &&
         <DeleteModal
           handleHide={() => setShowDelete(false)}
-          handleDelete={handleDelete} />
+          handleDelete={handleDelete}
+        />
       }
     </div>
   );

@@ -22,7 +22,7 @@ import {
   getProductOrders
 } from '../../api/serverConfig';
 import API from '../../api/api';
-import { Shopify } from '../../App';
+import { ShopifyContext } from '../../App';
 import { CartContext } from '../../context/CartContext';
 import { Product as ProductType } from 'shopify-buy';
 import { useCookies } from 'react-cookie';
@@ -253,7 +253,6 @@ function Product() {
                     // console.log(res);
                     const quantity = res.data.reduce((prev, curr) => prev + curr.quantity, 0);
                     context.setProductQuantity(quantity);
-                    context.setCartQuantity();
                     navigate('/manage/cart');
                   })
                   .catch((err) => {

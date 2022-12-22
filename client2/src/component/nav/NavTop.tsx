@@ -55,29 +55,20 @@ function NavTop() {
 
   function setUpCartItems() {
     if (cookies.userType === 'customer') {
-      let url = getCustomerCart.replace('id', cookies.userId);
-      API.Request(url, 'GET', {}, true)
+      API.Request(getCustomerCart.replace('id', cookies.userId), 'GET', {}, true)
         .then((res) => {
           if (res.data.id) {
             const orderInfoId = res.data.id;
-            return API.Request(getProductOrders.replace('id', orderInfoId), 'GET', {}, true)
-              .then((res) => {
-                let quantity = res.data.reduce((prev: number, curr: { quantity: number }) => prev + curr.quantity, 0);
-                context.setProductQuantity(quantity);
-                return API.Request(getChipOrders.replace('id', orderInfoId), 'GET', {}, true)
-                  .then((res) => {
-                    quantity = res.data.reduce((prev: number, curr: { quantity: number }) => prev + curr.quantity, 0);
-                    context.setChipQuantity(quantity);
-                    context.setCartQuantity();
-                  })
-                  .catch((err) => {
-                    console.error(err);
-                  });
-              })
-              .catch((err) => {
-                console.error(err);
-              });
+            return orderInfoId;
           }
+          throw new Error('No customer cart found');
+        })
+        .then((orderInfoId) => Promise.all([API.Request(getProductOrders.replace('id', orderInfoId), 'GET', {}, true), API.Request(getChipOrders.replace('id', orderInfoId), 'GET', {}, true)]))
+        .then((res) => {
+          const productQuantity = res[0].data.reduce((prev: number, curr: { quantity: number }) => prev + curr.quantity, 0);
+          const chipQuantity = res[1].data.reduce((prev: number, curr: { quantity: number }) => prev + curr.quantity, 0);
+          context.setProductQuantity(productQuantity);
+          context.setChipQuantity(chipQuantity);
         })
         .catch((err) => {
           console.error(err);

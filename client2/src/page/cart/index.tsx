@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import CartItem from './cartItem.js';
-import { Shopify } from '../../App';
+import { ShopifyContext } from '../../App';
 import API from '../../api/api';
 import {
   getCustomerCart, getProductOrders,
@@ -17,7 +17,7 @@ import SEO from '../../component/header/SEO.js';
 import { CartContext } from '../../context/CartContext';
 import { useCookies } from 'react-cookie';
 
-function Cart({ shopifyClient }: { shopifyClient: ShopifyBuy.Client }) {
+function Cart() {
   const [cartExists, setCartExists] = useState(false);
   const [cartId, setCartId] = useState(undefined);
   const [shopifyCheckoutId, setShopifyCheckoutId] = useState(undefined);
@@ -34,12 +34,13 @@ function Cart({ shopifyClient }: { shopifyClient: ShopifyBuy.Client }) {
 
   const [cookies] = useCookies(['userId'])
 
-  const context = useContext(CartContext);
+  const cart = useContext(CartContext);
+  const shopify = useContext(ShopifyContext);
+
   const navigate = useNavigate();
 
   useEffect(() => {
-    let url = getCustomerCart.replace('id', cookies.userId);
-    API.Request(url, 'GET', {}, true)
+    API.Request(getCustomerCart.replace('id', cookies.userId), 'GET', {}, true)
       .then((res) => {
         if (res.data.id) {
           // console.log(res);
@@ -48,19 +49,14 @@ function Cart({ shopifyClient }: { shopifyClient: ShopifyBuy.Client }) {
           setCartId(res.data.id);
           setShopifyCheckoutId(res.data.checkoutIdClient);
           setShopifyCheckoutLink(res.data.checkoutLink);
-          url = getProductOrders.replace('id', orderInfoId);
-          API.Request(url, 'GET', {}, true)
+          API.Request(getProductOrders.replace('id', orderInfoId), 'GET', {}, true)
             .then((res) => {
               setProductOrders(res.data);
-              url = getChipOrders.replace('id', orderInfoId);
-              API.Request(url, 'GET', {}, true)
-                .then((res) => {
-                  setChipOrders(res.data);
-                  setCartLoading(false);
-                })
-                .catch((err) => {
-                  console.error(err);
-                });
+              return API.Request(getChipOrders.replace('id', orderInfoId), 'GET', {}, true);
+            })
+            .then((res) => {
+              setChipOrders(res.data);
+              setCartLoading(false);
             })
             .catch((err) => {
               console.error(err);
@@ -76,26 +72,21 @@ function Cart({ shopifyClient }: { shopifyClient: ShopifyBuy.Client }) {
   }, [cookies.userId]);
 
   function handleQtyChange(e, itemType, index) {
-    if (e.target.value < 1) {
-      alert('Error: quantity cannot be less than 1');
-      e.target.value = 1;
-    } else {
-      // https://stackoverflow.com/questions/29537299/react-how-to-update-state-item1-in-state-using-setstate
-      if (itemType === 'product') {
-        const items = [...productOrders];
-        const item = Object.assign({}, items[index]); // replacement for `let item = {...items[index]};`
-        item.quantity = parseInt(e.target.value);
-        items[index] = item;
-        setProductOrders(items);
-        setModifiedItems(new Set(modifiedItems).add(item.lineItemIdShopify));
-      } else if (itemType === 'chip') {
-        const items = [...chipOrders];
-        const item = Object.assign({}, items[index]); // replacement for `let item = {...items[index]};`
-        item.quantity = parseInt(e.target.value);
-        items[index] = item;
-        setChipOrders(items);
-        setModifiedItems(new Set(modifiedItems).add(item.lineItemIdShopify));
-      }
+    // https://stackoverflow.com/questions/29537299/react-how-to-update-state-item1-in-state-using-setstate
+    if (itemType === 'product') {
+      const items = [...productOrders];
+      const item = Object.assign({}, items[index]); // replacement for `let item = {...items[index]};`
+      item.quantity = parseInt(e.target.value);
+      items[index] = item;
+      setProductOrders(items);
+      setModifiedItems(new Set(modifiedItems).add(item.lineItemIdShopify));
+    } else if (itemType === 'chip') {
+      const items = [...chipOrders];
+      const item = Object.assign({}, items[index]); // replacement for `let item = {...items[index]};`
+      item.quantity = parseInt(e.target.value);
+      items[index] = item;
+      setChipOrders(items);
+      setModifiedItems(new Set(modifiedItems).add(item.lineItemIdShopify));
     }
   }
 
@@ -103,18 +94,18 @@ function Cart({ shopifyClient }: { shopifyClient: ShopifyBuy.Client }) {
     setTotalModifiedItems(modifiedItems.size);
   }, [modifiedItems]);
 
-  function updateLineItemCartHelper(instance, itemsToUpdate) {
-    return new Promise((resolve, reject) => {
-      instance.checkout.updateLineItems(shopifyCheckoutId, itemsToUpdate)
-        .then((checkout) => {
-          return resolve(checkout);
-        })
-        .catch((err) => {
-          console.error(err);
-          return reject();
-        });
-    });
-  }
+  // function updateLineItemCartHelper(instance, itemsToUpdate) {
+  //   return new Promise((resolve, reject) => {
+  //     instance.checkout.updateLineItems(shopifyCheckoutId, itemsToUpdate)
+  //       .then((checkout) => {
+  //         return resolve(checkout);
+  //       })
+  //       .catch((err) => {
+  //         console.error(err);
+  //         return reject();
+  //       });
+  //   });
+  // }
 
   function updateLineItemDatabaseHelper(checkoutLineItem, orderInfoId) {
     if (checkoutLineItem.title === 'EWOD Chip Fabrication Service') {
@@ -214,119 +205,107 @@ function Cart({ shopifyClient }: { shopifyClient: ShopifyBuy.Client }) {
 
     // Delete from Shopify, then our own DB
     const itemToDelete = [array[index].lineItemIdShopify];
-    Shopify.getInstance().getPrivateValue()
-      .then((instance) => {
-        instance.checkout.removeLineItems(shopifyCheckoutId, itemToDelete)
-          .then((checkout) => {
-            // console.log(checkout);
-            if (itemType === 'product') {
-              url = modifyProductOrders.replace('id', array[index].id);
-            } else if (itemType === 'chip') {
-              url = modifyChipOrders.replace('id', array[index].id);
-            }
-            API.Request(url, 'DELETE', {}, true)
-              .then((res) => {
-                let result = checkout.lineItems.reduce((p, nextItem) => {
-                  return updateLineItemDatabaseHelper(nextItem, array[index].orderInfoId);
-                }, Promise.resolve());
+    if (shopify) {
+      shopify.checkout.removeLineItems(shopifyCheckoutId, itemToDelete)
+        .then((checkout) => {
+          // console.log(checkout);
+          if (itemType === 'product') {
+            url = modifyProductOrders.replace('id', array[index].id);
+          } else if (itemType === 'chip') {
+            url = modifyChipOrders.replace('id', array[index].id);
+          }
+          return API.Request(url, 'DELETE', {}, true)
+            .then((res) => {
+              let result = checkout.lineItems.reduce((p, nextItem) => {
+                return updateLineItemDatabaseHelper(nextItem, array[index].orderInfoId);
+              }, Promise.resolve());
 
-                result.then(e => {
-                  if (itemType === 'product') {
-                    const products = productOrders.filter((item) => item.id !== array[index].id);
-                    setProductOrders(products);
-                  } else if (itemType === 'chip') {
-                    const chips = chipOrders.filter((item) => item.id !== array[index].id);
-                    setChipOrders(chips);
-                  }
+              result.then(e => {
+                if (itemType === 'product') {
+                  const products = productOrders.filter((item) => item.id !== array[index].id);
+                  setProductOrders(products);
+                } else if (itemType === 'chip') {
+                  const chips = chipOrders.filter((item) => item.id !== array[index].id);
+                  setChipOrders(chips);
+                }
 
-                  if (itemType === 'product') {
-                    const quantity = productOrders.reduce((prev, curr) => prev + curr.quantity, 0);
-                    context.setProductQuantity(quantity);
-                  } else if (itemType === 'chip') {
-                    const quantity = chipOrders.reduce((prev, curr) => prev + curr.quantity, 0);
-                    context.setChipQuantity(quantity);
-                  }
-
-                  context.setCartQuantity();
-
-                  setDeleteLoading(false);
-                });
-              })
-              .catch((err) => {
-                console.error(err);
+                if (itemType === 'product') {
+                  const quantity = productOrders.reduce((prev, curr) => prev + curr.quantity, 0);
+                  cart.setProductQuantity(quantity);
+                } else if (itemType === 'chip') {
+                  const quantity = chipOrders.reduce((prev, curr) => prev + curr.quantity, 0);
+                  cart.setChipQuantity(quantity);
+                }
                 setDeleteLoading(false);
               });
-          })
-          .catch((err) => {
-            console.error(err);
-            setDeleteLoading(false);
-          });
-      })
-      .catch((err) => {
-        console.error(err);
-        setDeleteLoading(false);
-      });
+            })
+            .catch((err) => {
+              console.error(err);
+              setDeleteLoading(false);
+            });
+        })
+        .catch((err) => {
+          console.error(err);
+          setDeleteLoading(false);
+        });
+    }
   }
 
-  function updateLineItemCartHelper(instance, type, item, itemsToUpdate) {
-    return instance.checkout.updateLineItems(shopifyCheckoutId, itemsToUpdate)
-      .then((checkout) => {
-        let url;
-        // console.log(checkout.lineItems);
-        if (type === 'product') {
-          url = modifyProductOrders.replace('id', item.id);
-        } else if (type === 'chip') {
-          url = modifyChipOrders.replace('id', item.id);
-        }
-        const data = { quantity: parseInt(item.quantity) };
-        API.Request(url, 'PATCH', data, true)
-          .then((res) => {
-            setNumModifiedItems(numModifiedItems => numModifiedItems + 1);
-            if (numModifiedItems === totalModifiedItems && numModifiedItems > 0) {
-              setCartItems();    // updates number on cart icon
+  function updateLineItemCartHelper(type, item, itemsToUpdate) {
+    if (shopify) {
+      return shopify.checkout.updateLineItems(shopifyCheckoutId, itemsToUpdate)
+        .then((checkout) => {
+          let url;
+          // console.log(checkout.lineItems);
+          if (type === 'product') {
+            url = modifyProductOrders.replace('id', item.id);
+          } else if (type === 'chip') {
+            url = modifyChipOrders.replace('id', item.id);
+          }
+          const data = { quantity: parseInt(item.quantity) };
+          API.Request(url, 'PATCH', data, true)
+            .then((res) => {
+              setNumModifiedItems(numModifiedItems => numModifiedItems + 1);
+              if (numModifiedItems === totalModifiedItems && numModifiedItems > 0) {
+                setCartItems();    // updates number on cart icon
 
+                setSaveInProgress(false);
+              }
+            })
+            .catch((err) => {
+              console.error(err);
               setSaveInProgress(false);
-            }
-          })
-          .catch((err) => {
-            console.error(err);
-            setSaveInProgress(false);
-          });
-      })
-      .catch((err) => {
-        console.error(err);
-        setSaveInProgress(false);
-      });
+            });
+        })
+        .catch((err) => {
+          console.error(err);
+          setSaveInProgress(false);
+        });
+    }
   }
 
-  function handleSaveForOrders(instance, array, type) {
+  function handleSaveForOrders(array, type) {
     return array.filter(item => (modifiedItems.has(item.lineItemIdShopify)))
       .reduce((p, nextItem) => {
-
         const itemsToUpdate = [{
           id: nextItem.lineItemIdShopify,
           quantity: parseInt(nextItem.quantity),
         }];
-
         return p.then(() => {
-          return updateLineItemCartHelper(instance, type, nextItem, itemsToUpdate);
+          return updateLineItemCartHelper(type, nextItem, itemsToUpdate);
         });
-
       }, Promise.resolve());
   }
 
   function handleSave() {
     if (modifiedItems.size > 0) {
       setSaveInProgress(true);
-      Shopify.getInstance().getPrivateValue()
-        .then((instance) => {
-          const result = handleSaveForOrders(instance, _productOrders, 'product');
-          result.then(e => {
-            handleSaveForOrders(instance, _chipOrders, 'chip');
-          });
-        })
-        .catch((err) => {
+      handleSaveForOrders(productOrders, 'product')
+        .then(e => {
+          return handleSaveForOrders(chipOrders, 'chip');
+        }).catch((err) => {
           console.error(err);
+        }).finally(() => {
           setSaveInProgress(false);
         });
     }
@@ -343,34 +322,23 @@ function Cart({ shopifyClient }: { shopifyClient: ShopifyBuy.Client }) {
   }
 
   function setCartItems() {
-    const orderInfoId = cartId;
-    let url = getProductOrders.replace('id', orderInfoId);
-    API.Request(url, 'GET', {}, true)
-      .then((res) => {
-        let quantity = res.data.reduce((prev, curr) => prev + curr.quantity, 0);
-        context.setProductQuantity(quantity);
-
-        url = getChipOrders.replace('id', orderInfoId);
-        API.Request(url, 'GET', {}, true)
-          .then((res) => {
-            quantity = res.data.reduce((prev, curr) => prev + curr.quantity, 0);
-            context.setChipQuantity(quantity);
-
-            context.setCartQuantity();
-
-            setNumModifiedItems(0);
-            setModifiedItems(new Set());
-            setTotalModifiedItems(0);
-          })
-          .catch((err) => {
-            console.error(err);
-          });
-      })
-      .catch((err) => {
+    if (cartId) {
+      Promise.all([
+        API.Request(getProductOrders.replace('id', cartId), 'GET', {}, true),
+        API.Request(getChipOrders.replace('id', cartId), 'GET', {}, true)
+      ]).then(([res1, res2]) => {
+        const productQuantity = res1.data.reduce((prev, curr) => prev + curr.quantity, 0);
+        const chipQuantity = res2.data.reduce((prev, curr) => prev + curr.quantity, 0);
+        cart.setProductQuantity(productQuantity);
+        cart.setChipQuantity(chipQuantity);
+        setNumModifiedItems(0);
+        setModifiedItems(new Set());
+        setTotalModifiedItems(0);
+      }).catch((err) => {
         console.error(err);
       });
+    }
   }
-
 
   useEffect(() => {
     const productTotal = productOrders.reduce((prev, curr) => {
@@ -401,7 +369,7 @@ function Cart({ shopifyClient }: { shopifyClient: ShopifyBuy.Client }) {
                 <div className="flex flex-col py-8 w-full space-y-4">
                   <div className="flex flex-row justify-between items-center">
                     <p className="">
-                      Use the "save" button to save any changes to quantities.<br/> Deletions are saved immediately.
+                      Use the "save" button to save any changes to quantities.<br /> Deletions are saved immediately.
                     </p>
                     <div className="flex flex-row space-x-4 p-2 items-center">
                       {saveInProgress

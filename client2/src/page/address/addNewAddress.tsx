@@ -9,7 +9,7 @@ import FormGroup from '../../component/form/FormGroup';
 import { Address } from '../../types';
 import { AddressSchema } from '../../schemas/shopify';
 
-function AddNewAddress() {
+function AddNewAddress({ addOnClick }: { addOnClick?: (addr: Address) => void }) {
   const [cartId, setCartId] = useState('');
   const [shopifyCheckoutId, setShopifyCheckoutId] = useState('');
   const [shopifyCheckoutLink, setShopifyCheckoutLink] = useState('');
@@ -81,7 +81,10 @@ function AddNewAddress() {
           zipCode: '',
         }}
         validationSchema={AddressSchema}
-        onSubmit={(values) => handleSaveAddress(values)}>
+        onSubmit={(values) => {
+          addOnClick && addOnClick(values);
+          handleSaveAddress(values);
+        }}>
         <Form className="flex flex-col space-y-2">
           <FormGroup name="street" />
           <FormGroup name="streetLine2" />

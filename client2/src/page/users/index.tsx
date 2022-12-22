@@ -94,7 +94,7 @@ function Users() {
   return (
     <ManageRightLayout title="All Users">
       <div>
-        <button className="btn btn-primary" onClick={handleAddUsers}>Add New User</button>
+        <button type="button" className="btn btn-primary" onClick={handleAddUsers}>Add New User</button>
       </div>
       <table className="table-info">
         <thead>

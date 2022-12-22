@@ -36,7 +36,7 @@ function Orders() {
     if (location.pathname === '/manage/customer-orders') {
       url = `${customerOrderRetrieve.replace('id', cookies.userId)}`;
     } else if (location.pathname === '/manage/admin-retrieve-user-orders') {
-      url = `${getAllOrderInfos}?filter={"where": {"customerId": ${this.state.custId}, "orderComplete": true}}`;
+      url = `${getAllOrderInfos}?filter={"where": {"customerId": ${custId}, "orderComplete": true}}`;
     } else {
       console.error('Unexpected error');
       return;

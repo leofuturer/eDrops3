@@ -8,6 +8,7 @@ function DeleteModal({ title = "Confirm Delete", content = "Are you sure you wan
   }, [handleHide]);
 
   const onDelete = useCallback(() => {
+    handleHide();
     handleDelete();
   }, [handleDelete]);
 
