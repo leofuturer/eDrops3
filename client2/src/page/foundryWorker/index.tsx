@@ -1,63 +1,58 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import $ from 'jquery';
 import API from '../../api/api';
 import {
   getAllFoundryWorkers, editFoundryWorker, userBaseFind, userBaseDeleteById,
 } from '../../api/serverConfig';
 import DeleteModal from '../../component/modal/DeleteModal';
+import { useNavigate } from 'react-router-dom';
+import ManageRightLayout from '../../component/layout/ManageRightLayout';
 
-class FoundryWorker extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      workerList: [],
-    };
-    this.handleAddWorker = this.handleAddWorker.bind(this);
-    this.componentDidMount = this.componentDidMount.bind(this);
-    this.handleDeleteWorker = this.handleDeleteWorker.bind(this);
-    this.handleDelete = this.handleDelete.bind(this);
-    this.handleEditWorker = this.handleEditWorker.bind(this);
-    this.handleRetrieveChipOrders = this.handleRetrieveChipOrders.bind(this);
+function FoundryWorker() {
+  const [workerList, setWorkerList] = useState([]);
+  const [showDelete, setShowDelete] = useState(false);
+  const [deleteWorker, setDeleteWorker] = useState({});
+
+  const navigate = useNavigate();
+
+  function handleAddWorker() {
+    navigate('/manage/foundryworkers/addfoundryworker');
   }
 
-  handleAddWorker() {
-    this.props.history.push('/manage/foundryworkers/addfoundryworker');
-  }
-
-  handleRetrieveChipOrders(e) {
-    const worker = JSON.parse(e.target.getAttribute('worker'));
-    const workerId = worker.id;
-    this.props.history.push('/manage/admin-retrieve-worker-orders', {
-      workerId,
-      isCustomer: false,
+  function handleRetrieveChipOrders(worker) {
+    navigate('/manage/admin-retrieve-worker-orders', {
+      state: {
+        workerId: worker.id,
+        isCustomer: false,
+      },
     });
   }
 
-  handleEditWorker(e) {
-    const worker = JSON.parse(e.target.getAttribute('worker'));
-    this.props.history.push('/manage/foundryworkers/editworker', {
-      workerId: worker.id,
-      workerInfo: worker,
+  function handleEditWorker(worker) {
+    navigate('/manage/foundryworkers/editworker', {
+      state: {
+        workerId: worker.id,
+        workerInfo: worker,
+      }
     });
   }
 
-  handleDeleteWorker(e) {
-    const worker = JSON.parse(e.target.getAttribute('worker'));
-    this.setState({ deleteWorker: worker });
+  function handleDeleteWorker(worker) {
+    setShowDelete(true);
+    setDeleteWorker(worker);
   }
 
-  handleDelete() {
+  function handleDelete() {
     // we need to delete both userBase and worker instances
-    const worker = this.state.deleteWorker;
-    let url = `${userBaseFind}?filter={"where": {"email": "${worker.email}"}}`;
+    let url = `${userBaseFind}?filter={"where": {"email": "${deleteWorker.email}"}}`;
     API.Request(url, 'GET', {}, true)
       .then((res) => {
         const userBaseId = res.data[0].id;
         url = userBaseDeleteById.replace('id', userBaseId);
         API.Request(url, 'DELETE', {}, true)
           .then((res) => {
-            url = editFoundryWorker.replace('id', worker.id);
-            const classSelector = `#worker${worker.id}`;
+            url = editFoundryWorker.replace('id', deleteWorker.id);
+            const classSelector = `#worker${deleteWorker.id}`;
             API.Request(url, 'DELETE', {}, true)
               .then((res) => {
                 // console.log(res);
@@ -76,72 +71,58 @@ class FoundryWorker extends React.Component {
       });
   }
 
-  componentDidMount() {
-    const _this = this;
-    const url = getAllFoundryWorkers;
-    const param = {};
-    API.Request(url, 'GET', param, true)
+  useEffect(() => {
+    API.Request(getAllFoundryWorkers, 'GET', {}, true)
       .then((res) => {
-        _this.setState({
-          workerList: res.data,
-        });
+        setWorkerList(res.data);
       })
       .catch((err) => {
         console.log(err);
       });
-  }
+  }, []);
 
-  render() {
-    return (
-      <div className="right-route-content">
-        <div className="profile-content">
-          <h2>All Foundry Workers</h2>
-        </div>
-        <div className="content-show-table row">
-          <div>
-            <button className="btn btn-primary" onClick={this.handleAddWorker}>Add New Foundry Worker</button>
-          </div>
-          <div className="table-background">
-            <table className="table">
-              <thead>
-                <tr>
-                  <th>Full Name</th>
-                  <th>Login Username</th>
-                  <th>Email</th>
-                  <th>Phone</th>
-                  <th>Affiliation</th>
-                  <th>Chip Orders</th>
-                  <th>Edit</th>
-                  <th>Delete</th>
-                </tr>
-              </thead>
-              <tbody>
-                {this.state.workerList.map((worker, index) => (
-                  <tr id={`worker${worker.id}`} key={index}>
-                    <td>{`${worker.firstName} ${worker.lastName}`}</td>
-                    <td>{worker.username}</td>
-                    <td>{worker.email}</td>
-                    <td>{worker.phoneNumber}</td>
-                    <td>{worker.affiliation}</td>
-                    <td>
-                      <i className="fa fa-microchip" worker={JSON.stringify(worker)} onClick={this.handleRetrieveChipOrders} />
-                    </td>
-                    <td>
-                      <i className="fa fa-edit" worker={JSON.stringify(worker)} onClick={this.handleEditWorker} />
-                    </td>
-                    <td>
-                      <i className="fa fa-trash" worker={JSON.stringify(worker)} data-toggle="modal" data-target="#deleteModal" onClick={this.handleDeleteWorker} />
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-        <DeleteModal handleHide={() => {}} handleDelete={this.handleDelete} />
+  return (
+    <ManageRightLayout title="All Foundry Workers">
+      <div>
+        <button type="button" className="btn btn-primary" onClick={handleAddWorker}>Add New Foundry Worker</button>
       </div>
-    );
-  }
+      <table className="table-info">
+        <thead>
+          <tr>
+            <th>Full Name</th>
+            <th>Login Username</th>
+            <th>Email</th>
+            <th>Phone</th>
+            <th>Affiliation</th>
+            <th>Chip Orders</th>
+            <th>Edit</th>
+            <th>Delete</th>
+          </tr>
+        </thead>
+        <tbody>
+          {workerList.map((worker) => (
+            <tr key={worker.id}>
+              <td>{`${worker.firstName} ${worker.lastName}`}</td>
+              <td>{worker.username}</td>
+              <td>{worker.email}</td>
+              <td>{worker.phoneNumber}</td>
+              <td>{worker.affiliation}</td>
+              <td>
+                <i className="fa fa-microchip" onClick={() => handleRetrieveChipOrders(worker)} />
+              </td>
+              <td>
+                <i className="fa fa-edit" onClick={() => handleEditWorker(worker)} />
+              </td>
+              <td>
+                <i className="fa fa-trash" onClick={() => handleDeleteWorker(worker)} />
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      {showDelete && <DeleteModal handleHide={() => setShowDelete(false)} handleDelete={handleDelete} />}
+    </ManageRightLayout>
+  );
 }
 
 export default FoundryWorker;

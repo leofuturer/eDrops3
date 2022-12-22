@@ -9,6 +9,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Admin } from '../../types';
 import { useCookies } from 'react-cookie';
+import ManageRightLayout from '../../component/layout/ManageRightLayout';
 
 function Admins() {
   const [adminList, setAdminList] = useState<Admin[]>([]);
@@ -54,51 +55,44 @@ function Admins() {
   }
 
   return (
-    <div className="right-route-content">
-      <div className="profile-content">
-        <h2>All Admins</h2>
+    <ManageRightLayout title="All Admins">
+      <div>
+        <button type="button" className="btn btn-primary" onClick={handleAddAdmin}>Add New Admin</button>
       </div>
-      <div className="content-show-table row">
-        <div>
-          <button type="button" className="btn btn-primary" onClick={handleAddAdmin}>Add New Admin</button>
-        </div>
-        <div className="table-background">
-          <table className="table">
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>Phone</th>
-                <th>Realm</th>
-                <th>Login username</th>
-                <th>E-mail</th>
-                <th>Edit</th>
-                <th>Delete</th>
-              </tr>
-            </thead>
-            <tbody>
-              {adminList.map((admin: Admin) => (
-                <tr id={`admin${admin.id}`} key={admin.id}>
-                  <td>{admin.id}</td>
-                  <td>{admin.phoneNumber}</td>
-                  <td>{admin.realm == null ? 'Null' : admin.realm}</td>
-                  <td>{admin.username}</td>
-                  <td>{admin.email}</td>
-                  <td>
-                    <i className="fa fa-edit" onClick={() => handleEditAdmin(admin)} />
-                  </td>
-                  {admin.id !== cookies.userId && (
-                    <td>
-                      <i className="fa fa-trash" onClick={() => handleDeleteAdmin(admin)} />
-                    </td>
-                  )}
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
+      <table className="table-info">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Phone</th>
+            <th>Realm</th>
+            <th>Login username</th>
+            <th>E-mail</th>
+            <th>Edit</th>
+            <th>Delete</th>
+          </tr>
+        </thead>
+        <tbody>
+          {adminList.map((admin: Admin) => (
+            <tr id={`admin${admin.id}`} key={admin.id}>
+              <td>{admin.id}</td>
+              <td>{admin.phoneNumber}</td>
+              <td>{admin.realm == null ? 'Null' : admin.realm}</td>
+              <td>{admin.username}</td>
+              <td>{admin.email}</td>
+              <td>
+                <i className="fa fa-edit" onClick={() => handleEditAdmin(admin)} />
+              </td>
+              {admin.id !== cookies.userId && (
+                <td>
+                  <i className="fa fa-trash" onClick={() => handleDeleteAdmin(admin)} />
+                </td>
+              )}
+            </tr>
+          ))}
+        </tbody>
+      </table>
       {showDelete && <DeleteModal handleHide={() => setShowDelete(false)} handleDelete={handleDelete} />}
-    </div>
+    </ManageRightLayout>
   );
 }
 

@@ -1,41 +1,28 @@
 // Admin only page, for customer page see order/index.jsx
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Cookies from 'js-cookie';
 import { getAllOrderInfos } from '../../api/serverConfig';
 import API from '../../api/api';
+import ManageRightLayout from '../../component/layout/ManageRightLayout';
 
-class AllOrders extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      orderList: [],
-      isLoading: false,
-    };
-    this.handleDetail = this.handleDetail.bind(this);
-  }
+function AllOrders() {
+  const [orderList, setOrderList] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
-  componentDidMount() {
-    this.setState({
-      isLoading: true,
-    });
-    const url = getAllOrderInfos;
-    const data = {};
-    API.Request(url, 'GET', data, true)
+  useEffect(() => {
+    setIsLoading(true);
+    API.Request(getAllOrderInfos, 'GET', {}, true)
       .then((res) => {
-        this.setState({
-          orderList: res.data,
-          isLoading: false,
-        });
+        setOrderList(res.data);
       })
       .catch((err) => {
         console.log(err);
-        this.setState({
-          isLoading: false,
-        });
+      }).finally(() => {
+        setIsLoading(false);
       });
-  }
+  }, []);
 
-  handleDetail(e) {
+  function handleDetail(e) {
     // Using the window.open() method to open a new window
     // and display the page based on the passed in redirectUrl
     const orderId = e.target.parentNode.parentNode.id;
@@ -45,7 +32,7 @@ class AllOrders extends React.Component {
     WindowForOrderDetail._orderItemId = orderId;
   }
 
-  handleChat(e) {
+  function handleChat(e) {
     const orderId = e.target.parentNode.parentNode.id;
     const redirectUrl = `/subpage/order-chat?id=${orderId}`;
     const strWindowFeatures = 'width=1200px, height=900px';
@@ -53,65 +40,52 @@ class AllOrders extends React.Component {
     WindowForOrderChat._orderItemId = orderId;
   }
 
-  render() {
-    if (Cookies.get('userType') !== 'admin') {
-      return <Redirect to="/login" />;
-    }
-    return (
-      <div className="right-route-content">
-        <div className="profile-content">
-          <h2>All Orders</h2>
-        </div>
-        <div className="content-show-table row">
-          <div className="table-background">
-            <table className="table">
-              <thead>
-                <tr>
-                  <th>Order ID</th>
-                  <th>Customer ID</th>
-                  <th>Status</th>
-                  <th>Price</th>
-                  <th className="icon-center">Details</th>
-                  <th className="icon-center">Chat</th>
-                </tr>
-              </thead>
-              <tbody>
-                { this.state.orderList.length !== 0
-                  ? this.state.orderList.map((item, index) => (
-                    <tr key={index} id={item.id}>
-                      <td>{item.orderComplete ? item.orderInfoId : 'Customer cart'}</td>
-                      <td>{item.customerId}</td>
-                      <td>{item.status}</td>
-                      <td>
-                        $
-                        {parseFloat(item.total_cost).toFixed(2)}
-                      </td>
-                      <td className="icon-center">
-                        <i className="fa fa-commenting" onClick={this.handleDetail} />
-                      </td>
-                      <td className="icon-center">
-                        <i className="fa fa-commenting" onClick={this.handleChat} />
-                      </td>
-                    </tr>
-                  ))
-                  : (
-                    <tr>
-                      <td>
-                        {
-                          this.state.isLoading
-                            ? <img src="/img/loading80px.gif" alt="" className="loading-icon" />
-                            : 'No orders have been submitted yet.'
-                        }
-                      </td>
-                    </tr>
-                  )}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-    );
-  }
+  return (
+    <ManageRightLayout title="All Orders">
+      <table className="table-info">
+        <thead>
+          <tr>
+            <th>Order ID</th>
+            <th>Customer ID</th>
+            <th>Status</th>
+            <th>Price</th>
+            <th>Details</th>
+            <th>Chat</th>
+          </tr>
+        </thead>
+        <tbody>
+          {orderList.length !== 0 ? orderList.map((item, index) => (
+            <tr key={index} id={item.id}>
+              <td>{item.orderComplete ? item.orderInfoId : 'Customer cart'}</td>
+              <td>{item.customerId}</td>
+              <td>{item.status}</td>
+              <td>
+                $
+                {parseFloat(item.total_cost).toFixed(2)}
+              </td>
+              <td className="icon-center">
+                <i className="fa fa-commenting" onClick={handleDetail} />
+              </td>
+              <td className="icon-center">
+                <i className="fa fa-commenting" onClick={handleChat} />
+              </td>
+            </tr>
+          ))
+            : (
+              <tr>
+                <td>
+                  {
+                    isLoading
+                      ? <img src="/img/loading80px.gif" alt="" className="loading-icon" />
+                      : 'No orders have been submitted yet.'
+                  }
+                </td>
+              </tr>
+            )}
+        </tbody>
+      </table>
+    </ManageRightLayout>
+  );
 }
 
 export default AllOrders;

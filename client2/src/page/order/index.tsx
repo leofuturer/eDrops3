@@ -90,7 +90,7 @@ function Orders() {
         }
       </div>
       <div className="w-full py-8">
-        <table className="rounded-md shadow-box w-full border-collapse table-auto">
+        <table className="table-info">
           <thead className="">
             <tr className="border-b-2">
               <th className="p-2">Order ID</th>

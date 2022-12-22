@@ -12,6 +12,7 @@ import SEO from '../../component/header/SEO.js';
 import { metadata } from './metadata.jsx';
 import { useLocation } from 'react-router-dom';
 import { useCookies } from 'react-cookie';
+import ManageRightLayout from '../../component/layout/ManageRightLayout';
 
 // List all chip orders for all user types
 function ChipOrders() {
@@ -121,112 +122,107 @@ function ChipOrders() {
   }
 
   return (
-    <div className="flex flex-col items-center justify-center">
+    <ManageRightLayout title="Chip Orders">
       <SEO
         title="eDrops | Chip Orders"
         description=""
         metadata={metadata}
       />
-      <div className="w-full border-b-2 border-primary_light flex justify-center py-8">
-        <h2 className="text-2xl">Chip Orders</h2>
-      </div>
-      <div className="w-full py-8">
-        <table className="rounded-md shadow-box w-full border-collapse table-auto">
-          <thead className="">
-            <tr className="border-b-2">
-              <th className="p-2">ID</th>
-              {
-                !(cookies.userType === 'customer')
-                  ? <th>Uploader</th> // admin or worker
-                  : null
-              }
-              <th className="p-2">Last Updated</th>
-              {
-                !(cookies.userType === 'worker')
-                  ? <th>Worker</th> // customer or admin
-                  : null
-              }
-              {
-                cookies.userType === 'customer'
-                  ? <th>Process Status</th> // customer
-                  : <th className="icon-center">Edit Status</th> // worker or admin
-              }
-              <th className="p-2">Qty</th>
-              <th className="p-2">Mask File</th>
-              <th className="p-2">Chat</th>
-              {
-                cookies.userType === 'admin'
-                  ? <th className="p-2">Assign Order</th> // admin
-                  : null
-              }
-            </tr>
-          </thead>
-          <tbody>
-            {orderList.length !== 0
-              ? orderList.map((item, index) => (
-                <tr key={item.id}>
-                  <td className="p-2">{item.id}</td>
-                  {cookies.userType !== 'customer' && <td className="p-2">{item.customerName}</td>}
-                  <td className="p-2">{item.lastUpdated.substring(0, item.lastUpdated.indexOf('T'))}</td>
-                  {cookies.userType !== 'worker' && <td className="p-2">{item.workerName}</td>}
-                  {cookies.userType === 'customer'
-                    ? <td className="p-2">{item.status}</td>
-                    : (
-                      <td className="p-2">
-                        <form
-                          id="edit-order-status-form"
-                          className="edit-order-status-form"
-                          onSubmit={handleSubmit}
-                          data-item-id={item.id}
-                        >
-                          <select id={`status-selection-${item.id}`} className="order-status" name="status" defaultValue={item.status}>
-                            <option value="Fabrication request received">Fab Req Received</option>
-                            <option value="Project Started">Project Started</option>
-                            <option value="Project Completed">Project Completed</option>
-                            <option value="Item Shipped">Item Shipped</option>
-                          </select>
-                          <input type="submit" id={`allOrder${index}`} />
-                        </form>
-                      </td>
-                    )
-                  }
-                  <td className="p-2">
-                    {item.quantity}
-                  </td>
-                  <td className="p-2">
-                    {
-                      cookies.userType === 'worker'
-                        ? <i className="fa fa-download" onClick={handleDownload} id={`download${item.id}`} />
-                        : <i className="fa fa-download" onClick={handleDownload} id={`download${item.fileInfoId}`} />
-                    }
-                  </td>
-                  <td className="p-2">
-                    <i className="fa fa-commenting" onClick={handleChat} id={`order${item.orderId}`} />
-                  </td>
-                  {cookies.userType === 'admin' &&
+      <table className="rounded-md shadow-box w-full border-collapse table-auto">
+        <thead className="">
+          <tr className="border-b-2">
+            <th className="p-2">ID</th>
+            {
+              !(cookies.userType === 'customer')
+                ? <th>Uploader</th> // admin or worker
+                : null
+            }
+            <th className="p-2">Last Updated</th>
+            {
+              !(cookies.userType === 'worker')
+                ? <th>Worker</th> // customer or admin
+                : null
+            }
+            {
+              cookies.userType === 'customer'
+                ? <th>Process Status</th> // customer
+                : <th className="icon-center">Edit Status</th> // worker or admin
+            }
+            <th className="p-2">Qty</th>
+            <th className="p-2">Mask File</th>
+            <th className="p-2">Chat</th>
+            {
+              cookies.userType === 'admin'
+                ? <th className="p-2">Assign Order</th> // admin
+                : null
+            }
+          </tr>
+        </thead>
+        <tbody>
+          {orderList.length !== 0
+            ? orderList.map((item, index) => (
+              <tr key={item.id}>
+                <td className="p-2">{item.id}</td>
+                {cookies.userType !== 'customer' && <td className="p-2">{item.customerName}</td>}
+                <td className="p-2">{item.lastUpdated.substring(0, item.lastUpdated.indexOf('T'))}</td>
+                {cookies.userType !== 'worker' && <td className="p-2">{item.workerName}</td>}
+                {cookies.userType === 'customer'
+                  ? <td className="p-2">{item.status}</td>
+                  : (
                     <td className="p-2">
-                      <i className="fa fa-users" id={`allOrder${index}`} onClick={handleAssign} />
+                      <form
+                        id="edit-order-status-form"
+                        className="edit-order-status-form"
+                        onSubmit={handleSubmit}
+                        data-item-id={item.id}
+                      >
+                        <select id={`status-selection-${item.id}`} className="order-status" name="status" defaultValue={item.status}>
+                          <option value="Fabrication request received">Fab Req Received</option>
+                          <option value="Project Started">Project Started</option>
+                          <option value="Project Completed">Project Completed</option>
+                          <option value="Item Shipped">Item Shipped</option>
+                        </select>
+                        <input type="submit" id={`allOrder${index}`} />
+                      </form>
                     </td>
+                  )
+                }
+                <td className="p-2">
+                  {item.quantity}
+                </td>
+                <td className="p-2">
+                  {
+                    cookies.userType === 'worker'
+                      ? <i className="fa fa-download" onClick={handleDownload} id={`download${item.id}`} />
+                      : <i className="fa fa-download" onClick={handleDownload} id={`download${item.fileInfoId}`} />
                   }
-                </tr>
-              ))
-              : (
-                <tr>
+                </td>
+                <td className="p-2">
+                  <i className="fa fa-commenting" onClick={handleChat} id={`order${item.orderId}`} />
+                </td>
+                {cookies.userType === 'admin' &&
                   <td className="p-2">
-                    {
-                      isLoading
-                        ? <img src="/img/loading80px.gif" alt="" className="loading-icon" />
-                        : (cookies.userType === 'worker'
-                          ? 'No orders have been assigned to you yet.'
-                          : 'No orders have been placed.')
-                    }
+                    <i className="fa fa-users" id={`allOrder${index}`} onClick={handleAssign} />
                   </td>
-                </tr>
-              )}
-          </tbody>
-        </table>
-      </div>
-    </div>
+                }
+              </tr>
+            ))
+            : (
+              <tr>
+                <td className="p-2">
+                  {
+                    isLoading
+                      ? <img src="/img/loading80px.gif" alt="" className="loading-icon" />
+                      : (cookies.userType === 'worker'
+                        ? 'No orders have been assigned to you yet.'
+                        : 'No orders have been placed.')
+                  }
+                </td>
+              </tr>
+            )}
+        </tbody>
+      </table>
+    </ManageRightLayout>
   );
 }
 

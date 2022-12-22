@@ -2,6 +2,7 @@ import Cookies from 'js-cookie';
 import React from 'react';
 import API from '../../api/api';
 import { customerAddresses, getCustomerCart } from '../../api/serverConfig';
+import ManageRightLayout from '../../component/layout/ManageRightLayout';
 
 class AddNewAddress extends React.Component {
   constructor(props) {
@@ -37,7 +38,7 @@ class AddNewAddress extends React.Component {
       isDefault: false,
     };
     if (!addressMes.street || !addressMes.city || !addressMes.state
-            || !addressMes.country || !addressMes.zipCode) {
+      || !addressMes.country || !addressMes.zipCode) {
       alert('Error: All fields must be filled');
     } else {
       const currentPage = window.location.pathname;
@@ -84,66 +85,61 @@ class AddNewAddress extends React.Component {
 
   render() {
     return (
-      <div className="right-route-content">
-        <div className="profile-content">
-          <h2>Add New Address</h2>
-        </div>
-        <div className="form-div">
-          <form action="">
-            <div className="form-group">
-              <label htmlFor="street" className="col-md-4 col-sm-4 col-xs-4 control-label">
-                <span>Street</span>
-              </label>
-              <div className="col-md-8 col-sm-8 col-xs-8">
-                <input id="street" type="text" className="form-control" onChange={(v) => this.handleChange('street', v.target.value)} />
-              </div>
+      <ManageRightLayout title="Add New Address">
+        <form action="">
+          <div className="form-group">
+            <label htmlFor="street" className="col-md-4 col-sm-4 col-xs-4 control-label">
+              <span>Street</span>
+            </label>
+            <div className="col-md-8 col-sm-8 col-xs-8">
+              <input id="street" type="text" className="form-control" onChange={(v) => this.handleChange('street', v.target.value)} />
             </div>
-            <div className="form-group">
-              <label htmlFor="street2" className="col-md-4 col-sm-4 col-xs-4 control-label">
-                <span>Street Line 2</span>
-              </label>
-              <div className="col-md-8 col-sm-8 col-xs-8">
-                <input id="street2" type="text" className="form-control" onChange={(v) => this.handleChange('streetLine2', v.target.value)} />
-              </div>
+          </div>
+          <div className="form-group">
+            <label htmlFor="street2" className="col-md-4 col-sm-4 col-xs-4 control-label">
+              <span>Street Line 2</span>
+            </label>
+            <div className="col-md-8 col-sm-8 col-xs-8">
+              <input id="street2" type="text" className="form-control" onChange={(v) => this.handleChange('streetLine2', v.target.value)} />
             </div>
-            <div className="form-group">
-              <label htmlFor="city" className="col-md-4 col-sm-4 col-xs-4 control-label">
-                <span>City</span>
-              </label>
-              <div className="col-md-8 col-sm-8 col-xs-8">
-                <input id="city" type="text" className="form-control" onChange={(v) => this.handleChange('city', v.target.value)} />
-              </div>
+          </div>
+          <div className="form-group">
+            <label htmlFor="city" className="col-md-4 col-sm-4 col-xs-4 control-label">
+              <span>City</span>
+            </label>
+            <div className="col-md-8 col-sm-8 col-xs-8">
+              <input id="city" type="text" className="form-control" onChange={(v) => this.handleChange('city', v.target.value)} />
             </div>
-            <div className="form-group">
-              <label htmlFor="state" className="col-md-4 col-sm-4 col-xs-4 control-label">
-                <span>State or Province</span>
-              </label>
-              <div className="col-md-8 col-sm-8 col-xs-8">
-                <input id="state" type="text" className="form-control" onChange={(v) => this.handleChange('state', v.target.value)} />
-              </div>
+          </div>
+          <div className="form-group">
+            <label htmlFor="state" className="col-md-4 col-sm-4 col-xs-4 control-label">
+              <span>State or Province</span>
+            </label>
+            <div className="col-md-8 col-sm-8 col-xs-8">
+              <input id="state" type="text" className="form-control" onChange={(v) => this.handleChange('state', v.target.value)} />
             </div>
-            <div className="form-group">
-              <label htmlFor="zip" className="col-md-4 col-sm-4 col-xs-4 control-label">
-                <span>Zip or Postal Code</span>
-              </label>
-              <div className="col-md-8 col-sm-8 col-xs-8">
-                <input id="zip" type="text" className="form-control" onChange={(v) => this.handleChange('zipcode', v.target.value)} />
-              </div>
+          </div>
+          <div className="form-group">
+            <label htmlFor="zip" className="col-md-4 col-sm-4 col-xs-4 control-label">
+              <span>Zip or Postal Code</span>
+            </label>
+            <div className="col-md-8 col-sm-8 col-xs-8">
+              <input id="zip" type="text" className="form-control" onChange={(v) => this.handleChange('zipcode', v.target.value)} />
             </div>
-            <div className="form-group">
-              <label htmlFor="country" className="col-md-4 col-sm-4 col-xs-4 control-label">
-                <span>Country</span>
-              </label>
-              <div className="col-md-8 col-sm-8 col-xs-8">
-                <input id="country" type="text" className="form-control" onChange={(v) => this.handleChange('country', v.target.value)} />
-              </div>
+          </div>
+          <div className="form-group">
+            <label htmlFor="country" className="col-md-4 col-sm-4 col-xs-4 control-label">
+              <span>Country</span>
+            </label>
+            <div className="col-md-8 col-sm-8 col-xs-8">
+              <input id="country" type="text" className="form-control" onChange={(v) => this.handleChange('country', v.target.value)} />
             </div>
-            <div className="form-group add-button">
-              <button type="button" className="btn btn-success" onClick={this.handleSaveAddress}>Add Address</button>
-            </div>
-          </form>
-        </div>
-      </div>
+          </div>
+          <div className="form-group add-button">
+            <button type="button" className="btn btn-success" onClick={this.handleSaveAddress}>Add Address</button>
+          </div>
+        </form>
+      </ManageRightLayout>
     );
   }
 }

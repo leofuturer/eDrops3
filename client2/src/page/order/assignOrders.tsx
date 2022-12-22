@@ -3,6 +3,7 @@ import { NavLink } from 'react-router-dom';
 import OrderItem, { orderItem } from './orderItem.jsx';
 import { getAllFoundryWorkers, assignOrders, foundryWorkerGetName } from '../../api/serverConfig';
 import API from '../../api/api';
+import ManageRightLayout from '../../component/layout/ManageRightLayout.js';
 
 class AssignOrders extends React.Component {
   constructor(props) {
@@ -43,7 +44,7 @@ class AssignOrders extends React.Component {
           workerId: this.state.assignId,
           workerName: `${res.data.firstName} ${res.data.lastName}`,
         };
-    
+
 
         url = assignOrders.replace('id', window._order.id);
         API.Request(url, 'PATCH', data, true)
@@ -60,42 +61,37 @@ class AssignOrders extends React.Component {
   render() {
     const order = window._order;
     return (
-      <div className="ass-right-route-content">
-        <div className="ass-profile-content">
-          <h2>Assign Order</h2>
-        </div>
-        <div className="ass-content-show-table row">
-          <OrderItem info={order} adminAssignOrderDisplay />
-          <div className="table-background">
-            <table className="table">
-              <thead>
-                <tr>
-                  <th>Full Name</th>
-                  <th>Username</th>
-                  <th>E-mail</th>
-                  <th>Phone</th>
-                  <th>Affiliation</th>
-                  <th>Assign</th>
+      <ManageRightLayout title="Assign Order">
+        <OrderItem info={order} adminAssignOrderDisplay />
+        <div className="table-background">
+          <table className="table">
+            <thead>
+              <tr>
+                <th>Full Name</th>
+                <th>Username</th>
+                <th>E-mail</th>
+                <th>Phone</th>
+                <th>Affiliation</th>
+                <th>Assign</th>
+              </tr>
+            </thead>
+            <tbody>
+              {this.state.workerList.map((item, index) => (
+                <tr key={index} id={item.id}>
+                  <td>{`${item.firstName} ${item.lastName}`}</td>
+                  <td>{item.username}</td>
+                  <td>{item.email}</td>
+                  <td>{item.phoneNumber}</td>
+                  <td>{item.affiliation}</td>
+                  <td id={`file${item.id}`} data-toggle="modal" data-target="#confirm-assign" onClick={this.handleAssignId}>
+                    <NavLink id={`file${item.id}`} to="#">
+                      Assign to Him/Her
+                    </NavLink>
+                  </td>
                 </tr>
-              </thead>
-              <tbody>
-                {this.state.workerList.map((item, index) => (
-                  <tr key={index} id={item.id}>
-                    <td>{`${item.firstName} ${item.lastName}`}</td>
-                    <td>{item.username}</td>
-                    <td>{item.email}</td>
-                    <td>{item.phoneNumber}</td>
-                    <td>{item.affiliation}</td>
-                    <td id={`file${item.id}`} data-toggle="modal" data-target="#confirm-assign" onClick={this.handleAssignId}>
-                      <NavLink id={`file${item.id}`} to="#">
-                        Assign to Him/Her
-                      </NavLink>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+              ))}
+            </tbody>
+          </table>
         </div>
 
         {/* <Modal> */}
@@ -115,7 +111,7 @@ class AssignOrders extends React.Component {
             </div>
           </div>
         </div>
-      </div>
+      </ManageRightLayout>
     );
   }
 }

@@ -10,6 +10,7 @@ import { closestParent, showErrorsOrSuccessForInput } from '../../utils/validate
 import { formatPhoneNumber } from '../../utils/phone';
 
 import validate from 'validate.js';
+import ManageRightLayout from '../../component/layout/ManageRightLayout';
 
 class AddOrEditAdmin extends React.Component {
   constructor(props) {
@@ -224,18 +225,13 @@ class AddOrEditAdmin extends React.Component {
   }
 
   render() {
-    if (Cookies.get('userId') === undefined) {
-      return redirect("/login");
-    }
     if (this.props.match.path === '/manage/admins/editAdmin') {
       var profileContent = 'Edit Admin Info';
     } else {
       var profileContent = 'Add New Admin';
     }
     return (
-      <div className="right-route-content">
-        <div className="profile-content">
-          <h2>{profileContent}</h2>
+      <ManageRightLayout title={profileContent}>
           <form id="main" action="" className="vertical-form" noValidate>
             <div className="input-content-register">
               <div className="text-left reminder">
@@ -385,8 +381,7 @@ class AddOrEditAdmin extends React.Component {
               </div>
             </div>
           </form>
-        </div>
-      </div>
+        </ManageRightLayout>
     );
   }
 }
