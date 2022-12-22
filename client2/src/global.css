@@ -12,3 +12,24 @@ body {
 ::-ms-reveal {
   display: none
 }
+
+/* Reusable Tailwind styles */
+
+@layer components {
+  /* Table component */
+  .table-info {
+    @apply rounded-md shadow-box w-full border-collapse table-auto;
+  }
+
+  .table-info thead tr  {
+    @apply border-b-2;
+  }
+
+  .table-info th {
+    @apply p-2
+  }
+
+  .table-info td {
+    @apply p-2
+  }
+}

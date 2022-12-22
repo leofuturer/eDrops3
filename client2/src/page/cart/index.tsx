@@ -17,7 +17,7 @@ import SEO from '../../component/header/SEO.js';
 import { CartContext } from '../../context/CartContext';
 import { useCookies } from 'react-cookie';
 
-function Cart() {
+function Cart({ shopifyClient }: { shopifyClient: ShopifyBuy.Client }) {
   const [cartExists, setCartExists] = useState(false);
   const [cartId, setCartId] = useState(undefined);
   const [shopifyCheckoutId, setShopifyCheckoutId] = useState(undefined);
