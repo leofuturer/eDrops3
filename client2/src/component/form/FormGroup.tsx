@@ -3,7 +3,7 @@ import _ from 'lodash';
 
 function FormGroup({ name, displayName, required = false, type = "text"}: { name: string, displayName?: string, required?: boolean, type?: string }) {
   return (
-    <div className="grid grid-cols-4 gap-4 items-center">
+    <div className="grid grid-cols-4 gap-4 items-center w-full">
       <Field id={name}
         name={name}
       >

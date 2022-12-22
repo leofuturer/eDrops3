@@ -1,19 +1,16 @@
-import React, { useEffect, useState } from 'react';
-import { redirect, useLocation } from 'react-router-dom';
-import Cookies from 'js-cookie';
-import {
-  customerGetProfile,
-  customerAddresses,
-  adminGetProfile,
-  foundryWorkerGetProfile,
-  updateCustomerProfile,
-  updateWorkerProfile,
-  updateAdminProfile,
-} from '../../api/serverConfig';
-import API from '../../api/api';
-import SEO from '../../component/header/SEO.js';
-import { metadata } from './metadata.jsx';
+import { Form, Formik } from 'formik';
+import { useEffect, useState } from 'react';
 import { useCookies } from 'react-cookie';
+import { useLocation } from 'react-router-dom';
+import API from '../../api/api';
+import {
+  adminGetProfile, customerAddresses, customerGetProfile, foundryWorkerGetProfile, updateAdminProfile, updateCustomerProfile,
+  updateWorkerProfile
+} from '../../api/serverConfig';
+import FormGroup from '../../component/form/FormGroup';
+import SEO from '../../component/header/SEO';
+import ManageRightLayout from '../../component/layout/ManageRightLayout';
+import { metadata } from './metadata';
 
 function Profile() {
   const [street, setStreet] = useState('');
@@ -116,7 +113,7 @@ function Profile() {
       // username: username,
       // email: email
     };
-    if (Cookies.get('userType') === 'admin') {
+    if (cookies.userType === 'admin') {
       // only admin can change username or email
       Object.assign(userMes, {
         username: username,
@@ -139,7 +136,7 @@ function Profile() {
     } else {
       var InitUrl = updateWorkerProfile;
     }
-    const url = InitUrl.replace('id', Cookies.get('userId'));
+    const url = InitUrl.replace('id', cookies.userId);
 
     API.Request(url, 'PATCH', userMes, true)
       .then((res) => {
@@ -147,7 +144,7 @@ function Profile() {
         // _this.props.history.push('/manage/profile')
         if (userType === 'customer') {
           // need to update address separately
-          let addressUrl = customerAddresses.replace('id', Cookies.get('userId'));
+          let addressUrl = customerAddresses.replace('id', cookies.userId);
           addressUrl += `/${this.defaultAddressId}`;
           API.Request(addressUrl, 'PATCH', addressData, true)
             .then((res) => {
@@ -190,140 +187,36 @@ function Profile() {
     }
   }
   return (
-    <div className="flex flex-col items-center justify-center">
+    <ManageRightLayout title={profileContent}>
       <SEO
         title="eDrops | Profile"
         description=""
         metadata={metadata}
       />
-      <div className="w-full border-b-2 border-primary_light flex justify-center py-8">
-        <h2 className="text-2xl">{profileContent}</h2>
-      </div>
-      <div className="w-full py-8">
-        <form>
-          <div className="form-group">
-            <label className="col-md-4 col-sm-4 col-xs-4 control-label">
-              <span>Username</span>
-            </label>
-            <div className="col-md-8 col-sm-8 col-xs-8">
-              <input type="text" className="form-control" readOnly value={username} onChange={(e) => setUsername(e.target.value)} />
-            </div>
-          </div>
-          <div className="form-group">
-            <label className="col-md-4 col-sm-4 col-xs-4 control-label">
-              <span>Email</span>
-            </label>
-            <div className="col-md-8 col-sm-8 col-xs-8">
-              <input type="text" className="form-control" readOnly value={email} onChange={(e) => setEmail(e.target.value)} />
-            </div>
-          </div>
-          <div className="form-group">
-            <label className="col-md-4 col-sm-4 col-xs-4 control-label">
-              <span>Phone Number</span>
-            </label>
-            <div className="col-md-8 col-sm-8 col-xs-8">
-              <input type="text" className="form-control" value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)} />
-            </div>
-          </div>
-          {/* </div> */}
-          {
-            Cookies.get('userType') === 'admin'
-              ? null
-              : (
-                <div>
-                  <div className="form-group">
-                    <label className="col-md-4 col-sm-4 col-xs-4 control-label">
-                      <span>First Name</span>
-                    </label>
-                    <div className="col-md-8 col-sm-8 col-xs-8">
-                      <input type="text" className="form-control" value={firstName} onChange={(e) => setFirstName(e.target.value)} />
-                    </div>
-                  </div>
-                  <div className="form-group">
-                    <label className="col-md-4 col-sm-4 col-xs-4 control-label">
-                      <span>Last Name</span>
-                    </label>
-                    <div className="col-md-8 col-sm-8 col-xs-8">
-                      <input type="text" className="form-control" value={lastName} onChange={(e) => setLastName(e.target.value)} />
-                    </div>
-                  </div>
-
-                  <div className="form-group">
-                    <label className="col-md-4 col-sm-4 col-xs-4 control-label">
-                      <span>Street</span>
-                    </label>
-                    <div className="col-md-8 col-sm-8 col-xs-8">
-                      <input type="text" className="form-control" value={street} onChange={(e) => setStreet(e.target.value)} />
-                    </div>
-                  </div>
-                  <div className="form-group">
-                    <label className="col-md-4 col-sm-4 col-xs-4 control-label">
-                      <span>Street Line 2</span>
-                    </label>
-                    <div className="col-md-8 col-sm-8 col-xs-8">
-                      <input type="text" className="form-control" value={streetLine2} onChange={(e) => setStreetLine2(e.target.value)} />
-                    </div>
-                  </div>
-                  <div className="form-group">
-                    <label className="col-md-4 col-sm-4 col-xs-4 control-label">
-                      <span>City</span>
-                    </label>
-                    <div className="col-md-8 col-sm-8 col-xs-8">
-                      <input type="text" className="form-control" value={city} onChange={(e) => setCity(e.target.value)} />
-                    </div>
-                  </div>
-                  <div className="form-group">
-                    <label className="col-md-4 col-sm-4 col-xs-4 control-label">
-                      <span>State or Province</span>
-                    </label>
-                    <div className="col-md-8 col-sm-8 col-xs-8">
-                      <input type="text" className="form-control" value={state} onChange={(e) => setState(e.target.value)} />
-                    </div>
-                  </div>
-                  <div className="form-group">
-                    <label className="col-md-4 col-sm-4 col-xs-4 control-label">
-                      <span>Zip or Postal Code</span>
-                    </label>
-                    <div className="col-md-8 col-sm-8 col-xs-8">
-                      <input type="text" className="form-control" value={zipCode} onChange={(e) => setZipCode(e.target.value)} />
-                    </div>
-                  </div>
-                  <div className="form-group">
-                    <label className="col-md-4 col-sm-4 col-xs-4 control-label">
-                      <span>Country</span>
-                    </label>
-                    <div className="col-md-8 col-sm-8 col-xs-8">
-                      <input type="text" className="form-control" value={country} onChange={(e) => setCountry(e.target.value)} />
-                    </div>
-                  </div>
-
-                </div>
-              )
+      <Formik initialValues={{}} onSubmit={handleSave}>
+        <Form className="flex flex-col space-y-2">
+          <FormGroup name="username" />
+          <FormGroup name="email" />
+          <FormGroup name="phoneNumber" />
+          {cookies.userType !== 'admin' &&
+            <>
+              <FormGroup name="firstName" />
+              <FormGroup name="lastName" />
+              <FormGroup name="street" />
+              <FormGroup name="streetLine2" />
+              <FormGroup name="city" />
+              <FormGroup name="state" />
+              <FormGroup name="zipCode" />
+              <FormGroup name="country" />
+            </>
           }
-          {
-            Cookies.get('userType') === 'worker'
-              ? (
-                <div className="form-group">
-                  <label className="col-md-4 col-sm-4 col-xs-4 control-label">
-                    <span>Affiliation</span>
-                  </label>
-                  <div className="col-md-8 col-sm-8 col-xs-8">
-                    <input type="text" className="form-control" value={affiliation} onChange={(e) => setAffiliation(e.target.value)} />
-                  </div>
-                </div>
-              )
-              : null
+          {cookies.userType === 'worker' &&
+            <FormGroup name="affiliation" />
           }
-
-          <div className="form-group">
-            <div className="col-md-10 col-sd-10 col-xs-10" />
-            <div className="btn-group col-md-2 col-sd-2 col-xs-2 text-right" role="group" aria-label="...">
-              <button type="button" className="btn btn-success" onClick={handleSave}>Save</button>
-            </div>
-          </div>
-        </form>
-      </div>
-    </div>
+          <button type="submit" className="w-max bg-green-600 text-white rounded-md px-4 py-2">Save</button>
+        </Form>
+      </Formik>
+    </ManageRightLayout>
   );
 }
 

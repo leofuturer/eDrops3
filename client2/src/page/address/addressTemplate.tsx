@@ -14,7 +14,7 @@ function AddressTemplate({ address, addressNum, onDeletion }: { address: Address
       }
     });
   }
-  
+
   return (
     <div className="flex flex-col bg-white rounded-lg p-4 shadow-box space-y-2">
       <div className="flex flex-row justify-between items-center">
@@ -41,21 +41,22 @@ function AddressTemplate({ address, addressNum, onDeletion }: { address: Address
         <div className="">{address.zipCode}</div>
       </div>
       <div className="flex flex-row">
-        <button type="button" className="bg-primary_light hover:bg-primary text-white rounded-md px-4 py-1">
+        <button
+          type="button"
+          className="bg-primary_light hover:bg-primary text-white rounded-md px-4 py-1 flex space-x-2 items-center"
+          onClick={handleUpdateAddress}
+        >
           <i className="fa fa-cog" />
-          <span className="btn-txt-padding" onClick={handleUpdateAddress}>Update</span>
+          <p className="">Update</p>
         </button>
-        {address.isDefault
-          ? null
-          : (
-            <button className="btn btn-danger btn-padding">
-              <i className="fa fa-trash-o" />
-              <span className="btn-txt-padding" onClick={onDeletion}>Delete</span>
-              {/* <span className="btn-txt-padding" onClick={props.onDelete}>Delete</span> */}
-            </button>
-          )}
+        {!address.isDefault &&
+          <button type="button" className="bg-red-700 text-white rounded-md px-4 py-1 flex space-x-2 items-center">
+            <i className="fa fa-trash-o" />
+            <p className="" onClick={onDeletion}>Delete</p>
+          </button>
+        }
       </div>
-    </div>
+    </div >
   );
 }
 

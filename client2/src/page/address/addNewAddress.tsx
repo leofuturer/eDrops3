@@ -1,147 +1,99 @@
-import Cookies from 'js-cookie';
-import React from 'react';
+import { Form, Formik } from 'formik';
+import { useState } from 'react';
+import { useCookies } from 'react-cookie';
+import { useLocation, useNavigate } from 'react-router-dom';
 import API from '../../api/api';
 import { customerAddresses, getCustomerCart } from '../../api/serverConfig';
 import ManageRightLayout from '../../component/layout/ManageRightLayout';
+import FormGroup from '../../component/form/FormGroup';
+import { Address } from '../../types';
+import { AddressSchema } from '../../schemas/shopify';
 
-class AddNewAddress extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      street: '',
-      streetLine2: '',
-      city: '',
-      state: '',
-      country: '',
-      zipcode: '',
-    };
-    this.handleSaveAddress = this.handleSaveAddress.bind(this);
-  }
+function AddNewAddress() {
+  const [cartId, setCartId] = useState('');
+  const [shopifyCheckoutId, setShopifyCheckoutId] = useState('');
+  const [shopifyCheckoutLink, setShopifyCheckoutLink] = useState('');
 
-  handleChange(key, value) {
-    this.setState(
-      {
-        [key]: value,
-      },
-    );
-  }
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [cookies] = useCookies(['userId'])
 
-  handleSaveAddress() {
-    const _this = this;
+  function handleSaveAddress(address: Omit<Address, 'id' | 'isDefault'>) {
     const addressMes = {
-      street: this.state.street,
-      streetLine2: this.state.streetLine2,
-      city: this.state.city,
-      state: this.state.state,
-      country: this.state.country,
-      zipCode: this.state.zipcode,
+      street: address.street,
+      streetLine2: address.streetLine2,
+      city: address.city,
+      state: address.state,
+      country: address.country,
+      zipCode: address.zipCode,
       isDefault: false,
     };
-    if (!addressMes.street || !addressMes.city || !addressMes.state
-      || !addressMes.country || !addressMes.zipCode) {
-      alert('Error: All fields must be filled');
-    } else {
-      const currentPage = window.location.pathname;
-      if (currentPage == '/beforeCheckout') {
-        let url = getCustomerCart.replace('id', Cookies.get('userId'));
-        API.Request(url, 'GET', {}, true)
-          .then((res) => {
-            if (res.data.id) {
-              _this.setState({
-                cartId: res.data.id,
-                shopifyCheckoutId: res.data.checkoutIdClient,
-                shopifyCheckoutLink: res.data.checkoutLink,
-              });
-              url = customerAddresses.replace('id', Cookies.get('userId'));
-              API.Request(url, 'POST', addressMes, true)
-                .then((res) => {
-                  // console.log(res);
-                  _this.props.history.go('/beforeCheckout', {
-                    cartId: _this.state.id,
-                    shopifyCheckoutId: _this.state.checkoutIdClient,
-                    shopifyCheckoutLink: _this.state.checkoutLink,
-                  });
-                })
-                .catch((error) => {
-                  console.error(error);
-                });
-            } else {
-              console.log("didn't work");
+    // if (!addressMes.street || !addressMes.city || !addressMes.state
+    //   || !addressMes.country || !addressMes.zipCode) {
+    //   alert('Error: All fields must be filled');
+    if (location.pathname === '/beforeCheckout') {
+      API.Request(getCustomerCart.replace('id', cookies.userId), 'GET', {}, true)
+        .then((res) => {
+          if (res.data.id) {
+            setCartId(res.data.id);
+            setShopifyCheckoutId(res.data.checkoutIdClient);
+            setShopifyCheckoutLink(res.data.checkoutLink);
+          }
+          else {
+            throw new Error('Error: No cart found');
+          }
+        })
+        .then(() => API.Request(customerAddresses.replace('id', cookies.userId), 'POST', addressMes, true))
+        .then((res) => {
+          // console.log(res);
+          navigate('/beforeCheckout', {
+            state: {
+              cartId: cartId,
+              shopifyCheckoutId: shopifyCheckoutId,
+              shopifyCheckoutLink: shopifyCheckoutLink,
             }
           });
-      } else {
-        const url = customerAddresses.replace('id', Cookies.get('userId'));
-        API.Request(url, 'POST', addressMes, true)
-          .then((res) => {
-            // console.log(res);
-            _this.props.history.push('/manage/address');
-          })
-          .catch((error) => {
-            console.error(error);
-          });
-      }
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    } else {
+      API.Request(customerAddresses.replace('id', cookies.userId), 'POST', addressMes, true)
+        .then((res) => {
+          // console.log(res);
+          navigate('/manage/address');
+        })
+        .catch((error) => {
+          console.error(error);
+        });
     }
   }
 
-  render() {
-    return (
-      <ManageRightLayout title="Add New Address">
-        <form action="">
-          <div className="form-group">
-            <label htmlFor="street" className="col-md-4 col-sm-4 col-xs-4 control-label">
-              <span>Street</span>
-            </label>
-            <div className="col-md-8 col-sm-8 col-xs-8">
-              <input id="street" type="text" className="form-control" onChange={(v) => this.handleChange('street', v.target.value)} />
-            </div>
-          </div>
-          <div className="form-group">
-            <label htmlFor="street2" className="col-md-4 col-sm-4 col-xs-4 control-label">
-              <span>Street Line 2</span>
-            </label>
-            <div className="col-md-8 col-sm-8 col-xs-8">
-              <input id="street2" type="text" className="form-control" onChange={(v) => this.handleChange('streetLine2', v.target.value)} />
-            </div>
-          </div>
-          <div className="form-group">
-            <label htmlFor="city" className="col-md-4 col-sm-4 col-xs-4 control-label">
-              <span>City</span>
-            </label>
-            <div className="col-md-8 col-sm-8 col-xs-8">
-              <input id="city" type="text" className="form-control" onChange={(v) => this.handleChange('city', v.target.value)} />
-            </div>
-          </div>
-          <div className="form-group">
-            <label htmlFor="state" className="col-md-4 col-sm-4 col-xs-4 control-label">
-              <span>State or Province</span>
-            </label>
-            <div className="col-md-8 col-sm-8 col-xs-8">
-              <input id="state" type="text" className="form-control" onChange={(v) => this.handleChange('state', v.target.value)} />
-            </div>
-          </div>
-          <div className="form-group">
-            <label htmlFor="zip" className="col-md-4 col-sm-4 col-xs-4 control-label">
-              <span>Zip or Postal Code</span>
-            </label>
-            <div className="col-md-8 col-sm-8 col-xs-8">
-              <input id="zip" type="text" className="form-control" onChange={(v) => this.handleChange('zipcode', v.target.value)} />
-            </div>
-          </div>
-          <div className="form-group">
-            <label htmlFor="country" className="col-md-4 col-sm-4 col-xs-4 control-label">
-              <span>Country</span>
-            </label>
-            <div className="col-md-8 col-sm-8 col-xs-8">
-              <input id="country" type="text" className="form-control" onChange={(v) => this.handleChange('country', v.target.value)} />
-            </div>
-          </div>
-          <div className="form-group add-button">
-            <button type="button" className="btn btn-success" onClick={this.handleSaveAddress}>Add Address</button>
-          </div>
-        </form>
-      </ManageRightLayout>
-    );
-  }
+  return (
+    <ManageRightLayout title="Add New Address">
+      <Formik
+        initialValues={{
+          street: '',
+          streetLine2: '',
+          city: '',
+          state: '',
+          country: '',
+          zipCode: '',
+        }}
+        validationSchema={AddressSchema}
+        onSubmit={(values) => handleSaveAddress(values)}>
+        <Form className="flex flex-col space-y-2">
+          <FormGroup name="street" />
+          <FormGroup name="streetLine2" />
+          <FormGroup name="city" />
+          <FormGroup name="state" displayName="State or Province" />
+          <FormGroup name="zipCode" displayName="Zip or Postal Code" />
+          <FormGroup name="country" />
+          <button type="submit" className="w-max bg-green-600 text-white rounded-md px-4 py-2">Add Address</button>
+        </Form>
+      </Formik>
+    </ManageRightLayout>
+  );
 }
 
 export default AddNewAddress;
