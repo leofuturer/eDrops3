@@ -54,6 +54,7 @@ function ChipOrders() {
         if (workerId) {
           res.data = res.data.filter((orderChip) => orderChip.workerId === workerId);
         }
+        console.log(res)
         setOrderList(res.data);
         setIsLoading(false);
       })
@@ -69,11 +70,11 @@ function ChipOrders() {
     const itemId = Number(e.target.id.replace(/[^0-9]/ig, ''));
     if (cookies.userType === 'customer') {
       // for customer, `id` is file ID
-      url = downloadFileById.replace('id', Cookies.get('userId'));
+      url = downloadFileById.replace('id', cookies.userId);
       url += `?access_token=${Cookies.get('access_token')}&fileId=${itemId}`;
     } else if (cookies.userType === 'worker') {
       // for worker, `id` is chipOrder ID (associated with that file)
-      url = workerDownloadFile.replace('id', Cookies.get('userId'));
+      url = workerDownloadFile.replace('id', cookies.userId);
       url += `?access_token=${Cookies.get('access_token')}&chipOrderId=${itemId}`;
     } else if (cookies.userType === 'admin') {
       // for admin, `id` is file ID
@@ -128,88 +129,82 @@ function ChipOrders() {
         description=""
         metadata={metadata}
       />
-      <table className="rounded-md shadow-box w-full border-collapse table-auto">
+      <table className="table-info">
         <thead className="">
-          <tr className="border-b-2">
-            <th className="p-2">ID</th>
+          <tr className="">
+            <th className="">ID</th>
             {
-              !(cookies.userType === 'customer')
-                ? <th>Uploader</th> // admin or worker
-                : null
+              cookies.userType !== 'customer' && <th>Uploader</th> // admin or worker
             }
-            <th className="p-2">Last Updated</th>
+            <th className="">Last Updated</th>
             {
-              !(cookies.userType === 'worker')
-                ? <th>Worker</th> // customer or admin
-                : null
+              cookies.userType !== 'worker' && <th>Worker</th> // customer or admin
             }
             {
               cookies.userType === 'customer'
                 ? <th>Process Status</th> // customer
                 : <th className="icon-center">Edit Status</th> // worker or admin
             }
-            <th className="p-2">Qty</th>
-            <th className="p-2">Mask File</th>
-            <th className="p-2">Chat</th>
+            <th className="">Qty</th>
+            <th className="">Mask File</th>
+            <th className="">Chat</th>
             {
-              cookies.userType === 'admin'
-                ? <th className="p-2">Assign Order</th> // admin
-                : null
+              cookies.userType === 'admin' && <th className="">Assign Order</th> // admin
             }
           </tr>
         </thead>
         <tbody>
-          {orderList.length !== 0
-            ? orderList.map((item, index) => (
-              <tr key={item.id}>
-                <td className="p-2">{item.id}</td>
-                {cookies.userType !== 'customer' && <td className="p-2">{item.customerName}</td>}
-                <td className="p-2">{item.lastUpdated.substring(0, item.lastUpdated.indexOf('T'))}</td>
-                {cookies.userType !== 'worker' && <td className="p-2">{item.workerName}</td>}
-                {cookies.userType === 'customer'
-                  ? <td className="p-2">{item.status}</td>
-                  : (
-                    <td className="p-2">
-                      <form
-                        id="edit-order-status-form"
-                        className="edit-order-status-form"
-                        onSubmit={handleSubmit}
-                        data-item-id={item.id}
-                      >
-                        <select id={`status-selection-${item.id}`} className="order-status" name="status" defaultValue={item.status}>
-                          <option value="Fabrication request received">Fab Req Received</option>
-                          <option value="Project Started">Project Started</option>
-                          <option value="Project Completed">Project Completed</option>
-                          <option value="Item Shipped">Item Shipped</option>
-                        </select>
-                        <input type="submit" id={`allOrder${index}`} />
-                      </form>
-                    </td>
-                  )
-                }
-                <td className="p-2">
-                  {item.quantity}
-                </td>
-                <td className="p-2">
-                  {
-                    cookies.userType === 'worker'
-                      ? <i className="fa fa-download" onClick={handleDownload} id={`download${item.id}`} />
-                      : <i className="fa fa-download" onClick={handleDownload} id={`download${item.fileInfoId}`} />
-                  }
-                </td>
-                <td className="p-2">
-                  <i className="fa fa-commenting" onClick={handleChat} id={`order${item.orderId}`} />
-                </td>
-                {cookies.userType === 'admin' &&
-                  <td className="p-2">
-                    <i className="fa fa-users" id={`allOrder${index}`} onClick={handleAssign} />
+          {JSON.stringify(orderList)}
+          {/* {orderList.length !== 0 ? orderList.map((item, index) => (
+            <tr key={item.id}>
+              <td className="">{item.id}</td>
+              {cookies.userType !== 'customer' && <td className="">{item.customerName}</td>}
+              <td className="">{item.lastUpdated.substring(0, item.lastUpdated.indexOf('T'))}</td>
+              {cookies.userType !== 'worker' && <td className="">{item.workerName}</td>}
+              {cookies.userType === 'customer'
+                ? <td className="">{item.status}</td>
+                : (
+                  <td className="">
+                    <form
+                      id="edit-order-status-form"
+                      className="edit-order-status-form"
+                      onSubmit={handleSubmit}
+                      data-item-id={item.id}
+                    >
+                      <select id={`status-selection-${item.id}`} className="order-status" name="status" defaultValue={item.status}>
+                        <option value="Fabrication request received">Fab Req Received</option>
+                        <option value="Project Started">Project Started</option>
+                        <option value="Project Completed">Project Completed</option>
+                        <option value="Item Shipped">Item Shipped</option>
+                      </select>
+                      <input type="submit" id={`allOrder${index}`} />
+                    </form>
                   </td>
+                )
+              }
+              <td className="">
+                {item.quantity}
+              </td>
+              <td className="">
+                {
+                  cookies.userType === 'worker'
+                    ? <i className="fa fa-download" onClick={handleDownload} id={`download${item.id}`} />
+                    : <i className="fa fa-download" onClick={handleDownload} id={`download${item.fileInfoId}`} />
                 }
-              </tr>
-            ))
+              </td>
+              <td className="">
+                <i className="fa fa-commenting" onClick={handleChat} id={`order${item.orderId}`} />
+              </td>
+              {cookies.userType === 'admin' &&
+                <td className="">
+                  <i className="fa fa-users" id={`allOrder${index}`} onClick={handleAssign} />
+                </td>
+              }
+            </tr>
+          ))
             : (
               <tr>
-                <td className="p-2">
+                <td className="">
                   {
                     isLoading
                       ? <img src="/img/loading80px.gif" alt="" className="loading-icon" />
@@ -219,7 +214,7 @@ function ChipOrders() {
                   }
                 </td>
               </tr>
-            )}
+            )} */}
         </tbody>
       </table>
     </ManageRightLayout>

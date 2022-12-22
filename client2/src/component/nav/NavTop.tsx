@@ -60,13 +60,11 @@ function NavTop() {
         .then((res) => {
           if (res.data.id) {
             const orderInfoId = res.data.id;
-            url = getProductOrders.replace('id', orderInfoId);
-            API.Request(url, 'GET', {}, true)
+            return API.Request(getProductOrders.replace('id', orderInfoId), 'GET', {}, true)
               .then((res) => {
                 let quantity = res.data.reduce((prev: number, curr: { quantity: number }) => prev + curr.quantity, 0);
                 context.setProductQuantity(quantity);
-                url = getChipOrders.replace('id', orderInfoId);
-                API.Request(url, 'GET', {}, true)
+                return API.Request(getChipOrders.replace('id', orderInfoId), 'GET', {}, true)
                   .then((res) => {
                     quantity = res.data.reduce((prev: number, curr: { quantity: number }) => prev + curr.quantity, 0);
                     context.setChipQuantity(quantity);
