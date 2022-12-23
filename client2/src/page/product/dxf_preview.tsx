@@ -6,7 +6,6 @@ import { Helper } from 'dxf';
 import { useCookies } from 'react-cookie';
 
 function DXFPreview({ fileInfo }: { fileInfo: any }) {
-  const [isLoading, setIsLoading] = useState(true);
   const [svg, setSvg] = useState('');
 
   const [cookies] = useCookies(['userId', 'userType', 'access_token']);
@@ -19,7 +18,6 @@ function DXFPreview({ fileInfo }: { fileInfo: any }) {
         // console.log(`Number of entities: ${helper.denormalised.length}`);
         const svg = helper.toSVG();
         setSvg(svg);
-        setIsLoading(false);
         // rescaleSvg(svg);
       })
       .catch((err) => {
@@ -49,11 +47,8 @@ function DXFPreview({ fileInfo }: { fileInfo: any }) {
   }
 
   return (
-    <div className="text-center">
-      {isLoading
-        ? <img src="/img/loading80px.gif" alt="" />
-        : <div dangerouslySetInnerHTML={{ '__html': svg }} className="h-[500px]" />
-      }
+    <div className="text-center shadow-box-sm">
+      <div dangerouslySetInnerHTML={{ '__html': svg }} className="h-[500px]" />
     </div>
   );
 }
