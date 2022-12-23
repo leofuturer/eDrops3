@@ -56,8 +56,11 @@ function Admins() {
 
   return (
     <ManageRightLayout title="All Admins">
-      <div>
-        <button type="button" className="btn btn-primary" onClick={handleAddAdmin}>Add New Admin</button>
+      <div className="flex justify-end mb-4 -mt-4">
+        <button type="button" className="bg-green-500 text-white px-4 py-2 w-max rounded-lg flex items-center space-x-2" onClick={handleAddAdmin}>
+          <i className="fa fa-plus" />
+          <p>Add New Admin</p>
+        </button>
       </div>
       <table className="table-info">
         <thead>

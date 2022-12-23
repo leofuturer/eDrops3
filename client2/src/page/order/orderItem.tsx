@@ -1,82 +1,53 @@
-import React from 'react';
-import { NavLink } from 'react-router-dom';
-import API from '../../api/api';
-import { ewodFabServiceId } from '../../constants';
 
 // The order list page for both customer and worker
-class OrderItem extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-
-  render() {
-    return (
-      <div className="order-item-card">
-        <div className="order-item-title"><h3>{this.props.info.name}</h3></div>
-        <div className="div-cart-product-quantity">
-          {'Quantity: '}
-          {this.props.info.quantity}
-        </div>
-        <div className="left-right-wrapper">
-          <div className="div-cart-price">
-            Unit Price: $
-            {this.props.info.price.toFixed(2)}
-          </div>
-          <div className="div-cart-price">
-            Subtotal: $
-            {(this.props.info.quantity * this.props.info.price).toFixed(2)}
-          </div>
-        </div>
-        { this.props.info.otherDetails.length !== 0
-          ? (
-            <div>
-              <div className="div-cart-more-info">{'Additional information: '}</div>
-              <div
-                className="div-cart-more-info-text"
-                dangerouslySetInnerHTML={{ __html: this.props.info.otherDetails.replace(/\n/g, '<br/>') }}
-              />
-            </div>
-          )
-          : null}
-        { this.props.adminAssignOrderDisplay
-          ? (
-            <div>
-              <div>
-                Customer name:
-                {' '}
-                {this.props.info.customerName}
-              </div>
-              <div>
-                Chip Order ID:
-                {' '}
-                {this.props.info.id}
-              </div>
-              <div>
-                Order ID:
-                {' '}
-                {this.props.info.orderId}
-              </div>
-              <div>
-                Customer ID:
-                {' '}
-                {this.props.info.customerId}
-              </div>
-              <div>
-                File ID:
-                {' '}
-                {this.props.info.fileInfoId}
-              </div>
-              <div>
-                Status:
-                {' '}
-                {this.props.info.status}
-              </div>
-            </div>
-          )
-          : null}
+function OrderItem({ info, adminAssignOrderDisplay = false }: { info: any, adminAssignOrderDisplay?: boolean }) {
+  return (
+    <div className="order-item-card">
+      <div className="order-item-title"><h3>{info.name}</h3></div>
+      <div className="div-cart-product-quantity">
+        Quantity: {info.quantity}
       </div>
-    );
-  }
+      <div className="left-right-wrapper">
+        <div className="div-cart-price">
+          Unit Price: ${info.price.toFixed(2)}
+        </div>
+        <div className="div-cart-price">
+          Subtotal: ${(info.quantity * info.price).toFixed(2)}
+        </div>
+      </div>
+      {info.otherDetails.length !== 0 && (
+        <div>
+          <div className="div-cart-more-info">{'Additional information: '}</div>
+          <div
+            className="div-cart-more-info-text"
+            dangerouslySetInnerHTML={{ __html: info.otherDetails.replace(/\n/g, '<br/>') }}
+          />
+        </div>
+      )}
+      {adminAssignOrderDisplay && (
+        <div>
+          <div>
+            Customer name: {info.customerName}
+          </div>
+          <div>
+            Chip Order ID: {info.id}
+          </div>
+          <div>
+            Order ID: {info.orderId}
+          </div>
+          <div>
+            Customer ID: {info.customerId}
+          </div>
+          <div>
+            File ID: {info.fileInfoId}
+          </div>
+          <div>
+            Status: {info.status}
+          </div>
+        </div>
+      )}
+    </div>
+  );
 }
 
 export default OrderItem;

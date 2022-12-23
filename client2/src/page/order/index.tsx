@@ -8,6 +8,7 @@ import SEO from '../../component/header/SEO';
 import { metadata } from './metadata';
 import { useLocation } from 'react-router-dom';
 import { useCookies } from 'react-cookie';
+import ManageRightLayout from '../../component/layout/ManageRightLayout';
 
 // The order list page for both customer and worker
 function Orders() {
@@ -70,73 +71,57 @@ function Orders() {
   }
 
   return (
-    <div className="flex flex-col items-center justify-center">
+    <ManageRightLayout title={location.pathname === '/manage/admin-retrieve-user-orders' ? 'Orders for ${username}' : 'Orders'}>
       <SEO
         title="eDrops | Orders"
         description=""
         metadata={metadata}
       />
-      <div className="w-full border-b-2 border-primary_light flex justify-center py-8">
-        {
-          location.pathname === '/manage/admin-retrieve-user-orders'
-            ? (
-              <h2 className="text-2xl">
-                Orders for
-                {' '}
-                {username}
-              </h2>
-            )
-            : <h2 className="text-2xl">Orders</h2>
-        }
-      </div>
-      <div className="w-full py-8">
-        <table className="table-info">
-          <thead className="">
-            <tr className="border-b-2">
-              <th className="p-2">Order ID</th>
-              <th className="p-2">Order Date</th>
-              <th className="p-2">Process Status</th>
-              <th className="p-2">Total Price</th>
-              <th className="p-2">Other Details</th>
-              <th className="p-2">Chat</th>
-            </tr>
-          </thead>
-          <tbody>
-            {orderList
-              ? orderList.map((item, index) => (
-                <tr key={index}>
-                  <td className="p-2">{item.orderInfoId}</td>
-                  <td className="p-2">{item.createdAt.substring(0, item.createdAt.indexOf('T'))}</td>
-                  <td className="p-2">{item.status}</td>
-                  <td className="p-2">
-                    $
-                    {parseFloat(item.total_cost).toFixed(2)}
-                  </td>
-                  <td className="p-2">
-                    <i className="fa fa-commenting" onClick={() => this.handleDetail(item.id)} />
-                  </td>
-                  <td className="p-2">
-                    <i className="fa fa-commenting" onClick={() => this.handleChat(item.id)} />
-                  </td>
-                </tr>
-              ))
-              : (
-                <tr>
-                  <td className="p-2">
-                    {
-                      isLoading
-                        ? <img src="/img/loading80px.gif" alt="" className="loading-icon" />
-                        : (Cookies.get('userType') === 'worker'
-                          ? 'No orders have been assigned to you yet.'
-                          : 'No orders have been placed.')
-                    }
-                  </td>
-                </tr>
-              )}
-          </tbody>
-        </table>
-      </div>
-    </div>
+      <table className="table-info">
+        <thead className="">
+          <tr className="border-b-2">
+            <th className="p-2">Order ID</th>
+            <th className="p-2">Order Date</th>
+            <th className="p-2">Process Status</th>
+            <th className="p-2">Total Price</th>
+            <th className="p-2">Other Details</th>
+            <th className="p-2">Chat</th>
+          </tr>
+        </thead>
+        <tbody>
+          {orderList.length !== 0 ? orderList.map((order, index) => (
+              <tr key={index}>
+                <td className="p-2">{order.orderInfoId}</td>
+                <td className="p-2">{order.createdAt.substring(0, order.createdAt.indexOf('T'))}</td>
+                <td className="p-2">{order.status}</td>
+                <td className="p-2">
+                  $
+                  {parseFloat(order.total_cost).toFixed(2)}
+                </td>
+                <td className="p-2">
+                  <i className="fa fa-commenting cursor-pointer" onClick={() => handleDetail(order.id)} />
+                </td>
+                <td className="p-2">
+                  <i className="fa fa-commenting cursor-pointer" onClick={() => handleChat(order.id)} />
+                </td>
+              </tr>
+            ))
+            : (
+              <tr>
+                <td className="p-2">
+                  {
+                    isLoading
+                      ? <img src="/img/loading80px.gif" alt="" className="loading-icon" />
+                      : (Cookies.get('userType') === 'worker'
+                        ? 'No orders have been assigned to you yet.'
+                        : 'No orders have been placed.')
+                  }
+                </td>
+              </tr>
+            )}
+        </tbody>
+      </table>
+    </ManageRightLayout>
   );
 }
 
