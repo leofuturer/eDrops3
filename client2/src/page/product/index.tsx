@@ -27,6 +27,7 @@ import { CartContext } from '../../context/CartContext';
 import { Product as ProductType } from 'shopify-buy';
 import { useCookies } from 'react-cookie';
 import { Buffer } from 'buffer';
+import Loading from '../../component/ui/Loading';
 
 function Product() {
   const context = useContext(CartContext);
@@ -345,14 +346,14 @@ function Product() {
                         Add to Cart
                       </button>
                     )
-                    : <img className="loading-GIF" src="/img/loading80px.gif" alt="" />}
+                    : <Loading />}
                 </div>
                 <div className="text-sm text-gray-400">Note: Price excludes sales tax</div>
               </div>
             </div>
           </div>
         )
-        : <img className="loading-GIF" src="/img/loading80px.gif" alt="" />}
+        : <Loading />}
     </div>
   );
 }

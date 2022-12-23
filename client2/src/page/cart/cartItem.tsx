@@ -1,6 +1,7 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 import API from '../../api/api';
+import Loading from '../../component/ui/Loading';
 import { ewodFabServiceId } from '../../constants';
 
 // The order list page for both customer and worker
@@ -48,7 +49,7 @@ function CartItem({ info, deleteLoading, onDelete, onChange }: { info: { product
           : null}
         <div>
           {deleteLoading
-            ? <img src="/img/loading80px.gif" alt="" />
+            ? <Loading />
             : (
               <button
                 type="button"

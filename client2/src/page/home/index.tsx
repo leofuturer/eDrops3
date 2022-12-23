@@ -41,7 +41,7 @@ function Home() {
         <div className="grid grid-cols-3 gap-10 w-2/3">
           <NavLink to={controlSysPageLink} className="flex flex-col">
             <figure className="scale-90 hover:scale-100 duration-500 ease-in-out">
-              <img src="/img/IMG_2943.jpg" alt="Digital Microfluidics Control System" className="pointer-events-none" />
+              <img src="/img/controlsystem.jpg" alt="Digital Microfluidics Control System" className="pointer-events-none" />
             </figure>
             <h4 className="text-primary_light text-lg border-t-2 py-8 text-center">Digital Microfluidics Control System</h4>
           </NavLink>

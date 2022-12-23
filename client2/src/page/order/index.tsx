@@ -9,6 +9,7 @@ import { metadata } from './metadata';
 import { useLocation } from 'react-router-dom';
 import { useCookies } from 'react-cookie';
 import ManageRightLayout from '../../component/layout/ManageRightLayout';
+import Loading from '../../component/ui/Loading';
 
 // The order list page for both customer and worker
 function Orders() {
@@ -111,7 +112,7 @@ function Orders() {
                 <td className="p-2">
                   {
                     isLoading
-                      ? <img src="/img/loading80px.gif" alt="" className="loading-icon" />
+                      ? <Loading />
                       : (Cookies.get('userType') === 'worker'
                         ? 'No orders have been assigned to you yet.'
                         : 'No orders have been placed.')

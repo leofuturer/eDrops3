@@ -249,8 +249,8 @@ function ChipOrder() {
           name: product.title,
           description: product.description,
           quantity,
-          price: parseFloat(product.variants[0].price),
-          otherDetails: customAttrs,
+          price: parseFloat(product.variants[0].price.amount),
+          otherDetails: JSON.stringify(customAttrs),
           process: materialVal,
           coverPlate: wcpbVal,
           lastUpdated: new Date().toISOString(),
@@ -360,7 +360,7 @@ function ChipOrder() {
           </div>
           <div className="flex justify-center items-center">
             {isLoading
-              ? <img src="/img/loading80px.gif" alt="" className="loading-icon" />
+              ? <Loading />
               : (
                 <button
                   type="button"

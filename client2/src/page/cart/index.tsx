@@ -16,6 +16,7 @@ import SEO from '../../component/header/SEO.js';
 
 import { CartContext } from '../../context/CartContext';
 import { useCookies } from 'react-cookie';
+import Loading from '../../component/ui/Loading.js';
 
 function Cart() {
   const [cartExists, setCartExists] = useState(false);
@@ -373,7 +374,7 @@ function Cart() {
                     </p>
                     <div className="flex flex-row space-x-4 p-2 items-center">
                       {saveInProgress
-                        ? <img className="" src="/img/loading80px.gif" alt="" />
+                        ? <Loading />
                         : (
                           <button
                             type="button"
@@ -430,7 +431,7 @@ function Cart() {
               : (
                 <div>
                   {cartLoading
-                    ? <img className="loading-GIF" src="/img/loading80px.gif" alt="" />
+                    ? <Loading />
                     : (
                       <div className="w-full py-8">
                         <p>

@@ -5,6 +5,7 @@ import API from '../../api/api';
 import SEO from '../../component/header/SEO';
 import { metadata } from './metadata';
 import { Product } from 'shopify-buy';
+import Loading from '../../component/ui/Loading';
 
 function AllItems() {
 
@@ -30,7 +31,7 @@ function AllItems() {
       <div className="grid grid-cols-3 gap-10 w-2/3">
         {products
           ? products.map((product, index) => <ItemCard product={product} key={product.id} />)
-          : <img className="loading-GIF" src="/img/loading80px.gif" alt="" />}
+          : <Loading />}
       </div>
     </div>
   );
