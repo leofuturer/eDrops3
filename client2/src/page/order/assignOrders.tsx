@@ -3,7 +3,7 @@ import { NavLink } from 'react-router-dom';
 import OrderItem, { orderItem } from './orderItem.jsx';
 import { getAllFoundryWorkers, assignOrders, foundryWorkerGetName } from '../../api/serverConfig';
 import API from '../../api/api';
-import ManageRightLayout from '../../component/layout/ManageRightLayout.js';
+import ManageRightLayout from '../../component/layout/ManageRightLayout';
 
 class AssignOrders extends React.Component {
   constructor(props) {

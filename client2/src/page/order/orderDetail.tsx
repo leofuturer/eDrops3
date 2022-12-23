@@ -1,141 +1,112 @@
-import React from 'react';
-import queryString from 'query-string';
+import { useEffect, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import API from '../../api/api';
-import { getOrderInfoById, getProductOrders, getChipOrders } from '../../api/serverConfig';
-import OrderItem from './orderItem.jsx';
-import OrderAddress from './orderAddress.js';
+import { getChipOrders, getOrderInfoById, getProductOrders } from '../../api/serverConfig';
+import MessageLayout from '../../component/layout/MessageLayout';
+import { DisplayAddress } from '../../types';
+import OrderAddress from './orderAddress';
+import OrderItem from './orderItem';
 
-class OrderDetail extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      doneLoading: false,
-      orderId: queryString.parse(this.props.location.search, { ignoreQueryPrefix: true }).id,
-    };
-  }
+function OrderDetail() {
+  const [doneLoading, setDoneLoading] = useState(false);
+  const [orderId, setOrderId] = useState('');
+  const [orderDetail, setOrderDetail] = useState({});
+  const [shippingAddress, setShippingAddress] = useState<DisplayAddress>({} as DisplayAddress);
+  const [billingAddress, setBillingAddress] = useState<DisplayAddress>({} as DisplayAddress);
+  const [productOrders, setProductOrders] = useState([]);
+  const [chipOrders, setChipOrders] = useState([]);
+  const [totalPrice, setTotalPrice] = useState(0);
 
-  componentDidMount() {
-    const _this = this;
-    let url = getOrderInfoById.replace('id', this.state.orderId);
-    API.Request(url, 'GET', {}, true)
+  const [searchParams] = useSearchParams();
+
+  useEffect(() => {
+    setOrderId(searchParams.get('id') as string);
+  }, [searchParams]);
+
+  useEffect(() => {
+    orderId && API.Request(getOrderInfoById.replace('id', orderId), 'GET', {}, true)
       .then((res) => {
-        this.setState({
-          orderDetail: res.data,
-        });
+        setOrderDetail(res.data);
         console.log(res.data);
-        this.setState({
-          shippingAddress: {
-            type: 'Shipping',
-            name: res.data.sa_name,
-            street: res.data.sa_address1,
-            street2: res.data.sa_address2,
-            city: res.data.sa_city,
-            state: res.data.sa_province,
-            country: res.data.sa_country,
-            zipCode: res.data.sa_zip,
-          },
-          billingAddress: {
-            type: 'Billing',
-            name: res.data.ba_name,
-            street: res.data.ba_address1,
-            street2: res.data.ba_address2,
-            city: res.data.ba_city,
-            state: res.data.ba_province,
-            country: res.data.ba_country,
-            zipCode: res.data.ba_zip,
-          },
+        setShippingAddress({
+          type: 'Shipping',
+          name: res.data.sa_name,
+          street: res.data.sa_address1,
+          streetLine2: res.data.sa_address2,
+          city: res.data.sa_city,
+          state: res.data.sa_province,
+          country: res.data.sa_country,
+          zipCode: res.data.sa_zip,
         });
-        const orderInfoId = res.data.id;
-        url = getProductOrders.replace('id', orderInfoId);
-        API.Request(url, 'GET', {}, true)
-          .then((res) => {
-            _this.setState({
-              productOrders: res.data,
-            });
-            url = getChipOrders.replace('id', orderInfoId);
-            API.Request(url, 'GET', {}, true)
-              .then((res) => {
-                _this.setState({
-                  chipOrders: res.data,
-                  doneLoading: true,
-                });
-                // console.log(res.data)
-              })
-              .catch((err) => {
-                console.error(err);
-              });
-          })
-          .catch((err) => {
-            console.error(err);
-          });
+        setBillingAddress({
+          type: 'Billing',
+          name: res.data.ba_name,
+          street: res.data.ba_address1,
+          streetLine2: res.data.ba_address2,
+          city: res.data.ba_city,
+          state: res.data.ba_province,
+          country: res.data.ba_country,
+          zipCode: res.data.ba_zip,
+        });
+        return Promise.all([
+          API.Request(getProductOrders.replace('id', res.data.id), 'GET', {}, true),
+          API.Request(getChipOrders.replace('id', res.data.id), 'GET', {}, true),
+        ]);
+      })
+      .then(([res1, res2]) => {
+        setProductOrders(res1.data);
+        setChipOrders(res2.data);
+        setDoneLoading(true);
       })
       .catch((err) => {
         console.error(err);
       });
-  }
+  }, [orderId]);
 
-  render() {
-    const thisOrder = this.state.orderDetail;
-    let totalItemsPrice = 0;
-    if (this.state.productOrders !== undefined) {
-      this.state.productOrders.forEach((product) => {
-        totalItemsPrice += (product.quantity * product.price);
-      });
-    }
-    if (this.state.chipOrders !== undefined) {
-      this.state.chipOrders.forEach((product) => {
-        totalItemsPrice += (product.quantity * product.price);
-      });
-    }
+  useEffect(() => {
+    const productPrices = productOrders.reduce((acc, cur) => acc + cur.price * cur.quantity, 0);
+    const chipPrices = chipOrders.reduce((acc, cur) => acc + cur.price * cur.quantity, 0);
+    setTotalPrice(productPrices + chipPrices);
+  }, [productOrders, chipOrders]);
 
-    return (
-      <div className="order-detail-frame">
-        { !this.state.doneLoading
-          ? (
-            <div className="order-detail-title-container">
-              <h2>Page loading...</h2>
+  return (
+    <MessageLayout title="eDrops Order Details" message={`Order Number: ${orderDetail.orderComplete ? orderDetail.orderInfoId : "N/A"}`}>
+      {!doneLoading
+        ? (
+          <div className="order-detail-title-container">
+            <h2>Page loading...</h2>
+          </div>
+        )
+        : (
+          <div className="flex flex-col space-y-4">
+            <div className="grid grid-cols-2 gap-4">
+              <OrderAddress address={shippingAddress} />
+              <OrderAddress address={billingAddress} />
             </div>
-          )
-          : (
-            <div>
-              <div className="order-detail-title-container">
-                <h2>eDrops Order Details</h2>
-              </div>
-              <div className="order-item-title">
-                Order Number:
-                {' '}
-                {thisOrder.orderComplete ? thisOrder.orderInfoId : "N/A, is currently a customer's cart"}
-              </div>
-              <div id="order-addresses">
-                <OrderAddress address={this.state.shippingAddress} />
-                <OrderAddress address={this.state.billingAddress} />
-              </div>
-              {
-                this.state.productOrders.map((oneProduct, index) => <OrderItem key={index} info={oneProduct} />)
-              }
-              {
-                this.state.chipOrders.map((oneProduct, index) => <OrderItem key={index} info={oneProduct} />)
-              }
-              <div className="order-taxes-and-fees-price">
-                Subtotal: $
-                {parseFloat(totalItemsPrice).toFixed(2)}
-              </div>
-              <div className="order-taxes-and-fees-price">
-                Fees and Taxes: $
-                {thisOrder.orderComplete ? parseFloat(thisOrder.fees_and_taxes).toFixed(2) : 'N/A'}
-              </div>
-              <div className="order-total-price">
-                Total: $
-                {thisOrder.orderComplete ? (parseFloat(totalItemsPrice) + parseFloat(thisOrder.fees_and_taxes)).toFixed(2) : 'N/A'}
-              </div>
-              <div className="order-thank-you">
-                Please contact us at edropswebsite@gmail.com for any questions. Thank you for the order!
-              </div>
+            {
+              productOrders.map((oneProduct, index) => <OrderItem key={index} info={oneProduct} />)
+            }
+            {
+              chipOrders.map((oneProduct, index) => <OrderItem key={index} info={oneProduct} />)
+            }
+            <div className="flex flex-col">
+              <p className="text-right">
+                Subtotal: ${totalPrice.toFixed(2)}
+              </p>
+              <p className="text-right">
+                Fees and Taxes: ${orderDetail.orderComplete ? parseFloat(orderDetail.fees_and_taxes).toFixed(2) : 'N/A'}
+              </p>
+              <p className="text-right font-bold">
+                Total: ${orderDetail.orderComplete ? (totalPrice + parseFloat(orderDetail.fees_and_taxes)).toFixed(2) : 'N/A'}
+              </p>
             </div>
-          )}
-      </div>
-    );
-  }
+            <p className="text-center text-xs">
+              Please contact us at edropswebsite@gmail.com for any questions. Thank you for the order!
+            </p>
+          </div>
+        )}
+    </MessageLayout>
+  );
 }
 
 export default OrderDetail;

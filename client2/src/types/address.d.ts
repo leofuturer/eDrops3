@@ -8,3 +8,8 @@ export interface Address {
     zipCode: string;
     isDefault: boolean;
 }
+
+export interface DisplayAddress extends Omit<Address, 'id' | 'isDefault'> {
+    type: string;
+    name: string
+}

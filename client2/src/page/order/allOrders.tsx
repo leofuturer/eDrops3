@@ -22,18 +22,16 @@ function AllOrders() {
       });
   }, []);
 
-  function handleDetail(e) {
+  function handleDetail(orderId) {
     // Using the window.open() method to open a new window
     // and display the page based on the passed in redirectUrl
-    const orderId = e.target.parentNode.parentNode.id;
     const redirectUrl = `/subpage/order-detail?id=${orderId}`;
     const strWindowFeatures = 'width=1200px, height=900px';
     const WindowForOrderDetail = window.open(redirectUrl, '_blank', strWindowFeatures);
     WindowForOrderDetail._orderItemId = orderId;
   }
 
-  function handleChat(e) {
-    const orderId = e.target.parentNode.parentNode.id;
+  function handleChat(orderId) {
     const redirectUrl = `/subpage/order-chat?id=${orderId}`;
     const strWindowFeatures = 'width=1200px, height=900px';
     const WindowForOrderChat = window.open(redirectUrl, '_blank', strWindowFeatures);
@@ -54,20 +52,20 @@ function AllOrders() {
           </tr>
         </thead>
         <tbody>
-          {orderList.length !== 0 ? orderList.map((item, index) => (
-            <tr key={index} id={item.id}>
-              <td>{item.orderComplete ? item.orderInfoId : 'Customer cart'}</td>
-              <td>{item.customerId}</td>
-              <td>{item.status}</td>
+          {orderList.length !== 0 ? orderList.map((order, index) => (
+            <tr key={index} id={order.id}>
+              <td>{order.orderComplete ? order.orderInfoId : 'Customer cart'}</td>
+              <td>{order.customerId}</td>
+              <td>{order.status}</td>
               <td>
                 $
-                {parseFloat(item.total_cost).toFixed(2)}
+                {parseFloat(order.total_cost).toFixed(2)}
               </td>
               <td className="icon-center">
-                <i className="fa fa-commenting" onClick={handleDetail} />
+                <i className="fa fa-commenting cursor-pointer" onClick={() => handleDetail(order.id)} />
               </td>
               <td className="icon-center">
-                <i className="fa fa-commenting" onClick={handleChat} />
+                <i className="fa fa-commenting cursor-pointer" onClick={() => handleChat(order.id)} />
               </td>
             </tr>
           ))

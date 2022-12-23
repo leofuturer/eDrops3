@@ -1,20 +1,20 @@
-import React, { useEffect, useState } from 'react';
-import { NavLink } from 'react-router-dom';
-import Cookies from 'js-cookie';
-import { getAllFileInfos, adminDownloadFile } from '../../api/serverConfig';
+import { useEffect, useState } from 'react';
+import { useCookies } from 'react-cookie';
 import API from '../../api/api';
+import { adminDownloadFile, getAllFileInfos } from '../../api/serverConfig';
 import ManageRightLayout from '../../component/layout/ManageRightLayout';
+import { FileInfo } from '../../types';
 
 function AllFiles() {
-  const [fileList, setFileList] = useState([]);
+  const [fileList, setFileList] = useState<FileInfo[]>([]);
 
-  function handleDownload(e) {
-    const file = this.state.fileList[e.target.parentNode.parentNode.id];
+  const [cookies] = useCookies(['access_token']);
+
+  function handleDownload(file: FileInfo) {
     const fileId = file.id;
-    let url = adminDownloadFile;
-    url += `?access_token=${Cookies.get('access_token')}&fileId=${fileId}`;
+    const url = `${adminDownloadFile}?access_token=${cookies.access_token}&fileId=${file.id}`;
     // console.log(url);
-    window.location = url;
+    window.location.href = url;
   }
 
   useEffect(() => {
@@ -43,19 +43,16 @@ function AllFiles() {
           </tr>
         </thead>
         <tbody>
-          {fileList.length !== 0 ? fileList.map((item, index) => (
-            <tr key={index} id={index}>
-              <td>{item.uploadTime}</td>
-              <td>{item.fileName}</td>
-              <td>{item.uploader}</td>
-              <td>{item.fileSize}</td>
+          {fileList.length !== 0 ? fileList.map((file, index) => (
+            <tr key={index}>
+              <td>{file.uploadTime}</td>
+              <td>{file.fileName}</td>
+              <td>{file.uploader}</td>
+              <td>{file.fileSize}</td>
               <td>
-                <i
-                  className="fa fa-download"
-                  onClick={handleDownload}
-                />
+                <i className="fa fa-download cursor-pointer" onClick={() => handleDownload(file)} />
               </td>
-              <td>{item.isDeleted ? 'Yes' : 'No'}</td>
+              <td>{file.isDeleted ? 'Yes' : 'No'}</td>
             </tr>
           ))
             : (

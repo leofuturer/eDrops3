@@ -1,17 +1,15 @@
-import React, { useEffect, useState } from 'react';
-import $ from 'jquery';
-import API from '../../api/api';
-import {
-  getAllFoundryWorkers, editFoundryWorker, userBaseFind, userBaseDeleteById,
-} from '../../api/serverConfig';
-import DeleteModal from '../../component/modal/DeleteModal';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import API from '../../api/api';
+import { editFoundryWorker, getAllFoundryWorkers, userBaseDeleteById, userBaseFind } from '../../api/serverConfig';
 import ManageRightLayout from '../../component/layout/ManageRightLayout';
+import DeleteModal from '../../component/modal/DeleteModal';
+import { Worker } from '../../types';
 
 function FoundryWorker() {
-  const [workerList, setWorkerList] = useState([]);
+  const [workerList, setWorkerList] = useState<Worker[]>([]);
   const [showDelete, setShowDelete] = useState(false);
-  const [deleteWorker, setDeleteWorker] = useState({});
+  const [deleteWorker, setDeleteWorker] = useState<Worker>({} as Worker);
 
   const navigate = useNavigate();
 
@@ -19,7 +17,7 @@ function FoundryWorker() {
     navigate('/manage/foundryworkers/addfoundryworker');
   }
 
-  function handleRetrieveChipOrders(worker) {
+  function handleRetrieveChipOrders(worker: Worker) {
     navigate('/manage/admin-retrieve-worker-orders', {
       state: {
         workerId: worker.id,
@@ -28,7 +26,7 @@ function FoundryWorker() {
     });
   }
 
-  function handleEditWorker(worker) {
+  function handleEditWorker(worker: Worker) {
     navigate('/manage/foundryworkers/editworker', {
       state: {
         workerId: worker.id,
@@ -37,7 +35,7 @@ function FoundryWorker() {
     });
   }
 
-  function handleDeleteWorker(worker) {
+  function handleDeleteWorker(worker: Worker) {
     setShowDelete(true);
     setDeleteWorker(worker);
   }
@@ -46,25 +44,11 @@ function FoundryWorker() {
     // we need to delete both userBase and worker instances
     let url = `${userBaseFind}?filter={"where": {"email": "${deleteWorker.email}"}}`;
     API.Request(url, 'GET', {}, true)
+      .then((res) => API.Request(userBaseDeleteById.replace('id', res.data[0].id), 'DELETE', {}, true))
+      .then((res) => API.Request(editFoundryWorker.replace('id', deleteWorker.id), 'DELETE', {}, true))
       .then((res) => {
-        const userBaseId = res.data[0].id;
-        url = userBaseDeleteById.replace('id', userBaseId);
-        API.Request(url, 'DELETE', {}, true)
-          .then((res) => {
-            url = editFoundryWorker.replace('id', deleteWorker.id);
-            const classSelector = `#worker${deleteWorker.id}`;
-            API.Request(url, 'DELETE', {}, true)
-              .then((res) => {
-                // console.log(res);
-                $(classSelector).remove();
-              })
-              .catch((err) => {
-                console.error(err);
-              });
-          })
-          .catch((err) => {
-            console.error(err);
-          });
+        // console.log(res);
+        setWorkerList(workerList.filter((worker) => worker.id !== deleteWorker.id));
       })
       .catch((err) => {
         console.error(err);
@@ -83,8 +67,11 @@ function FoundryWorker() {
 
   return (
     <ManageRightLayout title="All Foundry Workers">
-      <div>
-        <button type="button" className="btn btn-primary" onClick={handleAddWorker}>Add New Foundry Worker</button>
+      <div className="flex justify-end mb-4 -mt-4">
+        <button type="button" className="bg-green-500 text-white px-4 py-2 w-max rounded-lg flex items-center space-x-2" onClick={handleAddWorker}>
+          <i className="fa fa-plus" />
+          <p>Add New Foundry Worker</p>
+        </button>
       </div>
       <table className="table-info">
         <thead>
@@ -100,7 +87,7 @@ function FoundryWorker() {
           </tr>
         </thead>
         <tbody>
-          {workerList.map((worker) => (
+          {workerList.map((worker: Worker) => (
             <tr key={worker.id}>
               <td>{`${worker.firstName} ${worker.lastName}`}</td>
               <td>{worker.username}</td>
@@ -108,13 +95,13 @@ function FoundryWorker() {
               <td>{worker.phoneNumber}</td>
               <td>{worker.affiliation}</td>
               <td>
-                <i className="fa fa-microchip" onClick={() => handleRetrieveChipOrders(worker)} />
+                <i className="fa fa-microchip cursor-pointer" onClick={() => handleRetrieveChipOrders(worker)} />
               </td>
               <td>
-                <i className="fa fa-edit" onClick={() => handleEditWorker(worker)} />
+                <i className="fa fa-edit cursor-pointer" onClick={() => handleEditWorker(worker)} />
               </td>
               <td>
-                <i className="fa fa-trash" onClick={() => handleDeleteWorker(worker)} />
+                <i className="fa fa-trash cursor-pointer" onClick={() => handleDeleteWorker(worker)} />
               </td>
             </tr>
           ))}

@@ -17,7 +17,7 @@ import {
 } from '@loopback/rest';
 import path from 'path';
 import {Customer, FileInfo} from '../models';
-import {CustomerRepository} from '../repositories';
+import {CustomerRepository, FileInfoRepository} from '../repositories';
 import {FILE_UPLOAD_SERVICE, STORAGE_DIRECTORY} from '../services';
 
 export class CustomerFileInfoController {
@@ -28,6 +28,8 @@ export class CustomerFileInfoController {
   constructor(
     @repository(CustomerRepository)
     protected customerRepository: CustomerRepository,
+    @repository(FileInfoRepository)
+    protected fileRepository: FileInfoRepository,
     @inject(FILE_UPLOAD_SERVICE) private handler: ExpressRequestHandler,
     @inject(STORAGE_DIRECTORY) private storageDirectory: string,
   ) {}
@@ -120,8 +122,8 @@ export class CustomerFileInfoController {
         return files[0].containerFileName;
       });
     return process.env.NODE_ENV !== 'production'
-      ? this.customerRepository.downloadDisk(filename, response)
-      : this.customerRepository.downloadS3(filename, response);
+      ? this.fileRepository.downloadDisk(filename, response)
+      : this.fileRepository.downloadS3(filename, response);
   }
 
   @del('/customers/{id}/deleteFile', {

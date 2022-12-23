@@ -10,6 +10,13 @@ export interface Admin extends User {
   phoneNumber: string;
 }
 
+export interface Worker extends User {
+  firstName: string;
+  lastName: string;
+  phoneNumber: string;
+  affiliation: string;
+}
+
 export interface User {
   id: string;
   username: string;

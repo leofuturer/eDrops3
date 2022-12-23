@@ -20,7 +20,7 @@ dotenv.config({ path: path.resolve(__dirname, '.env') });
 const pusher = new Pusher({
   appId: process.env.APP_PUSHER_API_ID as string,
   key: process.env.APP_PUSHER_API_KEY as string,
-  secret:  process.env.APP_PUSHER_API_SECRET as string,
+  secret: process.env.APP_PUSHER_API_SECRET as string,
   cluster: process.env.APP_PUSHER_API_CLUSTER as string,
   useTLS: true,
 });
@@ -28,13 +28,13 @@ const pusher = new Pusher({
 export class OrderMessageController {
   constructor(
     @repository(OrderMessageRepository)
-    public orderMessageRepository : OrderMessageRepository,
-  ) {}
+    public orderMessageRepository: OrderMessageRepository,
+  ) { }
 
   @post('/orderMessages')
   @response(200, {
     description: 'OrderMessage model instance',
-    content: {'application/json': {schema: getModelSchemaRef(OrderMessage)}},
+    content: { 'application/json': { schema: getModelSchemaRef(OrderMessage) } },
   })
   async create(
     @requestBody({
@@ -42,7 +42,6 @@ export class OrderMessageController {
         'application/json': {
           schema: getModelSchemaRef(OrderMessage, {
             title: 'NewOrderMessage',
-            
           }),
         },
       },
@@ -61,7 +60,7 @@ export class OrderMessageController {
   @get('/orderMessages/count')
   @response(200, {
     description: 'OrderMessage model count',
-    content: {'application/json': {schema: CountSchema}},
+    content: { 'application/json': { schema: CountSchema } },
   })
   async count(
     @param.where(OrderMessage) where?: Where<OrderMessage>,
@@ -76,7 +75,7 @@ export class OrderMessageController {
       'application/json': {
         schema: {
           type: 'array',
-          items: getModelSchemaRef(OrderMessage, {includeRelations: true}),
+          items: getModelSchemaRef(OrderMessage, { includeRelations: true }),
         },
       },
     },
@@ -90,13 +89,13 @@ export class OrderMessageController {
   @patch('/orderMessages')
   @response(200, {
     description: 'OrderMessage PATCH success count',
-    content: {'application/json': {schema: CountSchema}},
+    content: { 'application/json': { schema: CountSchema } },
   })
   async updateAll(
     @requestBody({
       content: {
         'application/json': {
-          schema: getModelSchemaRef(OrderMessage, {partial: true}),
+          schema: getModelSchemaRef(OrderMessage, { partial: true }),
         },
       },
     })
@@ -120,7 +119,7 @@ export class OrderMessageController {
   async findById(
     @param.path.number('id') id: number,
   ): Promise<OrderMessage[]> {
-    return this.orderMessageRepository.find({where: {orderId: id}});
+    return this.orderMessageRepository.find({ where: { orderId: id } });
   }
 
   @patch('/orderMessages/{id}')
@@ -132,7 +131,7 @@ export class OrderMessageController {
     @requestBody({
       content: {
         'application/json': {
-          schema: getModelSchemaRef(OrderMessage, {partial: true}),
+          schema: getModelSchemaRef(OrderMessage, { partial: true }),
         },
       },
     })

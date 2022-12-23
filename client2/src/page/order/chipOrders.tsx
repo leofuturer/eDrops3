@@ -133,29 +133,24 @@ function ChipOrders() {
         <thead className="">
           <tr className="">
             <th className="">ID</th>
-            {
-              cookies.userType !== 'customer' && <th>Uploader</th> // admin or worker
+            {cookies.userType !== 'customer' && <th>Uploader</th> // admin or worker
             }
             <th className="">Last Updated</th>
-            {
-              cookies.userType !== 'worker' && <th>Worker</th> // customer or admin
+            {cookies.userType !== 'worker' && <th>Worker</th> // customer or admin
             }
-            {
-              cookies.userType === 'customer'
-                ? <th>Process Status</th> // customer
-                : <th className="icon-center">Edit Status</th> // worker or admin
+            {cookies.userType === 'customer'
+              ? <th>Process Status</th> // customer
+              : <th className="icon-center">Edit Status</th> // worker or admin
             }
             <th className="">Qty</th>
             <th className="">Mask File</th>
             <th className="">Chat</th>
-            {
-              cookies.userType === 'admin' && <th className="">Assign Order</th> // admin
+            {cookies.userType === 'admin' && <th className="">Assign Order</th> // admin
             }
           </tr>
         </thead>
         <tbody>
-          {JSON.stringify(orderList)}
-          {/* {orderList.length !== 0 ? orderList.map((item, index) => (
+          {orderList.length !== 0 ? orderList.map((item, index) => (
             <tr key={item.id}>
               <td className="">{item.id}</td>
               {cookies.userType !== 'customer' && <td className="">{item.customerName}</td>}
@@ -204,17 +199,16 @@ function ChipOrders() {
           ))
             : (
               <tr>
-                <td className="">
-                  {
-                    isLoading
-                      ? <img src="/img/loading80px.gif" alt="" className="loading-icon" />
-                      : (cookies.userType === 'worker'
-                        ? 'No orders have been assigned to you yet.'
-                        : 'No orders have been placed.')
+                <td className="p-2" colSpan={9}>
+                  {isLoading
+                    ? <img src="/img/loading80px.gif" alt="" className="loading-icon" />
+                    : (cookies.userType === 'worker'
+                      ? <p>No orders have been assigned to you yet.</p>
+                      : <p>No orders have been placed.</p>)
                   }
                 </td>
               </tr>
-            )} */}
+            )}
         </tbody>
       </table>
     </ManageRightLayout>
