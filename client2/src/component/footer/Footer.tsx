@@ -48,7 +48,7 @@ function FooterPage() {
             <p className="text-primary">Digital Microfluidics Control System</p>
             <img
               className="h-10 w-10 aspect-square"
-              src="/img/IMG_2943.jpg"
+              src="/img/controlsystem.jpg"
               alt="Digital Microfluidics Control System"
             />
           </NavLink>

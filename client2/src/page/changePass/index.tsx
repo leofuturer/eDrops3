@@ -5,6 +5,7 @@ import { AdminChangePass, customerChangePass, FoundryWorkerChangePass } from '..
 
 import { useCookies } from 'react-cookie';
 import validate from 'validate.js';
+import Loading from '../../component/ui/Loading';
 
 function ChangePassword() {
   const [oldPassword, setOldPassword] = useState('');
@@ -161,7 +162,7 @@ function ChangePassword() {
         </div>
         <p className="col-span-2 text-red-500 text-xs">{errors.confirmPassword && errors.confirmPassword[0]}</p>
         {isLoading
-          ? <img className="loading-GIF" src="/img/loading80px.gif" alt="" />
+          ? <Loading />
           : (
             <div className="">
               <button

@@ -5,6 +5,7 @@ import API from '../../api/api';
 import { customerAddresses } from '../../api/serverConfig';
 import SEO from '../../component/header/SEO';
 import DeleteModal from '../../component/modal/DeleteModal';
+import Loading from '../../component/ui/Loading';
 import { Address as AddressType } from '../../types';
 import AddressTemplate from './addressTemplate';
 import { metadata } from './metadata';
@@ -80,7 +81,7 @@ function Address() {
           <i className="fa fa-plus" /><p>Add New</p>
         </button>
         {isLoading
-          ? <img className="loading-GIF" src="/img/loading80px.gif" alt="" />
+          ? <Loading />
           : (
             <div className="grid grid-cols-2 w-full gap-4">
               {addressList.map((oneAddress, index) => (

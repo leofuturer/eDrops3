@@ -10,6 +10,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import MessageLayout from '../../component/layout/MessageLayout';
 import ModalBackground from '../../component/modal/ModalBackground';
 import { Address } from '../../types';
+import Loading from '../../component/ui/Loading';
 
 function BeforeCheckout() {
   const [shopifyCheckoutLink, setShopifyCheckoutLink] = useState(undefined);
@@ -109,7 +110,7 @@ function BeforeCheckout() {
               <i className="fa fa-plus" /><p>Add New</p>
             </button>
             {preparingForCheckout
-              ? <img className="loading-GIF-checkout-button" src="/img/loading-sm.gif" alt="" />
+              ? <Loading />
               : (
                 <div className="flex flex-row space-x-4">
                   <button
@@ -142,7 +143,7 @@ function BeforeCheckout() {
           </div>
         </div>
       )
-        : <img className="loading-GIF" src="/img/loading80px.gif" alt="" />
+        : <Loading />
       }
       {showAdd &&
         <ModalBackground>

@@ -11,6 +11,7 @@ import { formatPhoneNumber } from '../../utils/phone';
 
 import validate from 'validate.js';
 import ManageRightLayout from '../../component/layout/ManageRightLayout';
+import Loading from '../../component/ui/Loading';
 
 class AddOrEditAdmin extends React.Component {
   constructor(props) {
@@ -362,7 +363,7 @@ class AddOrEditAdmin extends React.Component {
                 <div className="btn-group col-md-2 col-sd-2 col-xs-2 text-right" role="group" aria-label="...">
                   {
                     this.state.requestInProgress
-                      ? <img src="/img/loading80px.gif" alt="" />
+                      ? <Loading />
                       : (
                         <input
                           type="button"

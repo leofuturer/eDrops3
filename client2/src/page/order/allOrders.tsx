@@ -4,6 +4,7 @@ import Cookies from 'js-cookie';
 import { getAllOrderInfos } from '../../api/serverConfig';
 import API from '../../api/api';
 import ManageRightLayout from '../../component/layout/ManageRightLayout';
+import Loading from '../../component/ui/Loading';
 
 function AllOrders() {
   const [orderList, setOrderList] = useState([]);
@@ -74,7 +75,7 @@ function AllOrders() {
                 <td>
                   {
                     isLoading
-                      ? <img src="/img/loading80px.gif" alt="" className="loading-icon" />
+                      ? <Loading />
                       : 'No orders have been submitted yet.'
                   }
                 </td>

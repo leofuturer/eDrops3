@@ -13,6 +13,7 @@ import { metadata } from './metadata.jsx';
 import { useLocation } from 'react-router-dom';
 import { useCookies } from 'react-cookie';
 import ManageRightLayout from '../../component/layout/ManageRightLayout';
+import Loading from '../../component/ui/Loading';
 
 // List all chip orders for all user types
 function ChipOrders() {
@@ -201,7 +202,7 @@ function ChipOrders() {
               <tr>
                 <td className="p-2" colSpan={9}>
                   {isLoading
-                    ? <img src="/img/loading80px.gif" alt="" className="loading-icon" />
+                    ? <Loading />
                     : (cookies.userType === 'worker'
                       ? <p>No orders have been assigned to you yet.</p>
                       : <p>No orders have been placed.</p>)

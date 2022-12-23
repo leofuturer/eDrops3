@@ -12,6 +12,7 @@ import { closestParent, showErrorsOrSuccessForInput } from '../../utils/validate
 
 import validate from 'validate.js';
 import ManageRightLayout from '../../component/layout/ManageRightLayout';
+import Loading from '../../component/ui/Loading';
 
 class AddOrEditWorker extends React.Component {
   constructor(props) {
@@ -435,7 +436,7 @@ class AddOrEditWorker extends React.Component {
               <div className="btn-group col-md-2 col-sd-2 col-xs-2 text-right" role="group" aria-label="...">
                 {
                   this.state.requestInProgress
-                    ? <img src="/img/loading80px.gif" alt="" />
+                    ? <Loading />
                     : <button type="button" className="btn btn-success" onClick={this.handleSave}>Save</button>
                 }
               </div>
