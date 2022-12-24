@@ -1,119 +1,97 @@
-import React from 'react';
+import { useEffect, useState } from 'react';
 import { NavLink } from 'react-router-dom';
-import OrderItem, { orderItem } from './orderItem.jsx';
-import { getAllFoundryWorkers, assignOrders, foundryWorkerGetName } from '../../api/serverConfig';
 import API from '../../api/api';
+import { assignOrders, foundryWorkerGetName, getAllFoundryWorkers } from '../../api/serverConfig';
 import ManageRightLayout from '../../component/layout/ManageRightLayout';
+import TwoChoiceModal from '../../component/modal/TwoChoiceModal';
+import { Worker } from '../../types';
+import OrderItem from './orderItem';
 
-class AssignOrders extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      workerList: [],
-      assignId: '',
-      chipOrder: undefined,
-    };
-    this.handleAssign = this.handleAssign.bind(this);
-    this.handleAssignId = this.handleAssignId.bind(this);
-  }
+function AssignOrders() {
+  const [workerList, setWorkerList] = useState<Worker[]>([]);
+  const [assignId, setAssignId] = useState('');
+  const [chipOrder, setChipOrder] = useState(undefined);
+  const [showModal, setShowModal] = useState(false);
 
-  componentDidMount() {
-    const url = getAllFoundryWorkers;
-    API.Request(url, 'GET', {}, true)
+  useEffect(() => {
+    API.Request(getAllFoundryWorkers, 'GET', {}, true)
       .then((res) => {
-        this.setState({
-          workerList: res.data,
-        });
+        setWorkerList(res.data);
       })
       .catch((err) => {
         console.log(err);
       });
+  }, []);
+
+  function handleAssignId(id: string) {
+    setAssignId(id)
+    setShowModal(true);
   }
 
-  handleAssignId(e) {
-    this.setState({
-      assignId: e.target.id.match(/(?<=file).*/)[0],
-    });
-  }
-
-  handleAssign(e) {
-    let url = foundryWorkerGetName.replace('id', this.state.assignId);
-    API.Request(url, 'GET', {}, true)
+  function handleAssign() {
+    setShowModal(false);
+    API.Request(foundryWorkerGetName.replace('id', assignId), 'GET', {}, true)
       .then((res) => {
         const data = {
-          workerId: this.state.assignId,
+          workerId: assignId,
           workerName: `${res.data.firstName} ${res.data.lastName}`,
         };
-
-
-        url = assignOrders.replace('id', window._order.id);
-        API.Request(url, 'PATCH', data, true)
-          .then((res) => {
-            window.opener.location.href = window.opener.location.href;
-            window.close();
-          })
-          .catch((err) => {
-            console.log(err);
-          });
-      });
+        return API.Request(assignOrders.replace('id', window._order.id), 'PATCH', data, true);
+      })
+      .then((res) => {
+        window.opener.location.href = window.opener.location.href;
+        window.close();
+      })
+      .catch((err) => {
+        console.log(err);
+      });;
   }
 
-  render() {
-    const order = window._order;
-    return (
-      <ManageRightLayout title="Assign Order">
-        <OrderItem info={order} adminAssignOrderDisplay />
-        <div className="table-background">
-          <table className="table">
-            <thead>
-              <tr>
-                <th>Full Name</th>
-                <th>Username</th>
-                <th>E-mail</th>
-                <th>Phone</th>
-                <th>Affiliation</th>
-                <th>Assign</th>
+  const order = window._order;
+  return (
+    <ManageRightLayout title="Assign Order">
+      <OrderItem info={order} adminAssignOrderDisplay />
+      <div className="table-background">
+        <table className="table">
+          <thead>
+            <tr>
+              <th>Full Name</th>
+              <th>Username</th>
+              <th>E-mail</th>
+              <th>Phone</th>
+              <th>Affiliation</th>
+              <th>Assign</th>
+            </tr>
+          </thead>
+          <tbody>
+            {workerList.map((worker, index) => (
+              <tr key={index}>
+                <td>{`${worker.firstName} ${worker.lastName}`}</td>
+                <td>{worker.username}</td>
+                <td>{worker.email}</td>
+                <td>{worker.phoneNumber}</td>
+                <td>{worker.affiliation}</td>
+                <td onClick={() => handleAssignId(worker.id)}>
+                  <NavLink id={`file${worker.id}`} to="#">
+                    Assign to Him/Her
+                  </NavLink>
+                </td>
               </tr>
-            </thead>
-            <tbody>
-              {this.state.workerList.map((item, index) => (
-                <tr key={index} id={item.id}>
-                  <td>{`${item.firstName} ${item.lastName}`}</td>
-                  <td>{item.username}</td>
-                  <td>{item.email}</td>
-                  <td>{item.phoneNumber}</td>
-                  <td>{item.affiliation}</td>
-                  <td id={`file${item.id}`} data-toggle="modal" data-target="#confirm-assign" onClick={this.handleAssignId}>
-                    <NavLink id={`file${item.id}`} to="#">
-                      Assign to Him/Her
-                    </NavLink>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-
-        {/* <Modal> */}
-        <div className="modal fade" id="confirm-assign" tabIndex="-1" role="dialog" aria-labelledby="assignModalLabel" aria-hidden="true">
-          <div className="modal-dialog">
-            <div className="modal-content">
-              <div className="modal-header">
-                eDrops
-              </div>
-              <div className="modal-body">
-                Do you want to assign the order to this worker?
-              </div>
-              <div className="modal-footer">
-                <button type="button" className="btn btn-default" data-dismiss="modal">Cancel</button>
-                <a className="btn btn-success btn-ok" onClick={this.handleAssign}>Yes</a>
-              </div>
-            </div>
-          </div>
-        </div>
-      </ManageRightLayout>
-    );
-  }
+            ))}
+          </tbody>
+        </table>
+      </div>
+      {showModal && (
+        <TwoChoiceModal
+          title="eDrops"
+          content="Do you want to assign the order to this worker?"
+          affirmativeText="Yes"
+          negativeText="Cancel"
+          handleAffirmative={handleAssign}
+          handleNegative={() => setShowModal(false)}
+        />)}
+    </ManageRightLayout>
+  );
 }
 
 export default AssignOrders;

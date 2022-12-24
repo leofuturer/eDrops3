@@ -95,13 +95,12 @@ function ChipOrders() {
     newWindow._order = orderList[orderIndex];
   }
 
-  function handleSubmit(e) {
+  function handleSubmit(chipOrderId) {
     e.preventDefault();
     // const dropdown = document.getElementById('status-selection');
     // const selectedStatus = dropdown.options[dropdown.selectedIndex].value;
     // const chipOrderId = Number(e.target.id.replace(/[^0-9]/ig, ''));
 
-    const chipOrderId = Number(e.target.getAttribute('data-item-id'));
     const dropdown = document.getElementById(`status-selection-${chipOrderId}`);
     const selectedStatus = dropdown.options[dropdown.selectedIndex].value;
     const url = editOrderStatus.replace('id', chipOrderId);
@@ -164,16 +163,15 @@ function ChipOrders() {
                     <form
                       id="edit-order-status-form"
                       className="edit-order-status-form"
-                      onSubmit={handleSubmit}
-                      data-item-id={item.id}
+                      onSubmit={() => handleSubmit(item.id)} // TODO: fix form submission
                     >
-                      <select id={`status-selection-${item.id}`} className="order-status" name="status" defaultValue={item.status}>
+                      <select title="status" className="order-status" name="status" defaultValue={item.status}>
                         <option value="Fabrication request received">Fab Req Received</option>
                         <option value="Project Started">Project Started</option>
                         <option value="Project Completed">Project Completed</option>
                         <option value="Item Shipped">Item Shipped</option>
                       </select>
-                      <input type="submit" id={`allOrder${index}`} />
+                      <input type="submit"/>
                     </form>
                   </td>
                 )
@@ -184,16 +182,16 @@ function ChipOrders() {
               <td className="">
                 {
                   cookies.userType === 'worker'
-                    ? <i className="fa fa-download" onClick={handleDownload} id={`download${item.id}`} />
-                    : <i className="fa fa-download" onClick={handleDownload} id={`download${item.fileInfoId}`} />
+                    ? <i className="fa fa-download cursor-pointer" onClick={handleDownload} id={`download${item.id}`} />
+                    : <i className="fa fa-download cursor-pointer" onClick={handleDownload} id={`download${item.fileInfoId}`} />
                 }
               </td>
               <td className="">
-                <i className="fa fa-commenting" onClick={handleChat} id={`order${item.orderId}`} />
+                <i className="fa fa-commenting cursor-pointer" onClick={handleChat} id={`order${item.orderId}`} />
               </td>
               {cookies.userType === 'admin' &&
                 <td className="">
-                  <i className="fa fa-users" id={`allOrder${index}`} onClick={handleAssign} />
+                  <i className="fa fa-users cursor-pointer" id={`allOrder${index}`} onClick={handleAssign} />
                 </td>
               }
             </tr>

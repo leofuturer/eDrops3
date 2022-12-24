@@ -23,8 +23,8 @@ export const SignupSchema = Yup.object().shape({
       if (!value) return true
       return /^(\+\d{1,2}\s?)?1?\-?\.?\s?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/.test(value)
     }),
-    // .notRequired()
-    // .matches(/^(\+\d{1,2}\s?)?1?\-?\.?\s?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/, 'Phone number must be valid'),
+  // .notRequired()
+  // .matches(/^(\+\d{1,2}\s?)?1?\-?\.?\s?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/, 'Phone number must be valid'),
   firstName: Yup.string()
     .required('First name can\'t be blank'),
   lastName: Yup.string()
@@ -46,4 +46,14 @@ export const LoginSchema = Yup.object().shape({
     .required('Username or email can\'t be blank'),
   password: Yup.string()
     .required('Password can\'t be blank'),
+});
+
+export const ResetPasswordSchema = Yup.object().shape({
+  newPassword: Yup.string()
+    .required('Password can\'t be blank')
+    .min(8, 'Password is too short (minimum is 8 characters)')
+    .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d\S]{8,}$/, 'Password must contain a uppercase letter, lowercase letter, and number.'),
+  confirmNewPassword: Yup.string()
+    .required('Confirm password can\'t be blank')
+    .oneOf([Yup.ref('password')], 'Passwords must match'),
 });
