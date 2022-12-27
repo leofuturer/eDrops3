@@ -2,10 +2,10 @@ import Cookies from 'js-cookie';
 import { useEffect, useState } from 'react';
 import { useCookies } from 'react-cookie';
 import { useLocation, useNavigate } from 'react-router-dom';
-import API from '../../api/api';
+import API from '../../api/lib/api';
 import {
   adminDownloadFile, customerDeleteFile, customerFileRetrieve, downloadFileById
-} from '../../api/serverConfig';
+} from '../../api/lib/serverConfig';
 import SEO from '../../component/header/SEO.js';
 import ManageRightLayout from '../../component/layout/ManageRightLayout';
 import DeleteModal from '../../component/modal/DeleteModal.js';

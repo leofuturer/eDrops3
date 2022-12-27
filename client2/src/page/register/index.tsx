@@ -2,11 +2,11 @@ import { ErrorMessage, Field, Form, Formik, FormikConfig } from 'formik';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ValidationError } from 'yup';
-import API from '../../api/api';
-import { customerSignUp } from '../../api/serverConfig';
+import API from '../../api/lib/api';
+import { customerSignUp } from '../../api/lib/serverConfig';
 import FormGroup from '../../component/form/FormGroup';
 import SEO from '../../component/header/SEO';
-import { SignupSchema, SignupSubmitSchema } from '../../schemas';
+import { UserSchema, UserSubmitSchema } from '../../schemas';
 import { Address, Customer } from '../../types';
 import { metadata } from './metadata';
 
@@ -15,7 +15,7 @@ function Register() {
   const [errorMessage, setErrorMessage] = useState('');
   const navigate = useNavigate();
 
-  function handleRegister(customerData: Omit<Address, 'id'> & Customer) {
+  function handleRegister(customerData: Omit<Address, 'id'> & Omit<Customer, 'id'>) {
     API.Request(customerSignUp, 'POST', customerData, false)
       .then((res) => {
         navigate('/checkEmail');
@@ -38,7 +38,7 @@ function Register() {
       <div className="flex flex-col shadow-box-sm rounded-lg py-4 w-1/2 px-20 space-y-2">
         <h3 className="text-secondary text-2xl text-center font-bold border-b-2 pb-2 border-secondary">Sign Up</h3>
         <Formik
-          validationSchema={SignupSchema}
+          validationSchema={UserSchema}
           initialValues={{
             street: '',
             streetLine2: '',
@@ -55,7 +55,7 @@ function Register() {
             password: '',
             confirmPassword: '',
           }}
-          onSubmit={(values, actions) => SignupSubmitSchema.validate(values, { abortEarly: false }).then(() => {
+          onSubmit={(values, actions) => UserSubmitSchema.validate(values, { abortEarly: false }).then(() => {
             handleRegister({...values, isDefault: true })
           }).catch(
             (err) => {

@@ -12,7 +12,6 @@ import Login from '../page/login/index';
 import Register from '../page/register/index';
 import Upload from '../page/fileUpload/index';
 import Project from '../page/project/index';
-import Manage from './manage/index';
 // import Profile from "page/profile/index";
 import ForgetPass from '../page/forgetPass/index';
 import ChipOrder from '../page/product/chiporder';
@@ -48,6 +47,7 @@ import Cart from '../page/cart';
 import { ShopifyContext } from '../App';
 import ManageLayout from '../component/layout/ManageLayout';
 
+// TODO: protect authenticated routes
 function RouteMap() {
   const [cookies] = useCookies(['userType']);
   const [redirect, setRedirect] = useState('/manage/profile');

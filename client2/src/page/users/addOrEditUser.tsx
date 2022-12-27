@@ -1,235 +1,98 @@
 import { Form, Formik } from 'formik';
-import { useEffect } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
-import API from '../../api/api';
-import { addCustomer, updateCustomerProfile, updateUserBaseProfile, userBaseFind, userSignUp } from '../../api/serverConfig';
+import { useEffect, useState } from 'react';
+import { NavLink, useLocation, useNavigate } from 'react-router-dom';
+import API from '../../api/lib/api';
+import { addCustomer, updateCustomerProfile, updateUserBaseProfile, userBaseFind } from '../../api/lib/serverConfig';
+import FormGroup from '../../component/form/FormGroup';
 import ManageRightLayout from '../../component/layout/ManageRightLayout';
+import { UserSchema, UserSubmitSchema } from '../../schemas';
+import { Customer, Signup } from '../../types';
 
 function AddOrEditUser() {
-  let customerInfo = {
+  const [initialInfo, setInitialInfo] = useState<Partial<Signup<Customer>>>({
     firstName: '',
     lastName: '',
     phoneNumber: '',
-    userType: 'person',
+    customerType: 'person',
     username: '',
     email: '',
-  }
+  });
   const location = useLocation();
   const navigate = useNavigate();
 
   useEffect(() => {
     if (location.pathname === '/manage/users/edituser') {
-      const { customer } = location.state;
-      customerInfo = {
+      const { customerInfo: customer } = location.state;
+      setInitialInfo({
         firstName: customer.firstName,
         lastName: customer.lastName,
         phoneNumber: customer.phoneNumber,
-        userType: customer.userType,
+        customerType: customer.userType,
         username: customer.username,
         email: customer.email,
-      };
+      });
     }
   }, []);
 
-  function handleSave() {
+  function handleSave(user: Partial<Signup<Customer>>) {
     const userMes = {
-      firstName: this.state.firstName,
-      lastName: this.state.lastName,
-      phoneNumber: this.state.phoneNumber,
-      username: this.state.username,
-      email: this.state.email,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      phoneNumber: user.phoneNumber,
+      username: user.username,
+      email: user.email,
     };
     if (location.pathname === '/manage/users/edituser') {
       // edit both customer and userBase instances
       const { customerId } = location.state;
-      let url = updateCustomerProfile.replace('id', customerId);
-      API.Request(url, 'PATCH', userMes, true)
+      API.Request(updateCustomerProfile.replace('id', customerId), 'PATCH', userMes, true)
         .then((res) => API.Request(`${userBaseFind}?filter={"where": {"email": "${userMes.email}"}}`, 'GET', {}, true))
         .then((res) => API.Request(updateUserBaseProfile.replace('id', res.data[0].id), 'PATCH', userMes, true))
         .then((res) => navigate('/manage/users'))
         .catch((err) => {
           console.error(err);
         });
-    } else { // add new customer (and new userBase)
-      Object.assign(userMes, {
-        userType: 'person',
-        password: this.state.password,
-        confirmPassword: this.state.confirmPassword,
-      });
-      if (userMes.password !== userMes.confirmPassword) {
-        alert('Error: Password and Confirm Password fields do not match');
-        return;
-      }
-      API.Request(addCustomer, 'POST', userMes, true).then((res) => {
-        const obj = {
-          username: this.state.username,
-          email: this.state.email,
-          userType: 'customer',
-          password: this.state.password,
-        };
-        API.Request(userSignUp, 'POST', obj, false).then((res) => {
-          navigate('/manage/users');
-        });
+    } else { // add new customer
+      API.Request(addCustomer, 'POST', {
+        ...userMes,
+        customerType: 'person',
+        password: user.password,
+        confirmPassword: user.confirmPassword,
+      }, true).then((res) => {
+        navigate('/manage/users');
       }).catch((error) => {
         console.error(error);
       });
     }
   }
 
-
-  let profileContent = '';
-  if (location.pathname === '/manage/users/edituser') {
-    profileContent = 'Edit Customer';
-  } else {
-    profileContent = 'Add New User';
-  }
   return (
-    <ManageRightLayout title={profileContent}>
-      <Formik initialValues={customerInfo} onSubmit={(values) => { }}>
-        <Form>
-          <div className="text-left reminder">
-            <small className="text-muted">Fields with * are required</small>
-          </div>
-          <div className="form-group row">
-            <label htmlFor="inputEmail" className="col-md-2 col-sm-2 col-xs-2 control-label">
-              <span>Email*</span>
-            </label>
-            <div className="col-md-6 col-sm-6 col-xs-6 text-left">
-              <input
-                id="inputEmail"
-                type="email"
-                name="email"
-                autoComplete="email"
-                className="form-control needValidation"
-                placeholder="Email"
-              />
-            </div>
-            <div className="col-md-4 col-sm-4 col-xs-4 messages">
-              <small className="text-muted">Valid Email Required</small>
-            </div>
-          </div>
-          <div className="form-group row">
-            <label className="col-md-2 col-sm-2 col-xs-2 control-label">
-              <span>Username*</span>
-            </label>
-            <div className="col-md-6 col-sm-6 col-xs-6">
-              <input
-                type="text"
-                id="inputUsername"
-                name="username"
-                autoComplete="username"
-                className="form-control needValidation"
-                placeholder="Username"
-              />
-            </div>
-            <div className="col-md-4 col-sm-4 col-xs-4 messages">
-              <small className="text-muted">Username must be at least 4 characters and only contain a-zA-Z0-9_</small>
-            </div>
-          </div>
-          {
-            location.pathname === '/manage/users/addNewUser'
-            && (
-              <div>
-                <div className="form-group row">
-                  <label className="col-md-2 col-sm-2 col-xs-2 control-label">
-                    <span>Password*</span>
-                  </label>
-                  <div className="col-md-6 col-sm-6 col-xs-6 text-left">
-                    <input
-                      type="password"
-                      name="password"
-                      className="form-control needValidation"
-                      placeholder="Password"
-                      autoComplete="new-password"
-                    />
-                  </div>
-                  <div className="col-md-4 col-sm-4 col-xs-4 messages">
-                    <small className="text-muted">
-                      Password must contain at least a number, capital
-                      letter and lowercase letter, and at least 8 characters
-                    </small>
-                  </div>
-                </div>
-                <div className="form-group row">
-                  <label className="col-md-2 col-sm-2 col-xs-2 control-label">
-                    <span>Confirm Password*</span>
-                  </label>
-                  <div className="col-md-6 col-sm-6 col-xs-6 text-left">
-                    <input
-                      type="password"
-                      name="confirmPassword"
-                      className="form-control needValidation"
-                      placeholder="Confirm Password"
-                      autoComplete="new-password"
-                    />
-                  </div>
-                  <div className="col-md-4 col-sm-4 col-xs-4 messages">
-                    <small className="text-muted">Please retype your password</small>
-                  </div>
-                </div>
-              </div>
-            )
-          }
-          <div className="form-group row">
-            <label className="col-md-2 col-sm-2 col-xs-2 control-label">
-              <span>First Name*</span>
-            </label>
-            <div className="col-md-6 col-sm-6 col-xs-6">
-              <input
-                type="text"
-                className="form-control needValidation"
-                name="firstName"
-                placeholder="First Name"
-                autoComplete="given-name"
-              />
-            </div>
-            {/* does name="firstName" need to be added here? */}
-            <div className="col-md-4 col-sm-4 col-xs-4 messages">
-              <small className="text-muted" />
-            </div>
-          </div>
-          <div className="form-group row">
-            <label className="col-md-2 col-sm-2 col-xs-2 control-label">
-              <span>Last Name*</span>
-            </label>
-            <div className="col-md-6 col-sm-6 col-xs-6">
-              <input
-                type="text"
-                className="form-control needValidation"
-                name="lastName"
-                placeholder="Last Name"
-                autoComplete="family-name"
-              />
-            </div>
-            {/* does name="lastname" need to be added here? */}
-            <div className="col-md-4 col-sm-4 col-xs-4 messages">
-              <small className="text-muted" />
-            </div>
-          </div>
-          <div className="form-group row">
-            <label className="col-md-2 col-sm-2 col-xs-2 control-label">
-              <span>Phone Number</span>
-            </label>
-            <div className="col-md-6 col-sm-6 col-xs-6 text-left">
-              <input
-                type="text"
-                name="phoneNumber"
-                className="form-control needValidation"
-                placeholder="Phone Number"
-                autoComplete="tel"
-              />
-            </div>
-            <div className="col-md-4 col-sm-4 col-xs-4 messages">
-              <small className="text-muted">Include area code, and if outside the US, country code</small>
-            </div>
-            {/* <div className="col-md-4 col-sm-4 col-xs-4 messages-unset"></div> */}
-          </div>
-
-          <div className="form-group">
-            <div className="col-md-10 col-sd-10 col-xs-10" />
-            <div className="btn-group col-md-2 col-sd-2 col-xs-2 text-right" role="group" aria-label="...">
-              <button type="button" className="btn btn-success" onClick={handleSave}>Save</button>
-            </div>
+    <ManageRightLayout title={
+      location.pathname === '/manage/users/edituser' ? 'Edit Customer' : 'Add New User'
+    }>
+      <Formik
+        initialValues={initialInfo}
+        enableReinitialize={true}
+        validationSchema={UserSchema}
+        onSubmit={(values) => UserSubmitSchema.validate(values, { abortEarly: false }).then(() => {
+          handleSave({...values}); })
+        }>
+        <Form className="flex flex-col space-y-2">
+          <small className="">Fields with * are required</small>
+          <FormGroup name="email" type="email" required />
+          <FormGroup name="username" type="text" required />
+          {location.pathname === '/manage/users/addNewUser' && (
+            <>
+              <FormGroup name="password" type="password" required />
+              <FormGroup name="confirmPassword" type="password" required />
+            </>
+          )}
+          <FormGroup name="firstName" type="text" required />
+          <FormGroup name="lastName" type="text" required />
+          <FormGroup name="phoneNumber" type="text" required />
+          <div className="flex items-center space-x-4">
+            <NavLink to="/manage/users" className="bg-primary_light text-white px-4 py-2 w-max rounded-lg">Cancel</NavLink>
+            <button type="submit" className="bg-green-500 text-white px-4 py-2 w-max rounded-lg" >Save</button>
           </div>
         </Form>
       </Formik>

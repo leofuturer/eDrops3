@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useCookies } from 'react-cookie';
 import { useNavigate } from 'react-router-dom';
-import API from '../../api/api';
-import { customerAddresses } from '../../api/serverConfig';
+import API from '../../api/lib/api';
+import { customerAddresses } from '../../api/lib/serverConfig';
 import SEO from '../../component/header/SEO';
 import DeleteModal from '../../component/modal/DeleteModal';
 import Loading from '../../component/ui/Loading';

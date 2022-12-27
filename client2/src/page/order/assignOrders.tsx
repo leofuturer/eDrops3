@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { NavLink } from 'react-router-dom';
-import API from '../../api/api';
-import { assignOrders, foundryWorkerGetName, getAllFoundryWorkers } from '../../api/serverConfig';
+import API from '../../api/lib/api';
+import { assignOrders, foundryWorkerGetName, getAllFoundryWorkers } from '../../api/lib/serverConfig';
 import ManageRightLayout from '../../component/layout/ManageRightLayout';
 import TwoChoiceModal from '../../component/modal/TwoChoiceModal';
 import { Worker } from '../../types';

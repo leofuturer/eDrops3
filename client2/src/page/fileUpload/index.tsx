@@ -3,11 +3,12 @@ import { redirect, useNavigate } from 'react-router-dom';
 
 import { useCookies } from 'react-cookie';
 import { FileRejection, useDropzone } from 'react-dropzone';
-import API from '../../api/api';
-import { customerFileRetrieve, uploadFile } from '../../api/serverConfig';
+import API from '../../api/lib/api';
+import { customerFileRetrieve, uploadFile } from '../../api/lib/serverConfig';
 import SEO from '../../component/header/SEO';
 import TwoChoiceModal from '../../component/modal/TwoChoiceModal';
 import { metadata } from './metadata';
+import { FileInfo } from '../../types';
 
 function Upload() {
   const [file, setFile] = useState<File | undefined>(undefined);
@@ -45,7 +46,7 @@ function Upload() {
     multiple: false,
   })
 
-  function onFileAccept(acceptedFiles: File[]){
+  function onFileAccept(acceptedFiles: File[]) {
     // console.log(acceptedFiles);
     setFile(acceptedFiles[0]);
   }
@@ -60,11 +61,10 @@ function Upload() {
 
   function onFileUpload() {
     if (file) {
-      const url = customerFileRetrieve.replace('id', cookies.userId);
-      API.Request(url, 'GET', {}, true)
+      API.Request(customerFileRetrieve.replace('id', cookies.userId), 'GET', {}, true)
         .then((res) => {
           // console.log(res);
-          const promises = res.data.map((e) =>
+          const promises = res.data.map((e: FileInfo) =>
             new Promise<void>((resolve, reject) => {
               if (e.fileName === file.name && !e.isDeleted && !checked) {
                 // console.log(e);
@@ -272,11 +272,12 @@ function Upload() {
 
 export default Upload;
 
-function Progress({ now } : { now: number }) {
-  const progressClass = now < 101 ? 'progress-bar' : 'progress-bar progress-bar-success';
+function Progress({ now }: { now: number }) {
   return (
-    <div className="progress progress-striped active">
-      <div role="progressbar progress-striped" style={{ width: now < 100 ? `${now}%` : '100%' }} className={progressClass} />
+    // TODO: work on progress bar CSS
+    <div className="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
+      <div
+        className={`h-2.5 rounded-full ${now < 100 ? `bg-blue-600 w-[${now}%]` : 'bg-green-500 w-full'}`} />
     </div>
   );
 };

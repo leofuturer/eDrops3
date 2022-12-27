@@ -2,11 +2,11 @@ import { Form, Formik } from 'formik';
 import { useEffect, useState } from 'react';
 import { useCookies } from 'react-cookie';
 import { useLocation } from 'react-router-dom';
-import API from '../../api/api';
+import API from '../../api/lib/api';
 import {
   adminGetProfile, customerAddresses, customerGetProfile, foundryWorkerGetProfile, updateAdminProfile, updateCustomerProfile,
   updateWorkerProfile
-} from '../../api/serverConfig';
+} from '../../api/lib/serverConfig';
 import FormGroup from '../../component/form/FormGroup';
 import SEO from '../../component/header/SEO';
 import ManageRightLayout from '../../component/layout/ManageRightLayout';
@@ -144,20 +144,18 @@ function Profile() {
         // _this.props.history.push('/manage/profile')
         if (userType === 'customer') {
           // need to update address separately
-          let addressUrl = customerAddresses.replace('id', cookies.userId);
-          addressUrl += `/${this.defaultAddressId}`;
-          API.Request(addressUrl, 'PATCH', addressData, true)
+          API.Request(`${customerAddresses.replace('id', cookies.userId)}/${defaultAddressId}`, 'PATCH', addressData, true)
             .then((res) => {
               // console.log("Updated address");
               alert('Profile saved successfully!');
-              document.location.reload(true);
+              document.location.reload(); // TODO: gracefully reload the page
             })
             .catch((error) => {
               console.error(error);
             });
         } else {
           alert('Profile saved successfully!');
-          document.location.reload(true);
+          document.location.reload();
         }
       })
       .catch((error) => {
@@ -171,13 +169,13 @@ function Profile() {
   if (cookies.userType === 'admin') {
     switch (location.pathname) {
       case '/manage/users/addNewUsers':
-        profileContent = 'Add new Customer';
+        profileContent = 'Add New Customer';
         break;
       case '/manage/users/updateuser':
         profileContent = 'Edit Customer Profile';
         break;
       case '/manage/foundryworker/addfoundryworker':
-        profileContent = 'Add new Foundry Worker';
+        profileContent = 'Add New Foundry Worker';
         break;
       case '/manage/foundryworker/updateworker':
         profileContent = 'Edit Foundry Worker Profile';

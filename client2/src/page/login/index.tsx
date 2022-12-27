@@ -2,10 +2,10 @@ import { useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useCookies } from 'react-cookie';
 import { Field, Formik, Form, FieldProps } from 'formik';
-import API from '../../api/api';
+import API from '../../api/lib/api';
 import {
   userLogin
-} from '../../api/serverConfig';
+} from '../../api/lib/serverConfig';
 import SEO from '../../component/header/SEO';
 import { metadata } from './metadata';
 import { LoginSchema } from '../../schemas';

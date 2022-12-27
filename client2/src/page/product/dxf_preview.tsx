@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Cookies from 'js-cookie';
-import { downloadFileById } from '../../api/serverConfig';
-import API from '../../api/api';
+import { downloadFileById } from '../../api/lib/serverConfig';
+import API from '../../api/lib/api';
 import { Helper } from 'dxf';
 import { useCookies } from 'react-cookie';
 

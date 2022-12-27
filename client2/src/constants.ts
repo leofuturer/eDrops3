@@ -66,7 +66,7 @@ export const productIdsJson = {
   },
 };
 
-export function getProductType(id) {
+export function getProductType(id: string) {
   switch (id) {
     case controlSysId:
     case controlSysId5:

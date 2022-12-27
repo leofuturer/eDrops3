@@ -2,9 +2,9 @@ import React, { useEffect, useState } from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import ShopifyClient from 'shopify-buy';
-import API from './api/api';
+import API from './api/lib/api';
 import Pusher from 'pusher-js';
-import { customerGetApiToken } from './api/serverConfig';
+import { customerGetApiToken } from './api/lib/serverConfig';
 // Router components
 import RouteMap from './router/routeMap';
 
@@ -100,7 +100,7 @@ const usePusher = () => {
     if (key) {
       const client = new Pusher(key, {
         cluster: 'us3',
-        encrypted: true,
+        // encrypted: true, // TODO: This is not working, see docs to look into message encryption
       });
       setPusher(client);
     }

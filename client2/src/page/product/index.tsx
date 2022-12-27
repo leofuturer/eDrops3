@@ -20,8 +20,8 @@ import {
   manipulateCustomerOrders,
   addOrderProductToCart, returnOneItem,
   getProductOrders
-} from '../../api/serverConfig';
-import API from '../../api/api';
+} from '../../api/lib/serverConfig';
+import API from '../../api/lib/api';
 import { ShopifyContext } from '../../App';
 import { CartContext } from '../../context/CartContext';
 import { Product as ProductType } from 'shopify-buy';
@@ -35,12 +35,14 @@ function Product() {
   const [fetchedProduct, setFetchedProduct] = useState(false);
   const [product, setProduct] = useState<ProductType>({} as ProductType);
   const [orderInfoId, setOrderInfoId] = useState("");
-  const [shopifyClientCheckoutId, setShopifyClientCheckoutId] = useState(undefined);
+  const [shopifyClientCheckoutId, setShopifyClientCheckoutId] = useState('');
   const [quantity, setQuantity] = useState(1);
   const [bundleSize, setBundleSize] = useState(1);
   const [otherDetails, setOtherDetails] = useState({});
   const [addedToCart, setAddedToCart] = useState(false);
   const [withCoverPlateAssembled, setWithCoverPlateAssembled] = useState(false);
+
+  const shopify = useContext(ShopifyContext);
 
   const navigate = useNavigate();
 
@@ -139,42 +141,35 @@ function Product() {
           // no cart, need to create one
           // create Shopify cart
           // console.log(`No cart currently exists, so need to create one`);
-          Shopify.getInstance().getPrivateValue()
-            .then((instance) => {
-              instance.checkout.create()
-                .then((res) => {
-                  console.log(res);
-                  setShopifyClientCheckoutId(res.id);
-                  const lastSlash = res.webUrl.lastIndexOf('/');
-                  const lastQuestionMark = res.webUrl.lastIndexOf('?');
+          shopify && shopify.checkout.create()
+            .then((res) => {
+              console.log(res);
+              setShopifyClientCheckoutId(res.id);
+              const lastSlash = res.webUrl.lastIndexOf('/');
+              const lastQuestionMark = res.webUrl.lastIndexOf('?');
 
-                  const shopifyCheckoutToken = res.webUrl.slice(lastSlash + 1, lastQuestionMark);
-                  // console.log(shopifyCheckoutToken);
-                  const data = {
-                    checkoutIdClient: res.id,
-                    checkoutToken: shopifyCheckoutToken,
-                    checkoutLink: res.webUrl,
-                    createdAt: res.createdAt,
-                    lastModifiedAt: res.updatedAt,
-                    orderComplete: false,
-                    status: 'Order in progress',
-                    // "customerId": cookies.userId,
-                    shippingAddressId: 0, // 0 to indicate no address selected yet (pk cannot be 0)
-                    billingAddressId: 0,
-                  };
-                  // and then create orderInfo in our backend
-                  API.Request(manipulateCustomerOrders.replace('id', cookies.userId), 'POST', data, true)
-                    .then((res) => {
-                      // console.log(res);
-                      setOrderInfoId(res.data.id);
-                      addItemToCart(res.data.id,
-                        res.data.checkoutIdClient,
-                        quantity);
-                    })
-                    .catch((err) => {
-                      setAddedToCart(true);
-                      console.error(err);
-                    });
+              const shopifyCheckoutToken = res.webUrl.slice(lastSlash + 1, lastQuestionMark);
+              // console.log(shopifyCheckoutToken);
+              const data = {
+                checkoutIdClient: res.id,
+                checkoutToken: shopifyCheckoutToken,
+                checkoutLink: res.webUrl,
+                createdAt: res.createdAt,
+                lastModifiedAt: res.updatedAt,
+                orderComplete: false,
+                status: 'Order in progress',
+                // "customerId": cookies.userId,
+                shippingAddressId: 0, // 0 to indicate no address selected yet (pk cannot be 0)
+                billingAddressId: 0,
+              };
+              // and then create orderInfo in our backend
+              API.Request(manipulateCustomerOrders.replace('id', cookies.userId), 'POST', data, true)
+                .then((res) => {
+                  // console.log(res);
+                  setOrderInfoId(res.data.id);
+                  addItemToCart(res.data.id,
+                    res.data.checkoutIdClient,
+                    quantity);
                 })
                 .catch((err) => {
                   setAddedToCart(true);
@@ -220,62 +215,46 @@ function Product() {
       variantId,
       quantity,
     }];
-    Shopify.getInstance().getPrivateValue()
-      .then((instance) => {
-        instance.checkout.addLineItems(shopifyClientCheckoutId, lineItemsToAdd)
-          .then((res) => {
-            let lineItemId;
-            console.log(res);
-            for (let i = 0; i < res.lineItems.length; i++) {
-              if (Buffer.from(res.lineItems[i].variant.id).toString('base64') === variantId) {
-                lineItemId = Buffer.from(res.lineItems[i].id).toString('base64');
-                break;
-              }
-            }
+    shopify && shopify.checkout.addLineItems(shopifyClientCheckoutId, lineItemsToAdd)
+      .then((res) => {
+        let lineItemId;
+        console.log(res);
+        for (let i = 0; i < res.lineItems.length; i++) {
+          if (Buffer.from(res.lineItems[i].variant.id).toString('base64') === variantId) {
+            lineItemId = Buffer.from(res.lineItems[i].id).toString('base64');
+            break;
+          }
+        }
 
-            const data = {
-              orderInfoId,
-              productIdShopify: product.id,
-              variantIdShopify: variantId,
-              lineItemIdShopify: lineItemId,
-              description: product.description,
-              quantity,
-              price: parseFloat(product.variants[0].price),
-              name: product.title,
-              otherDetails: customServerOrderAttributes,
-            };
-            // console.log(data);
-            let url = addOrderProductToCart.replace('id', orderInfoId);
-            API.Request(url, 'POST', data, true)
-              .then((res) => {
-                url = getProductOrders.replace('id', orderInfoId);
-                API.Request(url, 'GET', {}, true)
-                  .then((res) => {
-                    // console.log(res);
-                    const quantity = res.data.reduce((prev, curr) => prev + curr.quantity, 0);
-                    context.setProductQuantity(quantity);
-                    navigate('/manage/cart');
-                  })
-                  .catch((err) => {
-                    console.error(err);
-                  });
-                setAddedToCart(true);
-              })
-              .catch((err) => {
-                console.error(err);
-                setAddedToCart(true);
-              });
-          })
-          .catch((err) => {
-            console.error(err);
-            setAddedToCart(true);
-          });
+        const data = {
+          orderInfoId,
+          productIdShopify: product.id,
+          variantIdShopify: variantId,
+          lineItemIdShopify: lineItemId,
+          description: product.description,
+          quantity,
+          price: parseFloat(product.variants[0].price),
+          name: product.title,
+          otherDetails: customServerOrderAttributes,
+        };
+        // console.log(data);
+        return API.Request(addOrderProductToCart.replace('id', orderInfoId.toString()), 'POST', data, true)
+      })
+      .then((res) =>
+        API.Request(getProductOrders.replace('id', orderInfoId.toString()), 'GET', {}, true))
+      .then((res) => {
+        // console.log(res);
+        const quantity = res.data.reduce((prev, curr) => prev + curr.quantity, 0);
+        context.setProductQuantity(quantity);
+        navigate('/manage/cart');
       })
       .catch((err) => {
         console.error(err);
+      }).finally(() => {
         setAddedToCart(true);
       });
   }
+
 
   const desiredProductId = location.search.slice(4); // get id after id?=
   return (

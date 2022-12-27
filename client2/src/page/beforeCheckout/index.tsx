@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import Cookies from 'js-cookie';
-import { customerGetProfile, customerAddresses, modifyChipOrders } from '../../api/serverConfig';
-import API from '../../api/api';
+import { customerGetProfile, customerAddresses, modifyChipOrders } from '../../api/lib/serverConfig';
+import API from '../../api/lib/api';
 import SingleAddress from './singleAddress.js';
 import AddNewAddress from '../address/addNewAddress.js';
 import { ShopifyContext } from '../../App';

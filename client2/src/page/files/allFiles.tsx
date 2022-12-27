@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useCookies } from 'react-cookie';
-import API from '../../api/api';
-import { adminDownloadFile, getAllFileInfos } from '../../api/serverConfig';
+import API from '../../api/lib/api';
+import { adminDownloadFile, getAllFileInfos } from '../../api/lib/serverConfig';
 import ManageRightLayout from '../../component/layout/ManageRightLayout';
 import { FileInfo } from '../../types';
 

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import API from '../../api/api';
-import { editFoundryWorker, getAllFoundryWorkers, userBaseDeleteById, userBaseFind } from '../../api/serverConfig';
+import API from '../../api/lib/api';
+import { editFoundryWorker, getAllFoundryWorkers, userBaseDeleteById, userBaseFind } from '../../api/lib/serverConfig';
 import ManageRightLayout from '../../component/layout/ManageRightLayout';
 import DeleteModal from '../../component/modal/DeleteModal';
 import { Worker } from '../../types';

@@ -6,8 +6,8 @@ import {
   customerLogout, AdminLogout, FoundryWorkerLogout, userLogout,
   getCustomerCart,
   getProductOrders, getChipOrders
-} from '../../api/serverConfig';
-import API from '../../api/api';
+} from '../../api/lib/serverConfig';
+import API from '../../api/lib/api';
 import { CartContext } from '../../context/CartContext'
 import hoistNonReactStatics from 'hoist-non-react-statics';
 

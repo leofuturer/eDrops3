@@ -1,8 +1,8 @@
 import { Field, FieldProps, Form, Formik } from 'formik';
 import { useState } from 'react';
 import * as Yup from 'yup';
-import API from '../../api/api';
-import { customerResendVerifyEmail, userForgetPass } from '../../api/serverConfig';
+import API from '../../api/lib/api';
+import { customerResendVerifyEmail, userForgetPass } from '../../api/lib/serverConfig';
 import MessageLayout from '../../component/layout/MessageLayout';
 
 function ForgetPass() {

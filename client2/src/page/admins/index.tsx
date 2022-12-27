@@ -1,15 +1,13 @@
-import $ from 'jquery';
-import Cookies from 'js-cookie';
-import {
-  deleteAdminById, userBaseFind, userBaseDeleteById, findAdminByWhere,
-} from '../../api/serverConfig';
-import API from '../../api/api';
-import DeleteModal from '../../component/modal/DeleteModal';
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Admin } from '../../types';
 import { useCookies } from 'react-cookie';
+import { useNavigate } from 'react-router-dom';
+import API from '../../api/lib/api';
+import {
+  deleteAdminById, findAdminByWhere, userBaseDeleteById, userBaseFind
+} from '../../api/lib/serverConfig';
 import ManageRightLayout from '../../component/layout/ManageRightLayout';
+import DeleteModal from '../../component/modal/DeleteModal';
+import { Admin } from '../../types';
 
 function Admins() {
   const [adminList, setAdminList] = useState<Admin[]>([]);
@@ -83,11 +81,11 @@ function Admins() {
               <td>{admin.username}</td>
               <td>{admin.email}</td>
               <td>
-                <i className="fa fa-edit" onClick={() => handleEditAdmin(admin)} />
+                <i className="fa fa-edit cursor-pointer" onClick={() => handleEditAdmin(admin)} />
               </td>
               {admin.id !== cookies.userId && (
                 <td>
-                  <i className="fa fa-trash" onClick={() => handleDeleteAdmin(admin)} />
+                  <i className="fa fa-trash cursor-pointer" onClick={() => handleDeleteAdmin(admin)} />
                 </td>
               )}
             </tr>
