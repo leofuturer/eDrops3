@@ -7,6 +7,7 @@ import Pusher from 'pusher-js';
 import { customerGetApiToken } from './api/lib/serverConfig';
 // Router components
 import RouteMap from './router/routeMap';
+import { HelmetProvider } from 'react-helmet-async';
 
 const useShopify = () => {
   const [token, setToken] = useState<string>('');
@@ -171,13 +172,15 @@ function PusherContextProvider({ children }: { children: React.ReactNode }) {
 // The root APP of React
 function App() {
   return (
-    <ShopifyContextProvider>
-      <PusherContextProvider>
-        <BrowserRouter>
-          <RouteMap /> 
-        </BrowserRouter>
-      </PusherContextProvider>
-    </ShopifyContextProvider>
+    <HelmetProvider>
+      <ShopifyContextProvider>
+        <PusherContextProvider>
+          <BrowserRouter>
+            <RouteMap />
+          </BrowserRouter>
+        </PusherContextProvider>
+      </ShopifyContextProvider>
+    </HelmetProvider>
   );
 }
 

@@ -8,7 +8,7 @@ import {
 }
   from '../../api/lib/serverConfig';
 
-import SEO from '../../component/header/SEO.js';
+import SEO from '../../component/header/SEO';
 import { metadata } from './metadata.jsx';
 import { useLocation } from 'react-router-dom';
 import { useCookies } from 'react-cookie';

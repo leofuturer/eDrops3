@@ -9,17 +9,17 @@ import { useCookies } from 'react-cookie';
 import { useLocation, useNavigate } from 'react-router-dom';
 import MessageLayout from '../../component/layout/MessageLayout';
 import ModalBackground from '../../component/modal/ModalBackground';
-import { Address } from '../../types';
+import { Address, Customer } from '../../types';
 import Loading from '../../component/ui/Loading';
 
 function BeforeCheckout() {
-  const [shopifyCheckoutLink, setShopifyCheckoutLink] = useState(undefined);
+  const [shopifyCheckoutLink, setShopifyCheckoutLink] = useState('');
   const [cartId, setCartId] = useState(undefined);
   const [shopifyCheckoutId, setShopifyCheckoutId] = useState(undefined);
   const [addressList, setAddressList] = useState<Address[]>([]);
   const [selectedAddrIndex, setSelectedAddrIndex] = useState(0);
   const [doneLoading, setDoneLoading] = useState(false);
-  const [customer, setCustomer] = useState(undefined);
+  const [customer, setCustomer] = useState<Customer>({} as Customer);
   const [preparingForCheckout, setPreparingForCheckout] = useState(false);
   const [showAdd, setShowAdd] = useState(false);
 
@@ -60,43 +60,37 @@ function BeforeCheckout() {
     }
   }, []);
 
-  function handleSelectAddress(index) {
-    setSelectedAddrIndex(index);
-  }
-
   function handleReturnToCart() {
     navigate('/manage/cart');
   }
 
   function handlePayment() {
     setPreparingForCheckout(true);
-    if (shopify) {
-      shopify.checkout.updateEmail(shopifyCheckoutId, customer.email)
-        .then((res) => {
-          const address = addressList[selectedAddrIndex];
-          const shippingAddr = {
-            address1: address.street,
-            address2: address.streetLine2,
-            city: address.city,
-            province: address.state,
-            country: address.country,
-            zip: address.zipCode,
-            firstName: customer.firstName,
-            lastName: customer.lastName,
-            phone: customer.phoneNumber,
-          };
-          return shopify.checkout.updateShippingAddress(shopifyCheckoutId, shippingAddr)
-        }).then((res) => {
-          // console.log(res);
-          window.open(`${shopifyCheckoutLink}`, '_blank');
-          navigate(`/`);
-        })
-        .catch((err) => {
-          console.error(err);
-        }).finally(() => {
-          setPreparingForCheckout(false);
-        });
-    }
+    shopify && shopify.checkout.updateEmail(shopifyCheckoutId, customer.email)
+      .then((res) => {
+        const address = addressList[selectedAddrIndex];
+        const shippingAddr = {
+          address1: address.street,
+          address2: address.streetLine2,
+          city: address.city,
+          province: address.state,
+          country: address.country,
+          zip: address.zipCode,
+          firstName: customer.firstName,
+          lastName: customer.lastName,
+          phone: customer.phoneNumber,
+        };
+        return shopify.checkout.updateShippingAddress(shopifyCheckoutId, shippingAddr)
+      }).then((res) => {
+        // console.log(res);
+        window.open(`${shopifyCheckoutLink}`, '_blank');
+        navigate(`/`);
+      })
+      .catch((err) => {
+        console.error(err);
+      }).finally(() => {
+        setPreparingForCheckout(false);
+      });
   }
 
   return (
@@ -137,7 +131,7 @@ function BeforeCheckout() {
                 selected={index === selectedAddrIndex}
                 address={oneAddress}
                 addressNum={index + 1}
-                onClick={() => handleSelectAddress(index)}
+                onClick={() => setSelectedAddrIndex(index)}
               />
             ))}
           </div>
