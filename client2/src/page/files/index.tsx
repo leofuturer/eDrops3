@@ -6,7 +6,7 @@ import API from '../../api/lib/api';
 import {
   adminDownloadFile, customerDeleteFile, customerFileRetrieve, downloadFileById
 } from '../../api/lib/serverConfig';
-import SEO from '../../component/header/SEO.js';
+import SEO from '../../component/header/SEO';
 import ManageRightLayout from '../../component/layout/ManageRightLayout';
 import DeleteModal from '../../component/modal/DeleteModal.js';
 import { FileInfo } from '../../types';

@@ -1,33 +1,18 @@
-import React, { useContext, useEffect, useRef, useState } from 'react';
-import { NavLink, useLocation, useNavigate } from 'react-router-dom';
-import {
-  univEwodChipId,
-  univEwodChipId5,
-  univEwodChipId10,
-  univEwodChipWithCoverPlate,
-  univEwodChipWithoutCoverPlate,
-  controlSysId5,
-  testBoardId5,
-  pcbChipId5,
-  controlSysId10,
-  testBoardId10,
-  pcbChipId10,
-  productIdsJson,
-  getProductType
-} from '../../constants';
-import {
-  getCustomerCart,
-  manipulateCustomerOrders,
-  addOrderProductToCart, returnOneItem,
-  getProductOrders
-} from '../../api/lib/serverConfig';
-import API from '../../api/lib/api';
-import { ShopifyContext } from '../../App';
-import { CartContext } from '../../context/CartContext';
-import { Product as ProductType } from 'shopify-buy';
-import { useCookies } from 'react-cookie';
 import { Buffer } from 'buffer';
+import { useContext, useEffect, useRef, useState } from 'react';
+import { useCookies } from 'react-cookie';
+import { NavLink, useLocation, useNavigate } from 'react-router-dom';
+import { Product as ProductType } from 'shopify-buy';
+import API from '../../api/lib/api';
+import {
+  addOrderProductToCart, getCustomerCart, getProductOrders, manipulateCustomerOrders, returnOneItem
+} from '../../api/lib/serverConfig';
+import { ShopifyContext } from '../../App';
 import Loading from '../../component/ui/Loading';
+import {
+  controlSysId10, controlSysId5, getProductType, pcbChipId10, pcbChipId5, productIdsJson, testBoardId10, testBoardId5, univEwodChipId, univEwodChipId10, univEwodChipId5
+} from '../../constants';
+import { CartContext } from '../../context/CartContext';
 
 function Product() {
   const context = useContext(CartContext);
@@ -102,7 +87,7 @@ function Product() {
 
   function handleBundleChange(bsize: number) {
     setBundleSize(bsize)
-    const productType = getProductType(product.id);
+    const productType = getProductType(product.id as string);
     fetchProductData(productIdsJson[productType][bsize]);
   }
 
@@ -144,7 +129,7 @@ function Product() {
           shopify && shopify.checkout.create()
             .then((res) => {
               console.log(res);
-              setShopifyClientCheckoutId(res.id);
+              setShopifyClientCheckoutId(res.id as string);
               const lastSlash = res.webUrl.lastIndexOf('/');
               const lastQuestionMark = res.webUrl.lastIndexOf('?');
 

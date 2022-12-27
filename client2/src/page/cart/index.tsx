@@ -12,7 +12,7 @@ import {
 import Cookies from 'js-cookie';
 
 import { metadata } from './metadata.js';
-import SEO from '../../component/header/SEO.js';
+import SEO from '../../component/header/SEO';
 
 import { CartContext } from '../../context/CartContext';
 import { useCookies } from 'react-cookie';

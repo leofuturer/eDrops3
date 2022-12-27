@@ -1,5 +1,5 @@
 import React from 'react';
-import { Helmet } from 'react-helmet';
+import { Helmet } from 'react-helmet-async';
 
 const defaultMetadata = {
   title: 'Digital microfluidic chip & control system provider | eDrops',
@@ -32,6 +32,7 @@ const defaultMetadata = {
   ],
 };
 
+// TODO: revisit SEO with thread safe react-helmet-async (check if can utilize context for page location)
 const SEO = ({ title, description, metadata = [] }: {
   title?: string,
   description?: string,
