@@ -67,7 +67,7 @@ export class Customer extends User {
     required: true,
     default: 'person',
   })
-  customerType: string;
+  customerType: 'person' | 'company';
 
   @hasMany(() => CustomerAddress)
   customerAddresses: CustomerAddress[];

@@ -1,8 +1,8 @@
 // Admin only page, for customer page see order/index.jsx
 import React, { useEffect, useState } from 'react';
 import Cookies from 'js-cookie';
-import { getAllOrderInfos } from '../../api/serverConfig';
-import API from '../../api/api';
+import { getAllOrderInfos } from '../../api/lib/serverConfig';
+import API from '../../api/lib/api';
 import ManageRightLayout from '../../component/layout/ManageRightLayout';
 import Loading from '../../component/ui/Loading';
 

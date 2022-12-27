@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import Cookies from 'js-cookie';
-import API from '../../api/api';
+import API from '../../api/lib/api';
 import {
   customerOrderRetrieve, workerOrderRetrieve, getAllOrderInfos,
-} from '../../api/serverConfig';
+} from '../../api/lib/serverConfig';
 import SEO from '../../component/header/SEO';
 import { metadata } from './metadata';
 import { useLocation } from 'react-router-dom';

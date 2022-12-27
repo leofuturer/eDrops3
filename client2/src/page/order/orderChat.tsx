@@ -2,11 +2,11 @@
 import { useContext, useEffect, useState } from 'react';
 import { useCookies } from 'react-cookie';
 import { useSearchParams } from 'react-router-dom';
-import API from '../../api/api';
+import API from '../../api/lib/api';
 import {
   addOrderMessage, adminGetProfile, customerGetProfile, foundryWorkerGetProfile,
   getOrderMessagesById
-} from '../../api/serverConfig';
+} from '../../api/lib/serverConfig';
 import { PusherContext } from '../../App';
 import MessageLayout from '../../component/layout/MessageLayout';
 

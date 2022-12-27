@@ -22,4 +22,9 @@ export interface User {
   username: string;
   email: string;
   password: string;
+  userType?: string;
 }
+
+export type Signup<T extends User> = T & { confirmPassword: string };
+
+export type Obscure<T extends User> = Omit<T, 'id' | 'password'>;

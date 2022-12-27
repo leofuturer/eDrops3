@@ -1,16 +1,15 @@
+import { Formik, Form } from 'formik';
 import { useEffect, useState } from 'react';
 import { useCookies } from 'react-cookie';
 import { useLocation, useNavigate } from 'react-router-dom';
-import API from '../../api/api';
+import API from '../../api/lib/api';
+import FormGroup from '../../component/form/FormGroup';
+import ManageRightLayout from '../../component/layout/ManageRightLayout';
+import { AddressSchema } from '../../schemas/shopify';
+import { Address } from '../../types';
 
 function UpdateAddress() {
-  const [street, setStreet] = useState('');
-  const [streetLine2, setStreetLine2] = useState('');
-  const [city, setCity] = useState('');
-  const [state, setState] = useState('');
-  const [country, setCountry] = useState('');
-  const [zipCode, setZipCode] = useState('');
-
+  const [initialInfo, setInitialInfo] = useState<Address>({} as Address);
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -18,26 +17,12 @@ function UpdateAddress() {
 
   useEffect(() => {
     const { addressInfo } = location.state;
-    setStreet(addressInfo.street);
-    setStreetLine2(addressInfo.streetLine2);
-    setCity(addressInfo.city);
-    setState(addressInfo.state);
-    setCountry(addressInfo.country);
-    setZipCode(addressInfo.zipCode);
+    setInitialInfo(addressInfo);
   }, []);
 
-  function handleUpdateAddress() {
+  function handleUpdateAddress(address: Address) {
     const { addressId } = location.state;
-    const addressMes = {
-      street: street,
-      streetLine2: streetLine2,
-      city: city,
-      state: state,
-      country: country,
-      zipCode: zipCode,
-    };
-    const url = `customerAddresses.replace('id', cookies.userId)/${addressId}`;
-    API.Request(url, 'PATCH', addressMes, true)
+    API.Request(`customerAddresses.replace('id', cookies.userId)/${addressId}`, 'PATCH', address, true)
       .then((res) => {
         navigate('/manage/address');
       })
@@ -47,99 +32,24 @@ function UpdateAddress() {
   }
 
   return (
-    <div className="flex flex-col items-center justify-center">
-      <div className="w-full border-b-2 border-primary_light flex justify-center py-8">
-        <h2 className="text-2xl">Update Address</h2>
-      </div>
-      <div className="w-full py-8">
-        <form action="">
-          <div className="form-group">
-            <label className="col-md-4 col-sm-4 col-xs-4 control-label">
-              <span>Street</span>
-            </label>
-            <div className="col-md-8 col-sm-8 col-xs-8">
-              <input
-                type="text"
-                value={street}
-                className="form-control"
-                onChange={(v) => this.handleChange('street', v.target.value)}
-              />
-            </div>
-          </div>
-          <div className="form-group">
-            <label className="col-md-4 col-sm-4 col-xs-4 control-label">
-              <span>Street Line 2</span>
-            </label>
-            <div className="col-md-8 col-sm-8 col-xs-8">
-              <input
-                type="text"
-                value={streetLine2}
-                className="form-control"
-                onChange={(v) => this.handleChange('streetLine2', v.target.value)}
-              />
-            </div>
-          </div>
-          <div className="form-group">
-            <label className="col-md-4 col-sm-4 col-xs-4 control-label">
-              <span>City</span>
-            </label>
-            <div className="col-md-8 col-sm-8 col-xs-8">
-              <input
-                type="text"
-                value={city}
-                className="form-control"
-                onChange={(v) => this.handleChange('city', v.target.value)}
-              />
-            </div>
-          </div>
-          <div className="form-group">
-            <label className="col-md-4 col-sm-4 col-xs-4 control-label">
-              <span>State</span>
-            </label>
-            <div className="col-md-8 col-sm-8 col-xs-8">
-              <input
-                type="text"
-                value={state}
-                className="form-control"
-                onChange={(v) => this.handleChange('state', v.target.value)}
-              />
-            </div>
-          </div>
-          <div className="form-group">
-            <label className="col-md-4 col-sm-4 col-xs-4 control-label">
-              <span>Zip Code</span>
-            </label>
-            <div className="col-md-8 col-sm-8 col-xs-8">
-              <input
-                type="text"
-                value={zipCode}
-                className="form-control"
-                onChange={(v) => this.handleChange('zipCode', v.target.value)}
-              />
-            </div>
-          </div>
-          <div className="form-group">
-            <label className="col-md-4 col-sm-4 col-xs-4 control-label">
-              <span>Country</span>
-            </label>
-            <div className="col-md-8 col-sm-8 col-xs-8">
-              <input
-                type="text"
-                value={country}
-                className="form-control"
-                onChange={(v) => this.handleChange('country', v.target.value)}
-              />
-            </div>
-          </div>
-          <div className="form-group">
-            <div className="col-md-10 col-sd-10 col-xs-10" />
-            <div className="btn-group col-md-2 col-sd-2 col-xs-2 text-right" role="group" aria-label="...">
-              <button type="button" className="btn btn-success" onClick={handleUpdateAddress}>Update Address</button>
-            </div>
-          </div>
-        </form>
-      </div>
-    </div>
+    <ManageRightLayout title="Update Address">
+      <Formik
+        initialValues={initialInfo}
+        enableReinitialize={true}
+        validationSchema={AddressSchema}
+        onSubmit={handleUpdateAddress}
+      >
+        <Form className="flex flex-col space-y-2">
+          <FormGroup type="text" name="street" required />
+          <FormGroup type="text" name="streetLine2" />
+          <FormGroup type="text" name="city" required />
+          <FormGroup type="text" name="state" required />
+          <FormGroup type="text" name="zipCode" required />
+          <FormGroup type="text" name="country" required />
+          <button type="submit" className="bg-green-500 text-white px-4 py-2 rounded-lg w-max">Update Address</button>
+        </Form>
+      </Formik>
+    </ManageRightLayout >
   );
 }
 

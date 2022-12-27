@@ -1,8 +1,8 @@
 import { Formik } from 'formik';
 import { useState } from 'react';
 import { Form, NavLink, useSearchParams } from 'react-router-dom';
-import API from '../../api/api';
-import { customerResetPass } from '../../api/serverConfig';
+import API from '../../api/lib/api';
+import { customerResetPass } from '../../api/lib/serverConfig';
 import FormGroup from '../../component/form/FormGroup';
 import MessageLayout from '../../component/layout/MessageLayout';
 import { ResetPasswordSchema } from '../../schemas';

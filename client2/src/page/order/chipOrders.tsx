@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import Cookies from 'js-cookie';
-import API from '../../api/api';
+import API from '../../api/lib/api';
 import {
   adminGetChipOrders, customerGetChipOrders,
   workerGetChipOrders, editOrderStatus,
   downloadFileById, adminDownloadFile, workerDownloadFile,
 }
-  from '../../api/serverConfig';
+  from '../../api/lib/serverConfig';
 
 import SEO from '../../component/header/SEO.js';
 import { metadata } from './metadata.jsx';

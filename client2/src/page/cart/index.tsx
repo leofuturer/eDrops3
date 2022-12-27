@@ -2,13 +2,13 @@ import React, { useContext, useEffect, useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import CartItem from './cartItem.js';
 import { ShopifyContext } from '../../App';
-import API from '../../api/api';
+import API from '../../api/lib/api';
 import {
   getCustomerCart, getProductOrders,
   getChipOrders, modifyProductOrders,
   modifyChipOrders, updateProductOrderLineItem,
   updateChipOrderLineItem,
-} from '../../api/serverConfig';
+} from '../../api/lib/serverConfig';
 import Cookies from 'js-cookie';
 
 import { metadata } from './metadata.js';

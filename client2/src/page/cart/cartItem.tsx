@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import API from '../../api/api';
+import API from '../../api/lib/api';
 import Loading from '../../component/ui/Loading';
 import { ewodFabServiceId } from '../../constants';
 

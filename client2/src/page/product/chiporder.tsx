@@ -17,8 +17,8 @@ import Cookies from 'js-cookie';
 import {
   getCustomerCart, manipulateCustomerOrders, addOrderChipToCart,
   getChipOrders, getWorkerId, customerGetName
-} from '../../api/serverConfig';
-import API from '../../api/api';
+} from '../../api/lib/serverConfig';
+import API from '../../api/lib/api';
 import {
   ewodFabServiceId,
   ewodFabServiceVariantId,

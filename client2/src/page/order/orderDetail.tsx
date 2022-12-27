@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import API from '../../api/api';
-import { getChipOrders, getOrderInfoById, getProductOrders } from '../../api/serverConfig';
+import API from '../../api/lib/api';
+import { getChipOrders, getOrderInfoById, getProductOrders } from '../../api/lib/serverConfig';
 import MessageLayout from '../../component/layout/MessageLayout';
 import { DisplayAddress } from '../../types';
 import OrderAddress from './orderAddress';
