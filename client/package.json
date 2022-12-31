@@ -1,14 +1,16 @@
 {
-  "name": "client2",
+  "name": "@edrops/client",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite dev --config ./vite.config.ts",
-    "build": "tsc && vite build",
+    "build": "npm run clean && tsc && vite build",
+    "clean": "rimraf dist",
     "preview": "vite preview",
     "lint": "eslint . --ext .js",
-    "cy:run": "cypress run"
+    "cy:run": "cypress run",
+    "cy:open": "cypress open"
   },
   "dependencies": {
     "axios": "^1.2.0",

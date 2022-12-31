@@ -8,7 +8,7 @@ import {
 }
   from '../../api/lib/serverConfig';
 
-import SEO from '../../component/header/SEO';
+import SEO from '../../component/header/seo';
 import { metadata } from './metadata.jsx';
 import { useLocation } from 'react-router-dom';
 import { useCookies } from 'react-cookie';
@@ -83,7 +83,7 @@ function ChipOrders() {
       url += `?access_token=${Cookies.get('access_token')}&fileId=${itemId}`;
     }
 
-    window.location = url;
+    window.location.href = url;
   }
 
   function handleAssign(e) {
@@ -92,16 +92,18 @@ function ChipOrders() {
     const redirectUrl = '/manage/assign-orders';
     const strWindowFeatures = 'width=1200px, height=900px';
     const newWindow = window.open(redirectUrl, '_blank', strWindowFeatures);
+    // @ts-expect-error
     newWindow._order = orderList[orderIndex];
   }
 
-  function handleSubmit(chipOrderId) {
+  function handleSubmit(e: React.FormEvent<HTMLFormElement>, chipOrderId: string) {
     e.preventDefault();
     // const dropdown = document.getElementById('status-selection');
     // const selectedStatus = dropdown.options[dropdown.selectedIndex].value;
     // const chipOrderId = Number(e.target.id.replace(/[^0-9]/ig, ''));
 
     const dropdown = document.getElementById(`status-selection-${chipOrderId}`);
+    // @ts-expect-error
     const selectedStatus = dropdown.options[dropdown.selectedIndex].value;
     const url = editOrderStatus.replace('id', chipOrderId);
     const data = { status: selectedStatus };
@@ -119,6 +121,7 @@ function ChipOrders() {
     const redirectUrl = `/subpage/order-chat?id=${orderId}`;
     const strWindowFeatures = 'width=1200px, height=900px';
     const WindowForOrderChat = window.open(redirectUrl, '_blank', strWindowFeatures);
+    // @ts-expect-error
     WindowForOrderChat._orderItemId = orderId;
   }
 
@@ -163,7 +166,7 @@ function ChipOrders() {
                     <form
                       id="edit-order-status-form"
                       className="edit-order-status-form"
-                      onSubmit={() => handleSubmit(item?.id)} // TODO: fix form submission
+                      onSubmit={(e) => handleSubmit(e, item?.id)} // TODO: fix form submission
                     >
                       <select title="status" className="order-status" name="status" defaultValue={item?.status}>
                         <option value="Fabrication request received">Fab Req Received</option>

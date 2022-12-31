@@ -5,7 +5,7 @@ import { useCookies } from 'react-cookie';
 import { FileRejection, useDropzone } from 'react-dropzone';
 import API from '../../api/lib/api';
 import { customerFileRetrieve, uploadFile } from '../../api/lib/serverConfig';
-import SEO from '../../component/header/SEO';
+import SEO from '../../component/header/seo';
 import TwoChoiceModal from '../../component/modal/TwoChoiceModal';
 import { metadata } from './metadata';
 import { FileInfo } from '../../types';

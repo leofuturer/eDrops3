@@ -8,7 +8,7 @@ import {
   updateWorkerProfile
 } from '../../api/lib/serverConfig';
 import FormGroup from '../../component/form/FormGroup';
-import SEO from '../../component/header/SEO';
+import SEO from '../../component/header/seo';
 import ManageRightLayout from '../../component/layout/ManageRightLayout';
 import { metadata } from './metadata';
 

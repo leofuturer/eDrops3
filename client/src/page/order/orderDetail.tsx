@@ -10,7 +10,7 @@ import OrderItem from './orderItem';
 function OrderDetail() {
   const [doneLoading, setDoneLoading] = useState(false);
   const [orderId, setOrderId] = useState('');
-  const [orderDetail, setOrderDetail] = useState({});
+  const [orderDetail, setOrderDetail] = useState<any>({}); // TODO: type order detail
   const [shippingAddress, setShippingAddress] = useState<DisplayAddress>({} as DisplayAddress);
   const [billingAddress, setBillingAddress] = useState<DisplayAddress>({} as DisplayAddress);
   const [productOrders, setProductOrders] = useState([]);

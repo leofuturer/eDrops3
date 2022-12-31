@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import ItemCard from './itemCard';
 import { returnAllItems } from '../../api/lib/serverConfig';
 import API from '../../api/lib/api';
-import SEO from '../../component/header/SEO';
+import SEO from '../../component/header/seo';
 import { metadata } from './metadata';
 import { Product } from 'shopify-buy';
 import Loading from '../../component/ui/Loading';

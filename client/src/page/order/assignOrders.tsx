@@ -36,6 +36,7 @@ function AssignOrders() {
           workerId: assignId,
           workerName: `${res.data.firstName} ${res.data.lastName}`,
         };
+        // @ts-expect-error
         return API.Request(assignOrders.replace('id', window._order.id), 'PATCH', data, true);
       })
       .then((res) => {
@@ -47,6 +48,7 @@ function AssignOrders() {
       });;
   }
 
+  // @ts-expect-error
   const order = window._order;
   return (
     <ManageRightLayout title="Assign Order">

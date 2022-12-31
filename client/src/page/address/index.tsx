@@ -3,7 +3,7 @@ import { useCookies } from 'react-cookie';
 import { useNavigate } from 'react-router-dom';
 import API from '../../api/lib/api';
 import { customerAddresses } from '../../api/lib/serverConfig';
-import SEO from '../../component/header/SEO';
+import SEO from '../../component/header/seo';
 import DeleteModal from '../../component/modal/DeleteModal';
 import Loading from '../../component/ui/Loading';
 import { Address as AddressType } from '../../types';
@@ -66,7 +66,7 @@ function Address() {
 
   return (
     <div className="flex flex-col items-center justify-center">
-      <SEO
+      <SEO 
         title="eDrops | Addresses"
         description=""
         metadata={metadata}
