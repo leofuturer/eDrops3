@@ -151,21 +151,21 @@ function ChipOrders() {
         </thead>
         <tbody>
           {orderList.length !== 0 ? orderList.map((item, index) => (
-            <tr key={item.id}>
-              <td className="">{item.id}</td>
-              {cookies.userType !== 'customer' && <td className="">{item.customerName}</td>}
-              <td className="">{item.lastUpdated.substring(0, item.lastUpdated.indexOf('T'))}</td>
-              {cookies.userType !== 'worker' && <td className="">{item.workerName}</td>}
+            <tr key={item?.id}>
+              <td className="">{item?.id}</td>
+              {cookies.userType !== 'customer' && <td className="">{item?.customerName}</td>}
+              <td className="">{item?.lastUpdated.substring(0, item?.lastUpdated.indexOf('T'))}</td>
+              {cookies.userType !== 'worker' && <td className="">{item?.workerName}</td>}
               {cookies.userType === 'customer'
-                ? <td className="">{item.status}</td>
+                ? <td className="">{item?.status}</td>
                 : (
                   <td className="">
                     <form
                       id="edit-order-status-form"
                       className="edit-order-status-form"
-                      onSubmit={() => handleSubmit(item.id)} // TODO: fix form submission
+                      onSubmit={() => handleSubmit(item?.id)} // TODO: fix form submission
                     >
-                      <select title="status" className="order-status" name="status" defaultValue={item.status}>
+                      <select title="status" className="order-status" name="status" defaultValue={item?.status}>
                         <option value="Fabrication request received">Fab Req Received</option>
                         <option value="Project Started">Project Started</option>
                         <option value="Project Completed">Project Completed</option>
@@ -177,17 +177,17 @@ function ChipOrders() {
                 )
               }
               <td className="">
-                {item.quantity}
+                {item?.quantity}
               </td>
               <td className="">
                 {
                   cookies.userType === 'worker'
-                    ? <i className="fa fa-download cursor-pointer" onClick={handleDownload} id={`download${item.id}`} />
-                    : <i className="fa fa-download cursor-pointer" onClick={handleDownload} id={`download${item.fileInfoId}`} />
+                    ? <i className="fa fa-download cursor-pointer" onClick={handleDownload} id={`download${item?.id}`} />
+                    : <i className="fa fa-download cursor-pointer" onClick={handleDownload} id={`download${item?.fileInfoId}`} />
                 }
               </td>
               <td className="">
-                <i className="fa fa-commenting cursor-pointer" onClick={handleChat} id={`order${item.orderId}`} />
+                <i className="fa fa-commenting cursor-pointer" onClick={handleChat} id={`order${item?.orderId}`} />
               </td>
               {cookies.userType === 'admin' &&
                 <td className="">
