@@ -23,7 +23,7 @@ const useShopify = () => {
         }
       })
       .catch((err) => {
-        console.error(err);
+        // console.error(err);
       });
   }, [])
 
@@ -40,47 +40,6 @@ const useShopify = () => {
   return shopify;
 }
 
-// Singleton pattern with async call, see adeneo's response from here:
-// https://stackoverflow.com/questions/39553201/singleton-with-async-initialization
-// export const Shopify = (function () {
-//   let instance;
-//   function init() {
-//     function privateMethod(token, domain) {
-//       // console.log("Building Shopify client!");
-//       return ShopifyClient.buildClient({
-//         storefrontAccessToken: token,
-//         domain,
-//       });
-//     }
-
-//     const privateAsync = new Promise((resolve, reject) => {
-//       API.Request(customerGetApiToken, 'GET', {}, true)
-//         .then((res) => {
-//           if (res.status === 200) {
-//             resolve(privateMethod(res.data.info.token, res.data.info.domain));
-//           }
-//         })
-//         .catch((err) => {
-//           console.error(err);
-//           reject(err);
-//         });
-//     });
-
-//     return {
-//       getPrivateValue() { return privateAsync; },
-//     };
-//   }
-
-//   return {
-//     getInstance() {
-//       if (!instance) {
-//         instance = init();
-//       }
-//       return instance;
-//     },
-//   };
-// }());
-
 const usePusher = () => {
   const [pusher, setPusher] = useState<Pusher | null>(null);
   const [key, setKey] = useState<string>('');
@@ -93,7 +52,7 @@ const usePusher = () => {
         }
       })
       .catch((err) => {
-        console.error(err);
+        // console.error(err);
       });
   }, [])
 
@@ -129,45 +88,6 @@ function PusherContextProvider({ children }: { children: React.ReactNode }) {
     </PusherContext.Provider>
   )
 }
-
-
-// export const pusher = (function () {
-//   let instance;
-//   function init() {
-//     function privateMethod(key) {
-//       return new Pusher(key, {
-//         cluster: 'us3',
-//         encrypted: true,
-//       });
-//     }
-
-//     const privateAsync = new Promise((resolve, reject) => {
-//       API.Request(customerGetApiToken, 'GET', {}, true)
-//         .then((res) => {
-//           if (res.status === 200) {
-//             resolve(privateMethod(res.data.info.key));
-//           }
-//         })
-//         .catch((err) => {
-//           console.error(err);
-//           reject(err);
-//         });
-//     });
-
-//     return {
-//       getPrivateValue() { return privateAsync; },
-//     };
-//   }
-
-//   return {
-//     getInstance() {
-//       if (!instance) {
-//         instance = init();
-//       }
-//       return instance;
-//     },
-//   };
-// }());
 
 // The root APP of React
 function App() {

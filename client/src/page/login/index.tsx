@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { NavLink, useNavigate } from 'react-router-dom';
+import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { useCookies } from 'react-cookie';
 import { Field, Formik, Form, FieldProps } from 'formik';
 import API from '../../api/lib/api';
@@ -15,6 +15,7 @@ function Login() {
   const [error, setError] = useState(false);
 
   const navigate = useNavigate();
+  const location = useLocation();
 
   const [cookies, setCookie] = useCookies(['userId', 'userType', 'username', 'base_access_token', 'access_token']);
 
@@ -29,12 +30,12 @@ function Login() {
     API.Request(userLogin, 'POST', data, false)
       .then((res) => {
         // console.log(res);
-        setCookie('base_access_token', res.data.token);
+        // setCookie('base_access_token', res.data.token);
         setCookie('access_token', res.data.token);
         setCookie('userId', res.data.userId);
         setCookie('userType', res.data.userType);
         setCookie('username', res.data.username);
-        navigate('/home');
+        navigate(location.state?.path || '/home');
         setError(false);
       }).catch((err) => {
         // console.error(err);
