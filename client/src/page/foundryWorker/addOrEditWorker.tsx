@@ -117,23 +117,23 @@ function AddOrEditWorker() {
 
         <Form className="flex flex-col space-y-2">
           <small className="">Fields with * are required</small>
-          <FormGroup name="email" type="email" required />
-          <FormGroup name="username" type="text" required />
+          <FormGroup name="email" type="email" required autoComplete="email"/>
+          <FormGroup name="username" type="text" required autoComplete="username"/>
           {location.pathname === '/manage/foundryworkers/addfoundryworker' && (
             <>
-              <FormGroup name="password" type="password" required />
-              <FormGroup name="confirmPassword" type="password" required />
+              <FormGroup name="password" type="password" required autoComplete="new-password"/>
+              <FormGroup name="confirmPassword" type="password" required autoComplete="new-password"/>
             </>
           )}
-          <FormGroup name="firstName" type="text" required />
-          <FormGroup name="lastName" type="text" required />
-          <FormGroup name="phoneNumber" type="text" required />
-          <FormGroup name="affiliation" type="text" required />
-          <FormGroup name="street" type="text" required />
-          <FormGroup name="city" type="text" required />
-          <FormGroup name="state" displayName="State or Province" type="text" required />
-          <FormGroup name="zipCode" displayName="Zip or Postal Code" type="text" required />
-          <FormGroup name="country" type="text" required />
+          <FormGroup name="firstName" type="text" required autoComplete="given-name"/>
+          <FormGroup name="lastName" type="text" required autoComplete="family-name"/>
+          <FormGroup name="phoneNumber" type="text" required autoComplete="tel-national"/>
+          <FormGroup name="affiliation" type="text" required autoComplete="organization" />
+          <FormGroup name="street" type="text" required autoComplete="address-line1"/>
+          <FormGroup name="city" type="text" required autoComplete="address-level2"/>
+          <FormGroup name="state" displayName="State or Province" type="text" required autoComplete="address-level1"/>
+          <FormGroup name="zipCode" displayName="Zip or Postal Code" type="text" required autoComplete="postal-code"/>
+          <FormGroup name="country" type="text" required autoComplete="country-name"/>
           <button type="submit" className="bg-green-500 text-white px-4 py-2 rounded-lg w-max">Save</button>
         </Form>
       </Formik>

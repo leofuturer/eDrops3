@@ -77,17 +77,16 @@ function AddOrEditAdmin() {
       >
         <Form className="flex flex-col space-y-2">
           <small className="">Fields with * are required</small>
-          <FormGroup name="phoneNumber" type="text" required />
+          <FormGroup name="phoneNumber" type="text" required autoComplete="tel-national" />
           <FormGroup name="realm" type="text" />
-          <FormGroup name="username" type="text" required />
+          <FormGroup name="username" type="text" required autoComplete="username" />
+          <FormGroup name="email" type="email" required autoComplete="email" />
           {location.pathname === '/manage/admins/addNewAdmin' && (
             <>
-              <FormGroup name="email" type="email" required />
-              <FormGroup name="password" type="password" required />
-              <FormGroup name="confirmPassword" type="password" required />
+              <FormGroup name="password" type="password" required autoComplete="new-password" />
+              <FormGroup name="confirmPassword" type="password" required autoComplete="new-password" />
             </>
           )}
-          <FormGroup name="email" type="text" required />
           <button
             type="submit"
             className="bg-green-500 text-white px-4 py-2 rounded-lg w-max"

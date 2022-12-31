@@ -18,10 +18,10 @@ function NavTop() {
   const [cookies, setCookie, removeCookie] = useCookies(['username', 'userType', 'userId', 'access_token']);
 
   useEffect(() => {
-    if (cookies.username !== undefined) {
+    if (cookies.access_token) {
       setUpCartItems();
     }
-  }, [cookies.username]);
+  }, [cookies.access_token]);
 
   function signout() {
     setShow(false);

@@ -56,7 +56,7 @@ function Register() {
             confirmPassword: '',
           }}
           onSubmit={(values, actions) => UserSubmitSchema.validate(values, { abortEarly: false }).then(() => {
-            handleRegister({...values, isDefault: true })
+            handleRegister({ ...values, isDefault: true })
           }).catch(
             (err) => {
               const errors = err.inner.reduce((acc: object, curr: ValidationError) => {
@@ -71,12 +71,12 @@ function Register() {
         >
           <Form className="flex flex-col space-y-2">
             <p className="text-xs text-gray-500">Fields with * are required</p>
-            <FormGroup name="email" required type="email" />
-            <FormGroup name="username" required />
-            <FormGroup name="password" required type="password" />
-            <FormGroup name="confirmPassword" required type="password" />
-            <FormGroup name="firstName" required />
-            <FormGroup name="lastName" required />
+            <FormGroup name="email" required type="email" autoComplete="email" />
+            <FormGroup name="username" required autoComplete="username" />
+            <FormGroup name="password" required type="password" autoComplete="new-password" />
+            <FormGroup name="confirmPassword" required type="password" autoComplete="new-password" />
+            <FormGroup name="firstName" required autoComplete="given-name" />
+            <FormGroup name="lastName" required autoComplete="family-name" />
             <div className="grid grid-cols-4 gap-4 items-center">
               <label htmlFor="customerType" className="text-sm font-bold">User Type*</label>
               <Field id="customerType" name="customerType" as="select" className="outline outline-1 shadow-inner focus:shadow-box-sm  rounded px-1 py-1 col-span-2 outline-gray-400 focus:shadow-primary_light focus:outline-primary_light">
@@ -85,13 +85,13 @@ function Register() {
               </Field>
               <ErrorMessage name="customerType" component="p" className="text-red-700 text-xs w-36 text-center" />
             </div>
-            <FormGroup name="phoneNumber" />
-            <FormGroup name="streetLine1" displayName="Street" />
-            <FormGroup name="streetLine2" />
-            <FormGroup name="city" />
-            <FormGroup name="stateOrProvince" displayName="State or Province" />
-            <FormGroup name="zipOrPostalCode" displayName="Zip or Postal Code" />
-            <FormGroup name="country" />
+            <FormGroup name="phoneNumber" autoComplete="tel-national" />
+            <FormGroup name="streetLine1" displayName="Street" autoComplete="address-line1" />
+            <FormGroup name="streetLine2" autoComplete="address-line2" />
+            <FormGroup name="city" autoComplete="address-level2" />
+            <FormGroup name="stateOrProvince" displayName="State or Province" autoComplete="address-level1" />
+            <FormGroup name="zipOrPostalCode" displayName="Zip or Postal Code" autoComplete="postal-code" />
+            <FormGroup name="country" autoComplete="country" />
             <button type="submit" className="bg-secondary text-white rounded-lg px-4 py-2">Submit</button>
           </Form>
         </Formik>
