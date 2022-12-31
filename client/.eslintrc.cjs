@@ -1,24 +1,22 @@
 module.exports = {
   env: {
     browser: true,
-    es2021: true,
+    es2022: true,
+    'cypress/globals': true,
   },
   extends: [
     'plugin:react/recommended',
     'airbnb',
   ],
   parserOptions: {
-    ecmaFeatures: {
-      jsx: true,
-    },
-    ecmaVersion: 'latest',
-    sourceType: 'module',
+    project: './tsconfig.json',
   },
   plugins: [
     'react',
+    'cypress'
   ],
   rules: {
-    'react/prop-types': ['off'],
-    'prefer-object-spread': ['off'],
+    'max-len': ['error', { code: 130 }],
+    'linebreak-style': ['off'],
   },
 };
