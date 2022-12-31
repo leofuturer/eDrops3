@@ -86,12 +86,12 @@ function AddNewAddress({ addOnClick }: { addOnClick?: (addr: Address) => void })
           handleSaveAddress(values);
         }}>
         <Form className="flex flex-col space-y-2">
-          <FormGroup name="street" />
-          <FormGroup name="streetLine2" />
-          <FormGroup name="city" />
-          <FormGroup name="state" displayName="State or Province" />
-          <FormGroup name="zipCode" displayName="Zip or Postal Code" />
-          <FormGroup name="country" />
+          <FormGroup type="text" name="street" required autoComplete="address-line1" />
+          <FormGroup type="text" name="streetLine2" autoComplete="address-line2" />
+          <FormGroup type="text" name="city" required autoComplete="address-level2" />
+          <FormGroup type="text" name="state" displayName="State or Province" required autoComplete="address-level1" />
+          <FormGroup type="text" name="zipCode" displayName="Zip or Postal Code" required autoComplete="postal-code" />
+          <FormGroup type="text" name="country" required autoComplete="country-name" />
           <button type="submit" className="w-max bg-green-600 text-white rounded-md px-4 py-2">Add Address</button>
         </Form>
       </Formik>

@@ -193,7 +193,7 @@ function Profile() {
       />
       <Formik initialValues={{}} onSubmit={handleSave}>
         <Form className="flex flex-col space-y-2">
-          <FormGroup name="username" />
+          <FormGroup name="username"/>
           <FormGroup name="email" />
           <FormGroup name="phoneNumber" />
           {cookies.userType !== 'admin' &&

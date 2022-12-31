@@ -81,9 +81,9 @@ function ChangePassword() {
         onSubmit={(values, { setErrors }) => handleChangePass(values, { setErrors })}
       >
         <Form className="flex flex-col space-y-2">
-          <FormGroup name="oldPassword" type="password" required />
-          <FormGroup name="newPassword" type="password" required />
-          <FormGroup name="confirmNewPassword" type="password" required />
+          <FormGroup name="oldPassword" type="password" required autoComplete="current-password"/>
+          <FormGroup name="newPassword" type="password" required autoComplete="new-password"/>
+          <FormGroup name="confirmNewPassword" type="password" required autoComplete="new-password"/>
           {isLoading
             ? <Loading />
             : (

@@ -52,8 +52,8 @@ function ResetPassword() {
         onSubmit={handleReset}
       >
         <Form>
-          <FormGroup name="newPassword" type="password" required />
-          <FormGroup name="confirmNewPassword" type="password" required />
+          <FormGroup name="newPassword" type="password" required autoComplete="new-password" />
+          <FormGroup name="confirmNewPassword" type="password" required autoComplete="new-password" />
           <button
             type="submit"
             className="bg-secondary text-white px-4 py-2 w-max"
