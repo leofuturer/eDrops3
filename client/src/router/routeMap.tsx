@@ -39,7 +39,6 @@ import ResetPassword from '../page/resetPassword/index';
 import Users from '../page/users';
 import AddOrEditUser from '../page/users/addOrEditUser';
 
-// TODO: protect authenticated routes
 function RouteMap() {
   const [cookies] = useCookies(['userType', 'access_token']);
   const location = useLocation();

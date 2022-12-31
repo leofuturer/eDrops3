@@ -89,7 +89,7 @@ function ChangePassword() {
             : (
               <button
                 type="submit"
-                className="bg-green-500 text-white rounded-lg px-4 py-2"
+                className="bg-green-500 text-white rounded-lg px-4 py-2 w-max"
               >
                 Save
               </button>
