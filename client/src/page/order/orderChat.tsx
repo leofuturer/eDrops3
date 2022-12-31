@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { useContext, useEffect, useState } from 'react';
 import { useCookies } from 'react-cookie';
 import { useSearchParams } from 'react-router-dom';

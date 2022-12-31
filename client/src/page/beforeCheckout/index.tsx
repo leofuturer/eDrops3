@@ -66,6 +66,7 @@ function BeforeCheckout() {
 
   function handlePayment() {
     setPreparingForCheckout(true);
+    // @ts-expect-error
     shopify && shopify.checkout.updateEmail(shopifyCheckoutId, customer.email)
       .then((res) => {
         const address = addressList[selectedAddrIndex];
@@ -80,6 +81,7 @@ function BeforeCheckout() {
           lastName: customer.lastName,
           phone: customer.phoneNumber,
         };
+        // @ts-expect-error
         return shopify.checkout.updateShippingAddress(shopifyCheckoutId, shippingAddr)
       }).then((res) => {
         // console.log(res);

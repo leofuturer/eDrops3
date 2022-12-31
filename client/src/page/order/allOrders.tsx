@@ -29,6 +29,7 @@ function AllOrders() {
     const redirectUrl = `/subpage/order-detail?id=${orderId}`;
     const strWindowFeatures = 'width=1200px, height=900px';
     const WindowForOrderDetail = window.open(redirectUrl, '_blank', strWindowFeatures);
+    // @ts-expect-error
     WindowForOrderDetail._orderItemId = orderId;
   }
 
@@ -36,6 +37,7 @@ function AllOrders() {
     const redirectUrl = `/subpage/order-chat?id=${orderId}`;
     const strWindowFeatures = 'width=1200px, height=900px';
     const WindowForOrderChat = window.open(redirectUrl, '_blank', strWindowFeatures);
+    // @ts-expect-error
     WindowForOrderChat._orderItemId = orderId;
   }
 

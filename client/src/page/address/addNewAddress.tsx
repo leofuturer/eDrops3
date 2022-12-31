@@ -82,6 +82,7 @@ function AddNewAddress({ addOnClick }: { addOnClick?: (addr: Address) => void })
         }}
         validationSchema={AddressSchema}
         onSubmit={(values) => {
+          // @ts-expect-error
           addOnClick && addOnClick(values);
           handleSaveAddress(values);
         }}>

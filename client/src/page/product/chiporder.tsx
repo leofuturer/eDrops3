@@ -124,7 +124,9 @@ function ChipOrder() {
               checkoutIdClient: res.id,
               checkoutToken: shopifyCheckoutToken,
               checkoutLink: res.webUrl,
+              // @ts-expect-error
               createdAt: res.createdAt,
+              // @ts-expect-error
               lastModifiedAt: res.updatedAt,
               orderComplete: false,
               status: 'Order in progress',
@@ -198,9 +200,11 @@ function ChipOrder() {
         let lineItemId;
         for (let i = 0; i < res.lineItems.length; i++) {
           let otherDetails = '';
+          // @ts-expect-error
           const attrs = res.lineItems[i].customAttributes;
           // if (Buffer.from(res.lineItems[i].variant.id).toString('base64') === variantId) {
           if (customAttrs.material === attrs.material && customAttrs.withCoverPlateAssembled === attrs.withCoverPlateAssembled && customAttrs.fileName === attrs.fileName) {
+            // @ts-expect-error
             lineItemId = Buffer.from(res.lineItems[i].id).toString('base64');
             break;
           }
@@ -249,6 +253,7 @@ function ChipOrder() {
           name: product.title,
           description: product.description,
           quantity,
+          // @ts-expect-error
           price: parseFloat(product.variants[0].price.amount),
           otherDetails: JSON.stringify(customAttrs),
           process: materialVal,
@@ -354,6 +359,7 @@ function ChipOrder() {
                   value={quantity}
                   onChange={(e) => setQuantity(e.target.valueAsNumber)}
                 />
+                { /* @ts-expect-error */ }
                 <span className="flex items-center">X ${product.variants ? product.variants[0].price.amount : <Loading />} = ${product.variants ? (quantity * parseFloat(product.variants[0]?.price.amount)).toFixed(2) : <Loading />}</span>
               </>
             )}

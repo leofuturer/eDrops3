@@ -139,7 +139,9 @@ function Product() {
                 checkoutIdClient: res.id,
                 checkoutToken: shopifyCheckoutToken,
                 checkoutLink: res.webUrl,
+                // @ts-expect-error
                 createdAt: res.createdAt,
+                // @ts-expect-error
                 lastModifiedAt: res.updatedAt,
                 orderComplete: false,
                 status: 'Order in progress',
@@ -192,6 +194,7 @@ function Product() {
 
     const variantId = product.id !== productIdsJson['UNIVEWODCHIPID'][bundleSize]
       ? product.variants[0].id
+      // @ts-expect-error
       : (otherDetails.withCoverPlateAssembled
         ? productIdsJson['UNIVEWODCHIPWITHCOVERPLATE'][bundleSize]
         : productIdsJson['UNIVEWODCHIPWITHOUTCOVERPLATE'][bundleSize]);
@@ -205,7 +208,9 @@ function Product() {
         let lineItemId;
         console.log(res);
         for (let i = 0; i < res.lineItems.length; i++) {
+          // @ts-expect-error
           if (Buffer.from(res.lineItems[i].variant.id).toString('base64') === variantId) {
+            // @ts-expect-error
             lineItemId = Buffer.from(res.lineItems[i].id).toString('base64');
             break;
           }

@@ -5,7 +5,7 @@ import { ValidationError } from 'yup';
 import API from '../../api/lib/api';
 import { customerSignUp } from '../../api/lib/serverConfig';
 import FormGroup from '../../component/form/FormGroup';
-import SEO from '../../component/header/SEO';
+import SEO from '../../component/header/seo';
 import { UserSchema, UserSubmitSchema } from '../../schemas';
 import { Address, Customer } from '../../types';
 import { metadata } from './metadata';

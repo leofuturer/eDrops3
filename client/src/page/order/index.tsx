@@ -4,7 +4,7 @@ import API from '../../api/lib/api';
 import {
   customerOrderRetrieve, workerOrderRetrieve, getAllOrderInfos,
 } from '../../api/lib/serverConfig';
-import SEO from '../../component/header/SEO';
+import SEO from '../../component/header/seo';
 import { metadata } from './metadata';
 import { useLocation } from 'react-router-dom';
 import { useCookies } from 'react-cookie';

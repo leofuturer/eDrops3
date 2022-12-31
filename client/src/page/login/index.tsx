@@ -6,7 +6,7 @@ import API from '../../api/lib/api';
 import {
   userLogin
 } from '../../api/lib/serverConfig';
-import SEO from '../../component/header/SEO';
+import SEO from '../../component/header/seo';
 import { metadata } from './metadata';
 import { LoginSchema } from '../../schemas';
 
