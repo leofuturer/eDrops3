@@ -49,9 +49,6 @@ export class EdropsBackendApplication extends BootMixin(
       this.component(RestExplorerComponent);
     }
 
-    // Loopback 3 booter component
-    // this.component(Lb3AppBooterComponent);
-
     this.configureFileUpload(options.fileStorageDirectory);
 
     this.projectRoot = __dirname;
