@@ -68,7 +68,7 @@ function ChipOrder() {
   useEffect(() => {
     shopify && shopify.product.fetch(ewodFabServiceId) // hard coded for chip order
       .then((product) => {
-        console.log(product);
+        // console.log(product);
         setProduct(product);
       })
       .catch((err) => {
