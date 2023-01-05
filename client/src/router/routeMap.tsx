@@ -28,7 +28,7 @@ import Orders from '../page/order';
 import AllOrders from '../page/order/allOrders';
 import AssignOrders from '../page/order/assignOrders';
 import ChipOrders from '../page/order/chipOrders';
-import OrderChat from '../page/order/orderChat';
+// import OrderChat from '../page/order/orderChat';
 import OrderDetail from '../page/order/orderDetail';
 import PageNotFound from '../page/pageNotFound/pageNotFound';
 import ChipOrder from '../page/product/chiporder';
@@ -124,7 +124,7 @@ function RouteMap() {
       </Route >
       <Route path="subpage">
         <Route path="order-detail" element={<OrderDetail />} />
-        <Route path="order-chat" element={<OrderChat />} />
+        {/* <Route path="order-chat" element={<OrderChat />} /> */} // TODO: chat feature
       </Route>
     </Routes >
   );

@@ -7,7 +7,6 @@ import { ChipOrder, ProductOrder } from '../../types';
 
 // The order list page for both customer and worker
 function CartItem({ info, deleteLoading, onDelete, onChange }: { info: ProductOrder | ChipOrder, deleteLoading: boolean, onDelete: () => void, onChange: (e: React.ChangeEvent<HTMLInputElement>) => void }) {
-  console.log(info);
   const chipFabState = "fileInfoId" in info ? {
     fileInfo: {
       id: info.fileInfoId,
