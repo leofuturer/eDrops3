@@ -1,30 +1,25 @@
-import React, { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
+import { useCookies } from 'react-cookie';
 import { NavLink, useNavigate } from 'react-router-dom';
-import CartItem from './cartItem.js';
-import { ShopifyContext } from '../../App';
 import API from '../../api/lib/api';
 import {
-  getCustomerCart, getProductOrders,
-  getChipOrders, modifyProductOrders,
-  modifyChipOrders, updateProductOrderLineItem,
-  updateChipOrderLineItem,
+  getChipOrders, getCustomerCart, getProductOrders, modifyChipOrders, modifyProductOrders, updateChipOrderLineItem, updateProductOrderLineItem
 } from '../../api/lib/serverConfig';
-import Cookies from 'js-cookie';
-
-import { metadata } from './metadata.js';
+import { ShopifyContext } from '../../App';
 import SEO from '../../component/header/seo';
-
-import { CartContext } from '../../context/CartContext';
-import { useCookies } from 'react-cookie';
 import Loading from '../../component/ui/Loading.js';
+import { CartContext } from '../../context/CartContext';
+import { ChipOrder, ProductOrder } from '../../types';
+import CartItem from './cartItem.js';
+import { metadata } from './metadata.js';
 
 function Cart() {
   const [cartExists, setCartExists] = useState(false);
   const [cartId, setCartId] = useState(undefined);
   const [shopifyCheckoutId, setShopifyCheckoutId] = useState(undefined);
   const [shopifyCheckoutLink, setShopifyCheckoutLink] = useState(undefined);
-  const [productOrders, setProductOrders] = useState<any[]>([]);
-  const [chipOrders, setChipOrders] = useState<any[]>([]);
+  const [productOrders, setProductOrders] = useState<ProductOrder[]>([]);
+  const [chipOrders, setChipOrders] = useState<ChipOrder[]>([]);
   const [modifiedItems, setModifiedItems] = useState(new Set());
   const [saveInProgress, setSaveInProgress] = useState(false);
   const [cartLoading, setCartLoading] = useState(true);
@@ -33,7 +28,7 @@ function Cart() {
   const [totalModifiedItems, setTotalModifiedItems] = useState(0);
   const [totalPrice, setTotalPrice] = useState(0);
 
-  const [cookies] = useCookies(['userId'])
+  const [cookies] = useCookies(['userId', 'userType'])
 
   const cart = useContext(CartContext);
   const shopify = useContext(ShopifyContext);
@@ -359,90 +354,83 @@ function Cart() {
         description=""
         metadata={metadata}
       />
-      {Cookies.get('userType') === 'customer'
-        ? (
-          <div className="flex flex-col items-center justify-center">
-            <div className="w-full border-b-2 border-primary_light flex justify-center py-8">
-              <h2 className="text-2xl">Cart</h2>
-            </div>
-            {productOrders.length + chipOrders.length > 0
-              ? (
-                <div className="flex flex-col py-8 w-full space-y-4">
-                  <div className="flex flex-row justify-between items-center">
-                    <p className="">
-                      Use the "save" button to save any changes to quantities.<br /> Deletions are saved immediately.
-                    </p>
-                    <div className="flex flex-row space-x-4 p-2 items-center">
-                      {saveInProgress
-                        ? <Loading />
-                        : (
-                          <button
-                            type="button"
-                            className="bg-green-600 rounded-lg text-white px-4 py-2"
-                            onClick={() => handleSave()}
-                          >
-                            Save
-                          </button>
-                        )}
-                      <button
-                        type="button"
-                        className="bg-primary rounded-lg text-white px-4 py-2"
-                        onClick={() => handleCheckout()}
-                      >
-                        Checkout
-                      </button>
-                    </div>
-                  </div>
-                  <div className="flex flex-col space-y-2">
-                    {
-                      productOrders.map((oneProduct, index) => (
-                        <CartItem
-                          key={index}
-                          info={oneProduct}
-                          onChange={(e) => handleQtyChange(e, 'product', index)}
-                          onDelete={() => handleDelete('product', index)}
-                          deleteLoading={deleteLoading}
-                        />
-                      ))
-                    }
-                    {
-                      chipOrders && chipOrders.map((oneProduct, index) => (
-                        <CartItem
-                          key={index}
-                          info={oneProduct}
-                          onChange={(e) => handleQtyChange(e, 'chip', index)}
-                          onDelete={() => handleDelete('chip', index)}
-                          deleteLoading={deleteLoading}
-                        />
-                      ))
-                    }
-                  </div>
-                  <div className="flex flex-col items-end px-4">
-                    <p className="">
-                      Total Price: $
-                      {totalPrice.toFixed(2)}
-                    </p>
-                    <p className="text-base">
-                      Excludes tax and shipping and handling
-                    </p>
-                  </div>
-                </div>
-              )
-              : (
-                <div>
-                  {cartLoading
-                    ? <Loading />
-                    : (
-                      <div className="w-full py-8">
-                        <p>
-                          Your cart is currently empty. You can either <NavLink to="/upload" className="text-primary_light hover:text-primary">upload a file</NavLink> for a custom chip order or <NavLink to="/allItems" className="text-primary_light hover:text-primary">view our products</NavLink>.</p>
-                      </div>
-                    )}
-                </div>
-              )}
+      {cookies.userType === 'customer' &&
+        <div className="flex flex-col items-center justify-center">
+          <div className="w-full border-b-2 border-primary_light flex justify-center py-8">
+            <h2 className="text-2xl">Cart</h2>
           </div>
-        )
-        : null
+          {productOrders.length + chipOrders.length > 0
+            ? (
+              <div className="flex flex-col py-4 w-full space-y-4">
+                <div className="flex flex-row justify-between items-center">
+                  <p className="">
+                    Use the "save" button to save any changes to quantities.<br /> Deletions are saved immediately.
+                  </p>
+                  <div className="flex flex-row space-x-4 p-2 items-center">
+                    {saveInProgress
+                      ? <Loading />
+                      : (
+                        <button
+                          type="button"
+                          className="bg-green-600 rounded-lg text-white px-4 py-2"
+                          onClick={() => handleSave()}
+                        >
+                          Save
+                        </button>
+                      )}
+                    <button
+                      type="button"
+                      className="bg-primary rounded-lg text-white px-4 py-2"
+                      onClick={() => handleCheckout()}
+                    >
+                      Checkout
+                    </button>
+                  </div>
+                </div>
+                <div className="flex flex-col space-y-4">
+                  {productOrders.map((oneProduct, index) =>
+                    <CartItem
+                      key={index}
+                      info={oneProduct}
+                      onChange={(e) => handleQtyChange(e, 'product', index)}
+                      onDelete={() => handleDelete('product', index)}
+                      deleteLoading={deleteLoading}
+                    />
+                  )}
+                  {chipOrders && chipOrders.map((oneProduct, index) =>
+                    <CartItem
+                      key={index}
+                      info={oneProduct}
+                      onChange={(e) => handleQtyChange(e, 'chip', index)}
+                      onDelete={() => handleDelete('chip', index)}
+                      deleteLoading={deleteLoading}
+                    />
+                  )}
+                </div>
+                <div className="flex flex-col items-end px-4">
+                  <p className="">
+                    Total Price: $
+                    {totalPrice.toFixed(2)}
+                  </p>
+                  <p className="text-base">
+                    Excludes tax and shipping and handling
+                  </p>
+                </div>
+              </div>
+            )
+            : (
+              <div>
+                {cartLoading
+                  ? <Loading />
+                  : (
+                    <div className="w-full py-8">
+                      <p>
+                        Your cart is currently empty. You can either <NavLink to="/upload" className="text-primary_light hover:text-primary">upload a file</NavLink> for a custom chip order or <NavLink to="/allItems" className="text-primary_light hover:text-primary">view our products</NavLink>.</p>
+                    </div>
+                  )}
+              </div>
+            )}
+        </div>
       }
     </div >
   );

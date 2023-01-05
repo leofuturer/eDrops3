@@ -17,7 +17,7 @@ function LineItem({ line_item, updateQuantityInCart, removeLineItemInCart }: { l
   return (
     <div className="Line-item clearfix">
       <div className="Line-item__img-div">
-        {line_item.variant.image ? <img className="Line-item__img" src={line_item.variant.image.src} alt={`${line_item.title} product shot`} /> : null}
+        {line_item.variant.image && <img className="Line-item__img" src={line_item.variant.image.src} alt={`${line_item.title} product shot`} />}
       </div>
       <div className="Line-item__content">
         <div className="Line-item__content-row">

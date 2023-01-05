@@ -28,7 +28,7 @@ const DXFPreview = React.lazy(() => import('./dxf_preview'));
 import { CartContext } from '../../context/CartContext';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useCookies } from 'react-cookie';
-import { Product } from 'shopify-buy';
+import { Product } from 'shopify-buy'; // TODO: waiting on @types/shopify-buy to be updated
 import { FileInfo } from '../../types';
 import Loading from '../../component/ui/Loading';
 
@@ -86,9 +86,9 @@ function ChipOrder() {
     // const url = `${getWorkerId}?username=${}`
     // fetch IDs of default foundry workers
     Promise.all([
-      API.Request(getWorkerId, 'GET', { username: GLASSFW }, true, undefined, true),
-      API.Request(getWorkerId, 'GET', { username: PAPERFW }, true, undefined, true),
-      API.Request(getWorkerId, 'GET', { username: PCBFW }, true, undefined, true),
+      API.Request(getWorkerId, 'GET', { username: GLASSFW }, true),
+      API.Request(getWorkerId, 'GET', { username: PAPERFW }, true),
+      API.Request(getWorkerId, 'GET', { username: PCBFW }, true),
     ]).then(([res1, res2, res3]) => {
       setGLASSID(res1.data);
       setPAPERID(res2.data);
@@ -115,7 +115,7 @@ function ChipOrder() {
           // create Shopify cart
           // console.log(`No cart currently exists, so need to create one`);
           shopify && shopify.checkout.create().then((res) => {
-            // console.log(res);
+            console.log(res);
             setShopifyClientCheckoutId(res.id as string);
             const lastSlash = res.webUrl.lastIndexOf('/');
             const lastQuestionMark = res.webUrl.lastIndexOf('?');
@@ -167,12 +167,11 @@ function ChipOrder() {
                     we hard code it in the "render()" function below and pass the value in
         @quantity: The quantity seleted by customer, put in from frontend page
     */
-  function addVariantToCart(variantId, quantity) {
+  function addVariantToCart(variantId: string, quantity: number) {
     setIsLoading(true);
-    const wcpbVal = wcpb.toString();
     const lineItemsToAdd = [{
       variantId,
-      quantity: parseInt(quantity, 10),
+      quantity,
       customAttributes: [
         {
           key: 'material',
@@ -180,7 +179,7 @@ function ChipOrder() {
         },
         {
           key: 'withCoverPlateAssembled',
-          value: wcpbVal,
+          value: wcpb.toString(),
         },
         {
           key: 'fileName',
@@ -190,55 +189,42 @@ function ChipOrder() {
     }];
     const customAttrs = {
       material: materialVal,
-      withCoverPlateAssembled: wcpbVal,
+      withCoverPlateAssembled: wcpb.toString(),
       fileName: fileInfo.fileName,
     };
     const checkoutId = shopifyClientCheckoutId;
     shopify && shopify.checkout.addLineItems(checkoutId, lineItemsToAdd)
       .then((res) => {
-        // .then((res) => {
-        let lineItemId;
-        for (let i = 0; i < res.lineItems.length; i++) {
-          let otherDetails = '';
-          // @ts-expect-error
-          const attrs = res.lineItems[i].customAttributes;
-          // if (Buffer.from(res.lineItems[i].variant.id).toString('base64') === variantId) {
-          if (customAttrs.material === attrs.material && customAttrs.withCoverPlateAssembled === attrs.withCoverPlateAssembled && customAttrs.fileName === attrs.fileName) {
-            // @ts-expect-error
-            lineItemId = Buffer.from(res.lineItems[i].id).toString('base64');
+        console.log('shopify addVariantToCart', res);
+        let lineItemId: string;
+        // find item from lineItems
+        for (const lineItem of res.lineItems) {
+          // @ts-expect-error NOTE: this is a bug in the shopify-buy typings
+          const attrs: CustomAttribute[] = lineItem.customAttributes;
+          if(attrs.every((attr) => attr.key in customAttrs && attr.value === customAttrs[attr.key])) {
+            lineItemId = lineItem.id as string;
             break;
           }
         }
-
         // save lineItemId of the last item returned in checkout
         // const lineItemIdDecoded = checkout.lineItems[checkout.lineItems.length-1].id;
         // const lineItemId = Buffer.from(lineItemIdDecoded).toString('base64');
 
         // select default foundry worker based on material
+        // select default foundry worker name
+        let materialSpecificWorkerName = '';
         let materialSpecificWorkerId = 0;
         switch (materialVal) {
           case 'ITO Glass':
             materialSpecificWorkerId = GLASSID;
-            break;
-          case 'Paper':
-            materialSpecificWorkerId = PAPERID;
-            break;
-          case 'PCB':
-            materialSpecificWorkerId = PCBID;
-            break;
-          default:
-        }
-
-        // select default foundry worker name
-        let materialSpecificWorkerName = '';
-        switch (materialVal) {
-          case 'ITO Glass':
             materialSpecificWorkerName = 'edrop glassfab';
             break;
           case 'Paper':
+            materialSpecificWorkerId = PAPERID;
             materialSpecificWorkerName = 'edrop paperfab';
             break;
           case 'PCB':
+            materialSpecificWorkerId = PCBID;
             materialSpecificWorkerName = 'edrop pcbfab';
             break;
           default:
@@ -257,7 +243,7 @@ function ChipOrder() {
           price: parseFloat(product.variants[0].price.amount),
           otherDetails: JSON.stringify(customAttrs),
           process: materialVal,
-          coverPlate: wcpbVal,
+          coverPlate: wcpb.toString(),
           lastUpdated: new Date().toISOString(),
           fileInfoId: fileInfo.id,
           workerId: materialSpecificWorkerId,
@@ -266,9 +252,9 @@ function ChipOrder() {
         };
 
         API.Request(addOrderChipToCart.replace('id', orderInfoId.toString()), 'POST', data, true)
-          .then((res) => API.Request(getChipOrders.replace('id', orderInfoId.toString()), 'GET', {}, true, undefined, true))
+          .then((res) => API.Request(getChipOrders.replace('id', orderInfoId.toString()), 'GET', {}, true))
           .then((res) => {
-            const quantity = res.data.reduce((prev, curr) => prev + curr.quantity, 0);
+            const quantity = res.data.reduce((prev: number, curr: { quantity: number }) => prev + curr.quantity, 0);
             cart.setChipQuantity(quantity);
             navigate('/manage/cart');
           })
@@ -359,7 +345,7 @@ function ChipOrder() {
                   value={quantity}
                   onChange={(e) => setQuantity(e.target.valueAsNumber)}
                 />
-                { /* @ts-expect-error */ }
+                { /* @ts-expect-error */}
                 <span className="flex items-center">X ${product.variants ? product.variants[0].price.amount : <Loading />} = ${product.variants ? (quantity * parseFloat(product.variants[0]?.price.amount)).toFixed(2) : <Loading />}</span>
               </>
             )}
