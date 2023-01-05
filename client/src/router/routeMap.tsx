@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useCookies } from 'react-cookie';
 import { Navigate, Outlet, Route, Routes, useLocation } from 'react-router-dom';
 import Layout from '../component/layout/Layout';
@@ -38,10 +38,23 @@ import Register from '../page/register/index';
 import ResetPassword from '../page/resetPassword/index';
 import Users from '../page/users';
 import AddOrEditUser from '../page/users/addOrEditUser';
+import jwt_decode, { JwtPayload } from 'jwt-decode';
 
 function RouteMap() {
-  const [cookies] = useCookies(['userType', 'access_token']);
+  const [cookies, setCookie, removeCookie] = useCookies(['userType', 'access_token', 'username', 'userId']);
   const location = useLocation();
+
+  useEffect(() => {
+    if (cookies.access_token) {
+      const decoded = jwt_decode<JwtPayload>(cookies.access_token);
+      if (decoded.exp && decoded.exp * 1000 < Date.now()) {
+        removeCookie('access_token');
+        removeCookie('userType');
+        removeCookie('username');
+        removeCookie('userId');
+      }
+    }
+  }, [cookies.access_token]);
 
   return (
     <Routes>
