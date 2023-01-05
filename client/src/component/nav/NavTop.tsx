@@ -1,15 +1,12 @@
-import React, { useEffect, useState, useContext } from 'react';
-import { NavLink } from 'react-router-dom';
-import Cookies from 'js-cookie';
+import { useContext, useEffect, useState } from 'react';
 import { useCookies } from 'react-cookie';
-import {
-  customerLogout, AdminLogout, FoundryWorkerLogout, userLogout,
-  getCustomerCart,
-  getProductOrders, getChipOrders
-} from '../../api/lib/serverConfig';
+import { NavLink } from 'react-router-dom';
 import API from '../../api/lib/api';
-import { CartContext } from '../../context/CartContext'
-import hoistNonReactStatics from 'hoist-non-react-statics';
+import {
+  getChipOrders, getCustomerCart,
+  getProductOrders
+} from '../../api/lib/serverConfig';
+import { CartContext } from '../../context/CartContext';
 
 function NavTop() {
   const [show, setShow] = useState(false);
