@@ -8,7 +8,6 @@ import { Product } from 'shopify-buy';
 import Loading from '../../component/ui/Loading';
 
 function AllItems() {
-
   const [products, setProducts] = useState<Product[]>([]);
 
   useEffect(() => {

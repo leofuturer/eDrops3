@@ -3,32 +3,29 @@ import { NavLink } from 'react-router-dom';
 import API from '../../api/lib/api';
 import Loading from '../../component/ui/Loading';
 import { ewodFabServiceId } from '../../constants';
+import { ChipOrder, ProductOrder } from '../../types';
 
 // The order list page for both customer and worker
-function CartItem({ info, deleteLoading, onDelete, onChange }: { info: { productIdShopify: string, fileInfoId: string, name: string, price: number, otherDetails: string, quantity: number }, deleteLoading: boolean, onDelete: () => void, onChange: (e: React.ChangeEvent<HTMLInputElement>) => void }) {
-
-  const start = 'fileName: '.length;
-  let chipFabState;
-  if (info.productIdShopify === ewodFabServiceId) {
-    chipFabState = {
-      fileInfo: {
-        id: info.fileInfoId,
-        fileName: info.otherDetails.split('\n')[2].slice(start),
-      },
-    };
-  }
+function CartItem({ info, deleteLoading, onDelete, onChange }: { info: ProductOrder | ChipOrder, deleteLoading: boolean, onDelete: () => void, onChange: (e: React.ChangeEvent<HTMLInputElement>) => void }) {
+  console.log(info);
+  const chipFabState = "fileInfoId" in info ? {
+    fileInfo: {
+      id: info.fileInfoId,
+      fileName: JSON.parse(info.otherDetails).fileName,
+    },
+  } : {};
 
   return (
     <div className="bg-white rounded-md shadow-box p-4 flex flex-row justify-between">
       <div className="flex flex-col">
         {info.productIdShopify === ewodFabServiceId
           ? (
-            <NavLink to="/chipfab" state={chipFabState}>
+            <NavLink to="/chipfab" state={chipFabState} className="text-primary_light hover:text-primary">
               <h3>{info.name}</h3>
             </NavLink>
           )
           : (
-            <NavLink to={`/product?id=${info.productIdShopify}`}>
+            <NavLink to={`/product?id=${info.productIdShopify}`} className="text-primary_light hover:text-primary">
               <h3>{info.name}</h3>
             </NavLink>
           )}
@@ -36,17 +33,15 @@ function CartItem({ info, deleteLoading, onDelete, onChange }: { info: { product
           Unit Price: $
           {info.price.toFixed(2)}
         </div>
-        {info.otherDetails.length !== 0
-          ? (
-            <div>
-              <div className="">{'Additional information: '}</div>
-              <div
-                className=""
-                dangerouslySetInnerHTML={{ __html: info.otherDetails.replace(/\n/g, '<br/>') }}
-              />
-            </div>
-          )
-          : null}
+        {info.otherDetails.length !== 0 &&
+          <div>
+            <div className="">{'Additional information: '}</div>
+            <div
+              className=""
+              dangerouslySetInnerHTML={{ __html: info.otherDetails.replace(/\n/g, '<br/>') }}
+            />
+          </div>
+        }
         <div>
           {deleteLoading
             ? <Loading />
@@ -60,20 +55,19 @@ function CartItem({ info, deleteLoading, onDelete, onChange }: { info: { product
         </div>
       </div>
       <div className="flex flex-col justify-between">
-        <div className="flex flex-row items-center justify-between">
+        <div className="flex flex-row items-center justify-end space-x-2">
           <label htmlFor="quantity" className="">Quantity</label>
           <input
             type="number"
             id="quantity"
             min={1}
-            className="w-12 focus:outline-none"
+            className="w-8 outline outline-1 rounded pl-1"
             value={info.quantity}
             onChange={(e) => onChange(e)}
           />
         </div>
         <div className="">
-          Subtotal: $
-          {(info.quantity * info.price).toFixed(2)}
+          Subtotal: ${(info.quantity * info.price).toFixed(2)}
         </div>
       </div>
     </div>

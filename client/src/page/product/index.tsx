@@ -108,8 +108,7 @@ function Product() {
          *      Shopify checkout ID
          */
     if (!cookies.access_token) {
-      alert('Login required to add item to cart');
-      return;
+      navigate('/login', { state: { path: location.pathname } });
     }
     setAddedToCart(false);
     API.Request(getCustomerCart.replace('id', cookies.userId), 'GET', {}, true)
@@ -264,18 +263,14 @@ function Product() {
                 </p>
               </div>
               <div className="flex flex-col space-y-2">
-                {[univEwodChipId, univEwodChipId5, univEwodChipId10].includes(desiredProductId)
-                  ? (
-                    <div className="chip-config">
-                      <h3>Item Options</h3>
-                      <div className="config-items">
-                        <input type="checkbox" id="coverPlate" checked={withCoverPlateAssembled} onChange={(e) => setWithCoverPlateAssembled(e.target.checked)} />
-                        <label htmlFor="coverPlate" className="option-detail">With Cover Plate Assembled</label>
-                      </div>
+                {[univEwodChipId, univEwodChipId5, univEwodChipId10].includes(desiredProductId) &&
+                  <div className="chip-config">
+                    <h3>Item Options</h3>
+                    <div className="config-items">
+                      <input type="checkbox" id="coverPlate" checked={withCoverPlateAssembled} onChange={(e) => setWithCoverPlateAssembled(e.target.checked)} />
+                      <label htmlFor="coverPlate" className="option-detail">With Cover Plate Assembled</label>
                     </div>
-                  )
-                  : null}
-
+                  </div>}
                 <div className="flex justify-between items-center">
                   <div className="text-lg font-bold">
                     Price: $
