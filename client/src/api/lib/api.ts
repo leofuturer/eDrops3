@@ -62,6 +62,43 @@ export function useAPI({ url, method, data, auth, headers = {
 	return res;
 }
 
+export async function request(url: string, method: string, data: object, auth: boolean, headers: Partial<AxiosRequestHeaders> = {
+	"Content-Type": "application/json; charset=utf-8",
+}) {
+	if (auth) {
+		if (!Cookies.get("access_token")) {
+			throw new AxiosError("No access token found", undefined, undefined, undefined, {
+				status: 401,
+				statusText: "Unauthorized",
+			} as AxiosResponse);
+		} else {
+			headers.Authorization = `Bearer ${Cookies.get("access_token")}`;
+		}
+	}
+	headers["X-edrop-userbase"] = Cookies.get("access_token") ?? "";
+	const options: AxiosRequestConfig = {
+		method,
+		headers,
+		url,
+	};
+	switch (method) {
+		case "GET":
+			options.params = data;
+			break;
+		case "PUT":
+		case "POST":
+		case "DELETE":
+		case "PATCH":
+			options.data = data;
+			break;
+		default:
+			throw new Error("Invalid method");
+	}
+
+	const res = await axios(options);
+	return res;
+}
+
 class API {
 	/**
 	 * Custom function used to send request to backend APIs

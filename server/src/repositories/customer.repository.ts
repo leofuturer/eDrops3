@@ -220,7 +220,7 @@ export class CustomerRepository extends DefaultCrudRepository<
             },
           ],
           // subject: '[eDrops] Email Verification',
-          dynamic_template_data:{
+          dynamic_template_data: {
             firstName: customer.firstName,
             lastName: customer.lastName,
             text: "Thanks for registering to use eDrops. Please verify your email by clicking on the following link:",
@@ -257,7 +257,7 @@ export class CustomerRepository extends DefaultCrudRepository<
         customer?.verificationToken === verificationToken &&
         (customer?.verificationTokenExpires ?? currentTime) > currentTime,
     }).then(
-      async() => { 
+      async () => {
         // Update associated User instance
         const userRepository = await this.userRepositoryGetter();
         await userRepository.updateById(customerId, {
@@ -274,26 +274,19 @@ export class CustomerRepository extends DefaultCrudRepository<
 
   async getCustomerCart(
     customerId: string,
-  ): Promise<Partial<OrderInfo> | number | Error> {
+  ): Promise<Partial<OrderInfo> | null> {
     return this.orderInfos(customerId)
-      .find({where: {orderComplete: false}})
+      .find({ where: { orderComplete: false }, include: ['orderProducts', 'orderChips'] })
       .then(orders => {
         if (orders.length > 1) {
-          log.error(
-            `Error getting customer cart or there's more than one active cart`,
-          );
-          throw new HttpErrors.NotFound(
-            'Error while querying for customer cart',
-          );
+          log.error(`Error getting customer cart or there's more than one active cart`);
+          throw new HttpErrors.NotFound('More than one active cart found');
         } else if (orders.length === 0) {
-          log.warning(
-            `No cart found for customer id=${customerId}, need to create one`,
-          );
-          return 0;
+          log.warning(`No cart found for customer id=${customerId}, need to create one`);
+          // throw new HttpErrors.NotFound('No cart found');
+          return null;
         }
-        log.info(
-          `Cart already exists, is order info model with id ${orders[0].id}`,
-        );
+        log.info(`Cart already exists, is order info model with id ${orders[0].id}`);
         return {
           id: orders[0].id,
           checkoutIdClient: orders[0].checkoutIdClient,
@@ -301,10 +294,7 @@ export class CustomerRepository extends DefaultCrudRepository<
         };
       })
       .catch(err => {
-        log.error(
-          `Error getting customer cart or there's more than one active cart: ${err}`,
-        );
-        return new Error('Error while querying for customer cart');
+        throw err;
       });
   }
 
@@ -354,7 +344,7 @@ export class CustomerRepository extends DefaultCrudRepository<
     const fields = request.body;
     const fileInfo = await this.fileInfos(id).create(fileInfos[0]);
     // return {files, fields};
-    return {fileInfo, fields};
+    return { fileInfo, fields };
   }
 
   async uploadS3(
@@ -407,7 +397,7 @@ export class CustomerRepository extends DefaultCrudRepository<
     const fields = request.body;
     const fileInfo = await this.fileInfos(id).create(fileInfos[0]);
     // return {files, fields};
-    return {fileInfo, fields};
+    return { fileInfo, fields };
   }
 
   async downloadDisk(filename: string, response: Response): Promise<Response> {
@@ -436,9 +426,9 @@ export class CustomerRepository extends DefaultCrudRepository<
 
   async changePassword(userId: string, newPassword: string): Promise<void> {
     const hashedPassword = await hash(newPassword, await genSalt());
-    await this.updateById(userId, {password: hashedPassword});
+    await this.updateById(userId, { password: hashedPassword });
 
     const userRepository = await this.userRepositoryGetter();
-    await userRepository.updateById(userId, {password: hashedPassword});
+    await userRepository.updateById(userId, { password: hashedPassword });
   }
 }

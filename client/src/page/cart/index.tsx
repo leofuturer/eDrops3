@@ -7,22 +7,28 @@ import {
 } from '../../api/lib/serverConfig';
 import { ShopifyContext } from '../../App';
 import SEO from '../../component/header/seo';
+import ManageRightLayout from '../../component/layout/ManageRightLayout';
 import Loading from '../../component/ui/Loading.js';
 import { CartContext } from '../../context/CartContext';
 import { ChipOrder, ProductOrder } from '../../types';
 import CartItem from './cartItem.js';
 import { metadata } from './metadata.js';
 
+type ItemType = 'product' | 'chip';
+
+interface CartItem {
+
+}
+
 function Cart() {
   const [cartExists, setCartExists] = useState(false);
-  const [cartId, setCartId] = useState(undefined);
+  const [cartId, setCartId] = useState<number | undefined>(undefined);
   const [shopifyCheckoutId, setShopifyCheckoutId] = useState(undefined);
   const [shopifyCheckoutLink, setShopifyCheckoutLink] = useState(undefined);
   const [productOrders, setProductOrders] = useState<ProductOrder[]>([]);
   const [chipOrders, setChipOrders] = useState<ChipOrder[]>([]);
   const [modifiedItems, setModifiedItems] = useState(new Set());
   const [saveInProgress, setSaveInProgress] = useState(false);
-  const [cartLoading, setCartLoading] = useState(true);
   const [deleteLoading, setDeleteLoading] = useState(false);
   const [numModifiedItems, setNumModifiedItems] = useState(0);
   const [totalModifiedItems, setTotalModifiedItems] = useState(0);
@@ -34,38 +40,6 @@ function Cart() {
   const shopify = useContext(ShopifyContext);
 
   const navigate = useNavigate();
-
-  useEffect(() => {
-    API.Request(getCustomerCart.replace('id', cookies.userId), 'GET', {}, true)
-      .then((res) => {
-        if (res.data.id) {
-          // console.log(res);
-          const orderInfoId = res.data.id;
-          setCartExists(true);
-          setCartId(res.data.id);
-          setShopifyCheckoutId(res.data.checkoutIdClient);
-          setShopifyCheckoutLink(res.data.checkoutLink);
-          API.Request(getProductOrders.replace('id', orderInfoId), 'GET', {}, true)
-            .then((res) => {
-              setProductOrders(res.data);
-              return API.Request(getChipOrders.replace('id', orderInfoId), 'GET', {}, true);
-            })
-            .then((res) => {
-              setChipOrders(res.data);
-              setCartLoading(false);
-            })
-            .catch((err) => {
-              console.error(err);
-            });
-        } else {
-          setCartExists(false);
-          setCartLoading(false);
-        }
-      })
-      .catch((err) => {
-        console.error(err);
-      });
-  }, [cookies.userId]);
 
   function handleQtyChange(e, itemType, index) {
     // https://stackoverflow.com/questions/29537299/react-how-to-update-state-item1-in-state-using-setstate
@@ -190,7 +164,7 @@ function Cart() {
     }
   }
 
-  function handleDelete(itemType, index) {
+  function handleDelete(itemType: string, index: number) {
     setDeleteLoading(true);
     let url;
     if (itemType === 'product') {
@@ -247,65 +221,65 @@ function Cart() {
     }
   }
 
-  function updateLineItemCartHelper(type, item, itemsToUpdate) {
-    if (shopify) {
-      return shopify.checkout.updateLineItems(shopifyCheckoutId, itemsToUpdate)
-        .then((checkout) => {
-          let url;
-          // console.log(checkout.lineItems);
-          if (type === 'product') {
-            url = modifyProductOrders.replace('id', item.id);
-          } else if (type === 'chip') {
-            url = modifyChipOrders.replace('id', item.id);
-          }
-          const data = { quantity: parseInt(item.quantity) };
-          API.Request(url, 'PATCH', data, true)
-            .then((res) => {
-              setNumModifiedItems(numModifiedItems => numModifiedItems + 1);
-              if (numModifiedItems === totalModifiedItems && numModifiedItems > 0) {
-                setCartItems();    // updates number on cart icon
+  // function updateLineItemCartHelper(type, item, itemsToUpdate) {
+  //   if (shopify) {
+  //     return shopify.checkout.updateLineItems(shopifyCheckoutId, itemsToUpdate)
+  //       .then((checkout) => {
+  //         let url;
+  //         // console.log(checkout.lineItems);
+  //         if (type === 'product') {
+  //           url = modifyProductOrders.replace('id', item.id);
+  //         } else if (type === 'chip') {
+  //           url = modifyChipOrders.replace('id', item.id);
+  //         }
+  //         const data = { quantity: parseInt(item.quantity) };
+  //         API.Request(url, 'PATCH', data, true)
+  //           .then((res) => {
+  //             setNumModifiedItems(numModifiedItems => numModifiedItems + 1);
+  //             if (numModifiedItems === totalModifiedItems && numModifiedItems > 0) {
+  //               setCartItems();    // updates number on cart icon
 
-                setSaveInProgress(false);
-              }
-            })
-            .catch((err) => {
-              console.error(err);
-              setSaveInProgress(false);
-            });
-        })
-        .catch((err) => {
-          console.error(err);
-          setSaveInProgress(false);
-        });
-    }
-  }
+  //               setSaveInProgress(false);
+  //             }
+  //           })
+  //           .catch((err) => {
+  //             console.error(err);
+  //             setSaveInProgress(false);
+  //           });
+  //       })
+  //       .catch((err) => {
+  //         console.error(err);
+  //         setSaveInProgress(false);
+  //       });
+  //   }
+  // }
 
-  function handleSaveForOrders(array, type) {
-    return array.filter(item => (modifiedItems.has(item.lineItemIdShopify)))
-      .reduce((p, nextItem) => {
-        const itemsToUpdate = [{
-          id: nextItem.lineItemIdShopify,
-          quantity: parseInt(nextItem.quantity),
-        }];
-        return p.then(() => {
-          return updateLineItemCartHelper(type, nextItem, itemsToUpdate);
-        });
-      }, Promise.resolve());
-  }
+  // function handleSaveForOrders(array: (ProductOrder | ChipOrder)[], type: string) {
+  //   return array.filter(item => (modifiedItems.has(item.lineItemIdShopify)))
+  //     .reduce((p, nextItem) => {
+  //       const itemsToUpdate = [{
+  //         id: nextItem.lineItemIdShopify,
+  //         quantity: nextItem.quantity,
+  //       }];
+  //       return p.then(() => {
+  //         return updateLineItemCartHelper(type, nextItem, itemsToUpdate);
+  //       });
+  //     }, Promise.resolve());
+  // }
 
-  function handleSave() {
-    if (modifiedItems.size > 0) {
-      setSaveInProgress(true);
-      handleSaveForOrders(productOrders, 'product')
-        .then(e => {
-          return handleSaveForOrders(chipOrders, 'chip');
-        }).catch((err) => {
-          console.error(err);
-        }).finally(() => {
-          setSaveInProgress(false);
-        });
-    }
-  }
+  // function handleSave() {
+  //   if (modifiedItems.size > 0) {
+  //     setSaveInProgress(true);
+  //     handleSaveForOrders(productOrders, 'product')
+  //       .then(e => {
+  //         return handleSaveForOrders(chipOrders, 'chip');
+  //       }).catch((err) => {
+  //         console.error(err);
+  //       }).finally(() => {
+  //         setSaveInProgress(false);
+  //       });
+  //   }
+  // }
 
   function handleCheckout() {
     navigate('/beforeCheckout', {
@@ -317,122 +291,65 @@ function Cart() {
     });
   }
 
-  function setCartItems() {
-    if (cartId) {
-      Promise.all([
-        API.Request(getProductOrders.replace('id', cartId), 'GET', {}, true),
-        API.Request(getChipOrders.replace('id', cartId), 'GET', {}, true)
-      ]).then(([res1, res2]) => {
-        const productQuantity = res1.data.reduce((prev, curr) => prev + curr.quantity, 0);
-        const chipQuantity = res2.data.reduce((prev, curr) => prev + curr.quantity, 0);
-        cart.setProductQuantity(productQuantity);
-        cart.setChipQuantity(chipQuantity);
-        setNumModifiedItems(0);
-        setModifiedItems(new Set());
-        setTotalModifiedItems(0);
-      }).catch((err) => {
-        console.error(err);
-      });
-    }
-  }
-
-  useEffect(() => {
-    const productTotal = productOrders.reduce((prev, curr) => {
-      return prev + (curr.quantity * curr.price);
-    }, 0);
-    const chipTotal = chipOrders.reduce((prev, curr) => {
-      return prev + (curr.quantity * curr.price);
-    }, 0);
-    setTotalPrice(productTotal + chipTotal);
-  }, [productOrders, chipOrders]);
-
+  // function setCartItems() {
+  //   if (cartId) {
+  //     Promise.all([
+  //       API.Request(getProductOrders.replace('id', cartId), 'GET', {}, true),
+  //       API.Request(getChipOrders.replace('id', cartId), 'GET', {}, true)
+  //     ]).then(([res1, res2]) => {
+  //       const productQuantity = res1.data.reduce((prev, curr) => prev + curr.quantity, 0);
+  //       const chipQuantity = res2.data.reduce((prev, curr) => prev + curr.quantity, 0);
+  //       cart.setProductQuantity(productQuantity);
+  //       cart.setChipQuantity(chipQuantity);
+  //       setNumModifiedItems(0);
+  //       setModifiedItems(new Set());
+  //       setTotalModifiedItems(0);
+  //     }).catch((err) => {
+  //       console.error(err);
+  //     });
+  //   }
+  // }
 
   return (
-    <div>
+    <ManageRightLayout title="Cart">
       <SEO
         title="eDrops | Cart"
         description=""
         metadata={metadata}
       />
-      {cookies.userType === 'customer' &&
-        <div className="flex flex-col items-center justify-center">
-          <div className="w-full border-b-2 border-primary_light flex justify-center py-8">
-            <h2 className="text-2xl">Cart</h2>
+      {cart.numItems > 0
+        ? (<div className="flex flex-col w-full space-y-4">
+          <div className="flex flex-row justify-end items-center">
+            <button type="button" className="bg-primary rounded-lg text-white px-4 py-2" onClick={handleCheckout}>Checkout</button>
           </div>
-          {productOrders.length + chipOrders.length > 0
-            ? (
-              <div className="flex flex-col py-4 w-full space-y-4">
-                <div className="flex flex-row justify-between items-center">
-                  <p className="">
-                    Use the "save" button to save any changes to quantities.<br /> Deletions are saved immediately.
-                  </p>
-                  <div className="flex flex-row space-x-4 p-2 items-center">
-                    {saveInProgress
-                      ? <Loading />
-                      : (
-                        <button
-                          type="button"
-                          className="bg-green-600 rounded-lg text-white px-4 py-2"
-                          onClick={() => handleSave()}
-                        >
-                          Save
-                        </button>
-                      )}
-                    <button
-                      type="button"
-                      className="bg-primary rounded-lg text-white px-4 py-2"
-                      onClick={() => handleCheckout()}
-                    >
-                      Checkout
-                    </button>
-                  </div>
-                </div>
-                <div className="flex flex-col space-y-4">
-                  {productOrders.map((oneProduct, index) =>
-                    <CartItem
-                      key={index}
-                      info={oneProduct}
-                      onChange={(e) => handleQtyChange(e, 'product', index)}
-                      onDelete={() => handleDelete('product', index)}
-                      deleteLoading={deleteLoading}
-                    />
-                  )}
-                  {chipOrders && chipOrders.map((oneProduct, index) =>
-                    <CartItem
-                      key={index}
-                      info={oneProduct}
-                      onChange={(e) => handleQtyChange(e, 'chip', index)}
-                      onDelete={() => handleDelete('chip', index)}
-                      deleteLoading={deleteLoading}
-                    />
-                  )}
-                </div>
-                <div className="flex flex-col items-end px-4">
-                  <p className="">
-                    Total Price: $
-                    {totalPrice.toFixed(2)}
-                  </p>
-                  <p className="text-base">
-                    Excludes tax and shipping and handling
-                  </p>
-                </div>
-              </div>
-            )
-            : (
-              <div>
-                {cartLoading
-                  ? <Loading />
-                  : (
-                    <div className="w-full py-8">
-                      <p>
-                        Your cart is currently empty. You can either <NavLink to="/upload" className="text-primary_light hover:text-primary">upload a file</NavLink> for a custom chip order or <NavLink to="/allItems" className="text-primary_light hover:text-primary">view our products</NavLink>.</p>
-                    </div>
-                  )}
-              </div>
-            )}
+          <div className="flex flex-col space-y-4">
+            {productOrders.map((oneProduct, index) => <CartItem
+              key={index}
+              info={oneProduct}
+              onChange={(e) => handleQtyChange(e, 'product', index)}
+              onDelete={() => handleDelete('product', index)}
+              deleteLoading={deleteLoading}
+            />)}
+            {chipOrders.map((oneProduct, index) => <CartItem
+              key={index}
+              info={oneProduct}
+              onChange={(e) => handleQtyChange(e, 'chip', index)}
+              onDelete={() => handleDelete('chip', index)}
+              deleteLoading={deleteLoading}
+            />)}
+          </div>
+          <div className="flex flex-col items-end px-4">
+            <p className="">
+              Total Price: ${cart.totalPrice.toFixed(2)}
+            </p>
+            <p className="text-base">
+              Excludes tax and shipping and handling
+            </p>
+          </div>
         </div>
-      }
-    </div >
+        )
+        : <p className="text-center">Your cart is currently empty. You can either <NavLink to="/upload" className="text-primary_light hover:text-primary">upload a file</NavLink> for a custom chip order or <NavLink to="/allItems" className="text-primary_light hover:text-primary">view our products</NavLink>.</p>}
+    </ManageRightLayout>
   );
 }
 

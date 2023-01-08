@@ -31,9 +31,8 @@ function BeforeCheckout() {
   const location = useLocation();
 
   useEffect(() => {
-    if (!cookies.access_token) {
-      navigate('/login');
-    } else if (!location.state.shopifyCheckoutLink || !location.state.cartId) {
+    // CARTTODO: don't pass state, just get from context
+    if (!location.state.shopifyCheckoutLink || !location.state.cartId) {
       // console.log("check..");
       navigate('/manage/cart');
     } else {
@@ -59,10 +58,6 @@ function BeforeCheckout() {
         });
     }
   }, []);
-
-  function handleReturnToCart() {
-    navigate('/manage/cart');
-  }
 
   function handlePayment() {
     setPreparingForCheckout(true);
@@ -107,24 +102,13 @@ function BeforeCheckout() {
             </button>
             {preparingForCheckout
               ? <Loading />
-              : (
-                <div className="flex flex-row space-x-4">
-                  <button
-                    type="button"
-                    className="bg-primary_light hover:bg-primary text-white rounded-md px-4 py-2 text-lg"
-                    onClick={() => handleReturnToCart()}
-                  >
-                    Return to Cart
-                  </button>
-                  <button
-                    type="button"
-                    className="bg-primary_light hover:bg-primary text-white rounded-md px-4 py-2 text-lg"
-                    onClick={() => handlePayment()}
-                  >
-                    Proceed to Payment
-                  </button>
-                </div>
-              )}
+              : <div className="flex flex-row space-x-4">
+                <button type="button" className="bg-primary_light hover:bg-primary text-white rounded-md px-4 py-2 text-lg"
+                  onClick={() => navigate('/manage/cart')}>Return to Cart</button>
+                <button type="button" className="bg-primary_light hover:bg-primary text-white rounded-md px-4 py-2 text-lg"
+                  onClick={handlePayment}>Proceed to Payment</button>
+              </div>
+            }
           </div>
           <div className="grid grid-cols-2 w-full gap-4">
             {addressList.map((oneAddress, index) => (
@@ -138,9 +122,7 @@ function BeforeCheckout() {
             ))}
           </div>
         </div>
-      )
-        : <Loading />
-      }
+      ) : <Loading />}
       {showAdd &&
         <ModalBackground>
           <div className="flex flex-col bg-white rounded-lg shadow-box w-1/3 divide-y relative">
@@ -154,8 +136,7 @@ function BeforeCheckout() {
               }} />
             </div>
           </div>
-        </ModalBackground>
-      }
+        </ModalBackground>}
     </MessageLayout >
   );
 }

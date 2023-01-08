@@ -15,7 +15,7 @@ import {
 import { CartContext } from '../../context/CartContext';
 
 function Product() {
-  const context = useContext(CartContext);
+  const cart = useContext(CartContext);
 
   const [fetchedProduct, setFetchedProduct] = useState(false);
   const [product, setProduct] = useState<ProductType>({} as ProductType);
@@ -234,7 +234,7 @@ function Product() {
       .then((res) => {
         // console.log(res);
         const quantity = res.data.reduce((prev, curr) => prev + curr.quantity, 0);
-        context.setProductQuantity(quantity);
+        cart.setProductQuantity(quantity);
         navigate('/manage/cart');
       })
       .catch((err) => {

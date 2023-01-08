@@ -1,13 +1,12 @@
+import Pusher from 'pusher-js';
 import React, { useEffect, useState } from 'react';
-import ReactDOM from 'react-dom';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { CookiesProvider } from 'react-cookie';
+import { HelmetProvider } from 'react-helmet-async';
+import { BrowserRouter } from 'react-router-dom';
 import ShopifyClient from 'shopify-buy';
 import API from './api/lib/api';
-import Pusher from 'pusher-js';
 import { customerGetApiToken } from './api/lib/serverConfig';
-// Router components
 import RouteMap from './router/routeMap';
-import { HelmetProvider } from 'react-helmet-async';
 
 const useShopify = () => {
   const [token, setToken] = useState<string>('');
@@ -92,15 +91,17 @@ function PusherContextProvider({ children }: { children: React.ReactNode }) {
 // The root APP of React
 function App() {
   return (
-    <HelmetProvider>
-      <ShopifyContextProvider>
-        <PusherContextProvider>
-          <BrowserRouter>
-            <RouteMap />
-          </BrowserRouter>
-        </PusherContextProvider>
-      </ShopifyContextProvider>
-    </HelmetProvider>
+    <CookiesProvider>
+      <HelmetProvider>
+        <ShopifyContextProvider>
+          <PusherContextProvider>
+            <BrowserRouter>
+              <RouteMap />
+            </BrowserRouter>
+          </PusherContextProvider>
+        </ShopifyContextProvider>
+      </HelmetProvider>
+    </CookiesProvider>
   );
 }
 
