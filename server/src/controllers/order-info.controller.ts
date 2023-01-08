@@ -59,8 +59,6 @@ export class OrderInfoController {
     );
   }
 
-  
-
   @get('/orderInfos/{id}')
   @response(200, {
     description: 'OrderInfo model instance',

@@ -235,7 +235,7 @@ export class CustomerController {
   })
   async getCustomerCart(
     @param.path.string('id') id: string,
-  ): Promise<Partial<OrderInfo> | number | Error> {
+  ): Promise<Partial<OrderInfo> | null>{
     return this.customerRepository.getCustomerCart(id);
   }
 
