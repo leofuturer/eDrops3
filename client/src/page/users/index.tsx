@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import API from '../../api/lib/api';
-import { customerDeleteById, getAllCustomers, userBaseDeleteById, userBaseFind } from '../../api/lib/serverConfig';
+import { request } from '../../api';
+import { customerDeleteById, getAllCustomers, userBaseDeleteById, userBaseFind } from '../../api';
 import ManageRightLayout from '../../component/layout/ManageRightLayout';
 import DeleteModal from '../../component/modal/DeleteModal';
 import { Customer } from '../../types';
@@ -44,9 +44,9 @@ function Users() {
 
   function handleDelete() {
     // we need to delete both userBase and customer instances
-    API.Request(`${userBaseFind}?filter={"where": {"email": "${deleteCustomer.email}"}}`, 'GET', {}, true)
-      .then((res) => API.Request(userBaseDeleteById.replace('id', res.data[0].id), 'DELETE', {}, true))
-      .then((res) => API.Request(customerDeleteById.replace('id', deleteCustomer.id), 'DELETE', {}, true))
+    request(`${userBaseFind}?filter={"where": {"email": "${deleteCustomer.email}"}}`, 'GET', {}, true)
+      .then((res) => request(userBaseDeleteById.replace('id', res.data[0].id), 'DELETE', {}, true))
+      .then((res) => request(customerDeleteById.replace('id', deleteCustomer.id), 'DELETE', {}, true))
       .then((res) => setCustomerList(customerList.filter((customer) => customer.id !== deleteCustomer.id)))
       .catch((err) => console.error(err));
   }
@@ -61,7 +61,7 @@ function Users() {
   }
 
   useEffect(() => {
-    API.Request(getAllCustomers, 'GET', {}, true)
+    request(getAllCustomers, 'GET', {}, true)
       .then((res) => {
         setCustomerList(res.data);
       })

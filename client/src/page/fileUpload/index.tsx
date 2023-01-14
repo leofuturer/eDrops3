@@ -3,8 +3,8 @@ import { redirect, useNavigate } from 'react-router-dom';
 
 import { useCookies } from 'react-cookie';
 import { FileRejection, useDropzone } from 'react-dropzone';
-import API from '../../api/lib/api';
-import { customerFileRetrieve, uploadFile } from '../../api/lib/serverConfig';
+import { request } from '../../api';
+import { customerFileRetrieve, uploadFile } from '../../api';
 import SEO from '../../component/header/seo';
 import TwoChoiceModal from '../../component/modal/TwoChoiceModal';
 import { metadata } from './metadata';
@@ -61,7 +61,7 @@ function Upload() {
 
   function onFileUpload() {
     if (file) {
-      API.Request(customerFileRetrieve.replace('id', cookies.userId), 'GET', {}, true)
+      request(customerFileRetrieve.replace('id', cookies.userId), 'GET', {}, true)
         .then((res) => {
           // console.log(res);
           const promises = res.data.map((e: FileInfo) =>
@@ -114,7 +114,7 @@ function Upload() {
     formData.append('www', file as File);
     formData.append('fields', JSON.stringify(extraFields));
     const headers = { 'Content-Type': 'multipart/form-data' };
-    API.Request(uploadUrl, 'POST', formData, true, headers, true)
+    request(uploadUrl, 'POST', formData, true, headers, true)
       .then((res) => {
         // console.log(res);
         setShowConfirm(false);

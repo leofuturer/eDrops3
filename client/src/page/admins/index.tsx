@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
 import { useCookies } from 'react-cookie';
 import { useNavigate } from 'react-router-dom';
-import API from '../../api/lib/api';
+import { request } from '../../api';
 import {
   deleteAdminById, findAdminByWhere, userBaseDeleteById, userBaseFind
-} from '../../api/lib/serverConfig';
+} from '../../api';
 import ManageRightLayout from '../../component/layout/ManageRightLayout';
 import DeleteModal from '../../component/modal/DeleteModal';
 import { Admin } from '../../types';
@@ -23,7 +23,7 @@ function Admins() {
   }
 
   useEffect(() => {
-    API.Request(findAdminByWhere, 'GET', {}, true)
+    request(findAdminByWhere, 'GET', {}, true)
       .then((res) => {
         setAdminList(res.data);
       })
@@ -45,9 +45,9 @@ function Admins() {
   }
 
   function handleDelete() {
-    API.Request(`${userBaseFind}?filter={"where": {"email": "${deleteAdmin.email}"}}`, 'GET', {}, true)
-      .then((res) => API.Request(userBaseDeleteById.replace('id', res.data[0].id), 'DELETE', {}, true))
-      .then((res) => API.Request(deleteAdminById.replace('id', deleteAdmin.id), 'DELETE', {}, true))
+    request(`${userBaseFind}?filter={"where": {"email": "${deleteAdmin.email}"}}`, 'GET', {}, true)
+      .then((res) => request(userBaseDeleteById.replace('id', res.data[0].id), 'DELETE', {}, true))
+      .then((res) => request(deleteAdminById.replace('id', deleteAdmin.id), 'DELETE', {}, true))
       .then((res) => setAdminList(adminList.filter((admin) => admin.id !== deleteAdmin.id)))
       .catch((err) => console.error(err));
   }

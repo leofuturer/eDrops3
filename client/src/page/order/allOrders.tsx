@@ -1,8 +1,8 @@
 // Admin only page, for customer page see order/index.jsx
 import React, { useEffect, useState } from 'react';
 import Cookies from 'js-cookie';
-import { getAllOrderInfos } from '../../api/lib/serverConfig';
-import API from '../../api/lib/api';
+import { getAllOrderInfos } from '../../api';
+import { request } from '../../api';
 import ManageRightLayout from '../../component/layout/ManageRightLayout';
 import Loading from '../../component/ui/Loading';
 
@@ -12,7 +12,7 @@ function AllOrders() {
 
   useEffect(() => {
     setIsLoading(true);
-    API.Request(getAllOrderInfos, 'GET', {}, true)
+    request(getAllOrderInfos, 'GET', {}, true)
       .then((res) => {
         setOrderList(res.data);
       })

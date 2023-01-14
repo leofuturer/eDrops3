@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useCookies } from 'react-cookie';
-import API from '../../api/lib/api';
-import { adminDownloadFile, getAllFileInfos } from '../../api/lib/serverConfig';
+import { request } from '../../api';
+import { adminDownloadFile, getAllFileInfos } from '../../api';
 import ManageRightLayout from '../../component/layout/ManageRightLayout';
 import { FileInfo } from '../../types';
 
@@ -20,7 +20,7 @@ function AllFiles() {
   useEffect(() => {
     const url = getAllFileInfos;
     const data = {};
-    API.Request(url, 'GET', data, true)
+    request(url, 'GET', data, true)
       .then((res) => {
         setFileList(res.data);
       })

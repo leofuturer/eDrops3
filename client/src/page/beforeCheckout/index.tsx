@@ -1,10 +1,10 @@
 import React, { useContext, useEffect, useState } from 'react';
 import Cookies from 'js-cookie';
-import { customerGetProfile, customerAddresses, modifyChipOrders } from '../../api/lib/serverConfig';
-import API from '../../api/lib/api';
+import { customerGetProfile, customerAddresses, modifyChipOrders } from '../../api';
+import { request } from '../../api';
 import SingleAddress from './singleAddress.js';
 import AddNewAddress from '../address/addNewAddress.js';
-import { ShopifyContext } from '../../App';
+import { ShopifyContext } from '../../context/ShopifyContext';
 import { useCookies } from 'react-cookie';
 import { useLocation, useNavigate } from 'react-router-dom';
 import MessageLayout from '../../component/layout/MessageLayout';
@@ -39,11 +39,11 @@ function BeforeCheckout() {
       setShopifyCheckoutLink(location.state.shopifyCheckoutLink);
       setCartId(location.state.cartId);
       setShopifyCheckoutId(location.state.shopifyCheckoutId);
-      API.Request(customerGetProfile.replace('id', cookies.userId), 'GET', {}, true)
+      request(customerGetProfile.replace('id', cookies.userId), 'GET', {}, true)
         .then((res) => {
           // console.log(res.data);
           setCustomer(res.data);
-          return API.Request(customerAddresses.replace('id', cookies.userId), 'GET', {}, true)
+          return request(customerAddresses.replace('id', cookies.userId), 'GET', {}, true)
         })
         .then((res) => {
           // console.log(res.data);

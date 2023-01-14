@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Cookies from 'js-cookie';
-import { downloadFileById } from '../../api/lib/serverConfig';
-import API from '../../api/lib/api';
+import { downloadFileById } from '../../api';
+import { request } from '../../api';
 import { Helper } from 'dxf';
 import { useCookies } from 'react-cookie';
 
@@ -11,7 +11,7 @@ function DXFPreview({ fileInfo }: { fileInfo: any }) {
   const [cookies] = useCookies(['userId', 'userType', 'access_token']);
 
   useEffect(() => {
-    API.Request(`${downloadFileById.replace('id', cookies.userId)}?fileId=${fileInfo.id}`, 'GET', {}, true)
+    request(`${downloadFileById.replace('id', cookies.userId)}?fileId=${fileInfo.id}`, 'GET', {}, true)
       .then((res) => {
         // dxf.config.verbose = true //for debugging purposes
         const helper = new Helper(res.data);

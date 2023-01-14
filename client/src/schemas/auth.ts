@@ -1,6 +1,6 @@
 import * as Yup from 'yup';
-import API from '../api/lib/api';
-import { adminCredsTaken, customerCredsTaken } from '../api/lib/serverConfig';
+import { request } from '../api';
+import { adminCredsTaken, customerCredsTaken } from '../api';
 import { confirmPasswordSchema, customerTypeSchema, emailSchema, firstNameSchema, lastNameSchema, passwordSchema, phoneNumberSchema, usernameSchema } from './lib/user';
 
 // TODO: ensure yup objects conform to our types (e.g. Customer)
@@ -16,7 +16,7 @@ export const UserSchema = Yup.object().shape({
 });
 
 export const UserSubmitSchema = UserSchema.test('credentialsTaken', 'Username or email already taken', async ({ email, username }, ctx) =>
-  API.Request(customerCredsTaken, 'POST', { username, email }, false).then((res) => {
+  request(customerCredsTaken, 'POST', { username, email }, false).then((res) => {
     if (res.data.emailTaken) return ctx.createError({ path: 'email', message: 'Email already taken' })
     if (res.data.usernameTaken) return ctx.createError({ path: 'username', message: 'Username already taken' })
     return true
@@ -39,7 +39,7 @@ export const AdminEditSchema = Yup.object().shape({
 });
 
 export const AdminSubmitSchema = AdminSchema.test('credentialsTaken', 'Username or email already taken', async ({ email, username }, ctx) =>
-  API.Request(adminCredsTaken, 'POST', { username, email }, false).then((res) => {
+  request(adminCredsTaken, 'POST', { username, email }, false).then((res) => {
     if (res.data.emailTaken) return ctx.createError({ path: 'email', message: 'Email already taken' })
     if (res.data.usernameTaken) return ctx.createError({ path: 'username', message: 'Username already taken' })
     return true
@@ -54,7 +54,7 @@ export const WorkerSchema = Yup.object().shape({
 });
 
 // export const WorkerSubmitSchema = WorkerSchema.test('credentialsTaken', 'Username or email already taken', async ({ email, username }, ctx) =>
-//   API.Request(workerCredsTaken, 'POST', { username, email }, false).then((res) => {
+//   request(workerCredsTaken, 'POST', { username, email }, false).then((res) => {
 //     if (res.data.emailTaken) return ctx.createError({ path: 'email', message: 'Email already taken' })
 //     if (res.data.usernameTaken) return ctx.createError({ path: 'username', message: 'Username already taken' })
 //     return true

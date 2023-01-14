@@ -1,9 +1,8 @@
-import React from 'react';
-import { NavLink } from 'react-router-dom';
-import { controlSysId, testBoardId, pcbChipId } from '../../constants';
-import SEO from '../../component/header/seo';
-import { metadata } from './metadata';
 import { useCookies } from 'react-cookie';
+import { NavLink } from 'react-router-dom';
+import SEO from '../../component/header/seo';
+import { controlSysId, pcbChipId, testBoardId } from '../../utils/constants';
+import { metadata } from './metadata';
 
 function Home() {
   const controlSysPageLink = `/product?id=${controlSysId}`;

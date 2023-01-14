@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import Cookies from 'js-cookie';
-import API from '../../api/lib/api';
+import { request } from '../../api';
 import {
   adminGetChipOrders, customerGetChipOrders,
   workerGetChipOrders, editOrderStatus,
   downloadFileById, adminDownloadFile, workerDownloadFile,
 }
-  from '../../api/lib/serverConfig';
+  from '../../api';
 
 import SEO from '../../component/header/seo';
 import { metadata } from './metadata.jsx';
@@ -50,7 +50,7 @@ function ChipOrders() {
         break;
     }
 
-    API.Request(url, 'GET', {}, true)
+    request(url, 'GET', {}, true)
       .then((res) => {
         if (workerId) {
           res.data = res.data.filter((orderChip) => orderChip.workerId === workerId);
@@ -107,7 +107,7 @@ function ChipOrders() {
     const selectedStatus = dropdown.options[dropdown.selectedIndex].value;
     const url = editOrderStatus.replace('id', chipOrderId);
     const data = { status: selectedStatus };
-    API.Request(url, 'PATCH', data, true)
+    request(url, 'PATCH', data, true)
       .then((res) => {
         alert('Status updated!');
       })

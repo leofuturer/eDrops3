@@ -2,8 +2,7 @@ import { Form, Formik } from 'formik';
 import { useState } from 'react';
 import { useCookies } from 'react-cookie';
 import { useLocation, useNavigate } from 'react-router-dom';
-import API from '../../api/lib/api';
-import { customerAddresses, getCustomerCart } from '../../api/lib/serverConfig';
+import { request, customerAddresses, getCustomerCart } from '../../api';
 import ManageRightLayout from '../../component/layout/ManageRightLayout';
 import FormGroup from '../../component/form/FormGroup';
 import { Address } from '../../types';
@@ -32,7 +31,7 @@ function AddNewAddress({ addOnClick }: { addOnClick?: (addr: Address) => void })
     //   || !addressMes.country || !addressMes.zipCode) {
     //   alert('Error: All fields must be filled');
     if (location.pathname === '/beforeCheckout') {
-      API.Request(getCustomerCart.replace('id', cookies.userId), 'GET', {}, true)
+      request(getCustomerCart.replace('id', cookies.userId), 'GET', {}, true)
         .then((res) => {
           if (res.data.id) {
             setCartId(res.data.id);
@@ -43,7 +42,7 @@ function AddNewAddress({ addOnClick }: { addOnClick?: (addr: Address) => void })
             throw new Error('Error: No cart found');
           }
         })
-        .then(() => API.Request(customerAddresses.replace('id', cookies.userId), 'POST', addressMes, true))
+        .then(() => request(customerAddresses.replace('id', cookies.userId), 'POST', addressMes, true))
         .then((res) => {
           // console.log(res);
           navigate('/beforeCheckout', {
@@ -58,7 +57,7 @@ function AddNewAddress({ addOnClick }: { addOnClick?: (addr: Address) => void })
           console.error(error);
         });
     } else {
-      API.Request(customerAddresses.replace('id', cookies.userId), 'POST', addressMes, true)
+      request(customerAddresses.replace('id', cookies.userId), 'POST', addressMes, true)
         .then((res) => {
           // console.log(res);
           navigate('/manage/address');

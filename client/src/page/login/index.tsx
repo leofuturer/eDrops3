@@ -2,10 +2,10 @@ import { useState } from 'react';
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { useCookies } from 'react-cookie';
 import { Field, Formik, Form, FieldProps } from 'formik';
-import API from '../../api/lib/api';
+import { request } from '../../api';
 import {
   userLogin
-} from '../../api/lib/serverConfig';
+} from '../../api';
 import SEO from '../../component/header/seo';
 import { metadata } from './metadata';
 import { LoginSchema } from '../../schemas';
@@ -27,7 +27,7 @@ function Login() {
       username: usernameOrEmail,
       password: password,
     };
-    API.Request(userLogin, 'POST', data, false)
+    request(userLogin, 'POST', data, false)
       .then((res) => {
         // console.log(res);
         // setCookie('base_access_token', res.data.token);

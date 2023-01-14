@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import Cookies from 'js-cookie';
-import API from '../../api/lib/api';
+import { request } from '../../api';
 import {
   customerOrderRetrieve, workerOrderRetrieve, getAllOrderInfos,
-} from '../../api/lib/serverConfig';
+} from '../../api';
 import SEO from '../../component/header/seo';
 import { metadata } from './metadata';
 import { useLocation } from 'react-router-dom';
@@ -44,7 +44,7 @@ function Orders() {
       return;
     }
 
-    API.Request(url, 'GET', {}, true)
+    request(url, 'GET', {}, true)
       .then((res) => {
         // console.log(res.data)
         setOrderList(res.data);

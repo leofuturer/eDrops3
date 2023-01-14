@@ -1,15 +1,11 @@
 import { useContext, useEffect, useState } from 'react';
 import { useCookies } from 'react-cookie';
 import { NavLink, useNavigate } from 'react-router-dom';
-import API from '../../api/lib/api';
-import {
-  getChipOrders, getCustomerCart, getProductOrders, modifyChipOrders, modifyProductOrders, updateChipOrderLineItem, updateProductOrderLineItem
-} from '../../api/lib/serverConfig';
-import { ShopifyContext } from '../../App';
+import { modifyChipOrders, modifyProductOrders, request, updateChipOrderLineItem, updateProductOrderLineItem } from '../../api';
 import SEO from '../../component/header/seo';
 import ManageRightLayout from '../../component/layout/ManageRightLayout';
-import Loading from '../../component/ui/Loading.js';
 import { CartContext } from '../../context/CartContext';
+import { ShopifyContext } from '../../context/ShopifyContext';
 import { ChipOrder, ProductOrder } from '../../types';
 import CartItem from './cartItem.js';
 import { metadata } from './metadata.js';
@@ -92,7 +88,7 @@ function Cart() {
         otherDetails: otherDetails,
         updatedAt: new Date().toISOString(),
       };
-      return API.Request(url, 'PATCH', data, true)
+      return request(url, 'PATCH', data, true)
         .then((checkout) => {
           // return resolve();
           // https://stackoverflow.com/questions/29537299/how-can-i-update-state-item1-in-state-using-setstate
@@ -134,7 +130,7 @@ function Cart() {
         variantIdShopify: variantIdShopify,
         otherDetails: otherDetails,
       };
-      return API.Request(url, 'PATCH', data, true)
+      return request(url, 'PATCH', data, true)
         .then((checkout) => {
           // return resolve();
           // https://stackoverflow.com/questions/29537299/how-can-i-update-state-item1-in-state-using-setstate
@@ -166,12 +162,7 @@ function Cart() {
 
   function handleDelete(itemType: string, index: number) {
     setDeleteLoading(true);
-    let url;
-    if (itemType === 'product') {
-      var array = productOrders;
-    } else if (itemType === 'chip') {
-      var array = chipOrders;
-    }
+    const array = itemType === 'product' ? productOrders : chipOrders;
 
     // Delete from Shopify, then our own DB
     const itemToDelete = [array[index].lineItemIdShopify];
@@ -179,12 +170,8 @@ function Cart() {
       shopify.checkout.removeLineItems(shopifyCheckoutId, itemToDelete)
         .then((checkout) => {
           // console.log(checkout);
-          if (itemType === 'product') {
-            url = modifyProductOrders.replace('id', array[index].id);
-          } else if (itemType === 'chip') {
-            url = modifyChipOrders.replace('id', array[index].id);
-          }
-          return API.Request(url, 'DELETE', {}, true)
+          const url = (itemType === 'product' ? modifyProductOrders : modifyChipOrders).replace('id', array[index].id.toString());
+          return request(url, 'DELETE', {}, true)
             .then((res) => {
               let result = checkout.lineItems.reduce((p, nextItem) => {
                 return updateLineItemDatabaseHelper(nextItem, array[index].orderInfoId);
@@ -233,7 +220,7 @@ function Cart() {
   //           url = modifyChipOrders.replace('id', item.id);
   //         }
   //         const data = { quantity: parseInt(item.quantity) };
-  //         API.Request(url, 'PATCH', data, true)
+  //         request(url, 'PATCH', data, true)
   //           .then((res) => {
   //             setNumModifiedItems(numModifiedItems => numModifiedItems + 1);
   //             if (numModifiedItems === totalModifiedItems && numModifiedItems > 0) {
@@ -294,8 +281,8 @@ function Cart() {
   // function setCartItems() {
   //   if (cartId) {
   //     Promise.all([
-  //       API.Request(getProductOrders.replace('id', cartId), 'GET', {}, true),
-  //       API.Request(getChipOrders.replace('id', cartId), 'GET', {}, true)
+  //       request(getProductOrders.replace('id', cartId), 'GET', {}, true),
+  //       request(getChipOrders.replace('id', cartId), 'GET', {}, true)
   //     ]).then(([res1, res2]) => {
   //       const productQuantity = res1.data.reduce((prev, curr) => prev + curr.quantity, 0);
   //       const chipQuantity = res2.data.reduce((prev, curr) => prev + curr.quantity, 0);

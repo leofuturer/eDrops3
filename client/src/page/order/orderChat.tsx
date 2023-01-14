@@ -1,12 +1,12 @@
 import { useContext, useEffect, useState } from 'react';
 import { useCookies } from 'react-cookie';
 import { useSearchParams } from 'react-router-dom';
-import API from '../../api/lib/api';
+import { request } from '../../api';
 import {
   addOrderMessage, adminGetProfile, customerGetProfile, foundryWorkerGetProfile,
   getOrderMessagesById
-} from '../../api/lib/serverConfig';
-import { PusherContext } from '../../App';
+} from '../../api';
+import { PusherContext } from '../../context/PusherContext';
 import MessageLayout from '../../component/layout/MessageLayout';
 
 // Customers have chat_id of 1
@@ -59,11 +59,11 @@ function OrderChat() {
         userTypeId = 0;
         break;
     }
-    API.Request(initUrl.replace('id', cookies.userId), 'GET', {}, true)
+    request(initUrl.replace('id', cookies.userId), 'GET', {}, true)
       .then((res) => {
         // console.log(res);
         setUserTypeId(userTypeId);
-        return API.Request(getOrderMessagesById.replace('id', orderId.toString()), 'GET', {}, true)
+        return request(getOrderMessagesById.replace('id', orderId.toString()), 'GET', {}, true)
       })
       .then((res) => {
         console.log(res.data);
@@ -85,7 +85,7 @@ function OrderChat() {
       messageDate: new Date(),
       ...msg
     };
-    API.Request(addOrderMessage, 'POST', data, false)
+    request(addOrderMessage, 'POST', data, false)
       .then((res) => {
         setMessages([...messages, msg]);
         setTyped('');

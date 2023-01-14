@@ -1,9 +1,8 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import API from '../../api/lib/api';
 import Loading from '../../component/ui/Loading';
-import { ewodFabServiceId } from '../../constants';
 import { ChipOrder, ProductOrder } from '../../types';
+import { ewodFabServiceId } from '../../utils/constants';
 
 // The order list page for both customer and worker
 function CartItem({ info, deleteLoading, onDelete, onChange }: { info: ProductOrder | ChipOrder, deleteLoading: boolean, onDelete: () => void, onChange: (e: React.ChangeEvent<HTMLInputElement>) => void }) {
