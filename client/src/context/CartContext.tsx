@@ -101,30 +101,32 @@ const useCart = () => {
 
   function addChip(chip: Product, quantity: number, customAttrs: { material: string, wcpa: string, fileInfo: { fileName: string; id: number } }): Promise<void> {
     const variantId = chip.variants[0].id;
+    const customAttributes = [
+      {
+        key: 'material',
+        value: customAttrs.material,
+      },
+      {
+        key: 'withCoverPlateAssembled',
+        value: customAttrs.wcpa,
+      },
+      {
+        key: 'fileName',
+        value: customAttrs.fileInfo.fileName,
+      },
+    ]
+    const checkAttrs = customAttributes.reduce((acc, attr) => ({...acc, [attr.key]: attr.value }), {})
     const lineItemsToAdd = [{
       variantId,
       quantity,
-      customAttributes: [
-        {
-          key: 'material',
-          value: customAttrs.material,
-        },
-        {
-          key: 'withCoverPlateAssembled',
-          value: customAttrs.wcpa,
-        },
-        {
-          key: 'fileName',
-          value: customAttrs.fileInfo.fileName,
-        },
-      ],
+      customAttributes,
     }];
     return shopify && shopify.checkout.addLineItems(cart.checkoutIdClient, lineItemsToAdd)
       .then(async (res) => {
-        console.log('shopify addVariantToCart', res);
+        console.log(res)
         const matchingAttrs = (item: LineItem) => {
           // @ts-expect-error NOTE: Shopify types not updated
-          return item.customAttributes.every((attr: { key: string; value: any; }) => attr.key in customAttrs && attr.value === customAttrs[attr.key]);
+          return item.customAttributes.every((attr: { key: string; value: string; }) => attr.key in checkAttrs && attr.value === checkAttrs[attr.key]);
         }
         const lineItemId = res.lineItems.find((item) => matchingAttrs(item))?.id;
 
