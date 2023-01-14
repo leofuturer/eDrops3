@@ -2,21 +2,9 @@ import React, { useContext, useEffect, useState } from 'react';
 import { useCookies } from 'react-cookie';
 import { useNavigate } from 'react-router-dom';
 import { LineItem, Product } from 'shopify-buy';
-import { request, getChipOrders, getCustomerCart, getProductOrders, manipulateCustomerOrders, addOrderProductToCart, getWorkerId, addOrderChipToCart, customerGetName } from '../api';
+import { addOrderChipToCart, addOrderProductToCart, customerGetName, getChipOrders, getCustomerCart, getProductOrders, getWorkerId, manipulateCustomerOrders, modifyChipOrders, modifyProductOrders, request } from '../api';
 import { ShopifyContext } from '../context/ShopifyContext';
 import { ChipOrder, OrderInfo, ProductOrder } from '../types';
-import { productIds } from '../utils/constants';
-
-// interface Cart {
-//   items: number;
-//   setProductQuantity: (quantity: number) => void;
-//   setChipQuantity: (quantity: number) => void;
-// }
-
-export enum OrderItem {
-  Product = 'orderProducts',
-  Chip = 'orderChips'
-}
 
 const useCart = () => {
   const [cart, setCart] = useState<OrderInfo>({} as OrderInfo);
@@ -186,27 +174,54 @@ const useCart = () => {
       })
   }
 
+  function editProductQuantity(product: ProductOrder, newQuantity: number) {
+    const lineItemsToUpdate = [{ id: product.lineItemIdShopify, quantity: newQuantity }];
+    return shopify && shopify.checkout.updateLineItems(cart.checkoutIdClient, lineItemsToUpdate).then((res) => {
+      return request(modifyProductOrders.replace('id', product.id.toString()), 'PATCH', { quantity: newQuantity }, true)
+    })
+  }
 
-  function editItem(item: ProductOrder | ChipOrder, newQuantity: number, itemType: OrderItem) {
-    itemType === OrderItem.Product ?
-      setCart(cart => ({
-        ...cart,
-        orderProducts: cart.orderProducts.map((product) => {
-          if (product.lineItemIdShopify === item.lineItemIdShopify) {
-            return { ...product, quantity: newQuantity }
-          }
-          return product;
-        })
-      })) :
-      setCart(cart => ({
-        ...cart,
-        orderChips: cart.orderChips.map((chip) => {
-          if (chip.lineItemIdShopify === item.lineItemIdShopify) {
-            return { ...chip, quantity: newQuantity }
-          }
-          return chip;
-        })
-      }))
+  function editChipQuantity(chip: ChipOrder, newQuantity: number) {
+    const lineItemsToUpdate = [{ id: chip.lineItemIdShopify, quantity: newQuantity }];
+    return shopify && shopify.checkout.updateLineItems(cart.checkoutIdClient, lineItemsToUpdate).then((res) => {
+      return request(modifyChipOrders.replace('id', chip.id.toString()), 'PATCH', { quantity: newQuantity }, true)
+    })
+  }
+
+  function removeProduct(product: ProductOrder) {
+    return shopify && shopify.checkout.removeLineItems(cart.checkoutIdClient, [product.lineItemIdShopify]).then((checkout) => {
+      return request(modifyProductOrders.replace('id', product.id.toString()), 'DELETE', {}, true)
+    }).then((res) => request(getProductOrders.replace('id', cart.id.toString()), 'GET', {}, true))
+      .then((res) => {
+        // console.log(res);
+        setCart(cart => ({
+          ...cart,
+          orderProducts: res.data
+        }))
+      })
+  }
+
+  function removeChip(chip: ChipOrder) {
+    return shopify && shopify.checkout.removeLineItems(cart.checkoutIdClient, [chip.lineItemIdShopify]).then((checkout) => {
+      return request(modifyChipOrders.replace('id', chip.id.toString()), 'DELETE', {}, true)
+    }).then((res) => request(getChipOrders.replace('id', cart.id.toString()), 'GET', {}, true))
+      .then((res) => {
+        // console.log(res);
+        setCart(cart => ({
+          ...cart,
+          orderChips: res.data
+        }))
+      })
+  }
+
+  function checkout() {
+    navigate('/beforeCheckout', {
+      state: {
+        shopifyCheckoutLink: cart.checkoutLink,
+        cartId: cart.id,
+        shopifyCheckoutId: cart.checkoutIdClient,
+      }
+    });
   }
 
   return {
@@ -215,9 +230,11 @@ const useCart = () => {
     cart,
     addProduct,
     addChip,
-    editItem(item: ProductOrder | ChipOrder, newQuantity: number, itemType: OrderItem) {
-      editItem(item, newQuantity, itemType);
-    }
+    editProductQuantity,
+    editChipQuantity,
+    removeProduct,
+    removeChip,
+    checkout,
   }
 }
 
