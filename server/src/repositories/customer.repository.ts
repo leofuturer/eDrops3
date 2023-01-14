@@ -287,11 +287,7 @@ export class CustomerRepository extends DefaultCrudRepository<
           return null;
         }
         log.info(`Cart already exists, is order info model with id ${orders[0].id}`);
-        return {
-          id: orders[0].id,
-          checkoutIdClient: orders[0].checkoutIdClient,
-          checkoutLink: orders[0].checkoutLink,
-        };
+        return orders[0];
       })
       .catch(err => {
         throw err;

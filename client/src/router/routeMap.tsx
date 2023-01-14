@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect } from 'react';
 import { useCookies } from 'react-cookie';
 import { Navigate, Outlet, Route, Routes, useLocation } from 'react-router-dom';
 import Layout from '../component/layout/Layout';
@@ -29,6 +29,7 @@ import AllOrders from '../page/order/allOrders';
 import AssignOrders from '../page/order/assignOrders';
 import ChipOrders from '../page/order/chipOrders';
 // import OrderChat from '../page/order/orderChat';
+import jwt_decode, { JwtPayload } from 'jwt-decode';
 import OrderDetail from '../page/order/orderDetail';
 import PageNotFound from '../page/pageNotFound/pageNotFound';
 import ChipOrder from '../page/product/chiporder';
@@ -38,7 +39,6 @@ import Register from '../page/register/index';
 import ResetPassword from '../page/resetPassword/index';
 import Users from '../page/users';
 import AddOrEditUser from '../page/users/addOrEditUser';
-import jwt_decode, { JwtPayload } from 'jwt-decode';
 
 function RouteMap() {
   const [cookies, setCookie, removeCookie] = useCookies(['userType', 'access_token', 'username', 'userId']);
@@ -47,7 +47,7 @@ function RouteMap() {
   useEffect(() => {
     if (cookies.access_token) {
       const decoded = jwt_decode<JwtPayload>(cookies.access_token);
-      if (decoded.exp && decoded.exp * 1000 < Date.now()) {
+      if (decoded.exp && (decoded.exp * 1000) < Date.now()) {
         removeCookie('access_token');
         removeCookie('userType');
         removeCookie('username');

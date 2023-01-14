@@ -31,12 +31,12 @@ function CartItem({ info, deleteLoading, onDelete, onChange }: { info: ProductOr
           Unit Price: $
           {info.price.toFixed(2)}
         </div>
-        {info.otherDetails.length !== 0 &&
+        {info.otherDetails?.length !== 0 &&
           <div>
             <div className="">{'Additional information: '}</div>
             <div
               className=""
-              dangerouslySetInnerHTML={{ __html: info.otherDetails.replace(/\n/g, '<br/>') }}
+              dangerouslySetInnerHTML={{ __html: info.otherDetails?.replace(/\n/g, '<br/>') }}
             />
           </div>
         }

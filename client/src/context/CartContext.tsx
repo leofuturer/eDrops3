@@ -1,5 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useCookies } from 'react-cookie';
+import { useNavigate } from 'react-router-dom';
+import { Product } from 'shopify-buy';
 import { request, getChipOrders, getCustomerCart, getProductOrders, manipulateCustomerOrders, addOrderProductToCart } from '../api';
 import { ShopifyContext } from '../context/ShopifyContext';
 import { ChipOrder, OrderInfo, ProductOrder } from '../types';
@@ -17,17 +19,17 @@ export enum OrderItem {
 
 const useCart = () => {
   const [cart, setCart] = useState<OrderInfo>({} as OrderInfo);
-  const [activeCart, setActiveCart] = useState(true);
   const [numItems, setNumItems] = useState(0);
   const [totalPrice, setTotalPrice] = useState(0);
 
   const shopify = useContext(ShopifyContext);
 
   const [cookies] = useCookies(['userId']);
+  const navigate = useNavigate();
 
   async function createCart() {
     shopify && shopify.checkout.create().then((res) => {
-      console.log(res);
+      // console.log(res);
       const lastSlash = res.webUrl.lastIndexOf('/');
       const lastQuestionMark = res.webUrl.lastIndexOf('?');
       const data: OrderInfo = {
@@ -55,78 +57,55 @@ const useCart = () => {
 
   // create cart if it doesn't exist, otherwise get cart info
   useEffect(() => {
-    cookies.userId && request(getCustomerCart.replace('id', cookies.userId), 'GET', {}, true).then((res) => {
-      setActiveCart(!!res.data)
-    }).catch((err) => console.error(err));
+    cookies.userId && request(getCustomerCart.replace('id', cookies.userId), 'GET', {}, true).then((res) =>
+      res.data ? setCart(res.data) : createCart()
+    ).catch((err) => console.error(err));
   }, [cookies.userId]);
-  useEffect(() => {
-    if (!activeCart) createCart();
-  }, [activeCart])
 
   // count number of items in cart
   useEffect(() => {
-    setNumItems(Object.values(cart).reduce((acc, item) => acc + item.quantity, 0));
+    const numProducts = cart.orderProducts?.length > 0 ? cart.orderProducts.reduce((acc, item) => acc + item.quantity, 0) : 0;
+    const numChips = cart.orderChips ? cart.orderChips.reduce((acc, item) => acc + item.quantity, 0) : 0;
+    setNumItems(numProducts + numChips);
   }, [cart]);
 
   // calculate total price of cart
   useEffect(() => {
-    setTotalPrice(Object.values(cart).reduce((acc, item) => acc + item.quantity * item.price, 0));
+    const productPrice = cart.orderProducts?.length > 0 ? cart.orderProducts.reduce((acc, item) => acc + item.quantity * item.price, 0) : 0;
+    const chipPrice = cart.orderChips ? cart.orderChips.reduce((acc, item) => acc + item.quantity * item.price, 0) : 0;
+    setTotalPrice(productPrice + chipPrice);
   }, [cart]);
 
-  function addProductBackend(item: ProductOrder | ChipOrder, itemType: OrderItem) {
-    // add to shopify cart, and then add to our own cart
-    const customShopifyAttributes = [];
-    let customServerOrderAttributes = '';
-    for (const [k, v] of Object.entries(otherDetails).sort((a, b) => a[0].localeCompare(b[0]))) {
-      if (v !== undefined) {
-        customShopifyAttributes.push({ key: k, value: v });
-        customServerOrderAttributes += `${k}: ${v}\n`;
-      }
-    }
 
-    const variantId = product.id !== productIdsJson['UNIVEWODCHIPID'][bundleSize]
-      ? product.variants[0].id
-      // @ts-expect-error
-      : (otherDetails.withCoverPlateAssembled
-        ? productIdsJson['UNIVEWODCHIPWITHCOVERPLATE'][bundleSize]
-        : productIdsJson['UNIVEWODCHIPWITHOUTCOVERPLATE'][bundleSize]);
-    // console.log(variantId);
-    const lineItemsToAdd = [{
-      variantId,
-      quantity,
-    }];
-    shopify && shopify.checkout.addLineItems(shopifyClientCheckoutId, lineItemsToAdd)
+  // add to shopify cart, and then add to our own cart
+  function addProduct(product: Product, quantity: number): Promise<void>{
+    const variantId = product.variants[0].id;
+    // console.log(product)
+    // console.log(cart)
+    return shopify && shopify.checkout.addLineItems(cart.checkoutIdClient, [{ variantId, quantity }]).then((res) => {
+      const lineItemId = res.lineItems.find((item) => item.variant.id === product.variants[0].id).id;
+      // console.log(lineItemId);
+      const data = {
+        orderInfoId: cart.id,
+        productIdShopify: product.id,
+        variantIdShopify: product.variants[0].id,
+        lineItemIdShopify: lineItemId,
+        description: product.description,
+        quantity,
+        price: parseFloat(product.variants[0].price.amount),
+        name: product.title,
+      };
+      // console.log(data);
+      return request(addOrderProductToCart.replace('id', cart.id.toString()), 'POST', data, true)
+    }).then((res) => request(getProductOrders.replace('id', cart.id.toString()), 'GET', {}, true))
       .then((res) => {
-        let lineItemId;
-        console.log(res);
-        for (let i = 0; i < res.lineItems.length; i++) {
-          // @ts-expect-error
-          if (Buffer.from(res.lineItems[i].variant.id).toString('base64') === variantId) {
-            // @ts-expect-error
-            lineItemId = Buffer.from(res.lineItems[i].id).toString('base64');
-            break;
-          }
-        }
-
-        const data = {
-          orderInfoId,
-          productIdShopify: product.id,
-          variantIdShopify: variantId,
-          lineItemIdShopify: lineItemId,
-          description: product.description,
-          quantity,
-          price: parseFloat(product.variants[0].price),
-          name: product.title,
-          otherDetails: customServerOrderAttributes,
-        };
-        // console.log(data);
-        return request(addOrderProductToCart.replace('id', orderInfoId.toString()), 'POST', data, true)
+        // console.log(res);
+        setCart(cart => ({
+          ...cart,
+          orderProducts: res.data
+        }))
+        navigate('/manage/cart');
       })
-    request(manipulateCustomerOrders.replace('id', cookies.userId), 'PUT', {
-      [itemType]: [item]
-    }, true).then((res) => {
-      setCart(res.data);
-    }).catch((err) => console.error(err));
   }
 
   function addItem(item: ProductOrder | ChipOrder, itemType: OrderItem) {
@@ -173,6 +152,7 @@ const useCart = () => {
     numItems,
     totalPrice,
     cart,
+    addProduct,
     addItem(item: ProductOrder | ChipOrder, itemType: OrderItem) {
       addItem(item, itemType);
     },
