@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import Loading from '../../component/ui/Loading';
 import { ChipOrder } from '../../types';
@@ -16,11 +16,12 @@ function CartChip({ chip, onDelete, onChange }: { chip: ChipOrder, onDelete: () 
   const [deleting, setDeleting] = useState(false);
 
   // debounce quantity change useEffect
+  const debouncedChange = useCallback(_.debounce((qty) => {
+    onChange(chip, qty);
+  }, 500), []);
+
   useEffect(() => {
-    const debounced = _.debounce(() => {
-      onChange(chip, qty);
-    }, 500);
-    debounced();
+    debouncedChange(qty);
   }, [qty]);
 
   function handleDelete() {
