@@ -178,14 +178,28 @@ const useCart = () => {
     const lineItemsToUpdate = [{ id: product.lineItemIdShopify, quantity: newQuantity }];
     return shopify && shopify.checkout.updateLineItems(cart.checkoutIdClient, lineItemsToUpdate).then((res) => {
       return request(modifyProductOrders.replace('id', product.id.toString()), 'PATCH', { quantity: newQuantity }, true)
-    })
+    }).then((res) => request(getProductOrders.replace('id', cart.id.toString()), 'GET', {}, true))
+      .then((res) => {
+        // console.log(res);
+        setCart(cart => ({
+          ...cart,
+          orderProducts: res.data
+        }))
+      })
   }
 
   function editChipQuantity(chip: ChipOrder, newQuantity: number) {
     const lineItemsToUpdate = [{ id: chip.lineItemIdShopify, quantity: newQuantity }];
     return shopify && shopify.checkout.updateLineItems(cart.checkoutIdClient, lineItemsToUpdate).then((res) => {
       return request(modifyChipOrders.replace('id', chip.id.toString()), 'PATCH', { quantity: newQuantity }, true)
-    })
+    }).then((res) => request(getChipOrders.replace('id', cart.id.toString()), 'GET', {}, true))
+      .then((res) => {
+        // console.log(res);
+        setCart(cart => ({
+          ...cart,
+          orderChips: res.data
+        }))
+      })
   }
 
   function removeProduct(product: ProductOrder) {

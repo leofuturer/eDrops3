@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import Loading from '../../component/ui/Loading';
 import { ProductOrder } from '../../types';
@@ -9,11 +9,12 @@ function CartProduct({ product, onDelete, onChange }: { product: ProductOrder, o
   const [deleting, setDeleting] = useState(false);
 
   // debounce quantity change useEffect
+  const debouncedChange = useCallback(_.debounce((qty) => {
+    onChange(product, qty);
+  }, 500), []);
+
   useEffect(() => {
-    const debounced = _.debounce(() => {
-      onChange(product, qty);
-    }, 500);
-    debounced();
+    debouncedChange(qty);
   }, [qty]);
 
   function handleDelete() {
