@@ -1,10 +1,11 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useCookies } from 'react-cookie';
 import { useNavigate } from 'react-router-dom';
-import { Product } from 'shopify-buy';
-import { request, getChipOrders, getCustomerCart, getProductOrders, manipulateCustomerOrders, addOrderProductToCart } from '../api';
+import { LineItem, Product } from 'shopify-buy';
+import { request, getChipOrders, getCustomerCart, getProductOrders, manipulateCustomerOrders, addOrderProductToCart, getWorkerId, addOrderChipToCart, customerGetName } from '../api';
 import { ShopifyContext } from '../context/ShopifyContext';
 import { ChipOrder, OrderInfo, ProductOrder } from '../types';
+import { productIds } from '../utils/constants';
 
 // interface Cart {
 //   items: number;
@@ -78,11 +79,12 @@ const useCart = () => {
 
 
   // add to shopify cart, and then add to our own cart
-  function addProduct(product: Product, quantity: number): Promise<void>{
+  function addProduct(product: Product, quantity: number): Promise<void> {
     const variantId = product.variants[0].id;
     // console.log(product)
     // console.log(cart)
     return shopify && shopify.checkout.addLineItems(cart.checkoutIdClient, [{ variantId, quantity }]).then((res) => {
+      // @ts-expect-error NOTE: Shopify types not updated
       const lineItemId = res.lineItems.find((item) => item.variant.id === product.variants[0].id).id;
       // console.log(lineItemId);
       const data = {
@@ -92,6 +94,7 @@ const useCart = () => {
         lineItemIdShopify: lineItemId,
         description: product.description,
         quantity,
+        // @ts-expect-error NOTE: Shopify types not updated
         price: parseFloat(product.variants[0].price.amount),
         name: product.title,
       };
@@ -108,23 +111,81 @@ const useCart = () => {
       })
   }
 
-  function addItem(item: ProductOrder | ChipOrder, itemType: OrderItem) {
-    itemType === OrderItem.Product ?
-      setCart(cart => ({
-        ...cart,
-        orderProducts: [
-          ...cart.orderProducts,
-          item as ProductOrder
-        ]
-      })) :
-      setCart(cart => ({
-        ...cart,
-        orderChips: [
-          ...cart.orderChips,
-          item as ChipOrder
-        ]
-      }))
+  function addChip(chip: Product, quantity: number, customAttrs: { material: string, wcpa: string, fileInfo: { fileName: string; id: number } }): Promise<void> {
+    const variantId = chip.variants[0].id;
+    const lineItemsToAdd = [{
+      variantId,
+      quantity,
+      customAttributes: [
+        {
+          key: 'material',
+          value: customAttrs.material,
+        },
+        {
+          key: 'withCoverPlateAssembled',
+          value: customAttrs.wcpa,
+        },
+        {
+          key: 'fileName',
+          value: customAttrs.fileInfo.fileName,
+        },
+      ],
+    }];
+    return shopify && shopify.checkout.addLineItems(cart.checkoutIdClient, lineItemsToAdd)
+      .then(async (res) => {
+        console.log('shopify addVariantToCart', res);
+        const matchingAttrs = (item: LineItem) => {
+          // @ts-expect-error NOTE: Shopify types not updated
+          return item.customAttributes.every((attr: { key: string; value: any; }) => attr.key in customAttrs && attr.value === customAttrs[attr.key]);
+        }
+        const lineItemId = res.lineItems.find((item) => matchingAttrs(item))?.id;
+
+        let workerUsername = '';
+        switch (customAttrs.material) {
+          case 'ITO Glass':
+            workerUsername = 'glassfab';
+            break;
+          case 'Paper':
+            workerUsername = 'paperfab';
+            break;
+          case 'PCB':
+            workerUsername = 'pcbfab';
+            break;
+        }
+        const workerId = await request(getWorkerId, 'GET', { username: workerUsername }, true).then((res) => res.data);
+        const customerName = await request(customerGetName.replace('id', cookies.userId), 'GET', {}, true).then((res) => `${res.data.firstName} ${res.data.lastName}`);
+
+        // create our own chip order here...
+        const data = {
+          orderInfoId: cart.id,
+          productIdShopify: chip.id,
+          variantIdShopify: chip.variants[0].id,
+          lineItemIdShopify: lineItemId,
+          name: chip.title,
+          description: chip.description,
+          quantity,
+          // @ts-expect-error NOTE: Shopify types not updated
+          price: parseFloat(chip.variants[0].price.amount),
+          otherDetails: JSON.stringify(customAttrs),
+          process: customAttrs.material,
+          coverPlate: customAttrs.wcpa,
+          lastUpdated: new Date().toISOString(),
+          fileInfoId: customAttrs.fileInfo.id,
+          workerId,
+          workerName: `edrop ${workerUsername}`,
+          customerName: customerName,
+        };
+        return request(addOrderChipToCart.replace('id', cart.id.toString()), 'POST', data, true)
+      }).then((res) => request(getChipOrders.replace('id', cart.id.toString()), 'GET', {}, true))
+      .then((res) => {
+        setCart(cart => ({
+          ...cart,
+          orderChips: res.data
+        }))
+        navigate('/manage/cart');
+      })
   }
+
 
   function editItem(item: ProductOrder | ChipOrder, newQuantity: number, itemType: OrderItem) {
     itemType === OrderItem.Product ?
@@ -153,9 +214,7 @@ const useCart = () => {
     totalPrice,
     cart,
     addProduct,
-    addItem(item: ProductOrder | ChipOrder, itemType: OrderItem) {
-      addItem(item, itemType);
-    },
+    addChip,
     editItem(item: ProductOrder | ChipOrder, newQuantity: number, itemType: OrderItem) {
       editItem(item, newQuantity, itemType);
     }

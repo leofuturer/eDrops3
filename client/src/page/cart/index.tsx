@@ -278,25 +278,6 @@ function Cart() {
     });
   }
 
-  // function setCartItems() {
-  //   if (cartId) {
-  //     Promise.all([
-  //       request(getProductOrders.replace('id', cartId), 'GET', {}, true),
-  //       request(getChipOrders.replace('id', cartId), 'GET', {}, true)
-  //     ]).then(([res1, res2]) => {
-  //       const productQuantity = res1.data.reduce((prev, curr) => prev + curr.quantity, 0);
-  //       const chipQuantity = res2.data.reduce((prev, curr) => prev + curr.quantity, 0);
-  //       cart.setProductQuantity(productQuantity);
-  //       cart.setChipQuantity(chipQuantity);
-  //       setNumModifiedItems(0);
-  //       setModifiedItems(new Set());
-  //       setTotalModifiedItems(0);
-  //     }).catch((err) => {
-  //       console.error(err);
-  //     });
-  //   }
-  // }
-
   return (
     <ManageRightLayout title="Cart">
       <SEO

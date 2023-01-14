@@ -60,38 +60,16 @@ function Upload() {
   }
 
   function onFileUpload() {
-    if (file) {
-      request(customerFileRetrieve.replace('id', cookies.userId), 'GET', {}, true)
-        .then((res) => {
-          // console.log(res);
-          const promises = res.data.map((e: FileInfo) =>
-            new Promise<void>((resolve, reject) => {
-              if (e.fileName === file.name && !e.isDeleted && !checked) {
-                // console.log(e);
-                setOriginalName(file.name);
-                reject('Duplicate file found');
-              } else {
-                resolve();
-              }
-            }
-            ));
-          Promise.all(promises)
-            .then(() => {
-              // No duplicate files found
-              uploadFileRequest({
-                isPublic: pType,
-                unit: uType,
-              });
-            })
-            .catch((err) => {
-              console.error(err);
-              setShowConfirm(true);
-            });
-        })
-        .catch((err) => {
-          console.error(err);
-        });
-    }
+    file && request(customerFileRetrieve.replace('id', cookies.userId), 'GET', {}, true).then((res) => {
+      console.log(res);
+      const noDuplicate = res.data.every((f: FileInfo) => !(f.fileName === file.name && !f.isDeleted && !checked));
+      noDuplicate ? uploadFileRequest({
+        isPublic: pType,
+        unit: uType,
+      }) : setShowConfirm(true);
+    }).catch((err) => {
+      console.error(err);
+    });
   }
 
   useEffect(() => {
@@ -114,26 +92,24 @@ function Upload() {
     formData.append('www', file as File);
     formData.append('fields', JSON.stringify(extraFields));
     const headers = { 'Content-Type': 'multipart/form-data' };
-    request(uploadUrl, 'POST', formData, true, headers, true)
-      .then((res) => {
-        // console.log(res);
-        setShowConfirm(false);
-        setFileInfo(res.data.fileInfo);
-        for (let i = 70; i <= 101; i += 1) {
-          if (i <= 100) {
-            setTimeout(() => {
-              setProgress(i)
-            }, 10 * i);
-          } else {
-            setTimeout(() => {
-              setProgress(101);
-            }, 10 * i + 1000);
-          }
+    request(uploadUrl, 'POST', formData, true, headers).then((res) => {
+      // console.log(res);
+      setShowConfirm(false);
+      setFileInfo(res.data.fileInfo);
+      for (let i = 70; i <= 101; i += 1) {
+        if (i <= 100) {
+          setTimeout(() => {
+            setProgress(i)
+          }, 10 * i);
+        } else {
+          setTimeout(() => {
+            setProgress(101);
+          }, 10 * i + 1000);
         }
-      })
-      .catch((err) => {
-        console.error(err);
-      });
+      }
+    }).catch((err) => {
+      console.error(err);
+    });
   }
 
   function handleShopping() {
@@ -248,24 +224,20 @@ function Upload() {
           Upload File
         </button>
       </div>
-
-      {showUpload && (
-        <TwoChoiceModal
-          content="The file has been uploaded to your library successfully!"
-          affirmativeText="Proceed to fabrication"
-          negativeText="Go to file library"
-          handleAffirmative={handleShopping}
-          handleNegative={handleLibrary} />
-      )}
-
-      {showConfirm && (
-        <TwoChoiceModal
-          content="Duplicate file name! Would you like to upload another file or continue uploading this file? (It would be advisable to change the file name to avoid confusion)."
-          affirmativeText="Upload this file"
-          negativeText="Change file"
-          handleAffirmative={handleRename}
-          handleNegative={handleCancel} />
-      )}
+      {showUpload && <TwoChoiceModal
+        content="The file has been uploaded to your library successfully!"
+        affirmativeText="Proceed to fabrication"
+        negativeText="Go to file library"
+        handleAffirmative={handleShopping}
+        handleNegative={handleLibrary} />
+      }
+      {showConfirm && <TwoChoiceModal
+        content="Duplicate file name! Would you like to upload another file or continue uploading this file? (It would be advisable to change the file name to avoid confusion)."
+        affirmativeText="Upload this file"
+        negativeText="Change file"
+        handleAffirmative={handleRename}
+        handleNegative={handleCancel} />
+      }
     </div>
   );
 }
