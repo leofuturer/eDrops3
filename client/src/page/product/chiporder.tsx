@@ -121,20 +121,18 @@ function ChipOrder() {
           </div>
           <div className="flex space-x-2 items-center">
             <label htmlFor="quantity">Quantity:&nbsp;</label>
-            {product && (
-              <>
-                <input
-                  id="quantity"
-                  type="number"
-                  min={1}
-                  className="w-8"
-                  value={quantity}
-                  onChange={(e) => setQuantity(e.target.valueAsNumber)}
-                />
-                { /* @ts-expect-error */}
-                <span className="flex items-center">X ${product.variants && product.variants[0].price.amount} = ${product.variants && (quantity * parseFloat(product.variants[0]?.price.amount)).toFixed(2)}</span>
-              </>
-            )}
+            <>
+              <input
+                id="quantity"
+                type="number"
+                min={1}
+                className="w-8"
+                value={quantity}
+                onChange={(e) => setQuantity(e.target.valueAsNumber)}
+              />
+              { /* @ts-expect-error */}
+              <span className="flex items-center">X ${product.variants && product.variants[0].price.amount} = ${product.variants && (quantity * parseFloat(product.variants[0]?.price.amount)).toFixed(2)}</span>
+            </>
           </div>
           <div className="flex justify-center items-center">
             {addingToCart ? <Loading /> :

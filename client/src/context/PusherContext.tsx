@@ -19,15 +19,15 @@ const usePusher = () => {
       });
   }, [])
 
-  useEffect(() => {
-    if (key) {
-      const client = new Pusher(key, {
-        cluster: 'us3',
-        // encrypted: true, // TODO: This is not working, see docs to look into message encryption
-      });
-      setPusher(client);
-    }
-  }, [key])
+  // useEffect(() => {
+  //   if (key) {
+  //     const client = new Pusher(key, {
+  //       cluster: 'us3',
+  //       // encrypted: true, // TODO: This is not working, see docs to look into message encryption
+  //     });
+  //     setPusher(client);
+  //   }
+  // }, [key])
 
   return pusher;
 }

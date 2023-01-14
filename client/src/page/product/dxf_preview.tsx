@@ -23,7 +23,7 @@ function DXFPreview({ fileInfo }: { fileInfo: any }) {
       .catch((err) => {
         console.error(err);
       });
-  }, []);
+  }, [fileInfo.id]);
 
   /**
      * Modify the styling of the SVG that will be inserted
