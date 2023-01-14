@@ -305,19 +305,19 @@ function Cart() {
         metadata={metadata}
       />
       {cart.numItems > 0
-        ? (<div className="flex flex-col w-full space-y-4">
+        ? (<div className="flex flex-col w-full space-y-4 -mt-4">
           <div className="flex flex-row justify-end items-center">
             <button type="button" className="bg-primary rounded-lg text-white px-4 py-2" onClick={handleCheckout}>Checkout</button>
           </div>
           <div className="flex flex-col space-y-4">
-            {productOrders.map((oneProduct, index) => <CartItem
+            {cart.cart?.orderProducts?.length > 0 && cart.cart.orderProducts.map((oneProduct, index) => <CartItem
               key={index}
               info={oneProduct}
               onChange={(e) => handleQtyChange(e, 'product', index)}
               onDelete={() => handleDelete('product', index)}
               deleteLoading={deleteLoading}
             />)}
-            {chipOrders.map((oneProduct, index) => <CartItem
+            {cart.cart?.orderChips?.length > 0 && cart.cart.orderChips.map((oneProduct, index) => <CartItem
               key={index}
               info={oneProduct}
               onChange={(e) => handleQtyChange(e, 'chip', index)}
