@@ -1,8 +1,7 @@
 import { Form, Formik } from 'formik';
 import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import API from '../../api/lib/api';
-import { addAdmin, updateAdminProfile, updateUserBaseProfile, userBaseFind } from '../../api/lib/serverConfig';
+import { addAdmin, request, updateAdminProfile, updateUserBaseProfile, userBaseFind } from '../../api';
 import FormGroup from '../../component/form/FormGroup';
 import ManageRightLayout from '../../component/layout/ManageRightLayout';
 import { AdminEditSchema, AdminSchema } from '../../schemas';
@@ -41,11 +40,11 @@ function AddOrEditAdmin() {
     };
     if (location.pathname === '/manage/admins/editAdmin') {
       const { adminId } = location.state;
-      API.Request(updateAdminProfile.replace('id', adminId), 'PATCH', userMes, true)
+      request(updateAdminProfile.replace('id', adminId), 'PATCH', userMes, true)
         .then((res) =>
-          API.Request(`${userBaseFind}?filter={"where": {"email": "${userMes.email}"}}`, 'GET', {}, true))
+          request(`${userBaseFind}?filter={"where": {"email": "${userMes.email}"}}`, 'GET', {}, true))
         .then((res) =>
-          API.Request(updateUserBaseProfile.replace('id', res.data[0].id), 'PATCH', userMes, true))
+          request(updateUserBaseProfile.replace('id', res.data[0].id), 'PATCH', userMes, true))
         .then((res) => {
           navigate('/manage/admins');
         })
@@ -53,7 +52,7 @@ function AddOrEditAdmin() {
           console.error(err);
         });
     } else { // add new admin
-      API.Request(addAdmin, 'POST', {
+      request(addAdmin, 'POST', {
         ...userMes,
         password: admin.password,
         confirmPassword: admin.confirmPassword,

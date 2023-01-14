@@ -12,25 +12,21 @@
     it becomes a lineItem in that "checkout"
 */
 
-import React, { useState, useEffect, useContext, Suspense } from 'react';
-import Cookies from 'js-cookie';
-import {
-  getCustomerCart, manipulateCustomerOrders, addOrderChipToCart,
-  getChipOrders, getWorkerId, customerGetName
-} from '../../api/lib/serverConfig';
-import API from '../../api/lib/api';
+import React, { Suspense, useContext, useEffect, useState } from 'react';
+import { useCookies } from 'react-cookie';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { Product } from 'shopify-buy'; // TODO: waiting on @types/shopify-buy to be updated
+import { request } from '../../api';
+import { addOrderChipToCart, customerGetName, getChipOrders, getCustomerCart, getWorkerId, manipulateCustomerOrders } from '../../api';
+import Loading from '../../component/ui/Loading';
+import { CartContext } from '../../context/CartContext';
+import { ShopifyContext } from '../../context/ShopifyContext';
+import { FileInfo } from '../../types';
 import {
   ewodFabServiceId,
-  ewodFabServiceVariantId,
-} from '../../constants';
-import { ShopifyContext } from '../../App';
+  ewodFabServiceVariantId
+} from '../../utils/constants';
 const DXFPreview = React.lazy(() => import('./dxf_preview'));
-import { CartContext } from '../../context/CartContext';
-import { useLocation, useNavigate } from 'react-router-dom';
-import { useCookies } from 'react-cookie';
-import { Product } from 'shopify-buy'; // TODO: waiting on @types/shopify-buy to be updated
-import { FileInfo } from '../../types';
-import Loading from '../../component/ui/Loading';
 
 function ChipOrder() {
   const [cIndex, setCIndex] = useState(0);
@@ -86,9 +82,9 @@ function ChipOrder() {
     // const url = `${getWorkerId}?username=${}`
     // fetch IDs of default foundry workers
     Promise.all([
-      API.Request(getWorkerId, 'GET', { username: GLASSFW }, true),
-      API.Request(getWorkerId, 'GET', { username: PAPERFW }, true),
-      API.Request(getWorkerId, 'GET', { username: PCBFW }, true),
+      request(getWorkerId, 'GET', { username: GLASSFW }, true),
+      request(getWorkerId, 'GET', { username: PAPERFW }, true),
+      request(getWorkerId, 'GET', { username: PCBFW }, true),
     ]).then(([res1, res2, res3]) => {
       setGLASSID(res1.data);
       setPAPERID(res2.data);
@@ -96,7 +92,7 @@ function ChipOrder() {
     }).catch((err) => {
       console.error(err);
     });
-    API.Request(customerGetName.replace('id', cookies.userId), 'GET', {}, true)
+    request(customerGetName.replace('id', cookies.userId), 'GET', {}, true)
       .then((res) => {
         // console.log(res);
         setCustomerName(`${res.data.firstName} ${res.data.lastName}`);
@@ -105,7 +101,7 @@ function ChipOrder() {
         console.error(err)
       });
 
-    API.Request(getCustomerCart.replace('id', cookies.userId), 'GET', {}, true)
+    request(getCustomerCart.replace('id', cookies.userId), 'GET', {}, true)
       .then((res) => {
         if (res.data.id) {
           // console.log(`Have cart already with ID ${res.data.id}`);
@@ -134,7 +130,7 @@ function ChipOrder() {
               billingAddressId: 0,
             };
             // and then create orderInfo in our backend
-            return API.Request(manipulateCustomerOrders.replace('id', cookies.userId), 'POST', data, true)
+            return request(manipulateCustomerOrders.replace('id', cookies.userId), 'POST', data, true)
           })
             .then((res) => {
               // console.log(res);
@@ -251,8 +247,8 @@ function ChipOrder() {
           customerName: customerName,
         };
 
-        API.Request(addOrderChipToCart.replace('id', orderInfoId.toString()), 'POST', data, true)
-          .then((res) => API.Request(getChipOrders.replace('id', orderInfoId.toString()), 'GET', {}, true))
+        request(addOrderChipToCart.replace('id', orderInfoId.toString()), 'POST', data, true)
+          .then((res) => request(getChipOrders.replace('id', orderInfoId.toString()), 'GET', {}, true))
           .then((res) => {
             const quantity = res.data.reduce((prev: number, curr: { quantity: number }) => prev + curr.quantity, 0);
             cart.setChipQuantity(quantity);

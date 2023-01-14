@@ -2,11 +2,11 @@ import { Form, Formik } from 'formik';
 import { useEffect, useState } from 'react';
 import { useCookies } from 'react-cookie';
 import { useLocation } from 'react-router-dom';
-import API from '../../api/lib/api';
+import { request } from '../../api';
 import {
   adminGetProfile, customerAddresses, customerGetProfile, foundryWorkerGetProfile, updateAdminProfile, updateCustomerProfile,
   updateWorkerProfile
-} from '../../api/lib/serverConfig';
+} from '../../api';
 import FormGroup from '../../component/form/FormGroup';
 import SEO from '../../component/header/seo';
 import ManageRightLayout from '../../component/layout/ManageRightLayout';
@@ -48,7 +48,7 @@ function Profile() {
         break;
     }
     const url = initUrl.replace('id', cookies.userId);
-    API.Request(url, 'GET', {}, true)
+    request(url, 'GET', {}, true)
       .then((res) => {
         if (userType === 'admin') {
           setPhoneNumber(res.data.phoneNumber);
@@ -72,7 +72,7 @@ function Profile() {
           setAffiliation(res.data.affiliation);
         } else {
           const url2 = `${customerAddresses.replace('id', cookies.userId)}?filter={"where":{"isDefault":true}}`;
-          API.Request(url2, 'GET', {}, true)
+          request(url2, 'GET', {}, true)
             .then((res2) => {
               defaultAddressId = res2.data[0].id; // for later use with saving
               setFirstName(res.data.firstName);
@@ -138,13 +138,13 @@ function Profile() {
     }
     const url = InitUrl.replace('id', cookies.userId);
 
-    API.Request(url, 'PATCH', userMes, true)
+    request(url, 'PATCH', userMes, true)
       .then((res) => {
         // console.log(res);
         // _this.props.history.push('/manage/profile')
         if (userType === 'customer') {
           // need to update address separately
-          API.Request(`${customerAddresses.replace('id', cookies.userId)}/${defaultAddressId}`, 'PATCH', addressData, true)
+          request(`${customerAddresses.replace('id', cookies.userId)}/${defaultAddressId}`, 'PATCH', addressData, true)
             .then((res) => {
               // console.log("Updated address");
               alert('Profile saved successfully!');

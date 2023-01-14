@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import API from '../../api/lib/api';
-import { getChipOrders, getOrderInfoById, getProductOrders } from '../../api/lib/serverConfig';
+import { request } from '../../api';
+import { getChipOrders, getOrderInfoById, getProductOrders } from '../../api';
 import MessageLayout from '../../component/layout/MessageLayout';
 import { DisplayAddress } from '../../types';
 import OrderAddress from './orderAddress';
@@ -24,7 +24,7 @@ function OrderDetail() {
   }, [searchParams]);
 
   useEffect(() => {
-    orderId && API.Request(getOrderInfoById.replace('id', orderId), 'GET', {}, true)
+    orderId && request(getOrderInfoById.replace('id', orderId), 'GET', {}, true)
       .then((res) => {
         setOrderDetail(res.data);
         console.log(res.data);
@@ -49,8 +49,8 @@ function OrderDetail() {
           zipCode: res.data.ba_zip,
         });
         return Promise.all([
-          API.Request(getProductOrders.replace('id', res.data.id), 'GET', {}, true),
-          API.Request(getChipOrders.replace('id', res.data.id), 'GET', {}, true),
+          request(getProductOrders.replace('id', res.data.id), 'GET', {}, true),
+          request(getChipOrders.replace('id', res.data.id), 'GET', {}, true),
         ]);
       })
       .then(([res1, res2]) => {

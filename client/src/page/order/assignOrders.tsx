@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { NavLink } from 'react-router-dom';
-import API from '../../api/lib/api';
-import { assignOrders, foundryWorkerGetName, getAllFoundryWorkers } from '../../api/lib/serverConfig';
+import { request } from '../../api';
+import { assignOrders, foundryWorkerGetName, getAllFoundryWorkers } from '../../api';
 import ManageRightLayout from '../../component/layout/ManageRightLayout';
 import TwoChoiceModal from '../../component/modal/TwoChoiceModal';
 import { Worker } from '../../types';
@@ -14,7 +14,7 @@ function AssignOrders() {
   const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
-    API.Request(getAllFoundryWorkers, 'GET', {}, true)
+    request(getAllFoundryWorkers, 'GET', {}, true)
       .then((res) => {
         setWorkerList(res.data);
       })
@@ -30,14 +30,14 @@ function AssignOrders() {
 
   function handleAssign() {
     setShowModal(false);
-    API.Request(foundryWorkerGetName.replace('id', assignId), 'GET', {}, true)
+    request(foundryWorkerGetName.replace('id', assignId), 'GET', {}, true)
       .then((res) => {
         const data = {
           workerId: assignId,
           workerName: `${res.data.firstName} ${res.data.lastName}`,
         };
         // @ts-expect-error
-        return API.Request(assignOrders.replace('id', window._order.id), 'PATCH', data, true);
+        return request(assignOrders.replace('id', window._order.id), 'PATCH', data, true);
       })
       .then((res) => {
         window.opener.location.href = window.opener.location.href;

@@ -3,20 +3,18 @@ import { useContext, useEffect, useRef, useState } from 'react';
 import { useCookies } from 'react-cookie';
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { Product as ProductType } from 'shopify-buy';
-import API from '../../api/lib/api';
+import { request } from '../../api';
 import {
   addOrderProductToCart, getCustomerCart, getProductOrders, manipulateCustomerOrders, returnOneItem
-} from '../../api/lib/serverConfig';
-import { ShopifyContext } from '../../App';
+} from '../../api';
+import { ShopifyContext } from '../../context/ShopifyContext';
 import Loading from '../../component/ui/Loading';
 import {
   controlSysId10, controlSysId5, getProductType, pcbChipId10, pcbChipId5, productIdsJson, testBoardId10, testBoardId5, univEwodChipId, univEwodChipId10, univEwodChipId5
-} from '../../constants';
+} from '../../utils/constants';
 import { CartContext } from '../../context/CartContext';
 
 function Product() {
-  const cart = useContext(CartContext);
-
   const [fetchedProduct, setFetchedProduct] = useState(false);
   const [product, setProduct] = useState<ProductType>({} as ProductType);
   const [orderInfoId, setOrderInfoId] = useState("");
@@ -28,6 +26,7 @@ function Product() {
   const [withCoverPlateAssembled, setWithCoverPlateAssembled] = useState(false);
 
   const shopify = useContext(ShopifyContext);
+  const cart = useContext(CartContext);
 
   const navigate = useNavigate();
 
@@ -42,7 +41,7 @@ function Product() {
 
   function fetchProductData(shopifyProductId: string) {
     const url = `${returnOneItem}?productId=${shopifyProductId}`;
-    API.Request(url, 'GET', {}, false)
+    request(url, 'GET', {}, false)
       .then((res) => {
         // console.log(res);
         setProduct(res.data);
@@ -111,7 +110,7 @@ function Product() {
       navigate('/login', { state: { path: location.pathname } });
     }
     setAddedToCart(false);
-    API.Request(getCustomerCart.replace('id', cookies.userId), 'GET', {}, true)
+    request(getCustomerCart.replace('id', cookies.userId), 'GET', {}, true)
       .then((res) => {
         console.log(res);
         if (res.data.id) {
@@ -149,7 +148,7 @@ function Product() {
                 billingAddressId: 0,
               };
               // and then create orderInfo in our backend
-              API.Request(manipulateCustomerOrders.replace('id', cookies.userId), 'POST', data, true)
+              request(manipulateCustomerOrders.replace('id', cookies.userId), 'POST', data, true)
                 .then((res) => {
                   // console.log(res);
                   setOrderInfoId(res.data.id);
@@ -227,10 +226,10 @@ function Product() {
           otherDetails: customServerOrderAttributes,
         };
         // console.log(data);
-        return API.Request(addOrderProductToCart.replace('id', orderInfoId.toString()), 'POST', data, true)
+        return request(addOrderProductToCart.replace('id', orderInfoId.toString()), 'POST', data, true)
       })
       .then((res) =>
-        API.Request(getProductOrders.replace('id', orderInfoId.toString()), 'GET', {}, true))
+        request(getProductOrders.replace('id', orderInfoId.toString()), 'GET', {}, true))
       .then((res) => {
         // console.log(res);
         const quantity = res.data.reduce((prev, curr) => prev + curr.quantity, 0);

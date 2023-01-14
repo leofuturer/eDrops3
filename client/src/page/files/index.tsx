@@ -2,10 +2,10 @@ import Cookies from 'js-cookie';
 import { useEffect, useState } from 'react';
 import { useCookies } from 'react-cookie';
 import { useLocation, useNavigate } from 'react-router-dom';
-import API from '../../api/lib/api';
+import { request } from '../../api';
 import {
   adminDownloadFile, customerDeleteFile, customerFileRetrieve, downloadFileById
-} from '../../api/lib/serverConfig';
+} from '../../api';
 import SEO from '../../component/header/seo';
 import ManageRightLayout from '../../component/layout/ManageRightLayout';
 import DeleteModal from '../../component/modal/DeleteModal.js';
@@ -54,7 +54,7 @@ function Files() {
       url = customerFileRetrieve.replace('id', location.state.userId);
     }
 
-    API.Request(url, 'GET', {}, true)
+    request(url, 'GET', {}, true)
       .then((res) => {
         setFileList(res.data);
       })
@@ -83,7 +83,7 @@ function Files() {
   function handleDelete() {
     const fileId = deleteId;
     const url = `${customerDeleteFile.replace('id', cookies.userId)}?fileId=${fileId}`;
-    API.Request(url, 'DELETE', {}, true)
+    request(url, 'DELETE', {}, true)
       .then((res) => {
         setFileList(fileList.filter((file) => file.id !== fileId));
       })

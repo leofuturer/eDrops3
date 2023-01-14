@@ -1,8 +1,8 @@
 import { Field, FieldProps, Form, Formik } from 'formik';
 import { useState } from 'react';
 import * as Yup from 'yup';
-import API from '../../api/lib/api';
-import { customerResendVerifyEmail, userForgetPass } from '../../api/lib/serverConfig';
+import { request } from '../../api';
+import { customerResendVerifyEmail, userForgetPass } from '../../api';
 import MessageLayout from '../../component/layout/MessageLayout';
 
 function ForgetPass() {
@@ -14,7 +14,7 @@ function ForgetPass() {
     };
     switch (helpType) {
       case 'resetPassword':
-        API.Request(userForgetPass, 'POST', data, false)
+        request(userForgetPass, 'POST', data, false)
           .then((res) => {
           }).catch((err) => {
             if (process.env.NODE_ENV === 'dev') {
@@ -26,7 +26,7 @@ function ForgetPass() {
           });
         break;
       case 'resendEmail':
-        API.Request(customerResendVerifyEmail, 'POST', data, false)
+        request(customerResendVerifyEmail, 'POST', data, false)
           .then((res) => {
           })
           .catch((err) => {

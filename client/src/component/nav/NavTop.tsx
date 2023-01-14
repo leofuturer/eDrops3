@@ -1,20 +1,11 @@
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useState } from 'react';
 import { useCookies } from 'react-cookie';
 import { NavLink } from 'react-router-dom';
-import API from '../../api/lib/api';
-import {
-  getChipOrders, getCustomerCart,
-  getProductOrders
-} from '../../api/lib/serverConfig';
 import { CartContext } from '../../context/CartContext';
 
 function NavTop() {
   const [show, setShow] = useState(false);
-
   const cart = useContext(CartContext);
-  useEffect(() => {
-    console.log(cart);
-  }, [cart])
 
   const [cookies, setCookie, removeCookie] = useCookies(['username', 'userType', 'userId', 'access_token']);
 
@@ -33,10 +24,10 @@ function NavTop() {
     removeCookie('userId');
     removeCookie('access_token');
     // Maybe look into this later to see what can be done server-side for logout/token invalidation
-    // API.Request(url, 'POST', {}, true)
+    // request(url, 'POST', {}, true)
     //   .then((res) => {
     //     Cookies.remove('access_token');
-    //     API.Request(userLogout, 'POST', {}, true)
+    //     request(userLogout, 'POST', {}, true)
     //       .then((res) => {
     //         Cookies.remove('base_access_token');
     //         this.setState({ show: false });

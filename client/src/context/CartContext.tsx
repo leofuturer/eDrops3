@@ -1,8 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useCookies } from 'react-cookie';
-import { request } from '../api/lib/api';
-import { getChipOrders, getCustomerCart, getProductOrders, manipulateCustomerOrders } from '../api/lib/serverConfig';
-import { ShopifyContext } from '../App';
+import { request, getChipOrders, getCustomerCart, getProductOrders, manipulateCustomerOrders, addOrderProductToCart } from '../api';
+import { ShopifyContext } from '../context/ShopifyContext';
 import { ChipOrder, OrderInfo, ProductOrder } from '../types';
 
 // interface Cart {
@@ -18,6 +17,7 @@ export enum OrderItem {
 
 const useCart = () => {
   const [cart, setCart] = useState<OrderInfo>({} as OrderInfo);
+  const [activeCart, setActiveCart] = useState(true);
   const [numItems, setNumItems] = useState(0);
   const [totalPrice, setTotalPrice] = useState(0);
 
@@ -55,10 +55,13 @@ const useCart = () => {
 
   // create cart if it doesn't exist, otherwise get cart info
   useEffect(() => {
-    cookies.userId && request(getCustomerCart.replace('id', cookies.userId), 'GET', {}, true).then((res) =>
-      res.data ? setCart(res.data) : createCart()
-    ).catch((err) => console.error(err));
+    cookies.userId && request(getCustomerCart.replace('id', cookies.userId), 'GET', {}, true).then((res) => {
+      setActiveCart(!!res.data)
+    }).catch((err) => console.error(err));
   }, [cookies.userId]);
+  useEffect(() => {
+    if (!activeCart) createCart();
+  }, [activeCart])
 
   // count number of items in cart
   useEffect(() => {
@@ -69,6 +72,62 @@ const useCart = () => {
   useEffect(() => {
     setTotalPrice(Object.values(cart).reduce((acc, item) => acc + item.quantity * item.price, 0));
   }, [cart]);
+
+  function addProductBackend(item: ProductOrder | ChipOrder, itemType: OrderItem) {
+    // add to shopify cart, and then add to our own cart
+    const customShopifyAttributes = [];
+    let customServerOrderAttributes = '';
+    for (const [k, v] of Object.entries(otherDetails).sort((a, b) => a[0].localeCompare(b[0]))) {
+      if (v !== undefined) {
+        customShopifyAttributes.push({ key: k, value: v });
+        customServerOrderAttributes += `${k}: ${v}\n`;
+      }
+    }
+
+    const variantId = product.id !== productIdsJson['UNIVEWODCHIPID'][bundleSize]
+      ? product.variants[0].id
+      // @ts-expect-error
+      : (otherDetails.withCoverPlateAssembled
+        ? productIdsJson['UNIVEWODCHIPWITHCOVERPLATE'][bundleSize]
+        : productIdsJson['UNIVEWODCHIPWITHOUTCOVERPLATE'][bundleSize]);
+    // console.log(variantId);
+    const lineItemsToAdd = [{
+      variantId,
+      quantity,
+    }];
+    shopify && shopify.checkout.addLineItems(shopifyClientCheckoutId, lineItemsToAdd)
+      .then((res) => {
+        let lineItemId;
+        console.log(res);
+        for (let i = 0; i < res.lineItems.length; i++) {
+          // @ts-expect-error
+          if (Buffer.from(res.lineItems[i].variant.id).toString('base64') === variantId) {
+            // @ts-expect-error
+            lineItemId = Buffer.from(res.lineItems[i].id).toString('base64');
+            break;
+          }
+        }
+
+        const data = {
+          orderInfoId,
+          productIdShopify: product.id,
+          variantIdShopify: variantId,
+          lineItemIdShopify: lineItemId,
+          description: product.description,
+          quantity,
+          price: parseFloat(product.variants[0].price),
+          name: product.title,
+          otherDetails: customServerOrderAttributes,
+        };
+        // console.log(data);
+        return request(addOrderProductToCart.replace('id', orderInfoId.toString()), 'POST', data, true)
+      })
+    request(manipulateCustomerOrders.replace('id', cookies.userId), 'PUT', {
+      [itemType]: [item]
+    }, true).then((res) => {
+      setCart(res.data);
+    }).catch((err) => console.error(err));
+  }
 
   function addItem(item: ProductOrder | ChipOrder, itemType: OrderItem) {
     itemType === OrderItem.Product ?

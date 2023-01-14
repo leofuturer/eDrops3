@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import ItemCard from './itemCard';
-import { returnAllItems } from '../../api/lib/serverConfig';
-import API from '../../api/lib/api';
+import { returnAllItems } from '../../api';
+import { request } from '../../api';
 import SEO from '../../component/header/seo';
 import { metadata } from './metadata';
 import { Product } from 'shopify-buy';
@@ -11,7 +11,7 @@ function AllItems() {
   const [products, setProducts] = useState<Product[]>([]);
 
   useEffect(() => {
-    API.Request(returnAllItems, 'GET', {}, false)
+    request(returnAllItems, 'GET', {}, false)
       .then((res) => {
         if (res.data) {
           setProducts(res.data);

@@ -1,8 +1,8 @@
 import { Form, Formik } from 'formik';
 import { useEffect, useState } from 'react';
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
-import API from '../../api/lib/api';
-import { addCustomer, updateCustomerProfile, updateUserBaseProfile, userBaseFind } from '../../api/lib/serverConfig';
+import { request } from '../../api';
+import { addCustomer, updateCustomerProfile, updateUserBaseProfile, userBaseFind } from '../../api';
 import FormGroup from '../../component/form/FormGroup';
 import ManageRightLayout from '../../component/layout/ManageRightLayout';
 import { UserSchema, UserSubmitSchema } from '../../schemas';
@@ -45,15 +45,15 @@ function AddOrEditUser() {
     if (location.pathname === '/manage/users/edituser') {
       // edit both customer and userBase instances
       const { customerId } = location.state;
-      API.Request(updateCustomerProfile.replace('id', customerId), 'PATCH', userMes, true)
-        .then((res) => API.Request(`${userBaseFind}?filter={"where": {"email": "${userMes.email}"}}`, 'GET', {}, true))
-        .then((res) => API.Request(updateUserBaseProfile.replace('id', res.data[0].id), 'PATCH', userMes, true))
+      request(updateCustomerProfile.replace('id', customerId), 'PATCH', userMes, true)
+        .then((res) => request(`${userBaseFind}?filter={"where": {"email": "${userMes.email}"}}`, 'GET', {}, true))
+        .then((res) => request(updateUserBaseProfile.replace('id', res.data[0].id), 'PATCH', userMes, true))
         .then((res) => navigate('/manage/users'))
         .catch((err) => {
           console.error(err);
         });
     } else { // add new customer
-      API.Request(addCustomer, 'POST', {
+      request(addCustomer, 'POST', {
         ...userMes,
         customerType: 'person',
         password: user.password,

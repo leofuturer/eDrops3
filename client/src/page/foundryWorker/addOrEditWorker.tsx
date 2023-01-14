@@ -1,10 +1,10 @@
 import { Form, Formik } from 'formik';
 import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import API from '../../api/lib/api';
+import { request } from '../../api';
 import {
   addFoundryWorker, editFoundryWorker
-} from '../../api/lib/serverConfig';
+} from '../../api';
 import FormGroup from '../../component/form/FormGroup';
 import ManageRightLayout from '../../component/layout/ManageRightLayout';
 import { WorkerSchema } from '../../schemas';
@@ -65,7 +65,7 @@ function AddOrEditWorker() {
       affiliation: worker.affiliation,
     };
     if (location.pathname === '/manage/foundryworkers/addfoundryworker') {
-      API.Request(addFoundryWorker, 'POST', data, true)
+      request(addFoundryWorker, 'POST', data, true)
         .then((res) => {
           navigate('/manage/foundryworkers');
         })
@@ -75,18 +75,18 @@ function AddOrEditWorker() {
     } else {
       const { workerId } = location.state;
       // console.log(workerId);
-      API.Request(editFoundryWorker.replace('id', workerId), 'PATCH', data, true)
+      request(editFoundryWorker.replace('id', workerId), 'PATCH', data, true)
         .then((res) => {
           navigate('/manage/foundryworkers');
         })
         // .then((res) => {
         //   url = `${userBaseFind}?filter={"where": {"email": "${data.email}"}}`;
-        //   API.Request(url, 'GET', {}, true)
+        //   request(url, 'GET', {}, true)
         //     .then((res) => {
         //       // console.log(res.data[0]);
         //       const userBaseId = res.data[0].id;
         //       url = updateUserBaseProfile.replace('id', userBaseId);
-        //       API.Request(url, 'PATCH', data, true)
+        //       request(url, 'PATCH', data, true)
         //         .then((res) => {
         //           _this.props.history.push('/manage/foundryworkers');
         //         })

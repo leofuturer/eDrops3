@@ -1,4 +1,4 @@
-// import API from './api/api';
+// import { request } from './api/api';
 // import { getApiToken } from './api/serverConfig';
 
 let mode = true; // true for production, false for development

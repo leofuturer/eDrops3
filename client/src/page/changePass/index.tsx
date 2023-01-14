@@ -2,8 +2,8 @@ import { Form, Formik } from 'formik';
 import { useState } from 'react';
 import { useCookies } from 'react-cookie';
 import { useNavigate } from 'react-router-dom';
-import API from '../../api/lib/api';
-import { AdminChangePass, customerChangePass, FoundryWorkerChangePass } from '../../api/lib/serverConfig';
+import { request } from '../../api';
+import { AdminChangePass, customerChangePass, FoundryWorkerChangePass } from '../../api';
 import FormGroup from '../../component/form/FormGroup';
 import ManageRightLayout from '../../component/layout/ManageRightLayout';
 import Loading from '../../component/ui/Loading';
@@ -39,11 +39,11 @@ function ChangePassword() {
         break;
     }
     // check if errors is empty
-    API.Request(url, 'POST', data, true)
+    request(url, 'POST', data, true)
       // .then((res) => {
       //   const userToken = Cookies.get('access_token');
       //   Cookies.remove('access_token');
-      //   API.Request(userChangePass, 'POST', data, true)
+      //   request(userChangePass, 'POST', data, true)
       //     .then((res) => {
       //       alert('Password successfully changed');
       //       Cookies.set('access_token', userToken);
