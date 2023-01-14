@@ -151,7 +151,7 @@ function Upload() {
     return (
       <div
         key={i}
-        className={`${pType === p && 'bg-primary_light text-white'} border py-2 px-8 cursor-pointer`}
+        className={`${pType === p && 'bg-primary_light text-white'} border py-2 w-full text-center cursor-pointer`}
         onClick={() => setPType(p)}
       >
         {p}
@@ -163,7 +163,7 @@ function Upload() {
     return (
       <div
         key={i}
-        className={`${uType === u && 'bg-primary_light text-white'} border py-2 px-8 cursor-pointer`}
+        className={`${uType === u && 'bg-primary_light text-white'} border py-2 w-full text-center cursor-pointer`}
         onClick={() => setUType(u)}
       >
         {u}
@@ -181,20 +181,20 @@ function Upload() {
       <div className="w-2/3 text-center flex flex-col items-center space-y-4 py-20">
         <h1 className="text-4xl">File Upload</h1>
         <h3 className="text-2xl">We accept DXF file as mask file</h3>
-        <div className="grid grid-cols-2 place-items-center w-full">
-          <div className="flex flex-col space-y-2">
+        <div className="grid grid-cols-2 justify-items-center gap-8 w-full">
+          <div className="flex flex-col space-y-2 w-full max-w-sm">
             <h4 className="text-lg">Visibility</h4>
-            <div className="flex flex-row space-x-4 justify-between text-sm">
+            <div className="grid grid-cols-2 gap-4 text-sm w-full">
               {ptypeList}
             </div>
-            <div className="flex flex-row space-x-2 items-center">
+            <div className="flex flex-row space-x-2 justify-center items-center">
               <input type="checkbox" id="copyLink" className="" />
               <label htmlFor="copyLink" className="text-sm">Let people copy this design with a link</label>
             </div>
           </div>
-          <div className="flex flex-col space-y-2">
+          <div className="flex flex-col items-center space-y-2 w-full max-w-sm">
             <h4 className="text-lg">Units</h4>
-            <div className="flex flex-row space-x-4 justify-between text-sm">
+            <div className="grid grid-cols-3 gap-4 text-sm w-full">
               {utypeList}
             </div>
           </div>
