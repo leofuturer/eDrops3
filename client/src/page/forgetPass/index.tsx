@@ -17,7 +17,7 @@ function ForgetPass() {
         request(userForgetPass, 'POST', data, false)
           .then((res) => {
           }).catch((err) => {
-            if (process.env.NODE_ENV === 'dev') {
+            if (import.meta.env.DEV) {
               console.error(err); // Maybe take out as attackers can view console & brute force emails
             }
           }).finally(() => {
@@ -30,7 +30,7 @@ function ForgetPass() {
           .then((res) => {
           })
           .catch((err) => {
-            if (process.env.NODE_ENV === 'dev') {
+            if (import.meta.env.DEV) {
               console.error(err); // Maybe take out as attackers can view console & brute force emails
             }
           }).finally(() => {
