@@ -8,7 +8,7 @@ const usePusher = () => {
   const [key, setKey] = useState<string>('');
 
   useEffect(() => {
-    request(customerGetApiToken, 'GET', {}, true)
+    request(customerGetApiToken, 'GET', {}, false)
       .then((res) => {
         if (res.status === 200) {
           setKey(res.data.info.key);

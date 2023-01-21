@@ -9,7 +9,7 @@ const useShopify = () => {
   const [shopify, setShopify] = useState<ShopifyClient.Client | null>(null);
 
   useEffect(() => {
-    request(customerGetApiToken, 'GET', {}, true)
+    request(customerGetApiToken, 'GET', {}, false)
       .then((res) => {
         if (res.status === 200) {
           setToken(res.data.info.token)

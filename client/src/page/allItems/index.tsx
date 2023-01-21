@@ -26,7 +26,7 @@ function AllItems() {
         <Suspense fallback={<><ItemLoad /><ItemLoad /><ItemLoad /></>}>
           <Await
             resolve={products}
-            errorElement={<ItemLoad />}
+            errorElement={<><ItemLoad /><ItemLoad /><ItemLoad /></>}
             children={(resolvedProducts) => resolvedProducts.map((p) =>
               <ItemCard product={p} key={p.id} />
             )}
