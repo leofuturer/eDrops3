@@ -67,10 +67,11 @@ export async function request(url: string, method: string, data: object, auth: b
 }) {
 	if (auth) {
 		if (!Cookies.get("access_token")) {
-			throw new AxiosError("No access token found", undefined, undefined, undefined, {
-				status: 401,
-				statusText: "Unauthorized",
-			} as AxiosResponse);
+			throw new Error("No access token found");
+			// throw new AxiosError("No access token found", undefined, undefined, undefined, {
+			// 	status: 401,
+			// 	statusText: "Unauthorized",
+			// } as AxiosResponse);
 		} else {
 			headers.Authorization = `Bearer ${Cookies.get("access_token")}`;
 		}

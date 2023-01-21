@@ -27,6 +27,7 @@ function Product() {
   const navigate = useNavigate();
 
   const [searchParams, setSearchParams] = useSearchParams();
+  const [cookies, setCookie] = useCookies(['access_token', 'userType']);
 
   useEffect(() => {
     !searchParams.get('id') ? navigate('/allItems') : setProductId(searchParams.get('id'))
@@ -37,7 +38,6 @@ function Product() {
     shopify && productId && shopify.product
       .fetch(productId)
       .then((res) => {
-        // console.log(res);
         setProduct(res);
         if ([controlSysId5, testBoardId5, pcbChipId5].includes(productId)) {
           setBundleSize(5);
@@ -59,6 +59,7 @@ function Product() {
   }
 
   function handleAddToCart() {
+    if(!cookies.access_token || cookies.userType !== 'customer') { navigate('/login'); return; }
     setAddingToCart(true);
     cart.addProduct(product, quantity).then(() => {
       setAddingToCart(false);
