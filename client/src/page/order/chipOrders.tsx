@@ -1,23 +1,17 @@
-import React, { useEffect, useState } from 'react';
 import Cookies from 'js-cookie';
-import { request } from '../../api';
-import {
-  adminGetChipOrders, customerGetChipOrders,
-  workerGetChipOrders, editOrderStatus,
-  downloadFileById, adminDownloadFile, workerDownloadFile,
-}
-  from '../../api';
-
-import SEO from '../../component/header/seo';
-import { metadata } from './metadata.jsx';
-import { useLocation } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
 import { useCookies } from 'react-cookie';
+import { useLocation } from 'react-router-dom';
+import { adminDownloadFile, adminGetChipOrders, customerGetChipOrders, downloadFileById, editOrderStatus, request, workerDownloadFile, workerGetChipOrders } from '../../api';
+import SEO from '../../component/header/seo';
 import ManageRightLayout from '../../component/layout/ManageRightLayout';
 import Loading from '../../component/ui/Loading';
+import { ChipOrder } from '../../types';
+import { metadata } from './metadata.jsx';
 
 // List all chip orders for all user types
 function ChipOrders() {
-  const [orderList, setOrderList] = useState([]);
+  const [orderList, setOrderList] = useState<ChipOrder[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [workerId, setWorkerId] = useState('');
   const [isCustomer, setIsCustomer] = useState(false);
@@ -53,7 +47,7 @@ function ChipOrders() {
     request(url, 'GET', {}, true)
       .then((res) => {
         if (workerId) {
-          res.data = res.data.filter((orderChip) => orderChip.workerId === workerId);
+          res.data = res.data.filter((orderChip: ChipOrder) => orderChip.workerId === workerId);
         }
         console.log(res)
         setOrderList(res.data);
@@ -65,10 +59,9 @@ function ChipOrders() {
       });
   }, []);
 
-  function handleDownload(e) {
+  function handleDownload(itemId: number) {
     // console.log(e.target.id);
     let url = '';
-    const itemId = Number(e.target.id.replace(/[^0-9]/ig, ''));
     if (cookies.userType === 'customer') {
       // for customer, `id` is file ID
       url = downloadFileById.replace('id', cookies.userId);
@@ -86,9 +79,8 @@ function ChipOrders() {
     window.location.href = url;
   }
 
-  function handleAssign(e) {
+  function handleAssign(orderIndex: number) {
     // Using the window.open() method to open a new window and display the page based on the passed in redirectUrl
-    const orderIndex = Number(e.target.id.replace(/[^0-9]/ig, ''));
     const redirectUrl = '/manage/assign-orders';
     const strWindowFeatures = 'width=1200px, height=900px';
     const newWindow = window.open(redirectUrl, '_blank', strWindowFeatures);
@@ -96,7 +88,7 @@ function ChipOrders() {
     newWindow._order = orderList[orderIndex];
   }
 
-  function handleSubmit(e: React.FormEvent<HTMLFormElement>, chipOrderId: string) {
+  function handleSubmit(e: React.FormEvent<HTMLFormElement>, chipOrderId: number) {
     e.preventDefault();
     // const dropdown = document.getElementById('status-selection');
     // const selectedStatus = dropdown.options[dropdown.selectedIndex].value;
@@ -105,7 +97,7 @@ function ChipOrders() {
     const dropdown = document.getElementById(`status-selection-${chipOrderId}`);
     // @ts-expect-error
     const selectedStatus = dropdown.options[dropdown.selectedIndex].value;
-    const url = editOrderStatus.replace('id', chipOrderId);
+    const url = editOrderStatus.replace('id', chipOrderId.toString());
     const data = { status: selectedStatus };
     request(url, 'PATCH', data, true)
       .then((res) => {
@@ -186,8 +178,8 @@ function ChipOrders() {
               <td className="">
                 {
                   cookies.userType === 'worker'
-                    ? <i className="fa fa-download cursor-pointer" onClick={handleDownload} id={`download${item?.id}`} />
-                    : <i className="fa fa-download cursor-pointer" onClick={handleDownload} id={`download${item?.fileInfoId}`} />
+                    ? <i className="fa fa-download cursor-pointer" onClick={() => handleDownload(item?.id)} />
+                    : <i className="fa fa-download cursor-pointer" onClick={() => handleDownload(item?.fileInfoId)} />
                 }
               </td>
               {/* <td className="">
@@ -195,7 +187,7 @@ function ChipOrders() {
               </td> */}
               {cookies.userType === 'admin' &&
                 <td className="">
-                  <i className="fa fa-users cursor-pointer" id={`allOrder${index}`} onClick={handleAssign} />
+                  <i className="fa fa-users cursor-pointer" onClick={() => handleAssign(index)} />
                 </td>
               }
             </tr>

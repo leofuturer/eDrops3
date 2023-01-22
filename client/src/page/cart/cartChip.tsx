@@ -8,7 +8,7 @@ function CartChip({ chip, onDelete, onChange }: { chip: ChipOrder, onDelete: () 
   const chipFabState = {
     fileInfo: {
       id: chip.fileInfoId,
-      fileName: JSON.parse(chip.otherDetails).fileName,
+      fileName: chip.otherDetails ? JSON.parse(chip.otherDetails).fileName : '',
     },
   };
 

@@ -18,7 +18,7 @@ function Product() {
   const [productId, setProductId] = useState("");
   const [product, setProduct] = useState<ProductType>({} as ProductType);
   const [quantity, setQuantity] = useState(1);
-  const [bundleSize, setBundleSize] = useState(1);
+  const [bundleSize, setBundleSize] = useState<1|5|10>(1);
   const [addingToCart, setAddingToCart] = useState(false);
 
   const shopify = useContext(ShopifyContext);
@@ -30,7 +30,8 @@ function Product() {
   const [cookies, setCookie] = useCookies(['access_token', 'userType']);
 
   useEffect(() => {
-    !searchParams.get('id') ? navigate('/allItems') : setProductId(searchParams.get('id'))
+    const id = searchParams.get('id');
+    id ? setProductId(id) : navigate('/allItems');
   }, [searchParams]);
 
   // fetch product information from Shopify API
@@ -52,7 +53,7 @@ function Product() {
       });
   }, [shopify, productId]);
 
-  function handleBundleChange(bsize: number) {
+  function handleBundleChange(bsize: 1 | 5 | 10) {
     setBundleSize(bsize)
     const productType = getProductType(productId);
     setSearchParams({ id: productIdsJson[productType][bsize] });
@@ -100,7 +101,7 @@ function Product() {
                 </div>
                 <div className="flex space-x-1">
                   <label htmlFor="bundlesize" className="font-bold">Bundle Size:</label>
-                  <select id="bundlesize" name="bundlesize" value={bundleSize} onChange={(e) => handleBundleChange(parseInt(e.target.value, 10))}
+                  <select id="bundlesize" name="bundlesize" value={bundleSize} onChange={(e) => handleBundleChange(parseInt(e.target.value, 10) as 1|5|10)}
                     className="outline outline-1 rounded h-full">
                     <option value={1}>1</option>
                     <option value={5}>5</option>

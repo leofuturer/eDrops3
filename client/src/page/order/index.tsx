@@ -10,10 +10,11 @@ import { useLocation } from 'react-router-dom';
 import { useCookies } from 'react-cookie';
 import ManageRightLayout from '../../component/layout/ManageRightLayout';
 import Loading from '../../component/ui/Loading';
+import { OrderInfo } from '../../types';
 
 // The order list page for both customer and worker
 function Orders() {
-  const [orderList, setOrderList] = useState([]);
+  const [orderList, setOrderList] = useState<OrderInfo[]>([]);
   const [userInfo, setUserInfo] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const [custId, setCustId] = useState('');
@@ -92,22 +93,21 @@ function Orders() {
         </thead>
         <tbody>
           {orderList.length !== 0 ? orderList.map((order, index) => (
-              <tr key={index}>
-                <td className="p-2">{order.orderInfoId}</td>
-                <td className="p-2">{order.createdAt.substring(0, order.createdAt.indexOf('T'))}</td>
-                <td className="p-2">{order.status}</td>
-                <td className="p-2">
-                  $
-                  {parseFloat(order.total_cost).toFixed(2)}
-                </td>
-                <td className="p-2">
-                  <i className="fa fa-commenting cursor-pointer" onClick={() => handleDetail(order.id)} />
-                </td>
-                {/* <td className="p-2">
+            <tr key={index}>
+              <td className="p-2">{order.orderInfoId}</td>
+              <td className="p-2">{order.createdAt.substring(0, order.createdAt.indexOf('T'))}</td>
+              <td className="p-2">{order.status}</td>
+              <td className="p-2">
+                ${order.total_cost ? parseFloat(order.total_cost).toFixed(2) : 0}
+              </td>
+              <td className="p-2">
+                <i className="fa fa-commenting cursor-pointer" onClick={() => order.id && handleDetail(order.id)} />
+              </td>
+              {/* <td className="p-2">
                   <i className="fa fa-commenting cursor-pointer" onClick={() => handleChat(order.id)} />
                 </td> */}
-              </tr>
-            ))
+            </tr>
+          ))
             : (
               <tr>
                 <td className="p-2">

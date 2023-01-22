@@ -1,13 +1,12 @@
 // Admin only page, for customer page see order/index.jsx
-import React, { useEffect, useState } from 'react';
-import Cookies from 'js-cookie';
-import { getAllOrderInfos } from '../../api';
-import { request } from '../../api';
+import { useEffect, useState } from 'react';
+import { getAllOrderInfos, request } from '../../api';
 import ManageRightLayout from '../../component/layout/ManageRightLayout';
 import Loading from '../../component/ui/Loading';
+import { OrderInfo } from '../../types';
 
 function AllOrders() {
-  const [orderList, setOrderList] = useState([]);
+  const [orderList, setOrderList] = useState<OrderInfo[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
@@ -23,7 +22,7 @@ function AllOrders() {
       });
   }, []);
 
-  function handleDetail(orderId) {
+  function handleDetail(orderId: number) {
     // Using the window.open() method to open a new window
     // and display the page based on the passed in redirectUrl
     const redirectUrl = `/subpage/order-detail?id=${orderId}`;
@@ -57,13 +56,12 @@ function AllOrders() {
         </thead>
         <tbody>
           {orderList.length !== 0 ? orderList.map((order, index) => (
-            <tr key={index} id={order.id}>
+            <tr key={index}>
               <td>{order.orderComplete ? order.orderInfoId : 'Customer cart'}</td>
               <td>{order.customerId}</td>
               <td>{order.status}</td>
               <td>
-                $
-                {parseFloat(order.total_cost).toFixed(2)}
+                ${order.total_cost ? parseFloat(order.total_cost).toFixed(2) : 0}
               </td>
               <td className="icon-center">
                 <i className="fa fa-commenting cursor-pointer" onClick={() => handleDetail(order.id)} />

@@ -1,13 +1,11 @@
-import React, { Suspense, useEffect, useState } from 'react';
-import ItemCard from './ItemCard';
-import { returnAllItems } from '../../api';
-import { request } from '../../api';
-import SEO from '../../component/header/seo';
-import { metadata } from './metadata';
-import { Product } from 'shopify-buy';
-import Loading from '../../component/ui/Loading';
+import { Suspense } from 'react';
 import { Await } from 'react-router-dom';
+import { Product } from 'shopify-buy';
+import { request, returnAllItems } from '../../api';
+import SEO from '../../component/header/seo';
+import ItemCard from './ItemCard';
 import ItemLoad from './ItemLoad';
+import { metadata } from './metadata';
 
 function AllItems() {
   // const [products, setProducts] = useState<Product[]>([]);
@@ -27,7 +25,7 @@ function AllItems() {
           <Await
             resolve={products}
             errorElement={<><ItemLoad /><ItemLoad /><ItemLoad /></>}
-            children={(resolvedProducts) => resolvedProducts.map((p) =>
+            children={(resolvedProducts) => resolvedProducts.map((p: Product) =>
               <ItemCard product={p} key={p.id} />
             )}
           />

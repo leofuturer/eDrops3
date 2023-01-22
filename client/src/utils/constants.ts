@@ -33,7 +33,18 @@ export const productIdsJson = {
     5: pcbChipId5,
     10: pcbChipId10,
   },
+  '': {
+    1: '',
+    5: '',
+    10: '',
+  }
 };
+
+interface ProductIdsJson {
+  [key: string]: {
+    [key: number]: string;
+  };
+}
 
 export function getProductType(id: string) {
   switch (id) {

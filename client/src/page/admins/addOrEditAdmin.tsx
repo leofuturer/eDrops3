@@ -33,7 +33,7 @@ function AddOrEditAdmin() {
 
   function handleSave(admin: Partial<Signup<Admin>>) {
     const userMes = {
-      phoneNumber: formatPhoneNumber(admin.phoneNumber),
+      phoneNumber: admin.phoneNumber ? formatPhoneNumber(admin.phoneNumber) : '',
       realm: admin.realm,
       username: admin.username,
       email: admin.email,

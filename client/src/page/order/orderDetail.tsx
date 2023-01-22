@@ -3,7 +3,7 @@ import { useSearchParams } from 'react-router-dom';
 import { request } from '../../api';
 import { getChipOrders, getOrderInfoById, getProductOrders } from '../../api';
 import MessageLayout from '../../component/layout/MessageLayout';
-import { DisplayAddress } from '../../types';
+import { ChipOrder, DisplayAddress, ProductOrder } from '../../types';
 import OrderAddress from './orderAddress';
 import OrderItem from './orderItem';
 
@@ -13,8 +13,8 @@ function OrderDetail() {
   const [orderDetail, setOrderDetail] = useState<any>({}); // TODO: type order detail
   const [shippingAddress, setShippingAddress] = useState<DisplayAddress>({} as DisplayAddress);
   const [billingAddress, setBillingAddress] = useState<DisplayAddress>({} as DisplayAddress);
-  const [productOrders, setProductOrders] = useState([]);
-  const [chipOrders, setChipOrders] = useState([]);
+  const [productOrders, setProductOrders] = useState<ProductOrder[]>([]);
+  const [chipOrders, setChipOrders] = useState<ChipOrder[]>([]);
   const [totalPrice, setTotalPrice] = useState(0);
 
   const [searchParams] = useSearchParams();
