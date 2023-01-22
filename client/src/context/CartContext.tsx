@@ -21,7 +21,7 @@ const useCart = () => {
       // console.log(res);
       const lastSlash = res.webUrl.lastIndexOf('/');
       const lastQuestionMark = res.webUrl.lastIndexOf('?');
-      const data: OrderInfo = {
+      const data: Omit<OrderInfo, 'id'> = {
         checkoutIdClient: res.id as string,
         checkoutToken: res.webUrl.slice(lastSlash + 1, lastQuestionMark),
         checkoutLink: res.webUrl,
@@ -53,14 +53,14 @@ const useCart = () => {
 
   // count number of items in cart
   useEffect(() => {
-    const numProducts = cart.orderProducts?.length > 0 ? cart.orderProducts.reduce((acc, item) => acc + item.quantity, 0) : 0;
+    const numProducts = cart.orderProducts?.length ? cart.orderProducts.reduce((acc, item) => acc + item.quantity, 0) : 0;
     const numChips = cart.orderChips ? cart.orderChips.reduce((acc, item) => acc + item.quantity, 0) : 0;
     setNumItems(numProducts + numChips);
   }, [cart]);
 
   // calculate total price of cart
   useEffect(() => {
-    const productPrice = cart.orderProducts?.length > 0 ? cart.orderProducts.reduce((acc, item) => acc + item.quantity * item.price, 0) : 0;
+    const productPrice = cart.orderProducts?.length ? cart.orderProducts.reduce((acc, item) => acc + item.quantity * item.price, 0) : 0;
     const chipPrice = cart.orderChips ? cart.orderChips.reduce((acc, item) => acc + item.quantity * item.price, 0) : 0;
     setTotalPrice(productPrice + chipPrice);
   }, [cart]);
@@ -71,7 +71,8 @@ const useCart = () => {
     const variantId = product.variants[0].id;
     // console.log(product)
     // console.log(cart)
-    return shopify && shopify.checkout.addLineItems(cart.checkoutIdClient, [{ variantId, quantity }]).then((res) => {
+    if (!shopify || !cart.checkoutIdClient) return Promise.reject('Shopify or cart not initialized')
+    return shopify.checkout.addLineItems(cart.checkoutIdClient, [{ variantId, quantity }]).then((res) => {
       // @ts-expect-error NOTE: Shopify types not updated
       const lineItemId = res.lineItems.find((item) => item.variant.id === product.variants[0].id).id;
       // console.log(lineItemId);
@@ -121,7 +122,8 @@ const useCart = () => {
       quantity,
       customAttributes,
     }];
-    return shopify && shopify.checkout.addLineItems(cart.checkoutIdClient, lineItemsToAdd)
+    if (!shopify || !cart.checkoutIdClient) return Promise.reject('Shopify or cart not initialized');
+    return shopify.checkout.addLineItems(cart.checkoutIdClient, lineItemsToAdd)
       .then(async (res) => {
         console.log(res)
         const matchingAttrs = (item: LineItem) => {
@@ -178,7 +180,8 @@ const useCart = () => {
 
   function editProductQuantity(product: ProductOrder, newQuantity: number) {
     const lineItemsToUpdate = [{ id: product.lineItemIdShopify, quantity: newQuantity }];
-    return shopify && shopify.checkout.updateLineItems(cart.checkoutIdClient, lineItemsToUpdate).then((res) => {
+    if (!shopify || !cart.checkoutIdClient) return Promise.reject('Shopify or cart not initialized');
+    return shopify.checkout.updateLineItems(cart.checkoutIdClient, lineItemsToUpdate).then((res) => {
       return request(modifyProductOrders.replace('id', product.id.toString()), 'PATCH', { quantity: newQuantity }, true)
     }).then((res) => request(getProductOrders.replace('id', cart.id.toString()), 'GET', {}, true))
       .then((res) => {
@@ -192,7 +195,8 @@ const useCart = () => {
 
   function editChipQuantity(chip: ChipOrder, newQuantity: number) {
     const lineItemsToUpdate = [{ id: chip.lineItemIdShopify, quantity: newQuantity }];
-    return shopify && shopify.checkout.updateLineItems(cart.checkoutIdClient, lineItemsToUpdate).then((res) => {
+    if (!shopify || !cart.checkoutIdClient) return Promise.reject('Shopify or cart not initialized');
+    return shopify.checkout.updateLineItems(cart.checkoutIdClient, lineItemsToUpdate).then((res) => {
       return request(modifyChipOrders.replace('id', chip.id.toString()), 'PATCH', { quantity: newQuantity }, true)
     }).then((res) => request(getChipOrders.replace('id', cart.id.toString()), 'GET', {}, true))
       .then((res) => {
@@ -205,7 +209,8 @@ const useCart = () => {
   }
 
   function removeProduct(product: ProductOrder) {
-    return shopify && shopify.checkout.removeLineItems(cart.checkoutIdClient, [product.lineItemIdShopify]).then((checkout) => {
+    if (!shopify || !cart.checkoutIdClient) return Promise.reject('Shopify or cart not initialized');
+    return shopify.checkout.removeLineItems(cart.checkoutIdClient, [product.lineItemIdShopify]).then((checkout) => {
       return request(modifyProductOrders.replace('id', product.id.toString()), 'DELETE', {}, true)
     }).then((res) => request(getProductOrders.replace('id', cart.id.toString()), 'GET', {}, true))
       .then((res) => {
@@ -218,7 +223,8 @@ const useCart = () => {
   }
 
   function removeChip(chip: ChipOrder) {
-    return shopify && shopify.checkout.removeLineItems(cart.checkoutIdClient, [chip.lineItemIdShopify]).then((checkout) => {
+    if (!shopify || !cart.checkoutIdClient) return Promise.reject('Shopify or cart not initialized');
+    return shopify.checkout.removeLineItems(cart.checkoutIdClient, [chip.lineItemIdShopify]).then((checkout) => {
       return request(modifyChipOrders.replace('id', chip.id.toString()), 'DELETE', {}, true)
     }).then((res) => request(getChipOrders.replace('id', cart.id.toString()), 'GET', {}, true))
       .then((res) => {

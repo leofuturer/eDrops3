@@ -23,13 +23,13 @@ function Cart() {
             <button type="button" className="bg-primary rounded-lg text-white px-4 py-2" onClick={() => cart.checkout()}>Checkout</button>
           </div>
           <div className="flex flex-col space-y-4">
-            {cart.cart?.orderProducts?.length > 0 && cart.cart.orderProducts.map((product, index) => <CartProduct
+            {cart.cart?.orderProducts?.length && cart.cart.orderProducts.map((product, index) => <CartProduct
               key={index}
               product={product}
               onChange={cart.editProductQuantity}
               onDelete={() => cart.removeProduct(product)}
             />)}
-            {cart.cart?.orderChips?.length > 0 && cart.cart.orderChips.map((chip, index) => <CartChip
+            {cart.cart?.orderChips?.length && cart.cart.orderChips.map((chip, index) => <CartChip
               key={index}
               chip={chip}
               onChange={cart.editChipQuantity}

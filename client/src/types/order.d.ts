@@ -27,7 +27,7 @@ export interface ChipOrder extends Order {
 }
 
 export interface OrderInfo {
-  id?: number; 
+  id: number; 
   checkoutIdClient: string; 
   checkoutToken: string; 
   checkoutLink: string; 

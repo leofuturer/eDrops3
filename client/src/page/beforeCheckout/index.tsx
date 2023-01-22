@@ -63,7 +63,7 @@ function BeforeCheckout() {
     setPreparingForCheckout(true);
     // @ts-expect-error
     shopify && shopify.checkout.updateEmail(shopifyCheckoutId, customer.email)
-      .then((res) => {
+      .then((res: any) => {
         const address = addressList[selectedAddrIndex];
         const shippingAddr = {
           address1: address.street,
@@ -78,12 +78,12 @@ function BeforeCheckout() {
         };
         // @ts-expect-error
         return shopify.checkout.updateShippingAddress(shopifyCheckoutId, shippingAddr)
-      }).then((res) => {
+      }).then((res: any) => {
         // console.log(res);
         window.open(`${shopifyCheckoutLink}`, '_blank');
         navigate(`/`);
       })
-      .catch((err) => {
+      .catch((err: Error) => {
         console.error(err);
       }).finally(() => {
         setPreparingForCheckout(false);
