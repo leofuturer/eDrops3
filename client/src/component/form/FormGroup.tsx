@@ -2,7 +2,7 @@ import { Field, ErrorMessage, FieldProps } from 'formik';
 import _ from 'lodash';
 import { useState } from 'react';
 
-function FormGroup({ name, displayName, required = false, type = "text", autoComplete }: { name: string, displayName?: string, required?: boolean, type?: string, autoComplete?: string }) {
+function FormGroup({ name, displayName, required = false, type = "text", autoComplete, disabled = false }: { name: string, displayName?: string, required?: boolean, type?: string, autoComplete?: string, disabled?: boolean }) {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   return (
@@ -29,7 +29,8 @@ function FormGroup({ name, displayName, required = false, type = "text", autoCom
                   onBlur={(e) => {
                     field.onBlur(e);
                     setShowConfirmPassword(false);
-                  }} />
+                  }} 
+                  disabled={disabled}/>
                 <i className={`fa ${showConfirmPassword ? 'fa-eye-slash' : 'fa-eye'} absolute right-1 text-gray-600 cursor-pointer`} onClick={() => setShowConfirmPassword(!showConfirmPassword)} />
               </div>
             ) : (
@@ -37,7 +38,8 @@ function FormGroup({ name, displayName, required = false, type = "text", autoCom
               type={type}
               placeholder={displayName ? displayName : _.startCase(name)} {...field}
               autoComplete={autoComplete}
-              className={`outline outline-1 shadow-inner focus:shadow-box-sm rounded px-2 py-1 col-span-2 ${meta.error && meta.touched ? 'outline-red-700 focus:shadow-red-700' : ' outline-gray-400 focus:shadow-primary_light focus:outline-primary_light '}`} />
+              className={`outline outline-1 shadow-inner focus:shadow-box-sm rounded px-2 py-1 col-span-2 ${meta.error && meta.touched ? 'outline-red-700 focus:shadow-red-700' : ' outline-gray-400 focus:shadow-primary_light focus:outline-primary_light '}`} 
+              disabled={disabled}/>
             )}
           </>
         )}
