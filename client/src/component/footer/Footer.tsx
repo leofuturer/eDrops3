@@ -10,13 +10,8 @@ function FooterPage() {
       <div className="flex flex-col items-center space-y-4">
         <img className="max-h-[50px] mr-[10px]" src="/img/edrop_logo.png" alt="" />
         <h3 className="text-[26px] font-bold">eDrops</h3>
-        {/* <p className="i-p"> */}
-        {/* <i className="fa fa-twitter"></i> */}
-        {/* <i className="fa fa-facebook"></i> */}
-        {/* <i className="fa fa-youtube"></i> */}
-        {/* </p> */}
         <p>
-          &copy; eDrops 2018-2022
+          &copy; eDrops 2018-2023
         </p>
       </div>
       <div className="flex flex-col items-center space-y-4">

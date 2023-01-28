@@ -3,8 +3,7 @@ import AuthNavLink from './AuthNavLink';
 
 function NavLeft() {
   return (
-    <div className="flex flex-col items-center space-y-8 py-8">
-      <h2 className="text-2xl font-medium">Account</h2>
+    <div className="flex flex-col items-center space-y-8 pt-24">
       <div className="flex flex-col space-y-4 text-lg">
         <AuthNavLeftLink to="/manage/profile" userTypes={['admin', 'customer', 'worker']}>
           <i className="fa fa-book aspect-square" />

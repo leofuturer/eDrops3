@@ -66,7 +66,7 @@ function OrderChat() {
         return request(getOrderMessagesById.replace('id', orderId.toString()), 'GET', {}, true)
       })
       .then((res) => {
-        console.log(res.data);
+        // console.log(res.data);
         const newMessages = res.data;
         setMessages([...messages, ...newMessages])
       })

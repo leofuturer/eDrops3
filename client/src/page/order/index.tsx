@@ -50,7 +50,6 @@ function Orders() {
         // console.log(res.data)
         setOrderList(res.data);
         setIsLoading(false);
-        console.log(orderList);
       })
       .catch((err) => {
         console.error(err);

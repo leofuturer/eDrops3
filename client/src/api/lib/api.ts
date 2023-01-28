@@ -5,8 +5,6 @@ import axios, {
 	AxiosResponse,
 } from "axios";
 import Cookies from "js-cookie";
-import { useState } from "react";
-import { useCookies } from "react-cookie";
 
 interface APIOptions {
 	url: string;
