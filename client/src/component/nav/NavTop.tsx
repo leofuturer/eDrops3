@@ -11,32 +11,11 @@ function NavTop() {
 
   function signout() {
     setShow(false);
-    // let url = '';
-    // if (Cookies.get('userType') === 'admin') {
-    //   url = AdminLogout;
-    // } else if (Cookies.get('userType') === 'customer') {
-    //   url = customerLogout;
-    // } else if (Cookies.get('userType') === 'worker') {
-    //   url = FoundryWorkerLogout;
-    // }
-    removeCookie('userType');
-    removeCookie('username');
-    removeCookie('userId');
-    removeCookie('access_token');
-    // Maybe look into this later to see what can be done server-side for logout/token invalidation
-    // request(url, 'POST', {}, true)
-    //   .then((res) => {
-    //     Cookies.remove('access_token');
-    //     request(userLogout, 'POST', {}, true)
-    //       .then((res) => {
-    //         Cookies.remove('base_access_token');
-    //         this.setState({ show: false });
-    //         this.props.history.push('/home');
-    //       });
-    //   })
-    //   .catch((err) => {
-    //     console.error(err);
-    //   });
+    removeCookie('userType', { path: '/' });
+    removeCookie('username', { path: '/' });
+    removeCookie('userId', { path: '/' });
+    removeCookie('access_token', { path: '/' });
+    // TODO: look into this later to see what can be done server-side for logout/token invalidation
   }
 
   return (

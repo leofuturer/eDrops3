@@ -61,6 +61,7 @@ function AddOrEditWorker() {
       zipCode: worker.zipCode,
       userType: 'worker',
       username: worker.username,
+      password: worker.password,
       email: worker.email,
       affiliation: worker.affiliation,
     };
@@ -79,25 +80,6 @@ function AddOrEditWorker() {
         .then((res) => {
           navigate('/manage/foundryworkers');
         })
-        // .then((res) => {
-        //   url = `${userBaseFind}?filter={"where": {"email": "${data.email}"}}`;
-        //   request(url, 'GET', {}, true)
-        //     .then((res) => {
-        //       // console.log(res.data[0]);
-        //       const userBaseId = res.data[0].id;
-        //       url = updateUserBaseProfile.replace('id', userBaseId);
-        //       request(url, 'PATCH', data, true)
-        //         .then((res) => {
-        //           _this.props.history.push('/manage/foundryworkers');
-        //         })
-        //         .catch((err) => {
-        //           console.error(err);
-        //         });
-        //     })
-        //     .catch((err) => {
-        //       console.error(err);
-        //     });
-        // })
         .catch((err) => {
           console.error(err);
         });

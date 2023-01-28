@@ -31,10 +31,10 @@ function Login() {
       .then((res) => {
         // console.log(res);
         // setCookie('base_access_token', res.data.token);
-        setCookie('access_token', res.data.token);
-        setCookie('userId', res.data.userId);
-        setCookie('userType', res.data.userType);
-        setCookie('username', res.data.username);
+        setCookie('access_token', res.data.token, { path: '/' });
+        setCookie('userId', res.data.userId, { path: '/' });
+        setCookie('userType', res.data.userType, { path: '/' });
+        setCookie('username', res.data.username, { path: '/' });
         navigate(location.state?.path || '/home');
         setError(false);
       }).catch((err) => {

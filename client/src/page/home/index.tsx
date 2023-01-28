@@ -1,7 +1,7 @@
 import { useCookies } from 'react-cookie';
 import { NavLink } from 'react-router-dom';
 import SEO from '../../component/header/seo';
-import { controlSysId, pcbChipId, testBoardId } from '../../utils/constants';
+import { controlSysId, pcbChipId, testBoardId } from '../../lib/constants/products';
 import { metadata } from './metadata';
 
 function Home() {

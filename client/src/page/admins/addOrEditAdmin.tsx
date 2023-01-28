@@ -6,7 +6,7 @@ import FormGroup from '../../component/form/FormGroup';
 import ManageRightLayout from '../../component/layout/ManageRightLayout';
 import { AdminEditSchema, AdminSchema } from '../../schemas';
 import { Admin, Signup } from '../../types';
-import { formatPhoneNumber } from '../../utils/phone';
+import { formatPhoneNumber } from '../../lib/phone';
 
 function AddOrEditAdmin() {
   const [initialInfo, setInitialInfo] = useState<Partial<Admin>>({
@@ -55,7 +55,6 @@ function AddOrEditAdmin() {
       request(addAdmin, 'POST', {
         ...userMes,
         password: admin.password,
-        confirmPassword: admin.confirmPassword,
         userType: 'admin',
       }, true).then((res) => {
         navigate('/manage/admins');
