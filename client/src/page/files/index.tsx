@@ -10,7 +10,7 @@ import SEO from '../../component/header/seo';
 import ManageRightLayout from '../../component/layout/ManageRightLayout';
 import DeleteModal from '../../component/modal/DeleteModal.js';
 import { FileInfo } from '../../types';
-import { padZeroes } from '../../utils/time';
+import { padZeroes } from '../../lib/time';
 import { metadata } from './metadata';
 
 function Files() {

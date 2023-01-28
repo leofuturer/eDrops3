@@ -48,10 +48,10 @@ function RouteMap() {
     if (cookies.access_token) {
       const decoded = jwt_decode<JwtPayload>(cookies.access_token);
       if (decoded.exp && (decoded.exp * 1000) < Date.now()) {
-        removeCookie('access_token');
-        removeCookie('userType');
-        removeCookie('username');
-        removeCookie('userId');
+        removeCookie('access_token', { path: '/' });
+        removeCookie('userType', { path: '/' });
+        removeCookie('username', { path: '/' });
+        removeCookie('userId',  { path: '/' });
       }
     }
   }, [cookies.access_token]);

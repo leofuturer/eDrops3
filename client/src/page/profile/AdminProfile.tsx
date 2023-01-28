@@ -11,7 +11,7 @@ function AdminProfile() {
     phoneNumber: '',
   });
 
-  const [cookies, setCookie] = useCookies(['userId']);
+  const [cookies] = useCookies(['userId']);
 
   useEffect(() => {
     request(adminGetProfile.replace('id', cookies.userId), 'GET', {}, true)
@@ -29,7 +29,7 @@ function AdminProfile() {
       initialValues={initialInfo}
       enableReinitialize={true}
       onSubmit={(values) => {
-        request(updateAdminProfile, 'PATCH', values, true)
+        request(updateAdminProfile.replace('id', cookies.userId), 'PATCH', values, true)
       }}>
       <Form className="flex flex-col space-y-2">
         <FormGroup name="username" />

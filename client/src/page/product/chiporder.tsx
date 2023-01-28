@@ -7,7 +7,7 @@ import { ShopifyContext } from '../../context/ShopifyContext';
 import { FileInfo } from '../../types';
 import {
   ewodFabServiceId
-} from '../../utils/constants';
+} from '../../lib/constants/products';
 const DXFPreview = React.lazy(() => import('./dxf_preview'));
 
 function ChipOrder() {

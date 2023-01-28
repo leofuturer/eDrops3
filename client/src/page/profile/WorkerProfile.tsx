@@ -20,7 +20,7 @@ function WorkerProfile() {
     affiliation: '',
   });
 
-  const [cookies, setCookie] = useCookies(['userId']);
+  const [cookies] = useCookies(['userId']);
 
   useEffect(() => {
     request(foundryWorkerGetProfile.replace('id', cookies.userId), 'GET', {}, true)
@@ -47,7 +47,7 @@ function WorkerProfile() {
       initialValues={initialInfo}
       enableReinitialize={true}
       onSubmit={(values) => {
-        request(updateWorkerProfile, 'PATCH', values, true)
+        request(updateWorkerProfile.replace('id', cookies.userId), 'PATCH', values, true)
       }}>
       <Form className="flex flex-col space-y-2">
         <FormGroup name="username" disabled />

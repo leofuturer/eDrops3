@@ -11,7 +11,7 @@ import { ShopifyContext } from '../../context/ShopifyContext';
 import Loading from '../../component/ui/Loading';
 import {
   controlSysId10, controlSysId5, getProductType, pcbChipId10, pcbChipId5, productIdsJson, testBoardId10, testBoardId5
-} from '../../utils/constants';
+} from '../../lib/constants/products';
 import { CartContext } from '../../context/CartContext';
 
 function Product() {

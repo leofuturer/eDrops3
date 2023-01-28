@@ -19,7 +19,7 @@ function CustomerProfile() {
     country: '',
   });
 
-  const [cookies, setCookie] = useCookies(['userId']);
+  const [cookies] = useCookies(['userId']);
   const [defaultAddressId, setDefaultAddressId] = useState(-1);
 
   useEffect(() => {
