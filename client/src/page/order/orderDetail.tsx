@@ -27,7 +27,7 @@ function OrderDetail() {
     orderId && request(getOrderInfoById.replace('id', orderId), 'GET', {}, true)
       .then((res) => {
         setOrderDetail(res.data);
-        console.log(res.data);
+        // console.log(res.data);
         setShippingAddress({
           type: 'Shipping',
           name: res.data.sa_name,

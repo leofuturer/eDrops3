@@ -1,7 +1,8 @@
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useState } from 'react';
 import { useCookies } from 'react-cookie';
 import { NavLink } from 'react-router-dom';
 import { CartContext } from '../../context/CartContext';
+import UserMenu from './UserMenu';
 
 function NavTop() {
   const [show, setShow] = useState(false);
@@ -48,30 +49,7 @@ function NavTop() {
             {cookies.userType === "worker" && <>
               <NavLink to="/manage/chip-orders" className="hover:text-accent"><i className="fa fa-database" /></NavLink>
             </>}
-            <div className="relative">
-              {/* 4/23/2020: Only show username to avoid text that's too long, which will break the CSS */}
-              <div onClick={() => setShow(!show)} className="cursor-pointer hover:text-accent">{cookies.username}</div>
-              {show &&
-                <div className="absolute top-[60px] bg-white flex flex-col space-y-4 w-max -translate-x-1/4 p-4 text-sm text-black border">
-                  <NavLink to="/manage/profile"
-                    onClick={() => setShow(false)}
-                    className="flex space-x-2 items-center hover:text-accent"><i className="fa fa-dashboard" /><p>Your Dashboard</p></NavLink>
-                  {cookies.userType === 'customer' &&
-                    <>
-                      <NavLink to="/upload"
-                        onClick={() => setShow(false)}
-                        className="flex space-x-2 items-center hover:text-accent"><i className="fa fa-upload" /><p>Upload a file</p></NavLink>
-                      <NavLink to="/manage/files"
-                        onClick={() => setShow(false)}
-                        className="flex space-x-2 items-center hover:text-accent"><i className="fa fa-database" /><p>Your Projects</p></NavLink>
-                    </>
-                  }
-                  <NavLink to="/home"
-                    onClick={() => signout()}
-                    className="flex space-x-2 items-center hover:text-accent"><i className="fa fa-sign-out" /><p>Logout</p></NavLink>
-                </div>
-              }
-            </div>
+            <UserMenu username={cookies.username} onSignout={signout} />
           </> :
             <>
               <NavLink to="/login" className="hover:text-accent">Login</NavLink>
@@ -80,7 +58,7 @@ function NavTop() {
           }
         </div>
       </div>
-    </header>
+    </header >
   );
 }
 

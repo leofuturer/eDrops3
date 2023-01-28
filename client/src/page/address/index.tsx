@@ -3,6 +3,7 @@ import { useCookies } from 'react-cookie';
 import { useNavigate } from 'react-router-dom';
 import { request, customerAddresses } from '../../api';
 import SEO from '../../component/header/seo';
+import ManageRightLayout from '../../component/layout/ManageRightLayout';
 import DeleteModal from '../../component/modal/DeleteModal';
 import Loading from '../../component/ui/Loading';
 import { Address as AddressType } from '../../types';
@@ -64,43 +65,35 @@ function Address() {
   }, []);
 
   return (
-    <div className="flex flex-col items-center justify-center">
-      <SEO 
-        title="eDrops | Addresses"
-        description=""
-        metadata={metadata}
-      />
-      <div className="w-full border-b-2 border-primary_light flex justify-center py-8">
-        <h2 className="text-2xl">Address Book</h2>
-      </div>
-      <div className="w-full py-4 flex flex-col items-end space-y-4">
+    <ManageRightLayout title="Address Book">
+      <div className="flex justify-end -mt-8 py-4">
         <button type="button"
           className="bg-green-500 rounded-lg text-white px-4 py-2 text-lg flex space-x-2 items-center"
           onClick={handleAddNewAddress}>
           <i className="fa fa-plus" /><p>Add New</p>
         </button>
-        {isLoading
-          ? <Loading />
-          : (
-            <div className="grid grid-cols-2 w-full gap-4">
-              {addressList.map((oneAddress, index) => (
-                <AddressTemplate
-                  key={index}
-                  address={oneAddress}
-                  addressNum={index + 1}
-                  onDeletion={() => handleDeleteAddress(index)}
-                />
-              ))}
-            </div>
-          )}
       </div>
+      {isLoading
+        ? <Loading />
+        : (
+          <div className="grid grid-cols-2 w-full gap-4">
+            {addressList.map((oneAddress, index) => (
+              <AddressTemplate
+                key={index}
+                address={oneAddress}
+                addressNum={index + 1}
+                onDeletion={() => handleDeleteAddress(index)}
+              />
+            ))}
+          </div>
+        )}
       {showDelete &&
         <DeleteModal
           handleHide={() => setShowDelete(false)}
           handleDelete={handleDelete}
         />
       }
-    </div>
+    </ManageRightLayout>
   );
 }
 

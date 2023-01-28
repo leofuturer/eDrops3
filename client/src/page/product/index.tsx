@@ -71,7 +71,7 @@ function Product() {
     <div className="flex items-center justify-center p-10">
       <div className="grid grid-cols-2 w-2/3 gap-4">
         <div className="col-span-1 flex flex-col">
-          <img alt={product?.title} src={product?.variants && product?.variants[0].image.src} className="w-full aspect-square" />
+          <img alt={product?.title} src={product?.variants && product?.variants[0].image.src} className="w-full aspect-square pointer-events-none" />
         </div>
         <div className="col-span-1 flex flex-col justify-between">
           <div className="flex flex-col space-y-2">
