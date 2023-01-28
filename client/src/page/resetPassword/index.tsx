@@ -1,6 +1,6 @@
-import { Formik } from 'formik';
+import { Formik, Form } from 'formik';
 import { useState } from 'react';
-import { Form, NavLink, useSearchParams } from 'react-router-dom';
+import { NavLink, useSearchParams } from 'react-router-dom';
 import { request } from '../../api';
 import { customerResetPass } from '../../api';
 import FormGroup from '../../component/form/FormGroup';
@@ -51,12 +51,12 @@ function ResetPassword() {
         validationSchema={ResetPasswordSchema}
         onSubmit={handleReset}
       >
-        <Form>
+        <Form className="flex flex-col space-y-2 items-center">
           <FormGroup name="newPassword" type="password" required autoComplete="new-password" />
           <FormGroup name="confirmNewPassword" type="password" required autoComplete="new-password" />
           <button
             type="submit"
-            className="bg-secondary text-white px-4 py-2 w-max"
+            className="bg-secondary text-white px-4 py-2 w-max rounded"
           >
             Change Password
           </button>
