@@ -107,47 +107,47 @@ export class FoundryWorkerController {
     await this.foundryWorkerRepository.updateById(id, foundryWorker);
   }
 
-  @post('/foundryWorkers/login')
-  @response(200, {
-    description: 'FoundryWorker LOGIN success',
-  })
-  async login(
-    @requestBody({
-      content: {
-        'application/json': {
-          schema: getModelSchemaRef(FoundryWorker, {
-            title: 'NewFoundryWorker',
-            exclude: ['id'],
-          }),
-        },
-      },
-    })
-    foundryWorker: Omit<FoundryWorker, 'id'>,
-  ): Promise<void> {
-    return;
-    // return this.foundryWorkerRepository.login();
-  }
+  // @post('/foundryWorkers/login')
+  // @response(200, {
+  //   description: 'FoundryWorker LOGIN success',
+  // })
+  // async login(
+  //   @requestBody({
+  //     content: {
+  //       'application/json': {
+  //         schema: getModelSchemaRef(FoundryWorker, {
+  //           title: 'NewFoundryWorker',
+  //           exclude: ['id'],
+  //         }),
+  //       },
+  //     },
+  //   })
+  //   foundryWorker: Omit<FoundryWorker, 'id'>,
+  // ): Promise<void> {
+  //   return;
+  //   // return this.foundryWorkerRepository.login();
+  // }
 
-  @post('/foundryWorkers/logout')
-  @response(200, {
-    description: 'FoundryWorker LOGOUT success',
-  })
-  async logout(
-    @requestBody({
-      content: {
-        'application/json': {
-          schema: getModelSchemaRef(FoundryWorker, {
-            title: 'NewFoundryWorker',
-            exclude: ['id'],
-          }),
-        },
-      },
-    })
-    foundryWorker: Omit<FoundryWorker, 'id'>,
-  ): Promise<void> {
-    return;
-    // return this.foundryWorkerRepository.logout();
-  }
+  // @post('/foundryWorkers/logout')
+  // @response(200, {
+  //   description: 'FoundryWorker LOGOUT success',
+  // })
+  // async logout(
+  //   @requestBody({
+  //     content: {
+  //       'application/json': {
+  //         schema: getModelSchemaRef(FoundryWorker, {
+  //           title: 'NewFoundryWorker',
+  //           exclude: ['id'],
+  //         }),
+  //       },
+  //     },
+  //   })
+  //   foundryWorker: Omit<FoundryWorker, 'id'>,
+  // ): Promise<void> {
+  //   return;
+  //   // return this.foundryWorkerRepository.logout();
+  // }
 
   @get('/foundryWorkers/getWorkerID')
   @response(200, {

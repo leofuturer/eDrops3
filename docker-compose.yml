@@ -14,3 +14,4 @@ services:
       - RESET_DATABASE=$RESET_DATABASE
       # to migrate database, pass in as `MIGRATE_DATABASE=Yes; docker-compose up`
       - MIGRATE_DATABASE=$MIGRATE_DATABASE
+      - FORCE_COLOR=1

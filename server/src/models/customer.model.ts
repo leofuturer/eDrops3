@@ -1,5 +1,5 @@
 import {hasMany, model, property} from '@loopback/repository';
-import {User} from '.';
+import {User} from './user.model';
 import {CustomerAddress} from './customer-address.model';
 import {FileInfo} from './file-info.model';
 import {OrderInfo} from './order-info.model';
@@ -67,7 +67,7 @@ export class Customer extends User {
     required: true,
     default: 'person',
   })
-  customerType: string;
+  customerType: 'person' | 'company';
 
   @hasMany(() => CustomerAddress)
   customerAddresses: CustomerAddress[];
