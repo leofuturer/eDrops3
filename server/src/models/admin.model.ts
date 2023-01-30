@@ -1,5 +1,5 @@
-import {model, property, belongsTo, Entity} from '@loopback/repository';
-import {User} from '.';
+import { model, property, belongsTo, Entity } from '@loopback/repository';
+import { User } from './user.model';
 
 // @model({
 //   settings: {
@@ -29,7 +29,7 @@ import {User} from '.';
 //     },
 //   }
 // })
-@model({settings: {description: 'Additional admin information', forceId: false}})
+@model({ settings: { description: 'Additional admin information', forceId: false } })
 export class Admin extends User {
   // @property({
   //   type: 'number',

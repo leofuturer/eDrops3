@@ -5,7 +5,7 @@ import {
   belongsTo,
   Entity,
 } from '@loopback/repository';
-import {User} from '.';
+import {User} from './user.model';
 import {OrderChip} from './order-chip.model';
 
 // @model({

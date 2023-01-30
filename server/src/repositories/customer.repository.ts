@@ -1,39 +1,37 @@
-import {Getter, inject} from '@loopback/core';
+import { Getter, inject } from '@loopback/core';
 import {
   BelongsToAccessor,
   DefaultCrudRepository,
   HasManyRepositoryFactory,
-  repository,
+  repository
 } from '@loopback/repository';
-import {HttpErrors, Request, Response} from '@loopback/rest';
+import { HttpErrors, Request, Response } from '@loopback/rest';
 import AWS from 'aws-sdk';
-import {genSalt, hash} from 'bcryptjs';
-import {createHash} from 'crypto';
-import ejs from 'ejs';
+import { genSalt, hash } from 'bcryptjs';
+import { createHash } from 'crypto';
 import path from 'path';
-import {MysqlDsDataSource} from '../datasources';
+import { MysqlDsDataSource } from '../datasources';
 import {
   EMAIL_HOSTNAME,
   EMAIL_PORT,
-  EMAIL_SENDER,
+  EMAIL_SENDER
 } from '../lib/constants/emailConstants';
-import {calculate} from '../lib/toolbox/calculate';
+import { calculate } from '../lib/toolbox/calculate';
 import log from '../lib/toolbox/log';
-import {verifyHTML} from '../lib/views/verify';
 import {
   Customer,
   CustomerAddress,
   CustomerRelations,
   FileInfo,
   OrderInfo,
-  User,
+  User
 } from '../models';
-import {STORAGE_DIRECTORY} from '../services';
+import { STORAGE_DIRECTORY } from '../services';
 import SendGrid from '../services/send-grid.service';
-import {CustomerAddressRepository} from './customer-address.repository';
-import {FileInfoRepository} from './file-info.repository';
-import {OrderInfoRepository} from './order-info.repository';
-import {UserRepository} from './user.repository';
+import { CustomerAddressRepository } from './customer-address.repository';
+import { FileInfoRepository } from './file-info.repository';
+import { OrderInfoRepository } from './order-info.repository';
+import { UserRepository } from './user.repository';
 
 const CONTAINER_NAME = process.env.S3_BUCKET_NAME ?? 'edrop-v2-files';
 
@@ -122,7 +120,7 @@ export class CustomerRepository extends DefaultCrudRepository<
    */
   async createCustomer(
     customer: Omit<Customer & CustomerAddress, 'id'>,
-    createAddress: boolean = true,
+    createAddress = true,
   ): Promise<Customer> {
     const hashedPassword = await hash(customer.password, await genSalt());
     const userData: Partial<User> = {
@@ -222,7 +220,7 @@ export class CustomerRepository extends DefaultCrudRepository<
             },
           ],
           // subject: '[eDrops] Email Verification',
-          dynamic_template_data:{
+          dynamic_template_data: {
             firstName: customer.firstName,
             lastName: customer.lastName,
             text: "Thanks for registering to use eDrops. Please verify your email by clicking on the following link:",
@@ -254,12 +252,12 @@ export class CustomerRepository extends DefaultCrudRepository<
       throw new HttpErrors.NotFound('Customer not found');
     }
     const currentTime = new Date();
-    return await this.updateById(customerId, {
+    return this.updateById(customerId, {
       emailVerified:
         customer?.verificationToken === verificationToken &&
         (customer?.verificationTokenExpires ?? currentTime) > currentTime,
     }).then(
-      async() => { 
+      async () => {
         // Update associated User instance
         const userRepository = await this.userRepositoryGetter();
         await userRepository.updateById(customerId, {
@@ -276,37 +274,23 @@ export class CustomerRepository extends DefaultCrudRepository<
 
   async getCustomerCart(
     customerId: string,
-  ): Promise<Partial<OrderInfo> | number | Error> {
+  ): Promise<Partial<OrderInfo> | null> {
     return this.orderInfos(customerId)
-      .find({where: {orderComplete: false}})
+      .find({ where: { orderComplete: false }, include: ['orderProducts', 'orderChips'] })
       .then(orders => {
         if (orders.length > 1) {
-          log.error(
-            `Error getting customer cart or there's more than one active cart`,
-          );
-          throw new HttpErrors.NotFound(
-            'Error while querying for customer cart',
-          );
+          log.error(`Error getting customer cart or there's more than one active cart`);
+          throw new HttpErrors.NotFound('More than one active cart found');
         } else if (orders.length === 0) {
-          log.warning(
-            `No cart found for customer id=${customerId}, need to create one`,
-          );
-          return 0;
+          log.warning(`No cart found for customer id=${customerId}, need to create one`);
+          // throw new HttpErrors.NotFound('No cart found');
+          return null;
         }
-        log.info(
-          `Cart already exists, is order info model with id ${orders[0].id}`,
-        );
-        return {
-          id: orders[0].id,
-          checkoutIdClient: orders[0].checkoutIdClient,
-          checkoutLink: orders[0].checkoutLink,
-        };
+        log.info(`Cart already exists, is order info model with id ${orders[0].id}`);
+        return orders[0];
       })
       .catch(err => {
-        log.error(
-          `Error getting customer cart or there's more than one active cart: ${err}`,
-        );
-        return new Error('Error while querying for customer cart');
+        throw err;
       });
   }
 
@@ -356,7 +340,7 @@ export class CustomerRepository extends DefaultCrudRepository<
     const fields = request.body;
     const fileInfo = await this.fileInfos(id).create(fileInfos[0]);
     // return {files, fields};
-    return {fileInfo, fields};
+    return { fileInfo, fields };
   }
 
   async uploadS3(
@@ -409,7 +393,7 @@ export class CustomerRepository extends DefaultCrudRepository<
     const fields = request.body;
     const fileInfo = await this.fileInfos(id).create(fileInfos[0]);
     // return {files, fields};
-    return {fileInfo, fields};
+    return { fileInfo, fields };
   }
 
   async downloadDisk(filename: string, response: Response): Promise<Response> {
@@ -438,9 +422,9 @@ export class CustomerRepository extends DefaultCrudRepository<
 
   async changePassword(userId: string, newPassword: string): Promise<void> {
     const hashedPassword = await hash(newPassword, await genSalt());
-    await this.updateById(userId, {password: hashedPassword});
+    await this.updateById(userId, { password: hashedPassword });
 
     const userRepository = await this.userRepositoryGetter();
-    await userRepository.updateById(userId, {password: hashedPassword});
+    await userRepository.updateById(userId, { password: hashedPassword });
   }
 }

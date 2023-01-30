@@ -52,9 +52,9 @@ export class AdminRepository extends DefaultCrudRepository<
 
   async changePassword(userId: string, newPassword: string): Promise<void> {
     const hashedPassword = await hash(newPassword, await genSalt());
-    await this.updateById(userId, {password: hashedPassword});
+    await this.updateById(userId, { password: hashedPassword });
 
     const userRepository = await this.userRepositoryGetter();
-    await userRepository.updateById(userId, {password: hashedPassword});
+    await userRepository.updateById(userId, { password: hashedPassword });
   }
 }

@@ -1,3 +1,4 @@
+import { authenticate } from '@loopback/authentication';
 import {
   Count,
   CountSchema,
@@ -26,6 +27,7 @@ export class CustomerCustomerAddressController {
     @repository(CustomerAddressRepository) protected customerAddressRepository: CustomerAddressRepository,
   ) { }
 
+  @authenticate('jwt')
   @get('/customers/{id}/customerAddresses', {
     responses: {
       '200': {
@@ -45,6 +47,7 @@ export class CustomerCustomerAddressController {
     return this.customerRepository.customerAddresses(id).find(filter);
   }
 
+  @authenticate('jwt')
   @post('/customers/{id}/customerAddresses', {
     responses: {
       '200': {
@@ -70,6 +73,7 @@ export class CustomerCustomerAddressController {
     return this.customerRepository.customerAddresses(id).create(customerAddress);
   }
 
+  @authenticate('jwt')
   @patch('/customers/{id}/customerAddresses/{customerAddressId}', {
     responses: {
       '200': {
@@ -93,6 +97,7 @@ export class CustomerCustomerAddressController {
     return this.customerRepository.customerAddresses(id).patch(customerAddress, {id: customerAddressId});
   }
 
+  @authenticate('jwt')
   @del('/customers/{id}/customerAddresses', {
     responses: {
       '200': {

@@ -1,6 +1,7 @@
 import {Entity, model, property, hasMany} from '@loopback/repository';
 import {OrderProduct} from './order-product.model';
 import {OrderChip} from './order-chip.model';
+import {OrderMessage} from './order-message.model';
 
 // @model({
 //   settings: {
@@ -208,6 +209,9 @@ export class OrderInfo extends Entity {
 
   @hasMany(() => OrderChip)
   orderChips: OrderChip[];
+
+  @hasMany(() => OrderMessage, {keyTo: 'orderId'})
+  orderMessages: OrderMessage[];
   // Define well-known properties here
 
   // Indexer property to allow additional data

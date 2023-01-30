@@ -1,5 +1,5 @@
 import {model, property} from '@loopback/repository';
-import {OrderItemBase} from '.';
+import {OrderItemBase} from './order-item-base.model';
 
 // @model({
 //   settings: {
