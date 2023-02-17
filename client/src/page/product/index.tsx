@@ -36,7 +36,7 @@ function Product() {
 
   // fetch product information from Shopify API
   useEffect(() => {
-    shopify && productId && shopify.product
+    productId && shopify.product
       .fetch(productId)
       .then((res) => {
         setProduct(res);

@@ -24,13 +24,13 @@ function Cart() {
           </div>
           <div className="flex flex-col space-y-4">
             {cart.cart?.orderProducts?.length && cart.cart.orderProducts.map((product, index) => <CartProduct
-              key={index}
+              key={product.id}
               product={product}
               onChange={cart.editProductQuantity}
               onDelete={() => cart.removeProduct(product)}
             />)}
             {cart.cart?.orderChips?.length && cart.cart.orderChips.map((chip, index) => <CartChip
-              key={index}
+              key={chip.id}
               chip={chip}
               onChange={cart.editChipQuantity}
               onDelete={() => cart.removeChip(chip)}
