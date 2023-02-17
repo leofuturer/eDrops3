@@ -18,7 +18,7 @@ function CartChip({ chip, onDelete, onChange }: { chip: ChipOrder, onDelete: () 
   // debounce quantity change useEffect
   const debouncedChange = useCallback(_.debounce((qty) => {
     onChange(chip, qty);
-  }, 500), []);
+  }, 250), []);
 
   useEffect(() => {
     debouncedChange(qty);

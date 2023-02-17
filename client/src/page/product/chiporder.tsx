@@ -37,7 +37,7 @@ function ChipOrder() {
   useEffect(() => location.state.fileInfo ? setCustomAttrs(attrs => ({ ...attrs, fileInfo: location.state.fileInfo })) : navigate('/manage/files'), [location]);
 
   useEffect(() => {
-    shopify && shopify.product.fetch(ewodFabServiceId) // hard coded for chip order
+    shopify.product.fetch(ewodFabServiceId) // hard coded for chip order
       .then((product) => {
         // console.log(product);
         setProduct(product);
