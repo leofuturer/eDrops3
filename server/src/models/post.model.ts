@@ -74,7 +74,7 @@ export class Post extends Entity {
   userId: string;
 
   @hasMany(() => PostComment)
-  postComments: PostComment[];
+  postComments?: PostComment[];
 
   constructor(data?: Partial<Post>) {
     super(data);

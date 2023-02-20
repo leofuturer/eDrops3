@@ -7,7 +7,7 @@ export * from './liked-post.repository';
 export * from './liked-project.repository';
 export * from './order-chip.repository';
 export * from './order-info.repository';
-export * from './order-item-base.repository';
+export * from './order-item.repository';
 export * from './order-message.repository';
 export * from './order-product.repository';
 export * from './post-comment-link.repository';

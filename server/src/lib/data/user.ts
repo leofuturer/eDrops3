@@ -1,6 +1,7 @@
 import {User} from '../../models';
+import { DTO } from '../types/model';
 
-export const defaultUsers: Partial<User>[] = [
+export const defaultUsers: DTO<User>[] = [
   {
     id: 'aaaaaaaa-aaaa-aaaa-bbbb-aaaaaaaaaaaa',
     userType: 'customer',

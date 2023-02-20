@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { useCookies } from 'react-cookie';
 import { useNavigate } from 'react-router-dom';
 import { request } from '../../api';
-import { AdminChangePass, customerChangePass, FoundryWorkerChangePass } from '../../api';
+import { userChangePass } from '../../api';
 import FormGroup from '../../component/form/FormGroup';
 import ManageRightLayout from '../../component/layout/ManageRightLayout';
 import Loading from '../../component/ui/Loading';
@@ -26,20 +26,8 @@ function ChangePassword() {
       oldPassword: values.oldPassword,
       newPassword: values.newPassword,
     };
-    let url = '';
-    switch (cookies.userType) {
-      case 'customer':
-        url = customerChangePass;
-        break;
-      case 'worker':
-        url = FoundryWorkerChangePass;
-        break;
-      case 'admin':
-        url = AdminChangePass;
-        break;
-    }
     // check if errors is empty
-    request(url, 'POST', data, true)
+    request(userChangePass, 'POST', data, true)
       // .then((res) => {
       //   const userToken = Cookies.get('access_token');
       //   Cookies.remove('access_token');
