@@ -8,18 +8,11 @@ import {LikedPost} from './liked-post.model';
 import {LikedProject} from './liked-project.model';
 import {UserFollower} from './user-follower.model';
 
-// @model({
-//   settings: {
-//     caseSensitiveEmail: true,
-//     hidden: ['password', 'verificationToken'],
-//     maxTTL: 31556926,
-//     ttl: 1209600,
-//   },
-// })
 @model({
   settings: {
     description: 'Base user information',
     forceId: false,
+    hiddenProperties: ['password', 'verificationToken', 'verificationTokenExpires'],
   },
 })
 export class User extends Entity {
@@ -34,20 +27,13 @@ export class User extends Entity {
   @property({
     type: 'string',
   })
-  realm?: string;
-
-  @property({
-    type: 'string',
-  })
-  username?: string;
+  username: string;
 
   @property({
     type: 'string',
     required: true,
   })
   password: string;
-  // @hasOne(() => UserCredentials)
-  // userCredentials: UserCredentials;
 
   @property({
     type: 'string',
@@ -75,8 +61,9 @@ export class User extends Entity {
     required: false,
     default: 'customer',
   })
-  userType?: string;
+  userType?: 'customer' | 'worker' | 'admin';
 
+  /** Community site information **/
   @hasMany(() => Post, {
     through: {
       model: () => SavedPost,
@@ -84,7 +71,7 @@ export class User extends Entity {
       keyTo: 'postId',
     },
   })
-  savedPosts: Post[];
+  savedPosts?: Post[];
 
   @hasMany(() => Project, {
     through: {
@@ -93,16 +80,16 @@ export class User extends Entity {
       keyTo: 'projectId',
     },
   })
-  savedProjects: Project[];
+  savedProjects?: Project[];
 
   @hasOne(() => UserProfile)
-  userProfile: UserProfile;
+  userProfile?: UserProfile;
 
   @hasMany(() => Post)
-  posts: Post[];
+  posts?: Post[];
 
   @hasMany(() => Project, {through: {model: () => LikedProject}})
-  likedProjects: Project[];
+  likedProjects?: Project[];
 
   @hasMany(() => User, {
     through: {
@@ -111,19 +98,15 @@ export class User extends Entity {
       keyTo: 'followerId',
     },
   })
-  followers: User[];
+  followers?: User[];
 
   @hasMany(() => Project)
-  projects: Project[];
+  projects?: Project[];
 
   @hasMany(() => Post, {
     through: {model: () => LikedPost, keyFrom: 'userId', keyTo: 'postId'},
   })
-  likedPosts: Post[];
-
-  // Indexer property to allow additional data
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  [prop: string]: any;
+  likedPosts?: Post[];
 
   constructor(data?: Partial<User>) {
     super(data);

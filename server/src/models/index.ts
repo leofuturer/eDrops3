@@ -7,7 +7,7 @@ export * from './liked-post.model';
 export * from './liked-project.model';
 export * from './order-chip.model';
 export * from './order-info.model';
-export * from './order-item-base.model';
+export * from './order-item.model';
 export * from './order-message.model';
 export * from './order-product.model';
 export * from './post-comment-link.model';

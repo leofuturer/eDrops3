@@ -1,6 +1,6 @@
 import * as Yup from 'yup';
 import { request } from '../api';
-import { adminCredsTaken, customerCredsTaken } from '../api';
+import { credsTaken } from '../api';
 import { confirmPasswordSchema, customerTypeSchema, emailSchema, firstNameSchema, lastNameSchema, passwordSchema, phoneNumberSchema, usernameSchema } from './lib/user';
 
 // TODO: ensure yup objects conform to our types (e.g. Customer)
@@ -16,7 +16,7 @@ export const UserSchema = Yup.object().shape({
 });
 
 export const UserSubmitSchema = UserSchema.test('credentialsTaken', 'Username or email already taken', async ({ email, username }, ctx) =>
-  request(customerCredsTaken, 'POST', { username, email }, false).then((res) => {
+  request(credsTaken, 'POST', { username, email }, false).then((res) => {
     if (res.data.emailTaken) return ctx.createError({ path: 'email', message: 'Email already taken' })
     if (res.data.usernameTaken) return ctx.createError({ path: 'username', message: 'Username already taken' })
     return true
@@ -25,7 +25,6 @@ export const UserSubmitSchema = UserSchema.test('credentialsTaken', 'Username or
 
 export const AdminSchema = Yup.object().shape({
   phoneNumber: phoneNumberSchema,
-  realm: Yup.string().optional(),
   username: usernameSchema,
   email: emailSchema,
   password: passwordSchema,
@@ -34,12 +33,11 @@ export const AdminSchema = Yup.object().shape({
 
 export const AdminEditSchema = Yup.object().shape({
   phoneNumber: phoneNumberSchema,
-  realm: Yup.string().required('Realm can\'t be blank'),
   username: usernameSchema,
 });
 
 export const AdminSubmitSchema = AdminSchema.test('credentialsTaken', 'Username or email already taken', async ({ email, username }, ctx) =>
-  request(adminCredsTaken, 'POST', { username, email }, false).then((res) => {
+  request(credsTaken, 'POST', { username, email }, false).then((res) => {
     if (res.data.emailTaken) return ctx.createError({ path: 'email', message: 'Email already taken' })
     if (res.data.usernameTaken) return ctx.createError({ path: 'username', message: 'Username already taken' })
     return true
@@ -53,13 +51,13 @@ export const WorkerSchema = Yup.object().shape({
   lastName: lastNameSchema,
 });
 
-// export const WorkerSubmitSchema = WorkerSchema.test('credentialsTaken', 'Username or email already taken', async ({ email, username }, ctx) =>
-//   request(workerCredsTaken, 'POST', { username, email }, false).then((res) => {
-//     if (res.data.emailTaken) return ctx.createError({ path: 'email', message: 'Email already taken' })
-//     if (res.data.usernameTaken) return ctx.createError({ path: 'username', message: 'Username already taken' })
-//     return true
-//   })
-// );
+export const WorkerSubmitSchema = WorkerSchema.test('credentialsTaken', 'Username or email already taken', async ({ email, username }, ctx) =>
+  request(credsTaken, 'POST', { username, email }, false).then((res) => {
+    if (res.data.emailTaken) return ctx.createError({ path: 'email', message: 'Email already taken' })
+    if (res.data.usernameTaken) return ctx.createError({ path: 'username', message: 'Username already taken' })
+    return true
+  })
+);
 
 export const LoginSchema = Yup.object().shape({
   usernameOrEmail: Yup.string()

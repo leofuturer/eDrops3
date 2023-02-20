@@ -1,42 +1,40 @@
 import { Formik, Form } from 'formik';
-import { useState } from 'react';
-import { NavLink, useSearchParams } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { NavLink, useNavigate, useSearchParams } from 'react-router-dom';
 import { request } from '../../api';
-import { customerResetPass } from '../../api';
+import { userResetPass } from '../../api';
 import FormGroup from '../../component/form/FormGroup';
 import MessageLayout from '../../component/layout/MessageLayout';
 import { ResetPasswordSchema } from '../../schemas';
 
 function ResetPassword() {
   const [errorDetected, setErrorDetected] = useState(false);
-  const [errorDetectedPOST, setErrorDetectedPOST] = useState(false);
   const [passwordChanged, setPasswordChanged] = useState(false);
+  const [resetToken, setResetToken] = useState('');
 
   const [searchParams, setSearchParams] = useSearchParams();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const resetToken = searchParams.get('reset_token');
+    resetToken ? setResetToken(resetToken) : navigate('/forgetPass');
+  }, [searchParams])
 
   function handleReset({ newPassword, confirmNewPassword }: { newPassword: string, confirmNewPassword: string }) {
-    const resetToken = searchParams.get('resetToken');
-    // possible errors: empty reset token, passwords not matching,
-    // password not satisfying the minimum requirement
-    if (!resetToken) {
-      setPasswordChanged(false);
-      setErrorDetected(true);
-    } else {
-      const body = {
-        newPassword: newPassword,
-        accessToken: resetToken,
-      };
-      request(customerResetPass, 'POST', body, false)
-        .then((res) => {
-          setPasswordChanged(true);
-          setErrorDetectedPOST(false);
-        })
-        .catch((err) => {
-          console.log(err);
-          setErrorDetectedPOST(true);
-          setPasswordChanged(false);
-        });
-    }
+    const body = {
+      newPassword: newPassword,
+      accessToken: resetToken,
+    };
+    request(userResetPass, 'POST', body, false)
+      .then((res) => {
+        setPasswordChanged(true);
+        setErrorDetected(false);
+      })
+      .catch((err) => {
+        console.log(err);
+        setErrorDetected(true);
+        setPasswordChanged(false);
+      });
   }
 
   return (
@@ -62,7 +60,7 @@ function ResetPassword() {
           </button>
         </Form>
       </Formik>
-      {errorDetected && (
+      {/* {errorDetected && (
         <div>
           <div className="help-text">
             It appears that the link to reset your password has expired.
@@ -74,28 +72,28 @@ function ResetPassword() {
             <a href="mailto:service@edrops.org">Contact Us for Help</a>
           </div>
         </div>
-      )}
-      {errorDetectedPOST && (
-        <div>
-          <div className="help-text">
-            Error: Failed to change password. Please confirm that
+      )} */}
+      {errorDetected && (
+        <div className="flex flex-col items-center">
+          <div className="text-center">
+            Failed to change password. Please confirm that
             the email for your account is verified and the password
             reset link has not expired.
           </div>
-          <div className="link">
+          <div className="text-center text-primary_lig">
             <NavLink to="/forgetPass">Resend Email for Password Reset or Email Verification</NavLink>
           </div>
-          <div className="link">
+          <div className="text-center text-primary_lig">
             <a href="mailto:service@edrops.org">Contact Us for Help</a>
           </div>
         </div>
       )}
       {passwordChanged && (
-        <div>
-          <div className="help-text">
+        <div className="flex flex-col items-center">
+          <div className="text-center">
             Your password has successfully been reset.
           </div>
-          <div className="link">
+          <div className="text-center text-primary_light">
             <NavLink to="/login">Login to Your Account</NavLink>
           </div>
         </div>

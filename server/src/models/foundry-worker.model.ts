@@ -1,52 +1,28 @@
 import {
-  model,
-  property,
-  hasMany,
   belongsTo,
-  Entity,
+  Entity, hasMany, model,
+  property
 } from '@loopback/repository';
-import {User} from './user.model';
-import {OrderChip} from './order-chip.model';
+import { OrderChip } from './order-chip.model';
+import { User } from './user.model';
 
-// @model({
-//   settings: {
-//     validateUpsert: true,
-//     idInjection: true,
-//     remoting: {
-//       sharedMethods: {
-//         '*': false,
-//         create: true,
-//         findById: true,
-//         deleteById: true,
-//         'prototype.patchAttributes': true,
-//         'prototype.replaceById': true,
-//         find: true,
-//         login: true,
-//         logout: true,
-//         resetPassword: true,
-//         setPassword: true,
-//         changePassword: true,
-//         'prototype.downloadFile': true,
-//         'prototype.getChipOrders': true,
-//         getWorkerID: true
-//       }
-//     },
-//   }
-// })
 @model({
   settings: {
     description: 'Additional foundry worker information',
     forceId: false,
+    scope: {
+      include: ['user'],
+    },
   },
 })
-export class FoundryWorker extends User {
-  // @property({
-  //   type: 'number',
-  //   id: 1,
-  //   generated: true,
-  //   updateOnly: true,
-  // })
-  // id?: number;
+export class FoundryWorker extends Entity {
+  @property({
+    type: 'string',
+    id: 1,
+    defaultFn: 'uuidv4',
+    limit: 36,
+  })
+  id?: string;
 
   @property({
     type: 'string',
@@ -103,15 +79,10 @@ export class FoundryWorker extends User {
   affiliation: string;
 
   @hasMany(() => OrderChip, {keyTo: 'workerId'})
-  orderChips: OrderChip[];
+  orderChips?: OrderChip[];
 
-  // @belongsTo(() => User)
-  // userId: string;
-  // Define well-known properties here
-
-  // Indexer property to allow additional data
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  [prop: string]: any;
+  @belongsTo(() => User)
+  userId?: string;
 
   constructor(data?: Partial<FoundryWorker>) {
     super(data);

@@ -4,14 +4,14 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { addAdmin, request, updateAdminProfile, updateUserBaseProfile, userBaseFind } from '../../api';
 import FormGroup from '../../component/form/FormGroup';
 import ManageRightLayout from '../../component/layout/ManageRightLayout';
-import { AdminEditSchema, AdminSchema } from '../../schemas';
+import { AdminEditSchema, AdminSchema, AdminSubmitSchema } from '../../schemas';
 import { Admin, Signup } from '../../types';
 import { formatPhoneNumber } from '../../lib/phone';
+import { ValidationError } from 'yup';
 
 function AddOrEditAdmin() {
   const [initialInfo, setInitialInfo] = useState<Partial<Admin>>({
     phoneNumber: '',
-    realm: '',
     username: '',
     email: '',
   });
@@ -24,7 +24,6 @@ function AddOrEditAdmin() {
       const { adminInfo: admin } = location.state;
       setInitialInfo({
         phoneNumber: admin.phoneNumber,
-        realm: admin.realm,
         username: admin.username,
         email: admin.email,
       });
@@ -34,7 +33,6 @@ function AddOrEditAdmin() {
   function handleSave(admin: Partial<Signup<Admin>>) {
     const userMes = {
       phoneNumber: admin.phoneNumber ? formatPhoneNumber(admin.phoneNumber) : '',
-      realm: admin.realm,
       username: admin.username,
       email: admin.email,
     };
@@ -70,13 +68,26 @@ function AddOrEditAdmin() {
       <Formik
         initialValues={initialInfo}
         enableReinitialize={true}
-        onSubmit={handleSave}
+        onSubmit={(values, actions) => {
+          AdminSubmitSchema.validate(values, { abortEarly: false }).then(() => {
+            handleSave({ ...values });
+          }).catch(
+            (err) => {
+              const errors = err.inner.reduce((acc: object, curr: ValidationError) => {
+                return {
+                  ...acc,
+                  [curr.path as string]: curr.message,
+                };
+              }, {});
+              actions.setErrors(errors);
+            }
+          )
+        }}
         validationSchema={location.pathname === '/manage/admins/editAdmin' ? AdminEditSchema : AdminSchema}
       >
         <Form className="flex flex-col space-y-2">
           <small className="">Fields with * are required</small>
           <FormGroup name="phoneNumber" type="text" required autoComplete="tel-national" />
-          <FormGroup name="realm" type="text" />
           <FormGroup name="username" type="text" required autoComplete="username" />
           <FormGroup name="email" type="email" required autoComplete="email" />
           {location.pathname === '/manage/admins/addNewAdmin' && (
