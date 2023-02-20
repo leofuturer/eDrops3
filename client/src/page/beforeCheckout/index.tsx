@@ -62,7 +62,7 @@ function BeforeCheckout() {
   function handlePayment() {
     setPreparingForCheckout(true);
     // @ts-expect-error
-    shopify && shopify.checkout.updateEmail(shopifyCheckoutId, customer.email)
+    shopify.checkout.updateEmail(shopifyCheckoutId, customer.email)
       .then((res: any) => {
         const address = addressList[selectedAddrIndex];
         const shippingAddr = {

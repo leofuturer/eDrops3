@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { request, customerGetApiToken } from '../api';
 
 const usePusher = () => {
-  const [pusher, setPusher] = useState<Pusher | null>(null);
+  const [pusher, setPusher] = useState<Pusher>(buildClient());
   const [key, setKey] = useState<string>('');
 
   useEffect(() => {
@@ -19,15 +19,17 @@ const usePusher = () => {
       });
   }, [])
 
-  // useEffect(() => {
-  //   if (key) {
-  //     const client = new Pusher(key, {
-  //       cluster: 'us3',
-  //       // encrypted: true, // TODO: This is not working, see docs to look into message encryption
-  //     });
-  //     setPusher(client);
-  //   }
-  // }, [key])
+  function buildClient(): Pusher {
+    const client = new Pusher(key, {
+      cluster: 'us3',
+      // encrypted: true, // TODO: This is not working, see docs to look into message encryption
+    });
+    return client;
+  }
+
+  useEffect(() => {
+    setPusher(buildClient());
+  }, [key])
 
   return pusher;
 }
