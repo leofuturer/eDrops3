@@ -1,6 +1,6 @@
-import {authenticate} from '@loopback/authentication';
-import {inject} from '@loopback/core';
-import {CountSchema, Filter, repository} from '@loopback/repository';
+import { authenticate } from '@loopback/authentication';
+import { inject } from '@loopback/core';
+import { CountSchema, Filter, repository } from '@loopback/repository';
 import {
   del,
   ExpressRequestHandler,
@@ -16,9 +16,9 @@ import {
   RestBindings,
 } from '@loopback/rest';
 import path from 'path';
-import {Customer, FileInfo} from '../models';
-import {CustomerRepository, FileInfoRepository} from '../repositories';
-import {FILE_UPLOAD_SERVICE, STORAGE_DIRECTORY} from '../services';
+import { Customer, FileInfo } from '../models';
+import { CustomerRepository, FileInfoRepository } from '../repositories';
+import { FILE_UPLOAD_SERVICE, STORAGE_DIRECTORY } from '../services';
 
 export class CustomerFileInfoController {
   /**
@@ -32,7 +32,7 @@ export class CustomerFileInfoController {
     protected fileRepository: FileInfoRepository,
     @inject(FILE_UPLOAD_SERVICE) private handler: ExpressRequestHandler,
     @inject(STORAGE_DIRECTORY) private storageDirectory: string,
-  ) {}
+  ) { }
 
   @get('/customers/{id}/customerFiles', {
     responses: {
@@ -40,14 +40,14 @@ export class CustomerFileInfoController {
         description: 'Retrieve all customer files',
         content: {
           'application/json': {
-            schema: {type: 'array', items: getModelSchemaRef(FileInfo)},
+            schema: { type: 'array', items: getModelSchemaRef(FileInfo) },
           },
         },
       },
     },
   })
   async find(
-    @param.path.string('id') id: typeof Customer.prototype.id,
+    @param.path.string('id') id: typeof Customer.prototype.userId,
     @param.query.object('filter') filter?: Filter<FileInfo>,
   ): Promise<FileInfo[]> {
     return this.customerRepository.fileInfos(id).find(filter);
@@ -58,19 +58,19 @@ export class CustomerFileInfoController {
     responses: {
       '200': {
         description: 'Upload a file',
-        content: {'application/json': {schema: {type: 'object'}}},
+        content: { 'application/json': { schema: { type: 'object' } } },
       },
     },
   })
   async fileUpload(
-    @param.path.string('id') id: typeof Customer.prototype.id,
+    @param.path.string('id') id: typeof Customer.prototype.userId,
     @requestBody.file() request: Request,
     @inject(RestBindings.Http.RESPONSE) response: Response,
   ): Promise<object> {
     const username = await this.customerRepository
-      .findById(id)
-      .then(customer => {
-        return customer.username;
+      .user(id)
+      .then(user => {
+        return user.username;
       });
     return new Promise<object>((resolve, reject) => {
       this.handler(request, response, async (err: unknown) => {
@@ -80,17 +80,17 @@ export class CustomerFileInfoController {
           resolve(
             process.env.NODE_ENV !== 'production'
               ? await this.customerRepository.uploadDisk(
-                  request,
-                  response,
-                  username as string,
-                  id as string,
-                )
+                request,
+                response,
+                username as string,
+                id as string,
+              )
               : await this.customerRepository.uploadS3(
-                  request,
-                  response,
-                  username as string,
-                  id as string,
-                ),
+                request,
+                response,
+                username as string,
+                id as string,
+              ),
           );
         }
       });
@@ -104,7 +104,7 @@ export class CustomerFileInfoController {
         description: 'Download a file',
         content: {
           'application/json': {
-            schema: {type: 'array', items: getModelSchemaRef(FileInfo)},
+            schema: { type: 'array', items: getModelSchemaRef(FileInfo) },
           },
         },
       },
@@ -117,7 +117,7 @@ export class CustomerFileInfoController {
   ): Promise<Response> {
     const filename = await this.customerRepository
       .fileInfos(id)
-      .find({where: {id: fileId}})
+      .find({ where: { id: fileId } })
       .then(files => {
         return files[0].containerFileName;
       });
@@ -130,7 +130,7 @@ export class CustomerFileInfoController {
     responses: {
       '200': {
         description: 'Customer.FileInfo DELETE success count',
-        content: {'application/json': {schema: CountSchema}},
+        content: { 'application/json': { schema: CountSchema } },
       },
     },
   })
@@ -139,7 +139,7 @@ export class CustomerFileInfoController {
     @param.query.number('fileId') fileId: number,
   ): Promise<void> {
     // Soft delete
-    this.customerRepository.fileInfos(id).delete({where: {id: fileId}});
+    this.customerRepository.fileInfos(id).delete({ id: fileId });
     // Hard delete
   }
 }

@@ -1,6 +1,7 @@
-import {Admin} from '../../models';
+import {Admin, User} from '../../models';
+import { DTO } from '../types/model';
 
-export const defaultAdmins: Partial<Admin>[] = [
+export const defaultAdmins: DTO<Admin & User>[] = [
   {
     id: 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa',
     username: 'adminA',

@@ -17,7 +17,8 @@ import {
 import { SecurityBindings, UserProfile } from '@loopback/security';
 import { compare } from 'bcryptjs';
 import { CustomerCreateInterceptor } from '../interceptors';
-import { Customer, CustomerAddress, OrderInfo } from '../models';
+import { DTO } from '../lib/types/model';
+import { Customer, CustomerAddress, OrderInfo, User } from '../models';
 import { CustomerRepository, UserRepository } from '../repositories';
 
 export class CustomerController {
@@ -49,7 +50,7 @@ export class CustomerController {
         },
       },
     })
-    customer: Omit<Customer & CustomerAddress, 'id'>,
+    customer: DTO<Customer & User & CustomerAddress>,
   ): Promise<Customer> {
     return this.customerRepository.createCustomer(customer);
   }
@@ -115,76 +116,6 @@ export class CustomerController {
     await this.customerRepository.updateById(id, customer);
   }
 
-  @post('/customers/resendVerifyEmail')
-  @response(200, {
-    description: 'Resend verification email',
-  })
-  async resendVerifyEmail(
-    @requestBody({
-      content: {
-        'application/json': {
-          schema: {
-            properties: {
-              email: {
-                type: 'string',
-              },
-            },
-            required: ['email'],
-          },
-        },
-      },
-    })
-    email: {
-      email: string;
-    },
-  ): Promise<void> {
-    // console.log(email);
-    const customer = await this.customerRepository.findOne({
-      where: {
-        email: email.email,
-      },
-    });
-    if (!customer) {
-      // Don't throw error if customer not found to prevent email enumeration
-      // throw new HttpErrors.NotFound('Customer not found');
-    }
-    else if (!customer.emailVerified) {
-      await this.customerRepository.sendVerificationEmail(
-        customer as Customer,
-      );
-    }
-  }
-
-  @get('/customers/verify')
-  @response(200, {
-    description: 'Customer model instance',
-    content: {
-      'application/json': {
-        schema: getModelSchemaRef(Customer, { includeRelations: true }),
-      },
-    },
-  })
-  async verify(
-    @param.query.string('customerId') customerId: string,
-    @param.query.string('token') verificationToken: string,
-    @inject(RestBindings.Http.RESPONSE) response: Response,
-  ): Promise<Customer> {
-    const customer = await this.customerRepository.verifyEmail(
-      customerId,
-      verificationToken,
-    );
-    // console.log(customer);
-    if (!customer) {
-      throw new HttpErrors.NotFound('Customer not found');
-    }
-    if (customer.emailVerified) {
-      response.redirect('/emailVerified');
-    } else {
-      response.redirect('/emailVerifyInvalid');
-    }
-    return customer;
-  }
-
   @get('/customers/getApi')
   @response(200, {
     description: 'Get API key and domain',
@@ -237,124 +168,5 @@ export class CustomerController {
     @param.path.string('id') id: string,
   ): Promise<Partial<OrderInfo> | null>{
     return this.customerRepository.getCustomerCart(id);
-  }
-
-  @post('/customers/credsTaken')
-  @response(200, {
-    description: 'Check if creds are taken',
-    content: {
-      'application/json': {
-        schema: {
-          properties: {
-            usernameTaken: {
-              type: 'boolean',
-            },
-            emailTaken: {
-              type: 'boolean',
-            },
-          },
-        },
-      },
-    },
-  })
-  async checkCredsTaken(
-    @requestBody() body: { username: string; email: string },
-  ): Promise<{ usernameTaken: boolean; emailTaken: boolean }> {
-    if (!body.username && !body.email) {
-      throw new HttpErrors.NotFound('Missing username and/or email keys');
-    }
-
-    const usernameTaken = await this.customerRepository
-      .findOne({
-        where: {
-          username: body.username,
-        },
-      })
-      .then(customer => {
-        return !!customer;
-      })
-      .catch(err => {
-        throw new HttpErrors.InternalServerError(err);
-      });
-
-    const emailTaken = await this.customerRepository
-      .findOne({
-        where: {
-          email: body.email,
-        },
-      })
-      .then(customer => {
-        return !!customer;
-      })
-      .catch(err => {
-        throw new HttpErrors.InternalServerError(err);
-      });
-
-    return { usernameTaken, emailTaken };
-  }
-
-  @authenticate('jwt')
-  @post('/customers/changePassword')
-  @response(200, {
-    description: 'Customer CHANGE PASSWORD success',
-  })
-  async changePassword(
-    @requestBody({
-      content: {
-        'application/json': {
-          type: 'object',
-          schema: {
-            properties: {
-              oldPassword: { type: 'string' },
-              newPassword: { type: 'string' },
-            },
-          },
-        },
-      },
-    })
-    data: { oldPassword: string; newPassword: string },
-    @inject(SecurityBindings.USER)
-    userProfile: UserProfile,
-  ): Promise<void> {
-    const user = await this.customerRepository.findById(userProfile.id);
-
-    const passwordMatched = await compare(data.oldPassword, user.password);
-    if (!passwordMatched) {
-      throw new HttpErrors.Unauthorized('Invalid current password');
-    }
-    await this.customerRepository.changePassword(
-      userProfile.id,
-      data.newPassword,
-    );
-  }
-
-  @post('/customers/resetPassword')
-  @response(200, {
-    description: 'Customer RESET PASSWORD success',
-  })
-  async resetPassword(
-    @requestBody({
-      content: {
-        'application/json': {
-          type: 'object',
-          schema: {
-            properties: {
-              newPassword: { type: 'string' },
-              accessToken: { type: 'string' },
-            },
-          },
-        },
-      },
-    })
-    data: {
-      newPassword: string;
-      accessToken: string;
-    },
-  ): Promise<void> {
-    const id = await this.userRepository.verifyResetToken(data.accessToken);
-    if (!id) {
-      return;
-    }
-    await this.customerRepository.changePassword(id, data.newPassword);
   }
 }

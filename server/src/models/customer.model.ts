@@ -1,50 +1,27 @@
-import {hasMany, model, property} from '@loopback/repository';
-import {User} from './user.model';
-import {CustomerAddress} from './customer-address.model';
-import {FileInfo} from './file-info.model';
-import {OrderInfo} from './order-info.model';
+import { belongsTo, Entity, hasMany, model, property } from '@loopback/repository';
+import { CustomerAddress } from './customer-address.model';
+import { FileInfo } from './file-info.model';
+import { OrderInfo } from './order-info.model';
+import { User } from './user.model';
 
-// @model({
-//   settings: {
-//     emailVerificationRequired: true,
-//     validateUpsert: true,
-//     idInjection: true,
-//     remoting: {
-//       sharedMethods: {
-//         '*': false,
-//         create: true,
-//         findById: true,
-//         deleteById: true,
-//         'prototype.patchAttributes': true,
-//         'prototype.replaceById': true,
-//         find: true,
-//         credsTaken: true,
-//         login: true,
-//         logout: true,
-//         changePassword: true,
-//         resendVerifyEmail: true,
-//         confirm: true,
-//         getApiToken: true,
-//         'prototype.deleteFile': true,
-//         'prototype.downloadFile': true,
-//         'prototype.uploadFile': true,
-//         'prototype.__get__customerFiles': true,
-//         'prototype.getCustomerCart': true,
-//         'prototype.__get__customerOrders': true,
-//         'prototype.__create__customerOrders': true,
-//         'prototype.getChipOrders': true,
-//         'prototype.__get__customerAddresses': true,
-//         'prototype.__create__customerAddresses': true,
-//         'prototype.__destroyById__customerAddresses': true,
-//         'prototype.__updateById__customerAddresses': true
-//       }
-//     },
-//   }
-// })
 @model({
-  settings: {description: 'Additional customer information', forceId: false},
+  settings: {
+    description: 'Additional customer information',
+    forceId: false,
+    scope: {
+      include: ['user'],
+    },
+  },
 })
-export class Customer extends User {
+export class Customer extends Entity {
+  @property({
+    type: 'string',
+    id: 1,
+    defaultFn: 'uuidv4',
+    limit: 36,
+  })
+  id?: string;
+
   @property({
     type: 'string',
     required: true,
@@ -70,21 +47,16 @@ export class Customer extends User {
   customerType: 'person' | 'company';
 
   @hasMany(() => CustomerAddress)
-  customerAddresses: CustomerAddress[];
+  customerAddresses?: CustomerAddress[];
 
   @hasMany(() => FileInfo)
-  fileInfos: FileInfo[];
+  fileInfos?: FileInfo[];
 
   @hasMany(() => OrderInfo)
-  orderInfos: OrderInfo[];
+  orderInfos?: OrderInfo[];
 
-  // @belongsTo(() => User)
-  // userId: string;
-  // Define well-known properties here
-
-  // Indexer property to allow additional data
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  [prop: string]: any;
+  @belongsTo(() => User)
+  userId?: string;
 
   constructor(data?: Partial<Customer>) {
     super(data);

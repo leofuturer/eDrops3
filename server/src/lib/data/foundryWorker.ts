@@ -1,6 +1,7 @@
-import { FoundryWorker } from '../../models';
+import { FoundryWorker, User } from '../../models';
+import { DTO } from '../types/model';
 
-export const defaultFoundryWorkers: Partial<FoundryWorker>[] = [
+export const defaultFoundryWorkers: DTO<FoundryWorker & User>[] = [
   {
     id: 'aaaaaaaa-aaaa-bbbb-aaaa-aaaaaaaaaaaa',
     street: '1400 Midware Ave',
