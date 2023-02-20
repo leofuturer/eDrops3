@@ -1,14 +1,7 @@
 import {Entity, model, property} from '@loopback/repository';
 
-// @model({
-//   settings: {
-//     validateUpsert: true,
-//     plural: 'orderItemBase',
-//     idInjection: true,
-//   }
-// })
 @model({settings: {description: 'Order item base information'}})
-export class OrderItemBase extends Entity {
+export class OrderItem extends Entity {
   @property({
     type: 'number',
     id: 1,
@@ -75,19 +68,13 @@ export class OrderItemBase extends Entity {
   })
   orderInfoId?: number;
 
-  // Define well-known properties here
-
-  // Indexer property to allow additional data
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  [prop: string]: any;
-
-  constructor(data?: Partial<OrderItemBase>) {
+  constructor(data?: Partial<OrderItem>) {
     super(data);
   }
 }
 
-export interface OrderItemBaseRelations {
+export interface OrderItemRelations {
   // describe navigational properties here
 }
 
-export type OrderItemBaseWithRelations = OrderItemBase & OrderItemBaseRelations;
+export type OrderItemWithRelations = OrderItem & OrderItemRelations;
