@@ -6,7 +6,7 @@ import { request, customerGetApiToken } from '../api';
 const useShopify = () => {
   const [token, setToken] = useState<string>('');
   const [domain, setDomain] = useState<string>('');
-  const [shopify, setShopify] = useState<ShopifyClient.Client | null>(null);
+  const [shopify, setShopify] = useState<ShopifyClient.Client>(buildClient());
 
   useEffect(() => {
     request(customerGetApiToken, 'GET', {}, false)
@@ -21,14 +21,16 @@ const useShopify = () => {
       });
   }, [])
 
+  function buildClient(): ShopifyClient.Client{
+    const client = ShopifyClient.buildClient({
+      storefrontAccessToken: token,
+      domain,
+    });
+    return client;
+  }
+
   useEffect(() => {
-    if (token && domain) {
-      const client = ShopifyClient.buildClient({
-        storefrontAccessToken: token,
-        domain,
-      });
-      setShopify(client);
-    }
+    setShopify(buildClient());
   }, [token, domain])
 
   return shopify;

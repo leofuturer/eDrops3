@@ -11,7 +11,7 @@ function CartProduct({ product, onDelete, onChange }: { product: ProductOrder, o
   // debounce quantity change useEffect
   const debouncedChange = useCallback(_.debounce((qty) => {
     onChange(product, qty);
-  }, 500), []);
+  }, 250), []);
 
   useEffect(() => {
     debouncedChange(qty);
