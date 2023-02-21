@@ -5,9 +5,6 @@ import { User } from './user.model';
   settings: {
     description: 'Additional admin information',
     forceId: false,
-    scope: {
-      include: ['user'],
-    }
   }
 })
 export class Admin extends Entity {

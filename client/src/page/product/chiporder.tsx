@@ -119,6 +119,10 @@ function ChipOrder() {
               <label htmlFor="wcpa">With Cover Plate Assembled</label>
             </p>
           </div>
+          <div className="flex">
+            { /* @ts-expect-error */}
+            Price: {cart.enabled ? `${product.variants && product.variants[0].price.amount}`: 'Coming soon'}
+          </div>
           <div className="flex space-x-2 items-center">
             <label htmlFor="quantity">Quantity:&nbsp;</label>
             <>
@@ -130,8 +134,10 @@ function ChipOrder() {
                 value={quantity}
                 onChange={(e) => setQuantity(e.target.valueAsNumber)}
               />
-              { /* @ts-expect-error */}
-              <span className="flex items-center">X ${product.variants && product.variants[0].price.amount} = ${product.variants && (quantity * parseFloat(product.variants[0]?.price.amount)).toFixed(2)}</span>
+              {cart.enabled &&
+                // @ts-expect-error
+                <span className="flex items-center">X ${product.variants && product.variants[0].price.amount} = ${product.variants && (quantity * parseFloat(product.variants[0]?.price.amount)).toFixed(2)}</span>
+              }
             </>
           </div>
           <div className="flex justify-center items-center">
@@ -139,13 +145,13 @@ function ChipOrder() {
               <button
                 type="button"
                 className="bg-primary_light text-white px-4 py-2 rounded w-full"
-                onClick={handleAddToCart}
+                onClick={() => cart.enabled && handleAddToCart()}
               >
-                Add to Cart
+                {cart.enabled ? 'Add to Cart' : 'Coming soon'}
               </button>
             }
           </div>
-          <div className="">Note: Price excludes sales tax</div>
+          <div className="text-sm">Note: Price excludes sales tax</div>
         </div>
       </div>
     </div >
