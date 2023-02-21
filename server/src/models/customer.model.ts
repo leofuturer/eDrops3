@@ -8,9 +8,6 @@ import { User } from './user.model';
   settings: {
     description: 'Additional customer information',
     forceId: false,
-    scope: {
-      include: ['user'],
-    },
   },
 })
 export class Customer extends Entity {

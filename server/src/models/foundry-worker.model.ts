@@ -10,9 +10,6 @@ import { User } from './user.model';
   settings: {
     description: 'Additional foundry worker information',
     forceId: false,
-    scope: {
-      include: ['user'],
-    },
   },
 })
 export class FoundryWorker extends Entity {

@@ -61,7 +61,7 @@ function Upload() {
 
   function onFileUpload() {
     file && request(customerFileRetrieve.replace('id', cookies.userId), 'GET', {}, true).then((res) => {
-      console.log(res);
+      // console.log(res);
       const noDuplicate = res.data.every((f: FileInfo) => !(f.fileName === file.name && !f.isDeleted && !checked));
       noDuplicate ? uploadFileRequest({
         isPublic: pType,
