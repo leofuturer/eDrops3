@@ -75,7 +75,7 @@ function Orders() {
   return (
     <ManageRightLayout title={location.pathname === '/manage/admin-retrieve-user-orders' ? 'Orders for ${username}' : 'Orders'}>
       <SEO
-        title="eDrops | Orders"
+        title="eDroplets | Orders"
         description=""
         metadata={metadata}
       />

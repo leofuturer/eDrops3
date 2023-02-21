@@ -24,7 +24,7 @@ function NavTop() {
       <div className="flex flex-row justify-between items-center px-[20%] h-full text-lg text-white font-semibold">
         <div className="flex flex-row items-center h-full space-x-8">
           <NavLink to="/home" className="flex-none flex flex-row items-center h-full">
-            <h1 className="text-2xl font-bold hover:text-accent hidden lg:flex">eDrops</h1>
+            <h1 className="text-2xl font-bold hover:text-accent hidden lg:flex">eDroplets</h1>
             <img className="h-3/4 flex-none" src="/img/edrop_logo_inverted.png" alt="" />
           </NavLink>
           <NavLink to="/home" className="hover:text-accent hidden xl:flex">Home</NavLink>

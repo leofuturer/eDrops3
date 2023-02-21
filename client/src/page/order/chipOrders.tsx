@@ -121,7 +121,7 @@ function ChipOrders() {
   return (
     <ManageRightLayout title="Chip Orders">
       <SEO
-        title="eDrops | Chip Orders"
+        title="eDroplets | Chip Orders"
         description=""
         metadata={metadata}
       />

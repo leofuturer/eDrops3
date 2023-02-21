@@ -31,7 +31,7 @@ function Register() {
   return (
     <div className="flex items-center justify-center py-20">
       <SEO
-        title="eDrops | Register"
+        title="eDroplets | Register"
         description=""
         metadata={metadata}
       />

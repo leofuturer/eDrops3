@@ -4,16 +4,11 @@
 #   acme_ca https://acme-staging-v02.api.letsencrypt.org/directory
 }
 
-www.edrops.org {
-   redir https://edrops.org{uri}
+www.edroplets.org {
+   redir https://edroplets.org{uri}
 }
 
-# api.edrops.org {
-#    reverse_proxy /* edrop_backend:3000
-# }
-
-# edrops.org, localhost:80, 54.241.15.160, ec2-54-241-15-160.us-west-1.compute.amazonaws.com {
-edrops.org {
+edroplets.org {
     log {
         output stdout
     }
@@ -41,7 +36,7 @@ edrops.org {
     file_server @frontendApi
 }
 
-community.edrops.org {
+community.edroplets.org {
     log {
         output stdout
     }

@@ -15,7 +15,7 @@ function AllItems() {
   return (
     <div className="flex flex-col items-center space-y-10 mb-10">
       <SEO
-        title="eDrops | Products"
+        title="eDroplets | Products"
         description=""
         metadata={metadata}
       />

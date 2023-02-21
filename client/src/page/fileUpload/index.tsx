@@ -174,7 +174,7 @@ function Upload() {
   return (
     <div className="flex flex-col items-center">
       <SEO
-        title="eDrops | Upload"
+        title="eDroplets | Upload"
         description=""
         metadata={metadata}
       />
