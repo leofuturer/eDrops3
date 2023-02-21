@@ -221,12 +221,12 @@ export class UserRepository extends DefaultCrudRepository<
               // name: user.username,
             },
           ],
-          // subject: '[eDrops] Email Verification',
+          // subject: '[eDroplets] Email Verification',
           dynamic_template_data: {
             username: user.username,
             // firstName: user.firstName,
             // lastName: user.lastName,
-            text: "Thanks for registering to use eDrops. Please verify your email by clicking on the following link:",
+            text: "Thanks for registering to use eDroplets. Please verify your email by clicking on the following link:",
             verifyLink: `${baseURL}/api/users/verify?userId=${user.id}&token=${verificationTokenHash}`,
           }
         },
@@ -284,7 +284,7 @@ export class UserRepository extends DefaultCrudRepository<
     };
     const resetToken = sign(
       payload,
-      Buffer.from(process.env.JWT_SECRET ?? 't3stS3cr3teDrops123').toString(
+      Buffer.from(process.env.JWT_SECRET ?? 't3stS3cr3teDroplets123').toString(
         'base64',
       ),
       {
@@ -338,7 +338,7 @@ export class UserRepository extends DefaultCrudRepository<
     const tokenDecoded = Buffer.from(token, 'base64').toString('ascii');
     const payload = verify(
       tokenDecoded,
-      Buffer.from(process.env.JWT_SECRET ?? 't3stS3cr3teDrops123').toString(
+      Buffer.from(process.env.JWT_SECRET ?? 't3stS3cr3teDroplets123').toString(
         'base64',
       ),
     ) as JwtPayload;

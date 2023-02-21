@@ -69,7 +69,7 @@ function ResetPassword() {
             <NavLink to="/forgetPass">Resend Email for Password Reset or Email Verification</NavLink>
           </div>
           <div className="link">
-            <a href="mailto:service@edrops.org">Contact Us for Help</a>
+            <a href="mailto:info@edroplets.org">Contact Us for Help</a>
           </div>
         </div>
       )} */}
@@ -84,7 +84,7 @@ function ResetPassword() {
             <NavLink to="/forgetPass">Resend Email for Password Reset or Email Verification</NavLink>
           </div>
           <div className="text-center text-primary_lig">
-            <a href="mailto:service@edrops.org">Contact Us for Help</a>
+            <a href="mailto:info@edroplets.org">Contact Us for Help</a>
           </div>
         </div>
       )}

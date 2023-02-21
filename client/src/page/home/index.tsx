@@ -13,7 +13,7 @@ function Home() {
 
   return (
     <div className="flex flex-col space-y-16 mb-16">
-      <SEO title="eDrops | Home"
+      <SEO title="eDroplets | Home"
         description=""
         metadata={metadata} />
       <div className="grid grid-cols-3 text-black">

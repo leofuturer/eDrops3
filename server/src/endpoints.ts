@@ -60,7 +60,7 @@ const endpoints = fs
     return reducedEndpoints;
   })
   .then(async(res) => {
-    const configEndpoints = await fs.readFile(path.resolve(__dirname, '../../client/src/api/serverConfig.js'), 'utf8').then(
+    const configEndpoints = await fs.readFile(path.resolve(__dirname, '../../client/src/api/lib/serverConfig.ts'), 'utf8').then(
       data => {
         const lines = data.split('\n');
         const endpointLines = lines.filter(line => line.includes('{ApiRootUrl}'));
@@ -84,7 +84,8 @@ const endpoints = fs
     const serverNotInConfig = serverEndpoints.filter(endpoint => {
       return !configEndpoints.includes(endpoint)
     });
-    console.log(configNotInServer);
+    console.log('Config endpoints not in server', configNotInServer);
+    console.log('Server endpoints not in config', serverNotInConfig);
   })
   .catch(err => {
     console.log(err);

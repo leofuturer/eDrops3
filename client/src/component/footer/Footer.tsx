@@ -9,16 +9,16 @@ function FooterPage() {
     <footer className="grid grid-cols-4 justify-items-center mx-[16%] text-[12px] border-t py-10 gap-8">
       <div className="flex flex-col items-center space-y-4">
         <img className="max-h-[50px] mr-[10px]" src="/img/edrop_logo.png" alt="" />
-        <h3 className="text-[26px] font-bold">eDrops</h3>
+        <h3 className="text-[26px] font-bold">eDroplets</h3>
         <p>
-          &copy; eDrops 2018-2023
+          &copy; eDroplets 2018-2023
         </p>
       </div>
       <div className="flex flex-col items-center space-y-4">
         <h3 className="pt-[6px] text-[18px] font-bold">Contact</h3>
         <div className="flex flex-col items-center">
           {/* <p>Phone: +1 234-567-8999</p> */}
-          <a href="mailto:service@edrops.org" className="text-primary">Email: service@edrops.org</a>
+          <a href="mailto:info@edroplets.org" className="text-primary">Email: info@edroplets.org</a>
         </div>
         <div className="flex flex-col items-center">
           <p>420 Westwood Plaza</p>
