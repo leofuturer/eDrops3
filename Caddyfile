@@ -4,6 +4,14 @@
 #   acme_ca https://acme-staging-v02.api.letsencrypt.org/directory
 }
 
+www.edrops.org {
+    redir https://www.edroplets.org{uri}
+}
+
+edrops.org {
+    redir https://edroplets.org{uri}
+}
+
 www.edroplets.org {
    redir https://edroplets.org{uri}
 }
