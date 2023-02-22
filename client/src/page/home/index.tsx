@@ -46,7 +46,7 @@ function Home() {
           </NavLink>
           <NavLink to={pcbChipPageLink} className="flex flex-col">
             <figure className="scale-90 hover:scale-100 duration-500 ease-in-out">
-              <img src="/img/pcb_chip_compressed.jpg" alt="PCB-based Digital Microfluidics Chip" className="pointer-events-none" />
+              <img src="/img/pcb_chip.png" alt="PCB-based Digital Microfluidics Chip" className="pointer-events-none" />
             </figure>
             <h4 className="text-primary_light text-lg border-t-2 py-8 text-center">PCB-based Digital Microfluidics Chip</h4>
           </NavLink>
