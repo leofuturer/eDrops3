@@ -1,11 +1,12 @@
 import Cookies from 'js-cookie';
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useCookies } from 'react-cookie';
 import { useLocation } from 'react-router-dom';
 import { adminDownloadFile, adminGetChipOrders, customerGetChipOrders, downloadFileById, editOrderStatus, request, workerDownloadFile, workerGetChipOrders } from '../../api';
 import SEO from '../../component/header/seo';
 import ManageRightLayout from '../../component/layout/ManageRightLayout';
 import Loading from '../../component/ui/Loading';
+import { CartContext } from '../../context/CartContext';
 import { ChipOrder } from '../../types';
 import { metadata } from './metadata.jsx';
 
@@ -19,6 +20,8 @@ function ChipOrders() {
   const location = useLocation();
 
   const [cookies] = useCookies(['userId', 'userType', 'access_token']);
+
+  const cart = useContext(CartContext);
 
   useEffect(() => {
     if (location.pathname === '/manage/admin-retrieve-worker-orders'
@@ -146,7 +149,7 @@ function ChipOrders() {
           </tr>
         </thead>
         <tbody>
-          {orderList.length !== 0 ? orderList.map((item, index) => (
+          {cart.enabled && orderList.length !== 0 ? orderList.map((item, index) => (
             <tr key={item?.id}>
               <td className="">{item?.id}</td>
               {cookies.userType !== 'customer' && <td className="">{item?.customerName}</td>}
