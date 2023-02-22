@@ -21,17 +21,17 @@ function NavTop() {
 
   return (
     <header className="h-[80px] bg-primary w-full">
-      <div className="flex flex-row justify-between items-center px-[20%] h-full text-lg text-white font-semibold">
-        <div className="flex flex-row items-center h-full space-x-8">
-          <NavLink to="/home" className="flex-none flex flex-row items-center h-full">
-            <h1 className="text-2xl font-bold hover:text-accent hidden lg:flex">eDroplets</h1>
-            <img className="h-3/4 flex-none" src="/img/edrop_logo_inverted.png" alt="" />
+      <div className="flex flex-row justify-between items-center px-[20%] h-full text-2xl font-medium text-white">
+        <div className="flex flex-row items-center py-4 h-full space-x-8">
+          <NavLink to="/home" className="flex-none flex flex-row items-end h-full">
+            <img className="h-full flex-none" src="/img/edrop_logo_inverted.png" alt="" />
+            <h1 className="text-4xl hover:text-accent hidden lg:flex">Droplets</h1>
           </NavLink>
-          <NavLink to="/home" className="hover:text-accent hidden xl:flex">Home</NavLink>
-          <NavLink to="/allItems" className="hover:text-accent">Products</NavLink>
-          <NavLink to="/featureComing" className="hover:text-accent">Community</NavLink>
+          <NavLink to="/home" className="hover:text-accent hidden xl:flex pt-2">Home</NavLink>
+          <NavLink to="/allItems" className="hover:text-accent pt-2">Products</NavLink>
+          <NavLink to="/featureComing" className="hover:text-accent pt-2">Community</NavLink>
         </div>
-        <div className="flex flex-row items-center h-full space-x-8">
+        <div className="flex flex-row items-center h-full space-x-8 text-xl pt-2">
           {cookies.access_token ? <>
             {cookies.userType === "customer" && <>
               <NavLink to="/manage/cart" className="hover:text-accent"><i className="fa fa-shopping-cart" />
@@ -52,8 +52,8 @@ function NavTop() {
             <UserMenu username={cookies.username} onSignout={signout} />
           </> :
             <>
-              <NavLink to="/login" className="hover:text-accent">Login</NavLink>
-              <NavLink to="/register" className="hover:text-accent">Sign Up</NavLink>
+              <NavLink to="/login" className="hover:text-accent text-2xl">Login</NavLink>
+              <NavLink to="/register" className="hover:text-accent text-2xl">Sign Up</NavLink>
             </>
           }
         </div>
