@@ -11,15 +11,18 @@ import {
 const DXFPreview = React.lazy(() => import('./dxf_preview'));
 
 function ChipOrder() {
-  type Material = 'ITO Glass' | 'Paper' | 'PCB';
-  const material: Material[] = ['ITO Glass', 'Paper', 'PCB'];
-  const [cIndex, setCIndex] = useState(0);
+  enum Material {
+    Glass = 'ITO Glass',
+    PCB = 'PCB',
+    Paper = 'Paper',
+  }
+  const material: Material[] = [Material.Glass, Material.PCB, Material.Paper];
   const [customAttrs, setCustomAttrs] = useState<{
     material: Material
     wcpa: boolean;
     fileInfo: FileInfo;
   }>({
-    material: 'ITO Glass',
+    material: Material.Glass,
     wcpa: false,
     fileInfo: {} as FileInfo
   });
@@ -49,9 +52,8 @@ function ChipOrder() {
       });
   }, [shopify]);
 
-  function setCurrentIndex(index: number) {
-    setCIndex(index);
-    setCustomAttrs(attrs => ({ ...attrs, material: material[index] }));
+  function setMaterial(material: Material) {
+    setCustomAttrs(attrs => ({ ...attrs, material }));
   }
 
   function handleAddToCart() {
@@ -66,7 +68,7 @@ function ChipOrder() {
       <div className="grid grid-cols-2 md:w-2/3 gap-4">
         <div className="flex flex-col space-y-2">
           {/* DY - replace temporary image above with a preview of the uploaded PDF */}
-          <div className="h-[500px]">
+          <div className="">
             <Suspense fallback={<Loading />}>
               <DXFPreview fileInfo={location.state.fileInfo} />
             </Suspense>
@@ -80,16 +82,15 @@ function ChipOrder() {
           <div className="">File to be fabricated:</div>
           <div>{customAttrs.fileInfo.fileName}</div>
           <div className="flex flex-col space-y-4">
-            <h2 className="text-2xl">Chip Configuration Options</h2>
+            <h2 className="text-2xl">Chip Substrate Options</h2>
             <div className="grid grid-cols-3 gap-4">
-              <h2 className="col-span-3 text-2xl">Process</h2>
               <div className="col-span-1 flex flex-col">
                 {material.map((material, i) => (
                   <button
                     type="button"
                     key={i}
-                    className={`${cIndex === i ? 'bg-primary_light text-white' : 'hover:bg-gray-200 text-primary_light hover:text-primary'} rounded-md px-4 py-2 `}
-                    onClick={() => setCurrentIndex(i)}
+                    className={`${material == customAttrs.material ? 'bg-primary_light text-white' : 'hover:bg-gray-200 text-primary_light hover:text-primary'} rounded-md px-4 py-2 `}
+                    onClick={() => setMaterial(material)}
                   >
                     <a>
                       {material}
@@ -98,19 +99,20 @@ function ChipOrder() {
                 ))}
               </div>
               <div className="col-span-2">
-                <p className={`${cIndex === 0 ? '' : 'hidden'} text-justify`}>
-                  ITO glass is good substrate choice for optical applications. The ITO layer has
-                  thickness of 200 nm. The glass is soda-lime glass with thickness of 0.7 nm. The
-                  whole substrate is 4 inches in diameter.
+                <p className={`${customAttrs.material === Material.Glass ? '' : 'hidden'} text-justify`}>
+                  ITO glass-based chip is suitable for applications that require optical sensors.
+                  It features a transparent substrate and highly smooth surface.
+                  Currently, a 4-inch circular substrate is supported.
                 </p>
-                <p className={`${cIndex === 1 ? '' : 'hidden'} text-justify`}>
-                  Paper is good substrate choice for optical applications. The ITO layer has a
-                  thickness of 200 nm. The glass is soda-lime glass with thickness of 0.7 nm. The
-                  whole substrate is 4 inches in diameter.
+                <p className={`${customAttrs.material === Material.PCB ? '' : 'hidden'} text-justify`}>
+                  PCB-based chip is suitable for applications that require high throughput or complex protocols.
+                  It features up to 1000 electrodes.
+                  Currently, a 103mm x 68mm rectangular substrate is supported.
                 </p>
-                <p className={`${cIndex === 2 ? '' : 'hidden'} text-justify`}>
-                  PCB has thickness of 200 nm, which enables multiple layers of patterns. The
-                  whole substrate is 4 inches in diameter.
+                <p className={`${customAttrs.material === Material.Paper ? '' : 'hidden'} text-justify`}>
+                  Paper-based chip is suitable for low-cost applications or  proof-of-concept experiments.
+                  It features fast turn around time and affordability.
+                  Currently, a 103mm x 68mm rectangular substrate is supported.
                 </p>
               </div>
             </div>
@@ -121,7 +123,7 @@ function ChipOrder() {
           </div>
           <div className="flex">
             { /* @ts-expect-error */}
-            Price: {cart.enabled ? `${product.variants && product.variants[0].price.amount}`: 'Coming soon'}
+            Price: {cart.enabled ? `${product.variants && product.variants[0].price.amount}` : 'Coming soon'}
           </div>
           <div className="flex space-x-2 items-center">
             <label htmlFor="quantity">Quantity:&nbsp;</label>
@@ -130,7 +132,7 @@ function ChipOrder() {
                 id="quantity"
                 type="number"
                 min={1}
-                className="w-8"
+                className="w-8 outline outline-1 rounded-md pl-1"
                 value={quantity}
                 onChange={(e) => setQuantity(e.target.valueAsNumber)}
               />
