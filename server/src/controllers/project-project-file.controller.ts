@@ -1,33 +1,28 @@
-import {inject} from '@loopback/core';
+import { inject } from '@loopback/core';
 import {
-  Count,
   CountSchema,
   Filter,
-  repository,
-  Where,
+  repository
 } from '@loopback/repository';
 import {
-  oas,
   del,
   ExpressRequestHandler,
   get,
-  getModelSchemaRef,
-  getWhereSchemaFor,
-  param,
+  getModelSchemaRef, oas, param,
   patch,
   post,
   Request,
   requestBody,
   Response,
-  RestBindings,
+  RestBindings
 } from '@loopback/rest';
-import {Project, ProjectFile, User} from '../models';
+import { ProjectFile, User } from '../models';
 import {
   ProjectFileRepository,
   ProjectRepository,
-  UserRepository,
+  UserRepository
 } from '../repositories';
-import {FILE_UPLOAD_SERVICE, STORAGE_DIRECTORY} from '../services';
+import { FILE_UPLOAD_SERVICE, STORAGE_DIRECTORY } from '../services';
 
 export class ProjectProjectFileController {
   constructor(

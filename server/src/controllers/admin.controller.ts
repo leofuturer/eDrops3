@@ -6,7 +6,7 @@ import {
   Filter,
   FilterExcludingWhere,
   repository,
-  Where,
+  Where
 } from '@loopback/repository';
 import {
   del,
@@ -18,16 +18,15 @@ import {
   post,
   put,
   requestBody,
-  response,
+  response
 } from '@loopback/rest';
-import {SecurityBindings, securityId, UserProfile} from '@loopback/security';
+import { SecurityBindings, UserProfile } from '@loopback/security';
 import { compare } from 'bcryptjs';
 import fetch from 'node-fetch';
 import Client from 'shopify-buy';
 import Products from '../lib/constants/productConstants';
-import log from '../lib/toolbox/log';
-import {Admin, User, OrderChip} from '../models';
-import {AdminRepository, OrderProductRepository, OrderInfoRepository} from '../repositories';
+import { Admin, OrderChip, User } from '../models';
+import { AdminRepository, OrderInfoRepository, OrderProductRepository } from '../repositories';
 
 // @ts-ignore
 global.fetch = fetch;
@@ -49,21 +48,20 @@ export class AdminController {
     public orderInfo: OrderInfoRepository,
     // @repository(FoundryWorkerRepository)
     // public foundryWorkerRepository: FoundryWorkerRepository,
-  ) {}
+  ) { }
 
   @post('/admins')
   @response(200, {
     description: 'Admin model instance',
-    content: {'application/json': {schema: getModelSchemaRef(Admin)}},
+    content: { 'application/json': { schema: getModelSchemaRef(Admin) } },
   })
   async create(
     @requestBody({
       content: {
         'application/json': {
-          schema: getModelSchemaRef(Admin, {
-            title: 'NewAdmin',
-            exclude: ['id'],
-          }),
+          schema: {
+            type: 'object',
+          },
         },
       },
     })
@@ -79,7 +77,7 @@ export class AdminController {
       'application/json': {
         schema: {
           type: 'array',
-          items: getModelSchemaRef(Admin, {includeRelations: true}),
+          items: getModelSchemaRef(Admin, { includeRelations: true }),
         },
       },
     },
@@ -91,13 +89,13 @@ export class AdminController {
   @patch('/admins')
   @response(200, {
     description: 'Admin PATCH success count',
-    content: {'application/json': {schema: CountSchema}},
+    content: { 'application/json': { schema: CountSchema } },
   })
   async updateAll(
     @requestBody({
       content: {
         'application/json': {
-          schema: getModelSchemaRef(Admin, {partial: true}),
+          schema: getModelSchemaRef(Admin, { partial: true }),
         },
       },
     })
@@ -112,13 +110,13 @@ export class AdminController {
     description: 'Admin model instance',
     content: {
       'application/json': {
-        schema: getModelSchemaRef(Admin, {includeRelations: true}),
+        schema: getModelSchemaRef(Admin, { includeRelations: true }),
       },
     },
   })
   async findById(
     @param.path.string('id') id: string,
-    @param.filter(Admin, {exclude: 'where'})
+    @param.filter(Admin, { exclude: 'where' })
     filter?: FilterExcludingWhere<Admin>,
   ): Promise<Admin> {
     return this.adminRepository.findById(id, filter);
@@ -133,7 +131,7 @@ export class AdminController {
     @requestBody({
       content: {
         'application/json': {
-          schema: getModelSchemaRef(Admin, {partial: true}),
+          schema: getModelSchemaRef(Admin, { partial: true }),
         },
       },
     })
@@ -252,7 +250,7 @@ export class AdminController {
   async getChipOrders(
   ): Promise<OrderChip[]> {
     let allOrderChips: OrderChip[] = [];
-    const completedOrders = await this.orderInfo.find({ include: [{relation: 'orderChips'}], where: {orderComplete : true} });
+    const completedOrders = await this.orderInfo.find({ include: [{ relation: 'orderChips' }], where: { orderComplete: true } });
     completedOrders.map((orderInfo) => {
       allOrderChips = allOrderChips.concat.apply(allOrderChips, orderInfo.orderChips);
     });
@@ -285,90 +283,5 @@ export class AdminController {
     };
     console.log(info);
     return info;
-  }
-
-  @post('/admins/credsTaken')
-  @response(200, {
-    description: 'Check if creds are taken',
-    content: {
-      'application/json': {
-        schema: {
-          properties: {
-            usernameTaken: {
-              type: 'boolean',
-            },
-            emailTaken: {
-              type: 'boolean',
-            },
-          },
-        },
-      },
-    },
-  })
-  async checkCredsTaken(
-    @requestBody() body: {username: string; email: string},
-  ): Promise<{usernameTaken: boolean; emailTaken: boolean}> {
-    if (!body.username && !body.email) {
-      throw new HttpErrors.NotFound('Missing username and/or email keys');
-    }
-
-    const usernameTaken = await this.adminRepository
-      .findOne({
-        where: {
-          username: body.username,
-        },
-      })
-      .then(admin => admin !== undefined)
-      .catch(err => {
-        throw new HttpErrors.InternalServerError(err);
-      });
-
-    const emailTaken = await this.adminRepository
-      .findOne({
-        where: {
-          email: body.email,
-        },
-      })
-      .then(admin => admin !== undefined)
-      .catch(err => {
-        throw new HttpErrors.InternalServerError(err);
-      });
-
-    return {usernameTaken, emailTaken};
-  }
-
-  @authenticate('jwt')
-  @post('/admins/changePassword')
-  @response(200, {
-    description: 'Admin CHANGE PASSWORD success',
-  })
-  async changePassword(
-    @requestBody({
-      content: {
-        'application/json': {
-          type: 'object',
-          schema: {
-            properties: {
-              oldPassword: {type: 'string'},
-              newPassword: {type: 'string'},
-            },
-          },
-        },
-      },
-    })
-    data: {oldPassword: string; newPassword: string},
-    @inject(SecurityBindings.USER)
-    userProfile: UserProfile,
-  ): Promise<void> {
-    const user = await this.adminRepository.findById(userProfile.id);
-
-    const passwordMatched = await compare(data.oldPassword, user.password);
-    if (!passwordMatched) {
-      throw new HttpErrors.Unauthorized('Invalid current password');
-    }
-    await this.adminRepository.changePassword(
-      userProfile.id,
-      data.newPassword,
-    );
   }
 }

@@ -1,56 +1,28 @@
-import {model, property, belongsTo, Entity} from '@loopback/repository';
-import {User} from '.';
+import { model, property, belongsTo, Entity } from '@loopback/repository';
+import { User } from './user.model';
 
-// @model({
-//   settings: {
-//     validateUpsert: true,
-//     idInjection: true,
-//     remoting: {
-//       sharedMethods: {
-//         '*': false,
-//         create: true,
-//         findById: true,
-//         deleteById: true,
-//         'prototype.patchAttributes': true,
-//         'prototype.replaceById': true,
-//         find: true,
-//         credsTaken: true,
-//         login: true,
-//         logout: true,
-//         resetPassword: true,
-//         setPassword: true,
-//         changePassword: true,
-//         getApiToken: true,
-//         returnAllItems: true,
-//         returnOneItem: true,
-//         downloadFile: true,
-//         getChipOrders: true
-//       }
-//     },
-//   }
-// })
-@model({settings: {description: 'Additional admin information', forceId: false}})
-export class Admin extends User {
-  // @property({
-  //   type: 'number',
-  //   id: 1,
-  //   generated: true,
-  //   updateOnly: true,
-  // })
-  // id?: number;
+@model({
+  settings: {
+    description: 'Additional admin information',
+    forceId: false,
+  }
+})
+export class Admin extends Entity {
+  @property({
+    type: 'string',
+    id: 1,
+    defaultFn: 'uuidv4',
+    limit: 36,
+  })
+  id?: string;
 
   @property({
     type: 'string',
   })
   phoneNumber?: string;
 
-  // @belongsTo(() => User)
-  // userId: string;
-  // Define well-known properties here
-
-  // Indexer property to allow additional data
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  [prop: string]: any;
+  @belongsTo(() => User)
+  userId?: string;
 
   constructor(data?: Partial<Admin>) {
     super(data);

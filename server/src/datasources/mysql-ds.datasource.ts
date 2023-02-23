@@ -16,6 +16,7 @@ const config = {
   password: process.env.APP_MYSQL_PASSWORD,
   connectTimeout: 20000,
   acquireTimeout: 20000,
+  allowExtendedOperators: true,
 };
 
 // Observe application's life cycle to disconnect the datasource when

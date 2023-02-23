@@ -1,42 +1,33 @@
-import {inject, Getter} from '@loopback/core';
+import { Getter, inject } from '@loopback/core';
 import {
-  DefaultCrudRepository,
-  repository,
-  HasManyRepositoryFactory,
-  HasOneRepositoryFactory,
-  HasManyThroughRepository,
-  HasManyThroughRepositoryFactory,
+  DefaultCrudRepository, HasManyRepositoryFactory, HasManyThroughRepositoryFactory, HasOneRepositoryFactory, repository
 } from '@loopback/repository';
-import {genSalt, hash} from 'bcryptjs';
-import {createHash} from 'crypto';
-import {MysqlDsDataSource} from '../datasources';
-import {
-  User,
-  UserRelations,
-  SavedPost,
-  SavedProject,
-  UserProfile,
-  Post,
-  Project,
-  LikedPost,
-  LikedProject,
-  UserFollower,
-} from '../models';
-import {SavedPostRepository} from './saved-post.repository';
-import {SavedProjectRepository} from './saved-project.repository';
-import {UserProfileRepository} from './user-profile.repository';
-import {PostRepository} from './post.repository';
-import {ProjectRepository} from './project.repository';
-import {LikedPostRepository} from './liked-post.repository';
-import {LikedProjectRepository} from './liked-project.repository';
-import {UserFollowerRepository} from './user-follower.repository';
+import { HttpErrors } from '@loopback/rest';
+import { genSalt, hash } from 'bcryptjs';
+import { createHash } from 'crypto';
+import { JwtPayload, sign, verify } from 'jsonwebtoken';
+import { MysqlDsDataSource } from '../datasources';
 import {
   EMAIL_HOSTNAME,
   EMAIL_PORT,
-  EMAIL_SENDER,
+  EMAIL_SENDER
 } from '../lib/constants/emailConstants';
+import { DTO } from '../lib/types/model';
+import {
+  LikedPost,
+  LikedProject, Post,
+  Project, SavedPost,
+  SavedProject, User, UserFollower, UserProfile, UserRelations
+} from '../models';
 import SendGrid from '../services/send-grid.service';
-import {JwtPayload, sign, verify} from 'jsonwebtoken';
+import { LikedPostRepository } from './liked-post.repository';
+import { LikedProjectRepository } from './liked-project.repository';
+import { PostRepository } from './post.repository';
+import { ProjectRepository } from './project.repository';
+import { SavedPostRepository } from './saved-post.repository';
+import { SavedProjectRepository } from './saved-project.repository';
+import { UserFollowerRepository } from './user-follower.repository';
+import { UserProfileRepository } from './user-profile.repository';
 
 export class UserRepository extends DefaultCrudRepository<
   User,
@@ -180,11 +171,10 @@ export class UserRepository extends DefaultCrudRepository<
     );
   }
 
-  async createUser(user: Omit<User, 'id'>) {
+  async createUser(user: DTO<User>) {
     const hashedPassword = await hash(user.password, await genSalt());
     const userData: Partial<User> = {
       id: user.id,
-      realm: user.realm,
       username: user.username,
       password: hashedPassword,
       userType: user.userType,
@@ -193,6 +183,95 @@ export class UserRepository extends DefaultCrudRepository<
       verificationToken: user.verificationToken,
     };
     return this.create(userData);
+  }
+
+  async createVerificationToken(userId: string): Promise<string> {
+    const verificationTokenHash = createHash('sha256')
+      .update(userId + Date.now().toString())
+      .digest('hex');
+    return this.updateById(userId, {
+      verificationToken: verificationTokenHash,
+      verificationTokenExpires: new Date(Date.now() + 600000),
+    }).then(() => verificationTokenHash);
+  }
+
+  async sendVerificationEmail(user: User): Promise<void> {
+    const verificationTokenHash = await this.createVerificationToken(
+      user.id as string,
+    );
+
+    // uncomment the next two lines to skip email verification
+    // this.verifyEmail(user.id as string, verificationTokenHash);
+    // exit(0);
+
+    const baseURL =
+      process.env.NODE_ENV === 'production'
+        ? `https://${EMAIL_HOSTNAME}`
+        : `http://${EMAIL_HOSTNAME}:${EMAIL_PORT}`;
+
+    const sendGridOptions = {
+      personalizations: [
+        {
+          from: {
+            email: EMAIL_SENDER,
+          },
+          to: [
+            {
+              email: user.email,
+              // name: user.username,
+            },
+          ],
+          // subject: '[eDroplets] Email Verification',
+          dynamic_template_data: {
+            username: user.username,
+            // firstName: user.firstName,
+            // lastName: user.lastName,
+            text: "Thanks for registering to use eDroplets. Please verify your email by clicking on the following link:",
+            verifyLink: `${baseURL}/api/users/verify?userId=${user.id}&token=${verificationTokenHash}`,
+          }
+        },
+      ],
+      template_id: "d-0fdd579fca2e4125a687db6e13be290d",
+      from: {
+        email: EMAIL_SENDER,
+      },
+      reply_to: {
+        email: EMAIL_SENDER,
+      },
+    };
+
+    this.sendGrid.send(
+      process.env.APP_EMAIL_API_KEY as string,
+      sendGridOptions,
+    );
+  }
+
+  async verifyEmail(
+    userId: string,
+    verificationToken: string,
+  ): Promise<User> {
+    const user = await this.findById(userId);
+    if (!user) {
+      throw new HttpErrors.NotFound('user not found');
+    }
+    const currentTime = new Date();
+    return this.updateById(userId, {
+      emailVerified:
+        user?.verificationToken === verificationToken &&
+        (user?.verificationTokenExpires ?? currentTime) > currentTime,
+    }).then(
+      async () => {
+        // Update associated User instance
+        await this.updateById(userId, {
+          emailVerified:
+            user?.verificationToken === verificationToken &&
+            (user?.verificationTokenExpires ?? currentTime) > currentTime,
+        });
+        return this.findById(userId)
+      }
+    ).catch(err => {
+      throw new HttpErrors.InternalServerError(err.message);
+    });
   }
 
   async generateResetToken(user: User): Promise<string> {
@@ -205,7 +284,7 @@ export class UserRepository extends DefaultCrudRepository<
     };
     const resetToken = sign(
       payload,
-      Buffer.from(process.env.JWT_SECRET ?? 't3stS3cr3teDrops123').toString(
+      Buffer.from(process.env.JWT_SECRET ?? 't3stS3cr3teDroplets123').toString(
         'base64',
       ),
       {
@@ -242,7 +321,7 @@ export class UserRepository extends DefaultCrudRepository<
             },
           ],
           dynamic_template_data: {
-            link: `${baseURL}/resetPassword?access_token=${reset_token}`,
+            link: `${baseURL}/resetPassword?reset_token=${reset_token}`,
           },
         },
       ],
@@ -259,7 +338,7 @@ export class UserRepository extends DefaultCrudRepository<
     const tokenDecoded = Buffer.from(token, 'base64').toString('ascii');
     const payload = verify(
       tokenDecoded,
-      Buffer.from(process.env.JWT_SECRET ?? 't3stS3cr3teDrops123').toString(
+      Buffer.from(process.env.JWT_SECRET ?? 't3stS3cr3teDroplets123').toString(
         'base64',
       ),
     ) as JwtPayload;
