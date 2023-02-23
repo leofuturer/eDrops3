@@ -11,33 +11,29 @@ export const updateUserBaseProfile = `${ApiRootUrl}/users/id`;
 export const userLogin = `${ApiRootUrl}/users/login`;
 export const userLogout = `${ApiRootUrl}/users/logout`;
 export const userForgetPass = `${ApiRootUrl}/users/reset`;
-// export const userChangePass = `${ApiRootUrl}/users/changePassword`;
-// export const userResetPass = `${ApiRootUrl}/users/resetPassword`;
+export const userChangePass = `${ApiRootUrl}/users/change-password`;
+export const userResetPass = `${ApiRootUrl}/users/reset-password`;
 
 // Customer
 export const customerSignUp = `${ApiRootUrl}/customers`;
 export const customerLogin = `${ApiRootUrl}/customers/login`;
 export const customerLogout = `${ApiRootUrl}/customers/logout`;
-export const customerChangePass = `${ApiRootUrl}/customers/changePassword`;
-export const customerResetPass = `${ApiRootUrl}/customers/resetPassword`;
 export const customerAddresses = `${ApiRootUrl}/customers/id/customerAddresses`;
 export const customerGetProfile = `${ApiRootUrl}/customers/id`;
 export const customerGetName = `${ApiRootUrl}/customers/id?filter={"fields":["firstName","lastName"]}`;
 export const customerDeleteById = `${ApiRootUrl}/customers/id`;
 export const updateCustomerProfile = `${ApiRootUrl}/customers/id`;
 export const findCustomerByWhere = `${ApiRootUrl}/customers`;
-export const customerCredsTaken = `${ApiRootUrl}/customers/credsTaken`;
+export const credsTaken = `${ApiRootUrl}/users/creds-taken`;
 export const customerResendVerifyEmail = `${ApiRootUrl}/customers/resendVerifyEmail`;
 export const customerGetApiToken = `${ApiRootUrl}/customers/getApi`;
 
 // Admin
 export const AdminLogin = `${ApiRootUrl}/admins/login`;
 export const AdminLogout = `${ApiRootUrl}/admins/logout`;
-export const AdminChangePass = `${ApiRootUrl}/admins/changePassword`;
 export const adminGetProfile = `${ApiRootUrl}/admins/id`;
 export const updateAdminProfile = `${ApiRootUrl}/admins/id`;
 export const adminDownloadFile = `${ApiRootUrl}/admins/downloadFile`;
-export const adminCredsTaken = `${ApiRootUrl}/admins/credsTaken`;
 
 export const addFoundryWorker = `${ApiRootUrl}/foundryWorkers`;
 export const addCustomer = `${ApiRootUrl}/customers`;
@@ -53,7 +49,6 @@ export const returnOneItem = `${ApiRootUrl}/admins/getOne`;
 // Foundry Worker
 export const FoundryWorkerLogin = `${ApiRootUrl}/foundryWorkers/login`;
 export const FoundryWorkerLogout = `${ApiRootUrl}/foundryWorkers/logout`;
-export const FoundryWorkerChangePass = `${ApiRootUrl}/foundryWorkers/changePassword`;
 export const foundryWorkerGetProfile = `${ApiRootUrl}/foundryWorkers/id`;
 export const foundryWorkerGetName = `${ApiRootUrl}/foundryWorkers/id?filter={"fields":["firstName","lastName"]}`;
 export const editFoundryWorker = `${ApiRootUrl}/foundryWorkers/id`;

@@ -21,7 +21,6 @@ export class UserFollower extends Entity {
   })
   followerId: string;
 
-
   constructor(data?: Partial<UserFollower>) {
     super(data);
   }

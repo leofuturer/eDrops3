@@ -70,7 +70,7 @@ function OrderDetail() {
   }, [productOrders, chipOrders]);
 
   return (
-    <MessageLayout title="eDrops Order Details" message={`Order Number: ${orderDetail.orderComplete ? orderDetail.orderInfoId : "N/A"}`}>
+    <MessageLayout title="eDroplets Order Details" message={`Order Number: ${orderDetail.orderComplete ? orderDetail.orderInfoId : "N/A"}`}>
       {!doneLoading
         ? (
           <div className="order-detail-title-container">

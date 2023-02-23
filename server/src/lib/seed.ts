@@ -14,7 +14,7 @@ import {
   FoundryWorkerRepository,
   OrderChipRepository,
   OrderInfoRepository,
-  OrderItemBaseRepository,
+  OrderItemRepository,
   OrderMessageRepository,
   OrderProductRepository,
   PostCommentLinkRepository,
@@ -89,13 +89,13 @@ export async function clearDb(this: EdropsBackendApplication): Promise<void> {
   await orderChipRepo.deleteAll();
   await orderChipRepo.execute('ALTER TABLE OrderChip AUTO_INCREMENT = ?', [1]);
 
-  /* Clear OrderItemBase table */
-  const orderItemBaseRepo: OrderItemBaseRepository = await this.getRepository(
-    OrderItemBaseRepository,
+  /* Clear OrderItem table */
+  const orderItemRepo: OrderItemRepository = await this.getRepository(
+    OrderItemRepository,
   );
-  await orderItemBaseRepo.deleteAll();
-  await orderItemBaseRepo.execute(
-    'ALTER TABLE OrderItemBase AUTO_INCREMENT = ?',
+  await orderItemRepo.deleteAll();
+  await orderItemRepo.execute(
+    'ALTER TABLE OrderItem AUTO_INCREMENT = ?',
     [1],
   );
 

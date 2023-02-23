@@ -21,7 +21,6 @@ export class LikedPost extends Entity {
   })
   userId: string;
 
-
   constructor(data?: Partial<LikedPost>) {
     super(data);
   }

@@ -1,4 +1,4 @@
 User-agent: *
 Disallow: /api/
 
-Sitemap: https://edrops.org/sitemap.xml
+Sitemap: https://edroplets.org/sitemap.xml

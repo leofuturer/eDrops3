@@ -99,7 +99,7 @@ function Files() {
     <ManageRightLayout title={location.pathname === '/manage/admin-retrieve-user-files'
       ? `Files for ${username}` : 'Files'}>
       <SEO
-        title="eDrops | Files"
+        title="eDroplets | Files"
         description=""
         metadata={metadata}
       />
