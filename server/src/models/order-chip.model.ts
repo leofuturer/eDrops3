@@ -1,5 +1,5 @@
 import {model, property, belongsTo} from '@loopback/repository';
-import {OrderItemBase} from '.';
+import {OrderItem} from './order-item.model';
 import {FileInfo} from './file-info.model';
 import {FoundryWorker} from './foundry-worker.model';
 
@@ -17,7 +17,7 @@ import {FoundryWorker} from './foundry-worker.model';
 //   }
 // })
 @model({settings: {description: 'Chip order information'}})
-export class OrderChip extends OrderItemBase {
+export class OrderChip extends OrderItem {
   @property({
     type: 'string',
     required: true,

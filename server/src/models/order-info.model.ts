@@ -1,26 +1,8 @@
 import {Entity, model, property, hasMany} from '@loopback/repository';
 import {OrderProduct} from './order-product.model';
 import {OrderChip} from './order-chip.model';
+import {OrderMessage} from './order-message.model';
 
-// @model({
-//   settings: {
-//     validateUpsert: true,
-//     plural: 'orderInfos',
-//     idInjection: true,
-//     remoting: {
-//       sharedMethods: {
-//         '*': false,
-//         findById: true,
-//         find: true,
-//         'prototype.addOrderProductToCart': true,
-//         'prototype.addOrderChipToCart': true,
-//         newOrderCreated: true,
-//         'prototype.__get__orderProducts': true,
-//         'prototype.__get__orderChips': true
-//       }
-//     },
-//   }
-// })
 @model({ settings: { description: 'Order information' } })
 export class OrderInfo extends Entity {
   @property({
@@ -208,11 +190,9 @@ export class OrderInfo extends Entity {
 
   @hasMany(() => OrderChip)
   orderChips: OrderChip[];
-  // Define well-known properties here
 
-  // Indexer property to allow additional data
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  [prop: string]: any;
+  @hasMany(() => OrderMessage, {keyTo: 'orderId'})
+  orderMessages: OrderMessage[];
 
   constructor(data?: Partial<OrderInfo>) {
     super(data);

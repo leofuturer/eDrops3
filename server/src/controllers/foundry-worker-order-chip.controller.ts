@@ -43,7 +43,7 @@ export class FoundryWorkerOrderChipController {
     @param.path.string('id') id: string,
     @param.query.object('filter') filter?: Filter<OrderChip>,
   ): Promise<OrderChip[]> {
-    return await this.foundryWorkerRepository.orderChips(id).find(filter);
+    return this.foundryWorkerRepository.orderChips(id).find(filter);
   }
 
   @get('/foundryWorkers/{id}/downloadFile')

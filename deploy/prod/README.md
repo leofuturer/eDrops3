@@ -11,7 +11,7 @@ APP_MYSQL_PASSWORD=
 APP_MYSQL_HOST=****.us-west-1.rds.amazonaws.com  
 APP_MYSQL_PORT=  
   
-APP_FRONTEND_HOSTNAME=edrops.org  
+APP_FRONTEND_HOSTNAME=edroplets.org  
 APP_FRONTEND_PORT=443  
   
 S3_BUCKET_NAME=  

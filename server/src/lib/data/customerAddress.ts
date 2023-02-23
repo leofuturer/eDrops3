@@ -20,7 +20,7 @@ export const defaultCustomerAddresses: Partial<CustomerAddress>[] = [
     state: 'California',
     country: 'United States',
     zipCode: '90034',
-    isDefault: true,
+    isDefault: false,
     customerId: 'aaaaaaaa-bbbb-aaaa-aaaa-aaaaaaaaaaaa',
   },
   {
@@ -31,7 +31,7 @@ export const defaultCustomerAddresses: Partial<CustomerAddress>[] = [
     state: 'California',
     country: 'United States',
     zipCode: '90067',
-    isDefault: false,
+    isDefault: true,
     customerId: 'aaaaaaaa-cccc-aaaa-aaaa-aaaaaaaaaaaa',
   },
   {

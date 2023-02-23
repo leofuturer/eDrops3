@@ -15,12 +15,14 @@ import {
 import {SecurityBindings, UserProfile} from '@loopback/security';
 import { compare } from 'bcryptjs';
 import {FoundryWorker, User} from '../models';
-import {FoundryWorkerRepository} from '../repositories';
+import {FoundryWorkerRepository, UserRepository} from '../repositories';
 
 export class FoundryWorkerController {
   constructor(
     @repository(FoundryWorkerRepository)
     public foundryWorkerRepository: FoundryWorkerRepository,
+    @repository(UserRepository)
+    public userRepository: UserRepository,
     @inject(SecurityBindings.USER, {optional: true})
     public user: UserProfile,
   ) {}
@@ -34,10 +36,9 @@ export class FoundryWorkerController {
     @requestBody({
       content: {
         'application/json': {
-          schema: getModelSchemaRef(FoundryWorker, {
-            title: 'NewFoundryWorker',
-            exclude: ['id'],
-          }),
+          schema: {
+            type: 'object',
+          },
         },
       },
     })
@@ -107,48 +108,6 @@ export class FoundryWorkerController {
     await this.foundryWorkerRepository.updateById(id, foundryWorker);
   }
 
-  @post('/foundryWorkers/login')
-  @response(200, {
-    description: 'FoundryWorker LOGIN success',
-  })
-  async login(
-    @requestBody({
-      content: {
-        'application/json': {
-          schema: getModelSchemaRef(FoundryWorker, {
-            title: 'NewFoundryWorker',
-            exclude: ['id'],
-          }),
-        },
-      },
-    })
-    foundryWorker: Omit<FoundryWorker, 'id'>,
-  ): Promise<void> {
-    return;
-    // return this.foundryWorkerRepository.login();
-  }
-
-  @post('/foundryWorkers/logout')
-  @response(200, {
-    description: 'FoundryWorker LOGOUT success',
-  })
-  async logout(
-    @requestBody({
-      content: {
-        'application/json': {
-          schema: getModelSchemaRef(FoundryWorker, {
-            title: 'NewFoundryWorker',
-            exclude: ['id'],
-          }),
-        },
-      },
-    })
-    foundryWorker: Omit<FoundryWorker, 'id'>,
-  ): Promise<void> {
-    return;
-    // return this.foundryWorkerRepository.logout();
-  }
-
   @get('/foundryWorkers/getWorkerID')
   @response(200, {
     description: 'FoundryWorker GET WORKER ID success',
@@ -156,45 +115,10 @@ export class FoundryWorkerController {
   async getWorkerID(
     @param.query.string('username') username: string,
   ): Promise<string> {
-    return this.foundryWorkerRepository
+    return this.userRepository
       .findOne({where: {username}})
-      .then(foundryWorker => {
-        return foundryWorker?.id as string;
+      .then(user => {
+        return user?.id as string;
       });
-  }
-
-  @authenticate('jwt')
-  @post('/foundryWorkers/changePassword')
-  @response(200, {
-    description: 'FoundryWorker CHANGE PASSWORD success',
-  })
-  async changePassword(
-    @requestBody({
-      content: {
-        'application/json': {
-          type: 'object',
-          schema: {
-            properties: {
-              oldPassword: {type: 'string'},
-              newPassword: {type: 'string'},
-            },
-          },
-        },
-      },
-    })
-    data: {oldPassword: string; newPassword: string},
-    @inject(SecurityBindings.USER)
-    userProfile: UserProfile,
-  ): Promise<void> {
-    const user = await this.foundryWorkerRepository.findById(userProfile.id);
-
-    const passwordMatched = await compare(data.oldPassword, user.password);
-    if (!passwordMatched) {
-      throw new HttpErrors.Unauthorized('Invalid current password');
-    }
-    await this.foundryWorkerRepository.changePassword(
-      userProfile.id,
-      data.newPassword,
-    );
   }
 }

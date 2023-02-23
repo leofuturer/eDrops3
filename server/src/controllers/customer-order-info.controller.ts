@@ -4,7 +4,7 @@ import {
 } from '@loopback/repository';
 import {
   get,
-  getModelSchemaRef, param, post,
+  getModelSchemaRef, HttpErrors, param, post,
   requestBody,
   response
 } from '@loopback/rest';
@@ -35,13 +35,10 @@ export class CustomerOrderInfoController {
   async find(
     @param.path.string('id') id: typeof Customer.prototype.id,
   ): Promise<OrderChip[]> {
-    let allOrderChips: OrderChip[] = [];
     const customerOrders = await this.customerRepository.orderInfos(id).find({include: [{relation : 'orderChips'}]});
-    customerOrders.map((orderInfo) => {
-      allOrderChips = allOrderChips.concat.apply(allOrderChips, orderInfo.orderChips);
-    });
-
-    return allOrderChips;
+    return customerOrders.reduce((all, orderInfo) => {
+      return all.concat(orderInfo.orderChips);
+    }, [] as OrderChip[]);
   }
 
   @get('/customers/{id}/customerOrders', {
@@ -76,6 +73,10 @@ export class CustomerOrderInfoController {
     @param.path.string('id') id: typeof Customer.prototype.id,
     @requestBody() orderInfo: OrderInfo,
   ): Promise<OrderInfo> {
-    return this.customerRepository.orderInfos(id).create(orderInfo);
+    const allOrders = await this.customerRepository.orderInfos(id).find();
+    if(allOrders.length == 0) {
+      return this.customerRepository.orderInfos(id).create(orderInfo);
+    }
+    throw new HttpErrors.BadRequest('Customer already has an active order');
   }
 }

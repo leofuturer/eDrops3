@@ -46,10 +46,10 @@ function NavTop() {
 						to="/"
 						className="flex flex-row items-center justify-center"
 					>
-						<h1 className="text-2xl">eDrops Community</h1>
+						<h1 className="text-2xl">eDroplets Community</h1>
 						<img
 							src={logo}
-							alt="eDrops Logo"
+							alt="eDroplets Logo"
 							className="max-h-[50px]"
 						/>
 					</NavLink>
