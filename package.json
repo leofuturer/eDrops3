@@ -1,6 +1,6 @@
 {
-  "name": "edrops",
-  "version": "0.0.1",
+  "name": "edroplets",
+  "version": "3.0.0",
   "scripts": {
     "docker:build": "docker build -t edrop_backend server/",
     "docker:dev": "docker-compose -f docker-compose.yml -f docker-compose.dev.yml up",

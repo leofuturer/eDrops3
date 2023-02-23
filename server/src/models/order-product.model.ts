@@ -1,5 +1,5 @@
 import {model, property} from '@loopback/repository';
-import {OrderItemBase} from './order-item-base.model';
+import {OrderItem} from './order-item.model';
 
 // @model({
 //   settings: {
@@ -15,7 +15,7 @@ import {OrderItemBase} from './order-item-base.model';
 //   },
 // })
 @model({settings: {description: 'Product order information'}})
-export class OrderProduct extends OrderItemBase {
+export class OrderProduct extends OrderItem {
   // @property({
   //   type: 'number',
   // })

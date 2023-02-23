@@ -48,7 +48,7 @@ function Login() {
   return (
     <div className="flex items-center justify-center py-20">
       <SEO
-        title="eDrops | Login"
+        title="eDroplets | Login"
         description=""
         metadata={metadata}
       />
@@ -102,7 +102,7 @@ function Login() {
         </Formik>
         <p className="text-red-600 text-center">{error && "Login error. Please check login credentials and ensure email is verified."}</p>
         <NavLink to="/forgetPass" className="text-center text-primary_light hover:text-primary text-sm">Forgot Password?</NavLink>
-        <p className="text-center text-sm">If you experience trouble logging in to your account, please <a href="mailto:service@edrops.org">contact us.</a></p>
+        <p className="text-center text-sm">If you experience trouble logging in to your account, please <a href="mailto:info@edroplets.org">contact us.</a></p>
       </div>
     </div >
   );

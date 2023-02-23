@@ -1,7 +1,7 @@
 export const metadata = [
   {
     name: 'og:title',
-    content: 'Digital microfluidic chip & control system provider | eDrops',
+    content: 'Digital microfluidic chip & control system provider | eDroplets',
   },
   {
     name: 'og:description',
@@ -9,7 +9,7 @@ export const metadata = [
   },
   {
     name: 'og:image',
-    content: 'https://edrops.org/resource/edrop_logo.png',
+    content: 'https://edroplets.org/resource/edrop_logo.png',
   },
   {
     name: 'og:type',
@@ -17,7 +17,7 @@ export const metadata = [
   },
   {
     name: 'og:url',
-    content: 'https://www.edrops.org/home',
+    content: 'https://www.edroplets.org/home',
   },
   {
     name: 'twitter:card',

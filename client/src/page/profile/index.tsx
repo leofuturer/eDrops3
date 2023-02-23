@@ -12,7 +12,7 @@ function Profile() {
   return (
     <ManageRightLayout title="Profile">
       <SEO
-        title="eDrops | Profile"
+        title="eDroplets | Profile"
         description=""
         metadata={metadata}
       />
