@@ -34,7 +34,7 @@ const usePusher = () => {
   return pusher;
 }
 
-export const PusherContext = React.createContext<ReturnType<typeof usePusher>>(null);
+export const PusherContext = React.createContext<ReturnType<typeof usePusher>>({} as ReturnType<typeof usePusher>);
 
 export function PusherContextProvider({ children }: { children: React.ReactNode }) {
   return (
