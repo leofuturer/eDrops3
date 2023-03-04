@@ -1,7 +1,7 @@
 {
-  "name": "edrops-backend",
-  "version": "0.0.1",
-  "description": "edrops-backend",
+  "name": "@edroplets/backend",
+  "version": "3.0.0",
+  "description": "@edroplets/backend",
   "keywords": [
     "loopback-application",
     "loopback"

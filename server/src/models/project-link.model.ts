@@ -21,7 +21,6 @@ export class ProjectLink extends Entity {
   })
   link: string;
 
-
   constructor(data?: Partial<ProjectLink>) {
     super(data);
   }

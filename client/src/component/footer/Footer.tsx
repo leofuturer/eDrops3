@@ -6,19 +6,19 @@ function FooterPage() {
   const pcbChipPageLink = `/product?id=${pcbChipId}`;
   
   return (
-    <footer className="grid grid-cols-4 justify-items-center mx-[16%] text-[12px] border-t py-10 gap-8">
-      <div className="flex flex-col items-center space-y-4">
+    <footer className="grid grid-cols-3 md:grid-cols-4 justify-items-center mx-4 md:mx-[16%] text-[12px] border-t py-10 gap-2 md:gap-8">
+      <div className="flex flex-col items-center space-y-2">
         <img className="max-h-[50px] mr-[10px]" src="/img/edrop_logo.png" alt="" />
-        <h3 className="text-[26px] font-bold">eDrops</h3>
+        <h3 className="text-[26px] font-bold">eDroplets</h3>
         <p>
-          &copy; eDrops 2018-2023
+          &copy; eDroplets 2018-2023
         </p>
       </div>
       <div className="flex flex-col items-center space-y-4">
         <h3 className="pt-[6px] text-[18px] font-bold">Contact</h3>
-        <div className="flex flex-col items-center">
+        <div className="flex flex-col text-center items-center">
           {/* <p>Phone: +1 234-567-8999</p> */}
-          <a href="mailto:service@edrops.org" className="text-primary">Email: service@edrops.org</a>
+          <a href="mailto:info@edroplets.org" className="text-primary">Email: info@edroplets.org</a>
         </div>
         <div className="flex flex-col items-center">
           <p>420 Westwood Plaza</p>
@@ -28,21 +28,21 @@ function FooterPage() {
       </div>
       <div className="flex flex-col items-center space-y-4 w-full">
         <h3 className="pt-[6px] text-[18px] font-bold">About Us</h3>
-        <p className="text-justify px-8">
+        <p className="px-8 break-words">
           This is a portal site for the EWOD cybermanufacturing ecosystem,
           which is still under construction. We're working hard to
           building a fully-functional site that can help grow
           the field of digital microfluidics.
         </p>
       </div>
-      <div className="flex flex-col items-center space-y-4 w-full">
+      <div className="hidden md:flex flex-col items-center space-y-4 w-full">
         <h3 className="pt-[6px] text-[18px] font-bold">Featured Products</h3>
         <div className="w-full">
           <NavLink to={controlSysPageLink} className="flex flex-row justify-between border-b items-center py-2">
             <p className="text-primary">Digital Microfluidics Control System</p>
             <img
               className="h-10 w-10 aspect-square"
-              src="/img/controlsystem.jpg"
+              src="/img/control-system.png"
               alt="Digital Microfluidics Control System"
             />
           </NavLink>
@@ -50,7 +50,7 @@ function FooterPage() {
             <p className="text-primary">PCB-based Digital Microfluidics Chip</p>
             <img
               className="h-10 w-10 aspect-square"
-              src="/img/pcb_chip_compressed.jpg"
+              src="/img/pcb_chip.png"
               alt="PCB-based Digital Microfluidics Chip"
             />
           </NavLink>

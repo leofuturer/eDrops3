@@ -65,7 +65,6 @@ function Admins() {
           <tr>
             <th>ID</th>
             <th>Phone</th>
-            <th>Realm</th>
             <th>Login username</th>
             <th>E-mail</th>
             <th>Edit</th>
@@ -77,7 +76,6 @@ function Admins() {
             <tr id={`admin${admin.id}`} key={admin.id}>
               <td>{admin.id}</td>
               <td>{admin.phoneNumber}</td>
-              <td>{admin.realm == null ? 'Null' : admin.realm}</td>
               <td>{admin.username}</td>
               <td>{admin.email}</td>
               <td>

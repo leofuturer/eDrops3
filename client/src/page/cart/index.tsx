@@ -13,7 +13,7 @@ function Cart() {
   return (
     <ManageRightLayout title="Cart">
       <SEO
-        title="eDrops | Cart"
+        title="eDroplets | Cart"
         description=""
         metadata={metadata}
       />

@@ -48,7 +48,7 @@ function DXFPreview({ fileInfo }: { fileInfo: any }) {
 
   return (
     <div className="text-center shadow-box-sm">
-      <div dangerouslySetInnerHTML={{ '__html': svg }} className="h-[500px]" />
+      <div dangerouslySetInnerHTML={{ '__html': svg }} className="p-10 flex items-center justify-center" />
     </div>
   );
 }

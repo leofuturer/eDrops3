@@ -10,6 +10,7 @@ const useCart = () => {
   const [cart, setCart] = useState<OrderInfo>({} as OrderInfo);
   const [numItems, setNumItems] = useState(0);
   const [totalPrice, setTotalPrice] = useState(0);
+  const enabled = false;
 
   const shopify = useContext(ShopifyContext);
 
@@ -247,6 +248,7 @@ const useCart = () => {
   }
 
   return {
+    enabled,
     numItems,
     totalPrice,
     cart,

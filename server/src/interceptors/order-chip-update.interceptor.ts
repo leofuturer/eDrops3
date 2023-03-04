@@ -12,7 +12,7 @@ import { Request, RestBindings } from '@loopback/rest';
 import {
   EMAIL_SENDER
 } from '../lib/constants/emailConstants';
-import { CustomerRepository, FileInfoRepository, FoundryWorkerRepository, OrderChipRepository, OrderInfoRepository } from '../repositories';
+import { CustomerRepository, FileInfoRepository, FoundryWorkerRepository, OrderChipRepository, OrderInfoRepository, UserRepository } from '../repositories';
 import SendGrid from '../services/send-grid.service';
 /**
  * This class will be bound to the application as an `Interceptor` during
@@ -89,7 +89,8 @@ export class OrderChipUpdateInterceptor implements Provider<Interceptor> {
         result = await next();
 
         // Add post-invocation logic here
-        const foundryWorker = await this.foundryWorkerRepository.findById(this.request.body[key]);
+        const foundryWorkerUser = await this.foundryWorkerRepository.user(this.request.body[key]);
+        const foundryWorker = await this.foundryWorkerRepository.findById(foundryWorkerUser.id);
         // assigned foundry
         // console.log(`Hi ${foundryWorker.firstName}::${foundryWorker.email}, you have been assigned to ${fileInfo.fileName}, ${chipOrder.quantity}, ${chipOrder.process}, ${chipOrder.coverPlate ? 'Yes' : 'No'}`);
         const sendGridOptionsFoundry = {
@@ -98,7 +99,7 @@ export class OrderChipUpdateInterceptor implements Provider<Interceptor> {
           },
           "personalizations":[{
             "to":[{
-              "email": foundryWorker.email,
+              "email": foundryWorkerUser.email,
             }],
             "dynamic_template_data":{
               "firstName": foundryWorker.firstName,
@@ -136,6 +137,7 @@ export class OrderChipUpdateInterceptor implements Provider<Interceptor> {
         );
 
         if(chipOrder.workerId !== null) {
+          const oldFoundryWorkerUser = await this.foundryWorkerRepository.user(chipOrder.workerId);
           const oldFoundryWorker = await this.foundryWorkerRepository.findById(chipOrder.workerId);
           // console.log(`${oldFoundryWorker.firstName} you have been unassigned`);
           
@@ -145,7 +147,7 @@ export class OrderChipUpdateInterceptor implements Provider<Interceptor> {
             },
             "personalizations":[{
               "to":[{
-                "email": oldFoundryWorker.email,
+                "email": oldFoundryWorkerUser.email,
               }],
               "dynamic_template_data":{
                 "firstName": oldFoundryWorker.firstName,
