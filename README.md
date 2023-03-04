@@ -1,5 +1,5 @@
-# eDrops3
-The 3rd generation of the eDrops web application.
+# eDroplets3
+The 3rd generation of the eDroplets web application.
 
 ## Documentation
 

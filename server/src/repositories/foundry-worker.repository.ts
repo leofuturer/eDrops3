@@ -2,6 +2,7 @@ import { Getter, inject } from '@loopback/core';
 import { BelongsToAccessor, DefaultCrudRepository, HasManyRepositoryFactory, repository } from '@loopback/repository';
 import { genSalt, hash } from 'bcryptjs';
 import { MysqlDsDataSource } from '../datasources';
+import { DTO } from '../lib/types/model';
 import { FoundryWorker, FoundryWorkerRelations, OrderChip, User } from '../models';
 import { OrderChipRepository } from './order-chip.repository';
 import { UserRepository } from './user.repository';
@@ -22,19 +23,18 @@ export class FoundryWorkerRepository extends DefaultCrudRepository<
     @repository.getter('UserRepository') protected userRepositoryGetter: Getter<UserRepository>,
   ) {
     super(FoundryWorker, dataSource);
-    // this.user = this.createBelongsToAccessorFor('user', userRepositoryGetter,);
-    // this.registerInclusionResolver('user', this.user.inclusionResolver);
+    this.user = this.createBelongsToAccessorFor('user', userRepositoryGetter,);
+    this.registerInclusionResolver('user', this.user.inclusionResolver);
     this.orderChips = this.createHasManyRepositoryFactoryFor('orderChips', orderChipRepositoryGetter,);
     this.registerInclusionResolver('orderChips', this.orderChips.inclusionResolver);
   }
 
   async createFoundryWorker(
-    foundryWorker: Omit<FoundryWorker & User, 'id'>
+    foundryWorker: DTO<FoundryWorker & User>,
   ) : Promise<FoundryWorker> {
     const hashedPassword = await hash(foundryWorker.password, await genSalt())
     const userData: Partial<User> = {
       id: foundryWorker.id,
-      realm: foundryWorker.realm,
       username: foundryWorker.username,
       password: hashedPassword,
       userType: 'worker',
@@ -44,8 +44,8 @@ export class FoundryWorkerRepository extends DefaultCrudRepository<
     }
     const userRepository = await this.userRepositoryGetter();
     const userInstance = await userRepository.create(userData);
-    const foundryWorkerData = {
-      ...userInstance,
+    const foundryWorkerData: Partial<FoundryWorker> = {
+      id: userInstance.id,
       street: foundryWorker.street,
       streetLine2: foundryWorker.streetLine2,
       firstName: foundryWorker.firstName,
@@ -56,17 +56,10 @@ export class FoundryWorkerRepository extends DefaultCrudRepository<
       city: foundryWorker.city,
       zipCode: foundryWorker.zipCode,
       affiliation: foundryWorker.affiliation,
-      // userId: userInstance.id,
+      userId: userInstance.id,
     }
     const foundryWorkerInstance = await this.create(foundryWorkerData);
+    await userRepository.sendVerificationEmail(userInstance);
     return foundryWorkerInstance;
-  }
-
-  async changePassword(userId: string, newPassword: string): Promise<void> {
-    const hashedPassword = await hash(newPassword, await genSalt());
-    await this.updateById(userId, {password: hashedPassword});
-
-    const userRepository = await this.userRepositoryGetter();
-    await userRepository.updateById(userId, {password: hashedPassword});
   }
 }

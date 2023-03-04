@@ -6,7 +6,6 @@ export interface Customer extends User {
 }
 
 export interface Admin extends User {
-  realm: string | null;
   phoneNumber: string;
 }
 

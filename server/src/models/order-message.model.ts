@@ -33,12 +33,6 @@ export class OrderMessage extends Entity {
   })
   messageDate: Date;
   
-  // Define well-known properties here
-
-  // Indexer property to allow additional data
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  [prop: string]: any;
-
   constructor(data?: Partial<OrderMessage>) {
     super(data);
   }

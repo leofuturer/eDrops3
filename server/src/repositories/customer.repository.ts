@@ -18,6 +18,7 @@ import {
 } from '../lib/constants/emailConstants';
 import { calculate } from '../lib/toolbox/calculate';
 import log from '../lib/toolbox/log';
+import { DTO } from '../lib/types/model';
 import {
   Customer,
   CustomerAddress,
@@ -74,8 +75,8 @@ export class CustomerRepository extends DefaultCrudRepository<
     @inject(STORAGE_DIRECTORY) private storageDirectory: string,
   ) {
     super(Customer, dataSource);
-    // this.user = this.createBelongsToAccessorFor('user', userRepositoryGetter,);
-    // this.registerInclusionResolver('user', this.user.inclusionResolver);
+    this.user = this.createBelongsToAccessorFor('user', userRepositoryGetter,);
+    this.registerInclusionResolver('user', this.user.inclusionResolver);
     this.orderInfos = this.createHasManyRepositoryFactoryFor(
       'orderInfos',
       orderInfoRepositoryGetter,
@@ -119,13 +120,12 @@ export class CustomerRepository extends DefaultCrudRepository<
    * @returns             Created customer instance
    */
   async createCustomer(
-    customer: Omit<Customer & CustomerAddress, 'id'>,
+    customer: DTO<Customer & User & Partial<Omit<CustomerAddress, 'id'>>>,
     createAddress = true,
   ): Promise<Customer> {
     const hashedPassword = await hash(customer.password, await genSalt());
-    const userData: Partial<User> = {
+    const userData: DTO<User> = {
       id: customer.id,
-      realm: customer.realm,
       username: customer.username,
       password: hashedPassword,
       userType: 'customer',
@@ -137,19 +137,19 @@ export class CustomerRepository extends DefaultCrudRepository<
     const userInstance = await userRepository.create(userData).catch(err => {
       throw new HttpErrors.InternalServerError(err.message);
     });
-    const customerData: Omit<Customer, 'id'> = {
-      ...userInstance,
+    const customerData: DTO<Customer> = {
+      id: userInstance.id,
       firstName: customer.firstName,
       lastName: customer.lastName,
       phoneNumber: customer.phoneNumber,
       customerType: customer.customerType,
-      // userId: userInstance.id,
+      userId: userInstance.id,
     };
     const customerInstance = await this.create(customerData).catch(err => {
       throw new HttpErrors.InternalServerError(err.message);
     });
     if (createAddress) {
-      const customerAddressData: Omit<CustomerAddress, 'id'> = {
+      const customerAddressData: Partial<CustomerAddress> = {
         street: customer.street || 'Not provided during signup',
         streetLine2: customer.streetLine2 || 'Not provided during signup',
         country: customer.country || 'Not provided during signup',
@@ -162,7 +162,7 @@ export class CustomerRepository extends DefaultCrudRepository<
       this.customerAddresses(customerInstance.id)
         .create(customerAddressData)
         .then(() => {
-          this.sendVerificationEmail(customerInstance);
+          userRepository.sendVerificationEmail(userInstance);
         })
         .catch(err => {
           // roll back the customer creation
@@ -171,105 +171,6 @@ export class CustomerRepository extends DefaultCrudRepository<
         });
     }
     return customerInstance;
-  }
-
-  async createVerificationToken(customerId: string): Promise<string> {
-    const verificationTokenHash = createHash('sha256')
-      .update(customerId + Date.now().toString())
-      .digest('hex');
-    return this.updateById(customerId, {
-      verificationToken: verificationTokenHash,
-      verificationTokenExpires: new Date(Date.now() + 600000),
-    }).then(() => verificationTokenHash);
-  }
-
-  async sendVerificationEmail(customer: Customer): Promise<void> {
-    const verificationTokenHash = await this.createVerificationToken(
-      customer.id as string,
-    );
-
-    // uncomment the next two lines to skip email verification
-    // this.verifyEmail(customer.id as string, verificationTokenHash);
-    // exit(0);
-
-    const baseURL =
-      process.env.NODE_ENV === 'production'
-        ? `https://${EMAIL_HOSTNAME}`
-        : `http://${EMAIL_HOSTNAME}:${EMAIL_PORT}`;
-
-    // const EMAIL_TEMPLATE = ejs.render(
-    //   verifyHTML,
-    //   {
-    //     text: `Hello ${customer.username}! Thanks for registering to use eDrops. Please verify your email by clicking on the following link:`,
-    //     email: EMAIL_SENDER,
-    //     verifyHref: `${baseURL}/api/customers/verify?customerId=${customer.id}&token=${verificationTokenHash}`,
-    //   },
-    //   {},
-    // );
-    // console.log(EMAIL_TEMPLATE);
-    const sendGridOptions = {
-      personalizations: [
-        {
-          from: {
-            email: EMAIL_SENDER,
-          },
-          to: [
-            {
-              email: customer.email,
-              // name: customer.username,
-            },
-          ],
-          // subject: '[eDrops] Email Verification',
-          dynamic_template_data: {
-            firstName: customer.firstName,
-            lastName: customer.lastName,
-            text: "Thanks for registering to use eDrops. Please verify your email by clicking on the following link:",
-            verifyLink: `${baseURL}/api/customers/verify?customerId=${customer.id}&token=${verificationTokenHash}`,
-          }
-        },
-      ],
-      template_id: "d-0fdd579fca2e4125a687db6e13be290d",
-      from: {
-        email: EMAIL_SENDER,
-      },
-      reply_to: {
-        email: EMAIL_SENDER,
-      },
-    };
-
-    this.sendGrid.send(
-      process.env.APP_EMAIL_API_KEY as string,
-      sendGridOptions,
-    );
-  }
-
-  async verifyEmail(
-    customerId: string,
-    verificationToken: string,
-  ): Promise<Customer> {
-    const customer = await this.findById(customerId);
-    if (!customer) {
-      throw new HttpErrors.NotFound('Customer not found');
-    }
-    const currentTime = new Date();
-    return this.updateById(customerId, {
-      emailVerified:
-        customer?.verificationToken === verificationToken &&
-        (customer?.verificationTokenExpires ?? currentTime) > currentTime,
-    }).then(
-      async () => {
-        // Update associated User instance
-        const userRepository = await this.userRepositoryGetter();
-        await userRepository.updateById(customerId, {
-          emailVerified:
-            customer?.verificationToken === verificationToken &&
-            (customer?.verificationTokenExpires ?? currentTime) > currentTime,
-        });
-        return this.findById(customerId)
-      }
-    ).catch(err => {
-      throw new HttpErrors.InternalServerError(err.message);
-    });
   }
 
   async getCustomerCart(
@@ -318,7 +219,7 @@ export class CustomerRepository extends DefaultCrudRepository<
       }
     }
 
-    const fileInfos: Partial<FileInfo> = files.map(
+    const fileInfos: Partial<FileInfo>[] = files.map(
       (f: Partial<Express.Multer.File>) => {
         return {
           uploadTime: calculate.currentTime(),
@@ -371,7 +272,7 @@ export class CustomerRepository extends DefaultCrudRepository<
       }
     }
 
-    const fileInfos: Partial<FileInfo> = files.map(
+    const fileInfos: Partial<FileInfo>[] = files.map(
       (f: Partial<Express.MulterS3.File>) => {
         return {
           uploadTime: calculate.currentTime(),
@@ -418,13 +319,5 @@ export class CustomerRepository extends DefaultCrudRepository<
     });
     response.end(file.Body);
     return response;
-  }
-
-  async changePassword(userId: string, newPassword: string): Promise<void> {
-    const hashedPassword = await hash(newPassword, await genSalt());
-    await this.updateById(userId, { password: hashedPassword });
-
-    const userRepository = await this.userRepositoryGetter();
-    await userRepository.updateById(userId, { password: hashedPassword });
   }
 }

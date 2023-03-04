@@ -1,13 +1,16 @@
 // Admin only page, for customer page see order/index.jsx
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { getAllOrderInfos, request } from '../../api';
 import ManageRightLayout from '../../component/layout/ManageRightLayout';
 import Loading from '../../component/ui/Loading';
+import { CartContext } from '../../context/CartContext';
 import { OrderInfo } from '../../types';
 
 function AllOrders() {
   const [orderList, setOrderList] = useState<OrderInfo[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+
+  const cart = useContext(CartContext);
 
   useEffect(() => {
     setIsLoading(true);
@@ -55,7 +58,7 @@ function AllOrders() {
           </tr>
         </thead>
         <tbody>
-          {orderList.length !== 0 ? orderList.map((order, index) => (
+          {cart.enabled && orderList.length !== 0 ? orderList.map((order, index) => (
             <tr key={index}>
               <td>{order.orderComplete ? order.orderInfoId : 'Customer cart'}</td>
               <td>{order.customerId}</td>
