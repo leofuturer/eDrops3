@@ -61,7 +61,7 @@ function Upload() {
 
   function onFileUpload() {
     file && request(customerFileRetrieve.replace('id', cookies.userId), 'GET', {}, true).then((res) => {
-      console.log(res);
+      // console.log(res);
       const noDuplicate = res.data.every((f: FileInfo) => !(f.fileName === file.name && !f.isDeleted && !checked));
       noDuplicate ? uploadFileRequest({
         isPublic: pType,
@@ -174,14 +174,14 @@ function Upload() {
   return (
     <div className="flex flex-col items-center">
       <SEO
-        title="eDrops | Upload"
+        title="eDroplets | Upload"
         description=""
         metadata={metadata}
       />
       <div className="w-2/3 text-center flex flex-col items-center space-y-4 py-20">
         <h1 className="text-4xl">File Upload</h1>
         <h3 className="text-2xl">We accept DXF file as mask file</h3>
-        <div className="grid grid-cols-2 justify-items-center gap-8 w-full">
+        {/* <div className="grid grid-cols-2 justify-items-center gap-8 w-full">
           <div className="flex flex-col space-y-2 w-full max-w-sm">
             <h4 className="text-lg">Visibility</h4>
             <div className="grid grid-cols-2 gap-4 text-sm w-full">
@@ -198,9 +198,9 @@ function Upload() {
               {utypeList}
             </div>
           </div>
-        </div>
+        </div> */}
         <div {...getRootProps({
-          className: 'border-2 border-dashed border-black cursor-pointer w-full p-10',
+          className: 'border-2 border-dashed border-black cursor-pointer w-full px-10 py-24',
         })}>
           <input {...getInputProps()} />
           {progress > 0 ? (

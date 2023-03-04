@@ -10,7 +10,9 @@ import {
   patch,
   post,
   requestBody,
+  Response,
   response,
+  RestBindings,
   SchemaObject,
 } from '@loopback/rest';
 import {SecurityBindings, securityId, UserProfile} from '@loopback/security';
@@ -86,7 +88,6 @@ export class UserController {
     const hashedPassword = await hash(newUser.password, await genSalt());
 
     const savedUser = await this.userRepository.create({
-      realm: newUser.realm,
       username: newUser.username,
       password: hashedPassword,
       email: newUser.email,
@@ -231,6 +232,76 @@ export class UserController {
     return;
     // return this.userBaseRepository.logout(userBase);
   }
+  
+  @post('/users/resendVerifyEmail')
+  @response(200, {
+    description: 'Resend verification email',
+  })
+  async resendVerifyEmail(
+    @requestBody({
+      content: {
+        'application/json': {
+          schema: {
+            properties: {
+              email: {
+                type: 'string',
+              },
+            },
+            required: ['email'],
+          },
+        },
+      },
+    })
+    email: {
+      email: string;
+    },
+  ): Promise<void> {
+    // console.log(email);
+    const user = await this.userRepository.findOne({
+      where: {
+        email: email.email,
+      },
+    });
+    if (!user) {
+      // Don't throw error if user not found to prevent email enumeration
+      // throw new HttpErrors.NotFound('User not found');
+    }
+    else if (!user.emailVerified) {
+      await this.userRepository.sendVerificationEmail(
+        user as User,
+      );
+    }
+  }
+
+  @get('/users/verify')
+  @response(200, {
+    description: 'User model instance',
+    content: {
+      'application/json': {
+        schema: getModelSchemaRef(User, { includeRelations: true }),
+      },
+    },
+  })
+  async verify(
+    @param.query.string('userId') userId: string,
+    @param.query.string('token') verificationToken: string,
+    @inject(RestBindings.Http.RESPONSE) response: Response,
+  ): Promise<User> {
+    const user = await this.userRepository.verifyEmail(
+      userId,
+      verificationToken,
+    );
+    // console.log(user);
+    if (!user) {
+      throw new HttpErrors.NotFound('User not found');
+    }
+    if (user.emailVerified) {
+      response.redirect('/emailVerified');
+    } else {
+      response.redirect('/emailVerifyInvalid');
+    }
+    return user;
+  }
 
   @post('/users/reset')
   @response(200, {
@@ -256,72 +327,72 @@ export class UserController {
     this.userRepository.sendResetEmail(data.email);
   }
 
-  // @authenticate('jwt')
-  // @post('/users/changePassword')
-  // @response(200, {
-  //   description: 'User CHANGE PASSWORD success',
-  // })
-  // async changePassword(
-  //   @requestBody({
-  //     content: {
-  //       'application/json': {
-  //         type: 'object',
-  //         schema: {
-  //           properties: {
-  //             oldPassword: {type: 'string'},
-  //             newPassword: {type: 'string'},
-  //           },
-  //         },
-  //       },
-  //     },
-  //   })
-  //   data: {oldPassword: string; newPassword: string},
-  //   @inject(SecurityBindings.USER)
-  //   userProfile: UserProfile,
-  // ): Promise<void> {
-  //   const user = await this.userRepository.findById(userProfile.id);
+  @authenticate('jwt')
+  @post('/users/change-password')
+  @response(200, {
+    description: 'User CHANGE PASSWORD success',
+  })
+  async changePassword(
+    @requestBody({
+      content: {
+        'application/json': {
+          type: 'object',
+          schema: {
+            properties: {
+              oldPassword: {type: 'string'},
+              newPassword: {type: 'string'},
+            },
+          },
+        },
+      },
+    })
+    data: {oldPassword: string; newPassword: string},
+    @inject(SecurityBindings.USER)
+    userProfile: UserProfile,
+  ): Promise<void> {
+    const user = await this.userRepository.findById(userProfile.id);
 
-  //   const passwordMatched = await compare(data.oldPassword, user.password);
-  //   if (!passwordMatched) {
-  //     throw new HttpErrors.Unauthorized('Wrong password');
-  //   }
-  //   await this.userRepository.changePassword(
-  //     userProfile.id,
-  //     data.newPassword,
-  //   );
-  // }
+    const passwordMatched = await compare(data.oldPassword, user.password);
+    if (!passwordMatched) {
+      throw new HttpErrors.Unauthorized('Wrong password');
+    }
+    await this.userRepository.changePassword(
+      userProfile.id,
+      data.newPassword,
+    );
+  }
 
-  // @post('/users/resetPassword')
-  // @response(200, {
-  //   description: 'User RESET PASSWORD success',
-  // })
-  // async resetPassword(
-  //   @requestBody({
-  //     content: {
-  //       'application/json': {
-  //         type: 'object',
-  //         schema: {
-  //           properties: {
-  //             newPassword: {type: 'string'},
-  //             accessToken: {type: 'string'},
-  //           },
-  //         },
-  //       },
-  //     },
-  //   })
-  //   data: {
-  //     newPassword: string;
-  //     accessToken: string;
-  //   },
-  // ): Promise<void> {
-  //   const id = await this.userRepository.verifyResetToken(data.accessToken);
-  //   if (!id) {
-  //     return;
-  //   }
-  //   await this.userRepository.changePassword(id, data.newPassword);
-  // }
+  @post('/users/reset-password')
+  @response(200, {
+    description: 'User RESET PASSWORD success',
+  })
+  async resetPassword(
+    @requestBody({
+      content: {
+        'application/json': {
+          type: 'object',
+          schema: {
+            properties: {
+              newPassword: {type: 'string'},
+              accessToken: {type: 'string'},
+            },
+          },
+        },
+      },
+    })
+    data: {
+      newPassword: string;
+      accessToken: string;
+    },
+  ): Promise<void> {
+    const id = await this.userRepository.verifyResetToken(data.accessToken);
+    if (!id) {
+      return;
+    }
+    await this.userRepository.changePassword(id, data.newPassword);
+  }
 
-  @post('/users/credsTaken')
+  @post('/users/creds-taken')
   @response(200, {
     description: 'Check if creds are taken',
     content: {

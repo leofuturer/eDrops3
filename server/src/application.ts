@@ -74,7 +74,7 @@ export class EdropsBackendApplication extends BootMixin(
     this.api({
       openapi: '3.0.0',
       info: {
-        title: 'eDrops v3 backend',
+        title: 'eDroplets v3 backend',
         /* eslint-disable-next-line global-require */
         version: require('../package.json').version,
       },

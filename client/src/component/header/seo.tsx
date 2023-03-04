@@ -2,12 +2,12 @@ import React from 'react';
 import { Helmet } from 'react-helmet-async';
 
 const defaultMetadata = {
-  title: 'Digital microfluidic chip & control system provider | eDrops',
+  title: 'Digital microfluidic chip & control system provider | eDroplets',
   description: 'A portal for electrowetting-on-dielectric (EWOD) digital microfluidics. Design chips; access fabrication services; obtain tools for device operation; share experiences.',
   metadata: [
     {
       name: 'og:title',
-      content: 'Digital microfluidic chip & control system provider | eDrops',
+      content: 'Digital microfluidic chip & control system provider | eDroplets',
     },
     {
       name: 'og:description',
@@ -15,7 +15,7 @@ const defaultMetadata = {
     },
     {
       name: 'og:image',
-      content: 'https://edrops.org/resource/edrop_logo.png',
+      content: 'https://edroplets.org/resource/edrop_logo.png',
     },
     {
       name: 'og:type',
@@ -23,7 +23,7 @@ const defaultMetadata = {
     },
     {
       name: 'og:url',
-      content: 'https://www.edrops.org',
+      content: 'https://www.edroplets.org',
     },
     {
       name: 'twitter:card',
