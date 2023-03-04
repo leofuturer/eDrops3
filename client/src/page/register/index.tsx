@@ -31,7 +31,7 @@ function Register() {
   return (
     <div className="flex items-center justify-center py-20">
       <SEO
-        title="eDrops | Register"
+        title="eDroplets | Register"
         description=""
         metadata={metadata}
       />
@@ -86,11 +86,11 @@ function Register() {
               <ErrorMessage name="customerType" component="p" className="text-red-700 text-xs w-36 text-center" />
             </div>
             <FormGroup name="phoneNumber" autoComplete="tel-national" />
-            <FormGroup name="streetLine1" displayName="Street" autoComplete="address-line1" />
+            <FormGroup name="street" autoComplete="address-line1" />
             <FormGroup name="streetLine2" autoComplete="address-line2" />
             <FormGroup name="city" autoComplete="address-level2" />
-            <FormGroup name="stateOrProvince" displayName="State or Province" autoComplete="address-level1" />
-            <FormGroup name="zipOrPostalCode" displayName="Zip or Postal Code" autoComplete="postal-code" />
+            <FormGroup name="state" displayName="State or Province" autoComplete="address-level1" />
+            <FormGroup name="zipCode" displayName="Zip or Postal Code" autoComplete="postal-code" />
             <FormGroup name="country" autoComplete="country" />
             <button type="submit" className="bg-secondary text-white rounded-lg px-4 py-2">Submit</button>
           </Form>

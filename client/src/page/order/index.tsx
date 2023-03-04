@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import Cookies from 'js-cookie';
 import { request } from '../../api';
 import {
@@ -11,6 +11,7 @@ import { useCookies } from 'react-cookie';
 import ManageRightLayout from '../../component/layout/ManageRightLayout';
 import Loading from '../../component/ui/Loading';
 import { OrderInfo } from '../../types';
+import { CartContext } from '../../context/CartContext';
 
 // The order list page for both customer and worker
 function Orders() {
@@ -24,6 +25,8 @@ function Orders() {
   const location = useLocation();
 
   const [cookies, setCookie] = useCookies(['userType', 'userId', 'username', 'token']);
+
+  const cart = useContext(CartContext);
 
   useEffect(() => {
     if (location.pathname === '/manage/admin-retrieve-user-orders' && cookies.userType === 'admin') {
@@ -75,7 +78,7 @@ function Orders() {
   return (
     <ManageRightLayout title={location.pathname === '/manage/admin-retrieve-user-orders' ? 'Orders for ${username}' : 'Orders'}>
       <SEO
-        title="eDrops | Orders"
+        title="eDroplets | Orders"
         description=""
         metadata={metadata}
       />
@@ -91,7 +94,7 @@ function Orders() {
           </tr>
         </thead>
         <tbody>
-          {orderList.length !== 0 ? orderList.map((order, index) => (
+          {cart.enabled && orderList.length !== 0 ? orderList.map((order, index) => (
             <tr key={index}>
               <td className="p-2">{order.orderInfoId}</td>
               <td className="p-2">{order.createdAt.substring(0, order.createdAt.indexOf('T'))}</td>
@@ -109,7 +112,7 @@ function Orders() {
           ))
             : (
               <tr>
-                <td className="p-2">
+                <td className="p-2" colSpan={9}>
                   {
                     isLoading
                       ? <Loading />

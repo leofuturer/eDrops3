@@ -85,7 +85,7 @@ function AssignOrders() {
       </div>
       {showModal && (
         <TwoChoiceModal
-          title="eDrops"
+          title="eDroplets"
           content="Do you want to assign the order to this worker?"
           affirmativeText="Yes"
           negativeText="Cancel"

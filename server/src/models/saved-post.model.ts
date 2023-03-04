@@ -21,7 +21,6 @@ export class SavedPost extends Entity {
   })
   userId: string;
 
-
   constructor(data?: Partial<SavedPost>) {
     super(data);
   }

@@ -85,7 +85,7 @@ function Product() {
             <div className="flex justify-between items-center">
               <div className="text-lg font-bold">
                 {/* @ts-expect-error NOTE: Shopify types not updated*/ }
-                Price: ${product?.variants && product?.variants[0].price.amount}
+                Price: {cart.enabled ? `${product?.variants && product?.variants[0].price.amount}` : 'Coming soon'}
               </div>
               <div className="flex space-x-4">
                 <div className="flex space-x-1">
@@ -115,9 +115,9 @@ function Product() {
                 <button
                   type="button"
                   className="bg-primary_light hover:bg-primary text-white rounded-lg w-full px-4 py-2"
-                  onClick={handleAddToCart}
+                  onClick={() => cart.enabled && handleAddToCart()}
                 >
-                  Add to Cart
+                  {cart.enabled ? 'Add to Cart' : 'Coming soon'}
                 </button>}
             </div>
             <div className="text-sm text-gray-400">Note: Price excludes sales tax</div>
