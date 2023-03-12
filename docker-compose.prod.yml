@@ -10,7 +10,11 @@ services:
       - edrop_caddy
   
   edrop_caddy:
-    image: caddy:2.3.0
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    env_file:
+      - ./deploy/prod/caddy.env
     container_name: edrop_caddy
     restart: unless-stopped
     ports:
@@ -25,4 +29,5 @@ services:
 
 volumes:
   caddy_data:
+    external: true
   caddy_config:

@@ -1,47 +1,39 @@
 {
-#    debug
-   email edropswebsite@gmail.com
-#   acme_ca https://acme-staging-v02.api.letsencrypt.org/directory
-}
-
-www.edrops.org {
-    redir https://www.edroplets.org{uri}
-}
-
-edrops.org {
-    redir https://edroplets.org{uri}
+        # debug
+        email edropswebsite@gmail.com
+        # acme_ca https://acme-staging-v02.api.letsencrypt.org/directory
 }
 
 www.edroplets.org {
-   redir https://edroplets.org{uri}
-}
-
-edroplets.org {
-    log {
-        output stdout
-    }
-    encode gzip
-
-    @frontendApi {
-        not {
-            path /api/*
+        tls {
+                dns godaddy {env.GODADDY_TOKEN}
         }
-    }
-    
-    @try_files {
-        not path /api/*
-        file {
-            try_files {path} {path}/ /index.html
+
+        log {
+                output stdout
         }
-    }
-    rewrite @try_files {http.matchers.file.relative}
+        encode gzip
 
-    handle_path /api/* {
-        reverse_proxy edrop_backend:3000
-    }
+        @frontendApi {
+                not {
+                        path /api/*
+                }
+        }
 
-    root * /usr/share/caddy/www
-    file_server @frontendApi
+        @try_files {
+                not path /api/*
+                file {
+                        try_files {path} {path}/ /index.html
+                }
+        }
+        rewrite @try_files {http.matchers.file.relative}
+
+        handle_path /api/* {
+                reverse_proxy edrop_backend:3000
+        }
+
+        root * /usr/share/caddy/www
+        file_server @frontendApi
 }
 
 # community.edroplets.org {
@@ -55,7 +47,7 @@ edroplets.org {
 #             path /api/*
 #         }
 #     }
-    
+
 #     @try_files {
 #         not path /api/*
 #         file {
