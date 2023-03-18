@@ -36,13 +36,13 @@ function AllOrders() {
   }
 
   // TODO: chat feature
-  // function handleChat(orderId) {
-  //   const redirectUrl = `/subpage/order-chat?id=${orderId}`;
-  //   const strWindowFeatures = 'width=1200px, height=900px';
-  //   const WindowForOrderChat = window.open(redirectUrl, '_blank', strWindowFeatures);
-  //   // @ts-expect-error
-  //   WindowForOrderChat._orderItemId = orderId;
-  // }
+  function handleChat(orderId: number) {
+    const redirectUrl = `/subpage/order-chat?id=${orderId}`;
+    const strWindowFeatures = 'width=1200px, height=900px';
+    const WindowForOrderChat = window.open(redirectUrl, '_blank', strWindowFeatures);
+    // @ts-expect-error
+    WindowForOrderChat._orderItemId = orderId;
+  }
 
   return (
     <ManageRightLayout title="All Orders">
@@ -54,7 +54,7 @@ function AllOrders() {
             <th>Status</th>
             <th>Price</th>
             <th>Details</th>
-            {/* <th>Chat</th> */}
+            <th>Chat</th>
           </tr>
         </thead>
         <tbody>
@@ -69,9 +69,9 @@ function AllOrders() {
               <td className="icon-center">
                 <i className="fa fa-commenting cursor-pointer" onClick={() => handleDetail(order.id)} />
               </td>
-              {/* <td className="icon-center">
+              <td className="icon-center">
                 <i className="fa fa-commenting cursor-pointer" onClick={() => handleChat(order.id)} />
-              </td> */}
+              </td>
             </tr>
           ))
             : (

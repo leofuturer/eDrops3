@@ -10,7 +10,7 @@ const useCart = () => {
   const [cart, setCart] = useState<OrderInfo>({} as OrderInfo);
   const [numItems, setNumItems] = useState(0);
   const [totalPrice, setTotalPrice] = useState(0);
-  const enabled = false;
+  const enabled = true;
 
   const shopify = useContext(ShopifyContext);
 
@@ -68,7 +68,8 @@ const useCart = () => {
 
 
   // add to shopify cart, and then add to our own cart
-  function addProduct(product: Product, quantity: number): Promise<void> {
+  async function addProduct(product: Product, quantity: number): Promise<void> {
+    if(!cart.checkoutIdClient) await createCart();
     const variantId = product.variants[0].id;
     // console.log(product)
     // console.log(cart)
@@ -98,10 +99,11 @@ const useCart = () => {
           orderProducts: res.data
         }))
         navigate('/manage/cart');
-      })
+      }).catch((err) => console.error(err));
   }
 
-  function addChip(chip: Product, quantity: number, customAttrs: { material: string, wcpa: string, fileInfo: { fileName: string; id: number } }): Promise<void> {
+  async function addChip(chip: Product, quantity: number, customAttrs: { material: string, wcpa: string, fileInfo: { fileName: string; id: number } }): Promise<void> {
+    if(!cart.checkoutIdClient) await createCart();
     const variantId = chip.variants[0].id;
     const customAttributes = [
       {
@@ -126,7 +128,6 @@ const useCart = () => {
     if (!shopify || !cart.checkoutIdClient) return Promise.reject('Shopify or cart not initialized');
     return shopify.checkout.addLineItems(cart.checkoutIdClient, lineItemsToAdd)
       .then(async (res) => {
-        console.log(res)
         const matchingAttrs = (item: LineItem) => {
           // @ts-expect-error NOTE: Shopify types not updated
           return item.customAttributes.every((attr: { key: string; value: string; }) => attr.key in checkAttrs && attr.value === checkAttrs[attr.key]);
@@ -176,7 +177,7 @@ const useCart = () => {
           orderChips: res.data
         }))
         navigate('/manage/cart');
-      })
+      }).catch((err) => console.error(err));
   }
 
   function editProductQuantity(product: ProductOrder, newQuantity: number) {
@@ -264,11 +265,10 @@ const useCart = () => {
 
 export const CartContext = React.createContext({} as ReturnType<typeof useCart>);
 
-function CartContextProvider({ children }: { children: React.ReactNode }) {
+export function CartContextProvider({ children }: { children?: React.ReactNode }) {
   return (
     <CartContext.Provider value={useCart()}>
       {children}
     </CartContext.Provider>
   )
 }
-export default CartContextProvider;
