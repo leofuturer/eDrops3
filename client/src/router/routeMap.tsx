@@ -39,6 +39,7 @@ import Register from '../page/register/index';
 import ResetPassword from '../page/resetPassword/index';
 import Users from '../page/users';
 import AddOrEditUser from '../page/users/addOrEditUser';
+import OrderChat from '../page/order/orderChat';
 
 function RouteMap() {
   const [cookies, setCookie, removeCookie] = useCookies(['userType', 'access_token', 'username', 'userId']);
@@ -124,7 +125,7 @@ function RouteMap() {
       </Route >
       <Route path="subpage">
         <Route path="order-detail" element={<OrderDetail />} />
-        {/* <Route path="order-chat" element={<OrderChat />} /> */} // TODO: chat feature
+        <Route path="order-chat" element={<OrderChat />} /> // TODO: chat feature
       </Route>
     </Routes >
   );
