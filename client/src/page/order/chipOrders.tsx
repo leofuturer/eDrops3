@@ -136,7 +136,7 @@ function ChipOrders() {
             <th className="">Last Updated</th>
             {cookies.userType !== 'worker' && <th>Worker</th> // customer or admin
             }
-            {cookies.userType === 'customer'
+            {cookies.userType !== 'worker'
               ? <th>Process Status</th> // customer
               : <th className="icon-center">Edit Status</th> // worker or admin
             }
@@ -154,7 +154,7 @@ function ChipOrders() {
               {cookies.userType !== 'customer' && <td className="">{item?.customerName}</td>}
               <td className="">{item?.lastUpdated.substring(0, item?.lastUpdated.indexOf('T'))}</td>
               {cookies.userType !== 'worker' && <td className="">{item?.workerName}</td>}
-              {cookies.userType === 'customer'
+              {cookies.userType !== 'worker'
                 ? <td className="">{item?.status}</td>
                 : (
                   <td className="">
