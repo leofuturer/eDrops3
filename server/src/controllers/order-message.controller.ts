@@ -50,8 +50,8 @@ export class OrderMessageController {
   ): Promise<OrderMessage> {
     const newMsgEntry = {
       message: orderMessage.message,
-      userConvId: orderMessage.userConvId,
-      date: orderMessage.messageDate,
+      userId: orderMessage.userId,
+      timestamp: orderMessage.timestamp,
     };
     pusher.trigger(`chat-${orderMessage.orderId}`, 'new-message', newMsgEntry);
     return this.orderMessageRepository.create(orderMessage);
