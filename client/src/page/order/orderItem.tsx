@@ -1,10 +1,8 @@
 // The order list page for both customer and worker
 function OrderItem({
   info,
-  adminAssignOrderDisplay = false,
 }: {
   info: any;
-  adminAssignOrderDisplay?: boolean;
 }) {
   return (
     <div className="order-item-card">
@@ -29,16 +27,6 @@ function OrderItem({
               __html: info.otherDetails.replace(/\n/g, '<br/>'),
             }}
           />
-        </div>
-      )}
-      {adminAssignOrderDisplay && (
-        <div>
-          <div>Customer name: {info.customerName}</div>
-          <div>Chip Order ID: {info.id}</div>
-          <div>Order ID: {info.orderId}</div>
-          <div>Customer ID: {info.customerId}</div>
-          <div>File ID: {info.fileInfoId}</div>
-          <div>Status: {info.status}</div>
         </div>
       )}
     </div>

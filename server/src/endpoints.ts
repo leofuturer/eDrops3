@@ -86,6 +86,7 @@ const endpoints = fs
     });
     console.log('Config endpoints not in server', configNotInServer);
     console.log('Server endpoints not in config', serverNotInConfig);
+    console.log('Intersection', intersection);
   })
   .catch(err => {
     console.log(err);

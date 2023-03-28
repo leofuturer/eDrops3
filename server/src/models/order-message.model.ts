@@ -22,16 +22,16 @@ export class OrderMessage extends Entity {
   message: string;
 
   @property({
-    type: 'number',
+    type: 'string',
     required: true,
   })
-  userConvId: number;
+  userId: string;
 
   @property({
     type: 'date',
     required: true,
   })
-  messageDate: Date;
+  timestamp: Date;
   
   constructor(data?: Partial<OrderMessage>) {
     super(data);
