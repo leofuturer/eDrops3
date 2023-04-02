@@ -37,7 +37,7 @@ export class CustomerOrderInfoController {
   ): Promise<OrderChip[]> {
     const customerOrders = await this.customerRepository.orderInfos(id).find({include: [{relation : 'orderChips'}]});
     return customerOrders.reduce((all, orderInfo) => {
-      return all.concat(orderInfo.orderChips);
+      return all.concat(orderInfo.orderChips ?? []);
     }, [] as OrderChip[]);
   }
 
