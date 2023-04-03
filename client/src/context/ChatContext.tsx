@@ -3,7 +3,9 @@ import Pusher from 'pusher-js';
 import React, { useEffect, useState } from 'react';
 import { request, customerGetApiToken } from '../api';
 
-const usePusher = () => {
+const useChat = () => {
+  const [chats, setChats] = useState<number[]>([]);
+
   const [key, setKey] = useState<string>(''); // Note that key must be initialized before pusher for buildClient to work
   const [pusher, setPusher] = useState<Pusher>(buildClient());
 
@@ -31,15 +33,20 @@ const usePusher = () => {
     setPusher(buildClient());
   }, [key])
 
-  return pusher;
+  return {
+    pusher,
+    chats,
+    addChat: (chatId: number) => !chats.includes(chatId) && setChats([...chats, chatId]),
+    removeChat: (chatId: number) => setChats(chats.filter((id) => id !== chatId)),
+  };
 }
 
-export const PusherContext = React.createContext<ReturnType<typeof usePusher>>({} as ReturnType<typeof usePusher>);
+export const ChatContext = React.createContext<ReturnType<typeof useChat>>({} as ReturnType<typeof useChat>);
 
-export function PusherContextProvider({ children }: { children?: React.ReactNode }) {
+export function ChatContextProvider({ children }: { children?: React.ReactNode }) {
   return (
-    <PusherContext.Provider value={usePusher()}>
+    <ChatContext.Provider value={useChat()}>
       {children}
-    </PusherContext.Provider>
+    </ChatContext.Provider>
   )
 }

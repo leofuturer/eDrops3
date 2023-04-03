@@ -28,8 +28,8 @@ function CustomerProfile() {
     ])
       .then(([res1, res2]) => {
         setInitialInfo({
-          username: res1.data.username,
-          email: res1.data.email,
+          username: res1.data.user.username,
+          email: res1.data.user.email,
           phoneNumber: res1.data.phoneNumber,
           firstName: res1.data.firstName,
           lastName: res1.data.lastName,

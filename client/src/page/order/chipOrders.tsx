@@ -7,6 +7,7 @@ import SEO from '../../component/header/seo';
 import ManageRightLayout from '../../component/layout/ManageRightLayout';
 import Loading from '../../component/ui/Loading';
 import { CartContext } from '../../context/CartContext';
+import { ChatContext } from '../../context/ChatContext';
 import { ChipOrder } from '../../types';
 import { metadata } from './metadata.jsx';
 
@@ -22,6 +23,7 @@ function ChipOrders() {
   const [cookies] = useCookies(['userId', 'userType', 'access_token']);
 
   const cart = useContext(CartContext);
+  const chat = useContext(ChatContext);
 
   useEffect(() => {
     if (location.pathname === '/manage/admin-retrieve-worker-orders'
@@ -52,7 +54,7 @@ function ChipOrders() {
         if (workerId) {
           res.data = res.data.filter((orderChip: ChipOrder) => orderChip.workerId === workerId);
         }
-        console.log(res)
+        // console.log(res)
         setOrderList(res.data);
         setIsLoading(false);
       })

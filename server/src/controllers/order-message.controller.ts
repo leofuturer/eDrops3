@@ -53,8 +53,10 @@ export class OrderMessageController {
       userId: orderMessage.userId,
       timestamp: orderMessage.timestamp,
     };
-    pusher.trigger(`chat-${orderMessage.orderId}`, 'new-message', newMsgEntry);
-    return this.orderMessageRepository.create(orderMessage);
+    return await this.orderMessageRepository.create(orderMessage).then(async (res) => {
+      await pusher.trigger(`chat-${orderMessage.orderId}`, 'new-message', newMsgEntry)
+      return res;
+    });
   }
 
   @get('/orderMessages/count')
