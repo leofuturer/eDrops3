@@ -52,6 +52,7 @@ function Orders() {
       .then((res) => {
         // console.log(res.data)
         setOrderList(res.data);
+        console.log(res.data);
         setIsLoading(false);
       })
       .catch((err) => {

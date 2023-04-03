@@ -73,10 +73,10 @@ export class CustomerOrderInfoController {
     @param.path.string('id') id: typeof Customer.prototype.id,
     @requestBody() orderInfo: OrderInfo,
   ): Promise<OrderInfo> {
-    const allOrders = await this.customerRepository.orderInfos(id).find();
-    if(allOrders.length == 0) {
-      return this.customerRepository.orderInfos(id).create(orderInfo);
+    const allOrders = await this.customerRepository.orderInfos(id).find({where: {orderComplete: false}});
+    if(allOrders.length !== 0) {
+      throw new HttpErrors.BadRequest('Customer already has an active order');
     }
-    throw new HttpErrors.BadRequest('Customer already has an active order');
+    return this.customerRepository.orderInfos(id).create(orderInfo);
   }
 }

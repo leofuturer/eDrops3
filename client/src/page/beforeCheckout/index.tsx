@@ -80,7 +80,10 @@ function BeforeCheckout() {
         return shopify.checkout.updateShippingAddress(shopifyCheckoutId, shippingAddr)
       }).then((res: any) => {
         // console.log(res);
-        window.open(`${shopifyCheckoutLink}`, '_blank');
+        const newWindow = window.open(`${shopifyCheckoutLink}`, '_blank');
+        newWindow?.addEventListener('message', () => {
+          console.log('message received');
+        });
         navigate(`/`);
       })
       .catch((err: Error) => {

@@ -61,5 +61,13 @@ export interface OrderInfo {
   shippingAddressId?: number;
   orderProducts?: ProductOrder[];
   orderChips?: ChipOrder[];
-  // orderMessages: OrderMessage[];
+  orderMessages?: OrderMessage[];
+}
+
+interface OrderMessage {
+  id: number;
+  orderId: number;
+  message: string;
+  userId: string;
+  timestamp: Date;
 }
