@@ -1,11 +1,8 @@
 import { useContext, useEffect, useState } from 'react';
 import { useCookies } from 'react-cookie';
 import { useSearchParams } from 'react-router-dom';
-import { addOrderMessage, getOrderMessagesById, request } from '../../api';
+import { addOrderMessage, foundryWorkerGetProfile, getOrderMessagesById, request } from '../../api';
 import { ChatContext } from '../../context/ChatContext';
-
-// Customers have chat_id of 1
-// Admins/workers have chat_id of 0
 
 interface Message {
   message: string;
@@ -17,10 +14,14 @@ export function ChatBox({ orderId }: { orderId: number }) {
   const chat = useContext(ChatContext);
 
   const [typed, setTyped] = useState('');
+  // const [worker, setWorker] = useState<any>(null); // TODO: Change to Worker type
   const [messages, setMessages] = useState<Message[]>([]);
-  // const [filteredMessages, setFilteredMessages] = useState<Record<number, Message[]>>({});
+  const [filteredMessages, setFilteredMessages] = useState<Record<number, Message[]>>({});
 
   const [cookies] = useCookies(['userType', 'userId'])
+
+  useEffect(() => {
+  }, [])
 
   // For real time notifications
   useEffect(() => {
@@ -69,12 +70,14 @@ export function ChatBox({ orderId }: { orderId: number }) {
   function groupMessages(messages: Message[]) {
     const grouped: Record<number, Message[]> = {};
     let trackedTime = 0;
+    const current = new Date();
     messages.forEach((msg) => {
       // If the message is not from today, group it with that date
-      const current = new Date();
-      if (msg.timestamp.getDate() !== current.getDate() && msg.timestamp.getMonth() !== current.getMonth() && msg.timestamp.getFullYear() !== current.getFullYear()) {
+      const timestamp = new Date(msg.timestamp)
+      console.log(msg, timestamp.getTime())
+      if (timestamp.getDate() !== current.getDate() && timestamp.getMonth() !== current.getMonth() && timestamp.getFullYear() !== current.getFullYear()) {
         // Get epoch time of start of day
-        const date = new Date(msg.timestamp.getFullYear(), msg.timestamp.getMonth(), msg.timestamp.getDate()).getTime();
+        const date = new Date(timestamp.getFullYear(), timestamp.getMonth(), timestamp.getDate()).getTime();
         if (grouped[date]) {
           grouped[date].push(msg);
         } else {
@@ -83,38 +86,56 @@ export function ChatBox({ orderId }: { orderId: number }) {
       }
       // If message from today, group messages that are linked within 5 minutes of each other
       else {
-        const currentTime = msg.timestamp.getTime();
+        const currentTime = timestamp.getTime();
         if (currentTime - trackedTime > 1000 * 60 * 5) {
-          if (grouped[trackedTime]) {
-            grouped[trackedTime].push(msg);
+          if (grouped[currentTime]) {
+            grouped[currentTime].push(msg);
           } else {
             grouped[currentTime] = [msg];
           }
           trackedTime = currentTime;
+        }
+        else {
+          if (grouped[trackedTime]) {
+            grouped[trackedTime].push(msg);
+          }
+          else {
+            grouped[trackedTime] = [msg];
+          }
         }
       }
     });
     return grouped;
   }
 
-  // useEffect(() => {
-  //   setFilteredMessages(groupMessages(messages));
-  // }, [messages]);
+  useEffect(() => {
+    setFilteredMessages(groupMessages(messages));
+  }, [messages]);
+
+  function convertEpoch(epoch: string): string {
+    const epochTime = parseInt(epoch);
+    const date = new Date(epochTime);
+    if (epochTime - new Date().getTime() < 1000 * 60 * 60 * 24) {
+      return date.toLocaleTimeString([], { timeStyle: 'short' });
+    }
+    return date.toLocaleDateString([], { dateStyle: 'short' });
+  }
 
   return (
-    <div className="flex flex-col flex-grow w-full max-w-xl bg-white shadow-xl rounded-t-lg overflow-hidden">
+    <div className="flex flex-col flex-grow w-full max-w-xl bg-white shadow-xl overflow-hidden">
+      <div className="flex justify-center h-20 px-4 py-2 bg-gray-100">
+        <span className="flex-shrink-0 h-10 w-10 rounded-full bg-gray-300"></span>
+        <p></p>
+      </div>
       <div className="flex flex-col flex-grow h-[50vh] px-4 py-8 space-y-2 overflow-auto">
-        {/* {Object.keys(filteredMessages).sort((a, b) => parseInt(b) - parseInt(a)).map((time, i) =>
+        {Object.keys(filteredMessages).sort((a, b) => parseInt(a) - parseInt(b)).map((time, i) =>
             <>
-              <small>{new Date(time).toLocaleString()}</small>
+              <small className="text-center">{convertEpoch(time)}</small>
               {filteredMessages[parseInt(time)].map((msg, j) =>
                 <ChatMessage key={parseInt(time) + j} msg={msg} />
               )}
             </>
-          )} */}
-        {messages.map((msg, i) =>
-          <ChatMessage key={i} msg={msg} />
-        )}
+          )}
       </div>
       {cookies.userType !== 'admin' &&
         <div className="bg-gray-300 p-4 w-full flex items-center">
