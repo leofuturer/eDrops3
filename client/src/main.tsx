@@ -5,6 +5,7 @@ import { HelmetProvider } from 'react-helmet-async';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { BrowserRouter } from 'react-router-dom';
 import { ChatContextProvider } from './context/ChatContext';
+import { PusherContextProvider } from './context/PusherContext';
 import { ShopifyContextProvider } from './context/ShopifyContext';
 import './global.css';
 import RouteMap from './router/routeMap';
@@ -17,11 +18,13 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
       <CookiesProvider>
         <HelmetProvider>
           <ShopifyContextProvider>
-            <ChatContextProvider>
-              <BrowserRouter>
-                <RouteMap />
-              </BrowserRouter>
-            </ChatContextProvider>
+            <PusherContextProvider>
+              <ChatContextProvider>
+                <BrowserRouter>
+                  <RouteMap />
+                </BrowserRouter>
+              </ChatContextProvider>
+            </PusherContextProvider>
           </ShopifyContextProvider>
         </HelmetProvider>
       </CookiesProvider>

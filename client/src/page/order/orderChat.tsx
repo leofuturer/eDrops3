@@ -2,7 +2,7 @@ import { useContext, useEffect, useState } from 'react';
 import { useCookies } from 'react-cookie';
 import { useSearchParams } from 'react-router-dom';
 import { addOrderMessage, foundryWorkerGetProfile, getOrderMessagesById, request } from '../../api';
-import { ChatContext } from '../../context/ChatContext';
+import { PusherContext } from '../../context/PusherContext';
 
 interface Message {
   message: string;
@@ -11,7 +11,7 @@ interface Message {
 }
 
 export function ChatBox({ orderId }: { orderId: number }) {
-  const chat = useContext(ChatContext);
+  const pusher = useContext(PusherContext);
 
   const [typed, setTyped] = useState('');
   // const [worker, setWorker] = useState<any>(null); // TODO: Change to Worker type
@@ -25,11 +25,11 @@ export function ChatBox({ orderId }: { orderId: number }) {
 
   // For real time notifications
   useEffect(() => {
-    if (chat.pusher) {
-      const channel = chat.pusher.subscribe(`chat-${orderId}`);
+    if (pusher) {
+      const channel = pusher.subscribe(`chat-${orderId}`);
       channel.bind('new-message', (msg: Message) => fetchMessages());
     }
-  }, [orderId, chat.pusher]);
+  }, [orderId, pusher]);
 
   // For persistence of messages
   useEffect(() => {

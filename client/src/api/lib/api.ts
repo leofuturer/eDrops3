@@ -14,6 +14,8 @@ interface APIOptions {
 	headers: Partial<AxiosRequestHeaders>;
 }
 
+export type HTTPMethod = "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
+
 // export function useAPI({ url, method, data, auth, headers = {
 // 	"Content-Type": "application/json; charset=utf-8",
 // } }: APIOptions): AxiosResponse {
@@ -60,7 +62,7 @@ interface APIOptions {
 // 	return res;
 // }
 
-export async function request(url: string, method: string, data: object, auth: boolean, headers: Partial<AxiosRequestHeaders> = {
+export async function request(url: string, method: HTTPMethod, data: object, auth: boolean, headers: Partial<AxiosRequestHeaders> = {
 	"Content-Type": "application/json; charset=utf-8",
 }) {
 	if (auth) {

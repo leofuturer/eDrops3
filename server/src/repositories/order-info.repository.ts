@@ -17,6 +17,9 @@ import {
 import {OrderChipRepository} from './order-chip.repository';
 import {OrderProductRepository} from './order-product.repository';
 import {UserRepository} from './user.repository';
+import crypto from 'crypto';
+import { HttpErrors } from '@loopback/rest';
+import Pusher from 'pusher';
 
 export class OrderInfoRepository extends DefaultCrudRepository<
   OrderInfo,
@@ -32,6 +35,8 @@ export class OrderInfoRepository extends DefaultCrudRepository<
     OrderChip,
     typeof OrderInfo.prototype.id
   >;
+
+  public pusher: Pusher;
 
   constructor(
     @inject('datasources.mysqlDS') dataSource: MysqlDsDataSource,
@@ -59,7 +64,25 @@ export class OrderInfoRepository extends DefaultCrudRepository<
       'orderProducts',
       this.orderProducts.inclusionResolver,
     );
+
+    this.pusher = new Pusher({
+      appId: process.env.APP_PUSHER_API_ID as string,
+      key: process.env.APP_PUSHER_API_KEY as string,
+      secret: process.env.APP_PUSHER_API_SECRET as string,
+      cluster: process.env.APP_PUSHER_API_CLUSTER as string,
+      useTLS: true,
+    });
   }
+
+  // TODO: fix validation function
+  // Current error: RangeError: Input buffers must have the same byte length
+  // validateShopifyWebhook(requestBody: string, hmacHeader: string): boolean {
+  //   const hmac = crypto.createHmac('sha256', process.env.SHOPIFY_ADMIN_SECRET ?? "");
+  //   hmac.update(requestBody);
+  //   const calculatedHmac = hmac.digest('hex');
+
+  //   return crypto.timingSafeEqual(Buffer.from(calculatedHmac), Buffer.from(hmacHeader));
+  // }
 
   async newOrderCreated(body: AnyObject, req: CustomRequest): Promise<void> {
     console.log(
@@ -70,10 +93,14 @@ export class OrderInfoRepository extends DefaultCrudRepository<
       `An order was just paid using email ${body.email}, receiving webhook info from Shopify`,
     );
     // TODO: Verify the request came from Shopify
+    // if (!this.validateShopifyWebhook(JSON.stringify(body), req?.headers?.['x-shopify-hmac-sha256'] ?? "")) {
+    //   console.log("Received invalid webhook")
+    //   throw HttpErrors.Unauthorized("Invalid webhook");
+    // }
     if (body.checkout_token) {
-      // consolse.log(`Checkout token: ${body.checkout_token}`);
+      // console.log(`Checkout token: ${body.checkout_token}`);
       this.findOne({where: {checkoutToken: body.checkout_token}})
-        .then(orderInfoInstance => {
+        .then(async(orderInfoInstance) => {
           // console.log(`Found order info instance: ${JSON.stringify(orderInfoInstance)}`);
           const date = new Date();
           // Create new orderInfo using updated data from Shopify
@@ -109,7 +136,8 @@ export class OrderInfoRepository extends DefaultCrudRepository<
             ba_zip: body.billing_address.zip,
             ba_country: body.billing_address.country,
           });
-          this.update(orderInfo);
+          await this.pusher.trigger(`checkout-${orderInfo.checkoutToken}`, 'checkout-completed', orderInfo);
+          await this.update(orderInfo);
         })
         .catch(err => console.log(err));
     }
