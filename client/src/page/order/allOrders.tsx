@@ -4,7 +4,6 @@ import { getAllOrderInfos, request } from '../../api';
 import ManageRightLayout from '../../component/layout/ManageRightLayout';
 import Loading from '../../component/ui/Loading';
 import { CartContext } from '../../context/CartContext';
-import { ChatContext } from '../../context/ChatContext';
 import { OrderInfo } from '../../types';
 
 function AllOrders() {
@@ -12,7 +11,6 @@ function AllOrders() {
   const [isLoading, setIsLoading] = useState(false);
 
   const cart = useContext(CartContext);
-  const chat = useContext(ChatContext);
 
   useEffect(() => {
     setIsLoading(true);

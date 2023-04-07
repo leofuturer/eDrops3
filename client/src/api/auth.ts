@@ -1,12 +1,24 @@
-// export function login(username, password) {
-//   return fetch('/api/customer', {
-//       method: 'GET',
-//       headers: {
-//         'Content-Type': 'application/json',
-//       },
-//     })
-//   }
-// }
+import request from "./lib/api";
+import { userLogin } from "./lib/serverConfig";
 
-export {}
+export function login(username: string, password: string): Promise<boolean> {
+  const data = (/@/.test(username)) ? {
+    email: username,
+    password: password,
+  } : {
+    username: username,
+    password: password,
+  };
+  return request(userLogin, 'POST', data, false)
+    .then((res) => {
+      return res.status === 200;
+    }).catch((err) => {
+      // console.error(err);
+      if (err.response.status === 401) {
+      }
+      return false;
+    });
+}
+
+export { }
 // TODO: add auth api call wrappers

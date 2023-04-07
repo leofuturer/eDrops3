@@ -1,10 +1,9 @@
 import { Tab } from '@headlessui/react';
-import React, { useContext } from 'react'
+import { useContext } from 'react';
 import { ChatContext } from '../../context/ChatContext';
-import OrderChat from '../../page/order/orderChat';
+import { ChatBox } from '../../page/order/orderChat';
 
 function ChatModal() {
-
   const chat = useContext(ChatContext);
   return (
     <div>
@@ -19,7 +18,7 @@ function ChatModal() {
             <Tab.Panels className="">
               {chat.chats.map((id) => (
                 <Tab.Panel key={id}>
-                  <OrderChat orderId={id} />
+                  <ChatBox orderId={id} />
                 </Tab.Panel>
               ))}
             </Tab.Panels>

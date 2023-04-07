@@ -4,7 +4,8 @@ import { useNavigate } from 'react-router-dom';
 import { LineItem, Product } from 'shopify-buy';
 import { addOrderChipToCart, addOrderProductToCart, customerGetName, getChipOrders, getCustomerCart, getProductOrders, getWorkerId, manipulateCustomerOrders, modifyChipOrders, modifyProductOrders, request } from '../api';
 import { ShopifyContext } from '../context/ShopifyContext';
-import { ChipOrder, OrderInfo, ProductOrder } from '../types';
+import { Address, ChipOrder, Customer, OrderInfo, ProductOrder } from '../types';
+import { PusherContext } from './PusherContext';
 
 const useCart = () => {
   const [cart, setCart] = useState<OrderInfo>({} as OrderInfo);
@@ -13,6 +14,7 @@ const useCart = () => {
   const enabled = true;
 
   const shopify = useContext(ShopifyContext);
+  const pusher = useContext(PusherContext);
 
   const [cookies] = useCookies(['userId']);
   const navigate = useNavigate();
@@ -45,11 +47,15 @@ const useCart = () => {
     });
   }
 
-  // create cart if it doesn't exist, otherwise get cart info
-  useEffect(() => {
+  function fetchCart() {
     cookies.userId && request(getCustomerCart.replace('id', cookies.userId), 'GET', {}, true).then((res) =>
       res.data ? setCart(res.data) : createCart()
     ).catch((err) => console.error(err));
+  }
+
+  // create cart if it doesn't exist, otherwise get cart info
+  useEffect(() => {
+    fetchCart();
   }, [cookies.userId]);
 
   // count number of items in cart
@@ -69,7 +75,7 @@ const useCart = () => {
 
   // add to shopify cart, and then add to our own cart
   async function addProduct(product: Product, quantity: number): Promise<void> {
-    if(!cart.checkoutIdClient) await createCart();
+    if (!cart.checkoutIdClient) await createCart();
     const variantId = product.variants[0].id;
     // console.log(product)
     // console.log(cart)
@@ -103,7 +109,7 @@ const useCart = () => {
   }
 
   async function addChip(chip: Product, quantity: number, customAttrs: { material: string, wcpa: string, fileInfo: { fileName: string; id: number } }): Promise<void> {
-    if(!cart.checkoutIdClient) await createCart();
+    if (!cart.checkoutIdClient) await createCart();
     const variantId = chip.variants[0].id;
     const customAttributes = [
       {
@@ -119,7 +125,7 @@ const useCart = () => {
         value: customAttrs.fileInfo.fileName,
       },
     ]
-    const checkAttrs = customAttributes.reduce((acc, attr) => ({...acc, [attr.key]: attr.value }), {})
+    const checkAttrs = customAttributes.reduce((acc, attr) => ({ ...acc, [attr.key]: attr.value }), {})
     const lineItemsToAdd = [{
       variantId,
       quantity,
@@ -238,14 +244,34 @@ const useCart = () => {
       })
   }
 
-  function checkout() {
-    navigate('/beforeCheckout', {
-      state: {
-        shopifyCheckoutLink: cart.checkoutLink,
-        cartId: cart.id,
-        shopifyCheckoutId: cart.checkoutIdClient,
-      }
-    });
+  function checkout(customer: Customer, address: Address): Promise<any> {
+    pusher.subscribe(`checkout-${cart.checkoutToken}`).bind('checkout-completed', (data: any) => {
+      fetchCart();
+      pusher.unsubscribe(`checkout-${cart.checkoutToken}`);
+    })
+    // @ts-expect-error
+    return shopify.checkout.updateEmail(cart.checkoutIdClient, customer.user.email)
+      .then((res: any) => {
+        const shippingAddr = {
+          address1: address.street,
+          address2: address.streetLine2,
+          city: address.city,
+          province: address.state,
+          country: address.country,
+          zip: address.zipCode,
+          firstName: customer.firstName,
+          lastName: customer.lastName,
+          phone: customer.phoneNumber,
+        };
+        // @ts-expect-error
+        return shopify.checkout.updateShippingAddress(cart.checkoutIdClient, shippingAddr)
+      })
+      .then((res: any) => {
+        const newWindow = window.open(`${cart.checkoutLink}`, '_blank');
+      })
+      .catch((err: Error) => {
+        console.error(err);
+      })
   }
 
   return {
