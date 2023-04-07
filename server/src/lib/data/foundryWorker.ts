@@ -3,23 +3,6 @@ import { DTO } from '../types/model';
 
 export const defaultFoundryWorkers: DTO<FoundryWorker & User>[] = [
   {
-    id: 'aaaaaaaa-aaaa-bbbb-aaaa-aaaaaaaaaaaa',
-    street: '1400 Midware Ave',
-    streetLine2: 'Apt 216',
-    firstName: 'Leo',
-    lastName: 'Chen',
-    phoneNumber: '3102896978',
-    country: 'America',
-    state: 'California',
-    city: 'Los Angeles',
-    zipCode: '90024',
-    affiliation: 'UCLA CNSI',
-    username: 'testWorker',
-    password: 'edropTest123',
-    email: 'edropswebsite@gmail.com',
-    emailVerified: true,
-  },
-  {
     id: 'aaaaaaaa-aaaa-dddd-aaaa-aaaaaaaaaaaa',
     street: '330 De Neve Drive',
     streetLine2: '',
