@@ -62,5 +62,6 @@ import {
 //          - resetting the password (after sending the email)
 
 // General Uses:
-//  Deleting Users (also as admins and FWorkers)
-//  Updating Users (also as admins and FWorkers)
+//  Deleting Users (also as admins and Foundry Workers)
+//  Updating Users (also as admins and Foundry Workers)
+//  Also, Forgetting/Resetting/Changing pssword things

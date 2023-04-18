@@ -42,9 +42,9 @@ export const getAllCustomers = `${ApiRootUrl}/customers`;
 export const getAllFoundryWorkers = `${ApiRootUrl}/foundryWorkers`;
 export const findAdminByWhere = `${ApiRootUrl}/admins`;
 export const deleteAdminById = `${ApiRootUrl}/admins/id`;
-export const getApiToken = `${ApiRootUrl}/admins/getApi`;
+export const getApiToken = `${ApiRootUrl}/admins/getApi`; // not used
 export const returnAllItems = `${ApiRootUrl}/admins/getItems`;
-export const returnOneItem = `${ApiRootUrl}/admins/getOne`;
+export const returnOneItem = `${ApiRootUrl}/admins/getOne`; // not used
 
 // Foundry Worker
 export const FoundryWorkerLogin = `${ApiRootUrl}/foundryWorkers/login`; // not used
@@ -82,7 +82,7 @@ export const modifyProductOrders = `${ApiRootUrl}/orderProducts/id`;
 export const modifyChipOrders = `${ApiRootUrl}/orderChips/id`;
 
 export const customerOrderRetrieve = `${ApiRootUrl}/customers/id/customerOrders`;
-export const workerOrderRetrieve = `${ApiRootUrl}/foundryWorkers/id/workerOrders`;
+export const workerOrderRetrieve = `${ApiRootUrl}/foundryWorkers/id/workerOrders`; // not used
 
 export const editOrderStatus = `${ApiRootUrl}/orderChips/id`;
 export const assignOrders = `${ApiRootUrl}/orderChips/id`;
