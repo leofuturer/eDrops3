@@ -1,8 +1,9 @@
+import { ROUTES } from '@/router/routes'
 import React from 'react'
 import { useCookies } from 'react-cookie'
 import { NavLink } from 'react-router-dom'
 
-function AuthNavLink({ to, children, className, activeClassName, userTypes }: { to: string, children: React.ReactNode, activeClassName?: string, className?: string, userTypes: string[] }) {
+function AuthNavLink({ to, children, className, activeClassName, userTypes }: { to: ROUTES, children: React.ReactNode, activeClassName?: string, className?: string, userTypes: string[] }) {
 
   const [cookies] = useCookies(['userType'])
 

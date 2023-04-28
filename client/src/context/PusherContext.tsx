@@ -1,7 +1,7 @@
 
 import Pusher from 'pusher-js';
 import React, { useEffect, useState } from 'react';
-import { request, customerGetApiToken } from '../api';
+import { request, customerGetApiToken } from '@/api';
 
 const usePusher = () => {
   const [key, setKey] = useState<string>(''); // Note that key must be initialized before pusher for buildClient to work

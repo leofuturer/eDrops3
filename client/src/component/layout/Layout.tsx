@@ -3,7 +3,7 @@ import { CartContextProvider } from '../../context/CartContext';
 import Footer from '../footer/Footer';
 import NavTop from '../nav/NavTop';
 
-function Layout() {
+export function Layout() {
   return (
     <div className="flex flex-col justify-between min-h-screen">
       <div className="min-h-full h-full">

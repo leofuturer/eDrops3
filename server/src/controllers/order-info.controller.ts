@@ -91,6 +91,6 @@ export class OrderInfoController {
   async find(
     @param.filter(OrderInfo) filter?: Filter<OrderInfo>,
   ): Promise<OrderInfo[]> {
-    return this.orderInfoRepository.find(filter);
+    return this.orderInfoRepository.find();
   }
 }
