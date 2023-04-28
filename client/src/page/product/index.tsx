@@ -14,7 +14,7 @@ import {
 } from '../../lib/constants/products';
 import { CartContext } from '../../context/CartContext';
 
-function Product() {
+export function Product() {
   const [productId, setProductId] = useState("");
   const [product, setProduct] = useState<ProductType>({} as ProductType);
   const [quantity, setQuantity] = useState(1);
@@ -31,7 +31,7 @@ function Product() {
 
   useEffect(() => {
     const id = searchParams.get('id');
-    id ? setProductId(id) : navigate('/allItems');
+    id ? setProductId(id) : navigate('/products');
   }, [searchParams]);
 
   // fetch product information from Shopify API
@@ -49,7 +49,7 @@ function Product() {
       }).catch((err) => {
         console.error(err);
         // redirect to all items page if product ID is invalid
-        navigate('/allItems');
+        navigate('/products');
       });
   }, [shopify, productId]);
 
@@ -75,7 +75,7 @@ function Product() {
         </div>
         <div className="col-span-1 flex flex-col justify-between">
           <div className="flex flex-col space-y-2">
-            <NavLink to="/allItems" className="text-primary_light hover:text-primary mb-4"><i className="fa fa-arrow-left" /> Return to all products</NavLink>
+            <NavLink to="/products" className="text-primary_light hover:text-primary mb-4"><i className="fa fa-arrow-left" /> Return to all products</NavLink>
             <h2 className="text-2xl">{product?.title}</h2>
             <p className="text-justify">
               {product?.description}
@@ -127,5 +127,3 @@ function Product() {
     </div>
   );
 }
-
-export default Product;
