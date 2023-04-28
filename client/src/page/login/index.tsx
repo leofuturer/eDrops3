@@ -10,7 +10,7 @@ import SEO from '../../component/header/seo';
 import { metadata } from './metadata';
 import { LoginSchema } from '../../schemas';
 
-function Login() {
+export function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState(false);
 
@@ -54,7 +54,7 @@ function Login() {
       />
       <div className="flex flex-col shadow-box-sm rounded-lg py-4 px-20 space-y-2">
         <h3 className="text-secondary text-2xl text-center font-bold border-b-2 pb-2 border-secondary">Login</h3>
-        <p className="text-sm text-center">Don't have an account? <NavLink to="/register" className="text-primary_light hover:text-primary">Register now</NavLink></p>
+        <p className="text-sm text-center">Don't have an account? <NavLink to="/signup" className="text-primary_light hover:text-primary">Register now</NavLink></p>
         <Formik
           initialValues={{
             usernameOrEmail: '',
@@ -107,5 +107,3 @@ function Login() {
     </div >
   );
 }
-
-export default Login;

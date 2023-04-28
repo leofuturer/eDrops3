@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
-function Project() {
+
+export function Project() {
   const [activeTab, setActiveTab] = useState('uploads');
   return (
     <div className="flex flex-row justify-center">
