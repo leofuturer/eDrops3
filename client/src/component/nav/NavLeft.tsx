@@ -1,56 +1,57 @@
 import React from 'react';
 import AuthNavLink from './AuthNavLink';
+import { ROUTES } from '@/router/routes';
 
 function NavLeft() {
   return (
     <div className="flex flex-col items-center space-y-8 pt-24">
       <div className="flex flex-col space-y-4 text-lg">
-        <AuthNavLeftLink to="/manage/profile" userTypes={['admin', 'customer', 'worker']}>
-          <i className="fa fa-book aspect-square" />
+        <AuthNavLeftLink to={ROUTES.ManageProfile} userTypes={['admin', 'customer', 'worker']}>
+          <i className="fa fa-book w-6 text-center" />
           <p className="">Profile</p>
         </AuthNavLeftLink>
-        <AuthNavLeftLink to="/manage/address" userTypes={['customer']} >
-          <i className="fa fa-address-book aspect-square" />
+        <AuthNavLeftLink to={ROUTES.ManageAddress} userTypes={['customer']} >
+          <i className="fa fa-address-book w-6 text-center" />
           <p className="">Address Book</p>
         </AuthNavLeftLink>
-        <AuthNavLeftLink to="/manage/changepwd" userTypes={['admin', 'customer', 'worker']}>
-          <i className="fa fa-key aspect-square" />
+        <AuthNavLeftLink to={ROUTES.ManageChangePassword} userTypes={['admin', 'customer', 'worker']}>
+          <i className="fa fa-key w-6 text-center" />
           <p className="">Password</p>
         </AuthNavLeftLink>
-        <AuthNavLeftLink to="/manage/cart" userTypes={['customer']}>
-          <i className="fa fa-shopping-cart aspect-square" />
+        <AuthNavLeftLink to={ROUTES.ManageCart} userTypes={['customer']}>
+          <i className="fa fa-shopping-cart w-6 text-center" />
           <p className="">Cart</p>
         </AuthNavLeftLink>
-        <AuthNavLeftLink to="/manage/customer-orders" userTypes={['customer']}>
-          <i className="fa fa-money-bill aspect-square" />
+        <AuthNavLeftLink to={ROUTES.ManageOrders} userTypes={['customer']}>
+          <i className="fa fa-money-bill w-6 text-center" />
           <p className="">Orders</p>
         </AuthNavLeftLink>
-        <AuthNavLeftLink to="/manage/all-orders" userTypes={['admin']}>
-          <i className="fa fa-money-bill aspect-square" />
+        <AuthNavLeftLink to={ROUTES.ManageOrders} userTypes={['admin']}>
+          <i className="fa fa-money-bill w-6 text-center" />
           <p className="">Orders</p>
         </AuthNavLeftLink>
-        <AuthNavLeftLink to="/manage/files" userTypes={['customer']}>
-          <i className="fa fa-database aspect-square" />
+        <AuthNavLeftLink to={ROUTES.ManageFiles} userTypes={['customer']}>
+          <i className="fa fa-database w-6 text-center" />
           <p className="">Mask Files</p>
         </AuthNavLeftLink>
-        <AuthNavLeftLink to="/manage/allfiles" userTypes={['admin']}>
-          <i className="fa fa-database aspect-square" />
+        <AuthNavLeftLink to={ROUTES.ManageFiles} userTypes={['admin']}>
+          <i className="fa fa-database w-6 text-center" />
           <p className="">Mask Files</p>
         </AuthNavLeftLink>
-        <AuthNavLeftLink to="/manage/chip-orders" userTypes={['admin', 'customer', 'worker']}>
-          <i className="fa fa-microchip aspect-square" />
+        <AuthNavLeftLink to={ROUTES.ManageOrders} userTypes={['admin', 'customer', 'worker']}>
+          <i className="fa fa-microchip w-6 text-center" />
           <p className="">Fab Orders</p>
         </AuthNavLeftLink>
-        <AuthNavLeftLink to="/manage/admins" userTypes={['admin']}>
-          <i className="fa fa-user aspect-square" />
+        <AuthNavLeftLink to={ROUTES.ManageAdmins} userTypes={['admin']}>
+          <i className="fa fa-user w-6 text-center" />
           <p className="">Admins</p>
         </AuthNavLeftLink>
-        <AuthNavLeftLink to="/manage/foundryworkers" userTypes={['admin']}>
-          <i className="fa fa-users aspect-square" />
+        <AuthNavLeftLink to={ROUTES.ManageWorkers} userTypes={['admin']}>
+          <i className="fa fa-users w-6 text-center" />
           <p className="">Foundry Workers</p>
         </AuthNavLeftLink>
-        <AuthNavLeftLink to="/manage/users" userTypes={['admin']}>
-          <i className="fa fa-address-card aspect-square" />
+        <AuthNavLeftLink to={ROUTES.ManageUsers} userTypes={['admin']}>
+          <i className="fa fa-address-card w-6 text-center" />
           <p className="">Users</p>
         </AuthNavLeftLink>
       </div>
