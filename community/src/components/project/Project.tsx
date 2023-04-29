@@ -198,9 +198,8 @@ function Project() {
 									{currentProject?.title}
 								</h1>
 								<BookmarkIcon
-									className={`w-10 h-10 cursor-pointer ${
-										saved ? "fill-black" : ""
-									}`}
+									className={`w-10 h-10 cursor-pointer ${saved ? "fill-black" : ""
+										}`}
 									onClick={handleSave}
 								/>
 							</div>
@@ -213,31 +212,32 @@ function Project() {
 							</p>
 						</div>
 						<div>{currentProject?.content}</div>
-						<div>
-							<h3 className="underline underline-offset-4 text-xl mb-2">
-								Files
-							</h3>
-							<ul className="flex flex-col space-y-2">
-								{projectFiles}
-							</ul>
-						</div>
-						<div>
-							<h3 className="underline underline-offset-4 text-xl mb-2">
-								Links
-							</h3>
-							<ul className="flex flex-col space-y-2">
-								{projectLinks}
-							</ul>
-						</div>
+						{projectFiles?.length > 0 && (
+							<div>
+								<h3 className="underline underline-offset-4 text-xl mb-2">
+									Files
+								</h3>
+								<ul className="flex flex-col space-y-2">
+									{projectFiles}
+								</ul>
+							</div>)}
+						{projectLinks?.length > 0 && (
+							<div>
+								<h3 className="underline underline-offset-4 text-xl mb-2">
+									Links
+								</h3>
+								<ul className="flex flex-col space-y-2">
+									{projectLinks}
+								</ul>
+							</div>)}
 						<div className="flex flex-row space-x-4">
 							<div
 								className="flex flex-row space-x-2 cursor-pointer"
 								onClick={handleLike}
 							>
 								<ThumbUpIcon
-									className={`w-6 h-6 cursor-pointer ${
-										liked ? "fill-black" : ""
-									}`}
+									className={`w-6 h-6 cursor-pointer ${liked ? "fill-black" : ""
+										}`}
 								/>
 								<p className="text-md">
 									{currentProject?.likes}
@@ -266,9 +266,8 @@ function Project() {
 						</div>
 						{expanded && (
 							<div
-								className={`bg-white p-2 pl-4 flex flex-col space-y-2 ${
-									expanded ? "transition-all" : ""
-								} ease-in-out duration-500`}
+								className={`bg-white p-2 pl-4 flex flex-col space-y-2 ${expanded ? "transition-all" : ""
+									} ease-in-out duration-500`}
 							>
 								<textarea
 									title="reply"

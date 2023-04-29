@@ -44,14 +44,15 @@ function NavTop() {
 				<div id="navLeft">
 					<NavLink
 						to="/"
-						className="flex flex-row items-center justify-center"
+						className="flex flex-row flex-none items-end h-full justify-center"
 					>
-						<h1 className="text-2xl">eDroplets Community</h1>
 						<img
 							src={logo}
 							alt="eDroplets Logo"
 							className="max-h-[50px]"
 						/>
+						<h1 className="text-4xl hover:text-accent hidden lg:flex">Droplets Community</h1>
+						
 					</NavLink>
 				</div>
 				<div

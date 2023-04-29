@@ -10,12 +10,14 @@ import { NavLink } from "react-router-dom";
 function ProfilePreview() {
 	const [user, setUser] = useState<UserProfileType>({} as UserProfileType);
 	const [isUser, setIsUser] = useState(false);
+	const [userFetched, setUserFetched] = useState(false);
 
 	useEffect(() => {
 		const userId = Cookies.get("userId");
 		if (userId) {
 			API.Request(`${users}/${userId}`, "GET", {}, false).then(
 				(res) => {
+					setUserFetched(true);
 					setUser(res.data);
 				}
 			);
@@ -28,6 +30,7 @@ function ProfilePreview() {
 
 	return (
 		<div className="flex flex-col mt-20 px-10">
+			{userFetched && (
 				<div
 					className={`${
 						isUser
@@ -75,7 +78,7 @@ function ProfilePreview() {
 							</NavLink>
 						</div>
 					)}
-				</div>
+				</div>)}
 		</div>
 	);
 }
