@@ -59,24 +59,37 @@ export function RouteMap() {
                 <Route path="admins"  >
                   <Route index element={<Admins />} />
                   <Route path="add" element={<AddOrEditAdmin />} />
-                  <Route path="edit" element={<AddOrEditAdmin />} />
+                  <Route path=":id" >
+                    <Route index element={<AddOrEditAdmin />} />
+                    <Route path="edit" element={<AddOrEditAdmin />} />
+                  </Route>
                 </Route>
                 <Route path="users">
                   <Route index element={<Users />} />
                   <Route path="add" element={<AddOrEditUser />} />
+                  <Route path=":id" >
+                    <Route index element={<AddOrEditUser />} />
+                    <Route path="edit" element={<AddOrEditUser />} />
+                    <Route path="files" element={<Files />} />
+                    <Route path="orders" element={<Orders />} />
+                  </Route>
                   <Route path="edit" element={<AddOrEditUser />} />
                 </Route>
                 <Route path="workers" >
                   <Route index element={<FoundryWorkers />} />
                   <Route path="add" element={<AddOrEditWorker />} />
-                  <Route path="edit" element={<AddOrEditWorker />} />
+                  <Route path=":id" >
+                    <Route index element={<AddOrEditWorker />} />
+                    <Route path="edit" element={<AddOrEditWorker />} />
+                    <Route path="files" element={<Files />} />
+                    <Route path="orders" element={<ChipOrders />} />
+                  </Route>
                 </Route>
-                <Route path="all-files" element={<AllFiles />} />
-                <Route path="all-orders" element={<AllOrders />} />
-                <Route path="admin-retrieve-user-files" element={<Files />} />
-                <Route path="admin-retrieve-worker-orders" element={<ChipOrders />} />
-                <Route path="admin-retrieve-user-orders" element={<Orders />} />
-                <Route path="assign-orders" element={<AssignOrders />} />
+                {/* <Route path="all-files" element={<AllFiles />} />
+                <Route path="all-orders" element={<AllOrders />} /> */}
+                {/* <Route path="admin-retrieve-worker-orders" element={<ChipOrders />} />
+                <Route path="admin-retrieve-user-orders" element={<Orders />} /> */}
+                <Route path="assign-orders" element={<AssignOrders />} /> {/* Do we still use this page? And if so, should be under orders? */}
               </>}
             {/* Pages for customers */
               cookies.userType === 'customer' && <>
@@ -86,7 +99,7 @@ export function RouteMap() {
                   <Route path="update" element={<UpdateAddress />} />
                 </Route>
                 <Route path="files" element={<Files />} />
-                <Route path="customer-orders" element={<Orders />} />
+                <Route path="orders" element={<Orders />} />
                 <Route path="cart" element={<Cart />} />
               </>
             }

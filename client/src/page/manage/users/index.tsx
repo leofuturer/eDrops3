@@ -13,7 +13,7 @@ export function Users() {
   const navigate = useNavigate();
 
   function handleAddUsers() {
-    navigate('/manage/users/addNewUser');
+    navigate('/manage/users/add');
   }
 
   function handleRetrieveFiles(customer: Customer) {
