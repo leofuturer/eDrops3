@@ -31,7 +31,7 @@ export function Admins() {
   }, []);
 
   function handleEditAdmin(admin: Admin) {
-    navigate('/manage/admins/editAdmin', {
+    navigate('/manage/admin/', {
       state: {
         adminId: admin.id,
         adminInfo: admin,
