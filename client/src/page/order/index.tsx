@@ -52,6 +52,7 @@ function Orders() {
       .then((res) => {
         // console.log(res.data)
         setOrderList(res.data);
+        console.log(res.data);
         setIsLoading(false);
       })
       .catch((err) => {
@@ -69,11 +70,11 @@ function Orders() {
   }
 
   // TODO: chat feature
-  // function handleChat(orderId: number) {
-  //   const redirectUrl = `/subpage/order-chat?id=${orderId}`;
-  //   const strWindowFeatures = 'width=1200px, height=900px';
-  //   const WindowForOrderDetail = window.open(redirectUrl, '_blank', strWindowFeatures);
-  // }
+  function handleChat(orderId: number) {
+    const redirectUrl = `/subpage/order-chat?id=${orderId}`;
+    const strWindowFeatures = 'width=1200px, height=900px';
+    const WindowForOrderDetail = window.open(redirectUrl, '_blank', strWindowFeatures);
+  }
 
   return (
     <ManageRightLayout title={location.pathname === '/manage/admin-retrieve-user-orders' ? 'Orders for ${username}' : 'Orders'}>
@@ -90,7 +91,7 @@ function Orders() {
             <th className="p-2">Process Status</th>
             <th className="p-2">Total Price</th>
             <th className="p-2">Other Details</th>
-            {/* <th className="p-2">Chat</th> */}
+            <th className="p-2">Chat</th>
           </tr>
         </thead>
         <tbody>
@@ -105,9 +106,9 @@ function Orders() {
               <td className="p-2">
                 <i className="fa fa-commenting cursor-pointer" onClick={() => order.id && handleDetail(order.id)} />
               </td>
-              {/* <td className="p-2">
-                  <i className="fa fa-commenting cursor-pointer" onClick={() => handleChat(order.id)} />
-                </td> */}
+              <td className="p-2">
+                <i className="fa fa-commenting cursor-pointer" onClick={() => handleChat(order.id)} />
+              </td>
             </tr>
           ))
             : (

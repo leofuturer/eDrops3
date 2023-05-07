@@ -8,7 +8,7 @@ interface Order {
   quantity: number;
   price: number;
   otherDetails?: string;
-  orderInfoId?: number;
+  orderInfoId: number;
 }
 
 export interface ProductOrder extends Order {
@@ -61,5 +61,13 @@ export interface OrderInfo {
   shippingAddressId?: number;
   orderProducts?: ProductOrder[];
   orderChips?: ChipOrder[];
-  // orderMessages: OrderMessage[];
+  orderMessages?: OrderMessage[];
+}
+
+interface OrderMessage {
+  id: number;
+  orderId: number;
+  message: string;
+  userId: string;
+  timestamp: Date;
 }

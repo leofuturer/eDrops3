@@ -1,5 +1,5 @@
 import { useContext } from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import SEO from '../../component/header/seo';
 import ManageRightLayout from '../../component/layout/ManageRightLayout';
 import { CartContext } from '../../context/CartContext';
@@ -9,6 +9,8 @@ import { metadata } from './metadata.js';
 
 function Cart() {
   const cart = useContext(CartContext);
+
+  const navigate = useNavigate();
 
   return (
     <ManageRightLayout title="Cart">
@@ -20,7 +22,7 @@ function Cart() {
       {cart.numItems > 0
         ? (<div className="flex flex-col w-full space-y-4 -mt-4">
           <div className="flex flex-row justify-end items-center">
-            <button type="button" className="bg-primary rounded-lg text-white px-4 py-2" onClick={() => cart.checkout()}>Checkout</button>
+            <button type="button" className="bg-primary rounded-lg text-white px-4 py-2" onClick={() => navigate('/beforeCheckout')}>Checkout</button>
           </div>
           <div className="flex flex-col space-y-4">
             {cart.cart?.orderProducts?.length && cart.cart.orderProducts.map((product, index) => <CartProduct

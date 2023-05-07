@@ -38,11 +38,10 @@ const useShopify = () => {
 
 export const ShopifyContext = React.createContext<ReturnType<typeof useShopify>>({} as ReturnType<typeof useShopify>);
 
-export function ShopifyContextProvider({ children }: { children: React.ReactNode }) {
+export function ShopifyContextProvider({ children }: { children?: React.ReactNode }) {
   return (
     <ShopifyContext.Provider value={useShopify()}>
       {children}
     </ShopifyContext.Provider>
   )
 }
-export default ShopifyContextProvider;
