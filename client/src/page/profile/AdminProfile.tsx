@@ -17,8 +17,8 @@ function AdminProfile() {
     request(adminGetProfile.replace('id', cookies.userId), 'GET', {}, true)
       .then((res) => {
         setInitialInfo({
-          username: res.data.username,
-          email: res.data.email,
+          username: res.data.user.username,
+          email: res.data.user.email,
           phoneNumber: res.data.phoneNumber,
         });
       })

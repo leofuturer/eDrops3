@@ -33,4 +33,12 @@ body {
   .table-info td {
     @apply p-2 text-center
   }
+
+  .table-fixed {
+    @apply rounded-md shadow-box table-auto;
+  }
+
+  .table-fixed td {
+    @apply border p-2;
+  }
 }

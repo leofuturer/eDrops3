@@ -79,7 +79,7 @@ export class FoundryWorkerController {
     @param.filter(FoundryWorker, {exclude: 'where'})
     filter?: FilterExcludingWhere<FoundryWorker>,
   ): Promise<FoundryWorker> {
-    return this.foundryWorkerRepository.findById(id, filter);
+    return this.foundryWorkerRepository.findById(id, { include: ['user'], ...filter });
   }
 
   @del('/foundryWorkers/{id}')

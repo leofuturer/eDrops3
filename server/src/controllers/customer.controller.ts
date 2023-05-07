@@ -87,7 +87,7 @@ export class CustomerController {
     @param.filter(Customer, { exclude: 'where' })
     filter?: FilterExcludingWhere<Customer>,
   ): Promise<Customer> {
-    return this.customerRepository.findById(id, filter);
+    return this.customerRepository.findById(id, { include: ['user', 'customerAddresses'], ...filter });
   }
 
   @del('/customers/{id}')

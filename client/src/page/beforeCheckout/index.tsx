@@ -11,11 +11,9 @@ import MessageLayout from '../../component/layout/MessageLayout';
 import ModalBackground from '../../component/modal/ModalBackground';
 import { Address, Customer } from '../../types';
 import Loading from '../../component/ui/Loading';
+import { CartContext } from '../../context/CartContext';
 
 function BeforeCheckout() {
-  const [shopifyCheckoutLink, setShopifyCheckoutLink] = useState('');
-  const [cartId, setCartId] = useState(undefined);
-  const [shopifyCheckoutId, setShopifyCheckoutId] = useState(undefined);
   const [addressList, setAddressList] = useState<Address[]>([]);
   const [selectedAddrIndex, setSelectedAddrIndex] = useState(0);
   const [doneLoading, setDoneLoading] = useState(false);
@@ -25,69 +23,39 @@ function BeforeCheckout() {
 
   const [cookies] = useCookies(['userId', 'access_token']);
 
-  const shopify = useContext(ShopifyContext);
+  const cart = useContext(CartContext);
 
   const navigate = useNavigate();
-  const location = useLocation();
 
   useEffect(() => {
-    // CARTTODO: don't pass state, just get from context
-    if (!location.state.shopifyCheckoutLink || !location.state.cartId) {
-      // console.log("check..");
-      navigate('/manage/cart');
-    } else {
-      setShopifyCheckoutLink(location.state.shopifyCheckoutLink);
-      setCartId(location.state.cartId);
-      setShopifyCheckoutId(location.state.shopifyCheckoutId);
-      request(customerGetProfile.replace('id', cookies.userId), 'GET', {}, true)
-        .then((res) => {
-          // console.log(res.data);
-          setCustomer(res.data);
-          return request(customerAddresses.replace('id', cookies.userId), 'GET', {}, true)
-        })
-        .then((res) => {
-          // console.log(res.data);
-          setAddressList(res.data);
-          setSelectedAddrIndex(0);
-        })
-        .catch((err) => {
-          console.error(err);
-        })
-        .finally(() => {
-          setDoneLoading(true);
-        });
-    }
+    request(customerGetProfile.replace('id', cookies.userId), 'GET', {}, true)
+      .then((res) => {
+        // console.log(res.data);
+        setCustomer(res.data);
+        return request(customerAddresses.replace('id', cookies.userId), 'GET', {}, true)
+      })
+      .then((res) => {
+        // console.log(res.data);
+        setAddressList(res.data);
+        setSelectedAddrIndex(0);
+      })
+      .catch((err) => {
+        console.error(err);
+      })
+      .finally(() => {
+        setDoneLoading(true);
+      });
   }, []);
 
   function handlePayment() {
     setPreparingForCheckout(true);
-    // @ts-expect-error
-    shopify.checkout.updateEmail(shopifyCheckoutId, customer.email)
-      .then((res: any) => {
-        const address = addressList[selectedAddrIndex];
-        const shippingAddr = {
-          address1: address.street,
-          address2: address.streetLine2,
-          city: address.city,
-          province: address.state,
-          country: address.country,
-          zip: address.zipCode,
-          firstName: customer.firstName,
-          lastName: customer.lastName,
-          phone: customer.phoneNumber,
-        };
-        // @ts-expect-error
-        return shopify.checkout.updateShippingAddress(shopifyCheckoutId, shippingAddr)
-      }).then((res: any) => {
-        // console.log(res);
-        window.open(`${shopifyCheckoutLink}`, '_blank');
-        navigate(`/`);
-      })
-      .catch((err: Error) => {
-        console.error(err);
-      }).finally(() => {
-        setPreparingForCheckout(false);
-      });
+    cart.checkout(customer, addressList[selectedAddrIndex]).then((res) => {
+      navigate('/manage/cart');
+    }).catch((err) => {
+      console.error(err);
+    }).finally(() => {
+      setPreparingForCheckout(false);
+    });
   }
 
   return (
@@ -100,15 +68,13 @@ function BeforeCheckout() {
               onClick={() => setShowAdd(true)}>
               <i className="fa fa-plus" /><p>Add New</p>
             </button>
-            {preparingForCheckout
-              ? <Loading />
-              : <div className="flex flex-row space-x-4">
+            {preparingForCheckout ? <Loading /> :
+              <div className="flex flex-row space-x-4">
                 <button type="button" className="bg-primary_light hover:bg-primary text-white rounded-md px-4 py-2 text-lg"
                   onClick={() => navigate('/manage/cart')}>Return to Cart</button>
                 <button type="button" className="bg-primary_light hover:bg-primary text-white rounded-md px-4 py-2 text-lg"
                   onClick={handlePayment}>Proceed to Payment</button>
-              </div>
-            }
+              </div>}
           </div>
           <div className="grid grid-cols-2 w-full gap-4">
             {addressList.map((oneAddress, index) => (

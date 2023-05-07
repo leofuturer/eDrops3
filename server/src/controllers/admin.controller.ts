@@ -119,7 +119,7 @@ export class AdminController {
     @param.filter(Admin, { exclude: 'where' })
     filter?: FilterExcludingWhere<Admin>,
   ): Promise<Admin> {
-    return this.adminRepository.findById(id, filter);
+    return this.adminRepository.findById(id, { include: ['user'], ...filter});
   }
 
   @patch('/admins/{id}')

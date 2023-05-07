@@ -4,8 +4,8 @@ import React, { useEffect, useState } from 'react';
 import { request, customerGetApiToken } from '../api';
 
 const usePusher = () => {
+  const [key, setKey] = useState<string>(''); // Note that key must be initialized before pusher for buildClient to work
   const [pusher, setPusher] = useState<Pusher>(buildClient());
-  const [key, setKey] = useState<string>('');
 
   useEffect(() => {
     request(customerGetApiToken, 'GET', {}, false)
@@ -31,16 +31,15 @@ const usePusher = () => {
     setPusher(buildClient());
   }, [key])
 
-  return pusher;
+  return pusher
 }
 
 export const PusherContext = React.createContext<ReturnType<typeof usePusher>>({} as ReturnType<typeof usePusher>);
 
-export function PusherContextProvider({ children }: { children: React.ReactNode }) {
+export function PusherContextProvider({ children }: { children?: React.ReactNode }) {
   return (
     <PusherContext.Provider value={usePusher()}>
       {children}
     </PusherContext.Provider>
   )
 }
-export default PusherContextProvider;

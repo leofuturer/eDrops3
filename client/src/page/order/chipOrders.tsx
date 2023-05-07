@@ -52,7 +52,7 @@ function ChipOrders() {
         if (workerId) {
           res.data = res.data.filter((orderChip: ChipOrder) => orderChip.workerId === workerId);
         }
-        console.log(res)
+        // console.log(res)
         setOrderList(res.data);
         setIsLoading(false);
       })
@@ -112,14 +112,13 @@ function ChipOrders() {
   }
 
   // TODO: chat feature
-  // function handleChat(e) {
-  //   const orderId = Number(e.target.id.replace(/[^0-9]/ig, ''))
-  //   const redirectUrl = `/subpage/order-chat?id=${orderId}`;
-  //   const strWindowFeatures = 'width=1200px, height=900px';
-  //   const WindowForOrderChat = window.open(redirectUrl, '_blank', strWindowFeatures);
-  //   // @ts-expect-error
-  //   WindowForOrderChat._orderItemId = orderId;
-  // }
+  function handleChat(orderId: number) {
+    const redirectUrl = `/subpage/order-chat?id=${orderId}`;
+    const strWindowFeatures = 'width=1200px, height=900px';
+    const WindowForOrderChat = window.open(redirectUrl, '_blank', strWindowFeatures);
+    // @ts-expect-error
+    WindowForOrderChat._orderItemId = orderId;
+  }
 
   return (
     <ManageRightLayout title="Chip Orders">
@@ -137,13 +136,13 @@ function ChipOrders() {
             <th className="">Last Updated</th>
             {cookies.userType !== 'worker' && <th>Worker</th> // customer or admin
             }
-            {cookies.userType === 'customer'
+            {cookies.userType !== 'worker'
               ? <th>Process Status</th> // customer
               : <th className="icon-center">Edit Status</th> // worker or admin
             }
             <th className="">Qty</th>
             <th className="">Mask File</th>
-            {/* <th className="">Chat</th> */}
+            <th className="">Chat</th>
             {cookies.userType === 'admin' && <th className="">Assign Order</th> // admin
             }
           </tr>
@@ -155,7 +154,7 @@ function ChipOrders() {
               {cookies.userType !== 'customer' && <td className="">{item?.customerName}</td>}
               <td className="">{item?.lastUpdated.substring(0, item?.lastUpdated.indexOf('T'))}</td>
               {cookies.userType !== 'worker' && <td className="">{item?.workerName}</td>}
-              {cookies.userType === 'customer'
+              {cookies.userType !== 'worker'
                 ? <td className="">{item?.status}</td>
                 : (
                   <td className="">
@@ -185,9 +184,9 @@ function ChipOrders() {
                     : <i className="fa fa-download cursor-pointer" onClick={() => handleDownload(item?.fileInfoId)} />
                 }
               </td>
-              {/* <td className="">
-                <i className="fa fa-commenting cursor-pointer" onClick={handleChat} id={`order${item?.orderId}`} />
-              </td> */}
+              <td className="">
+                <i className="fa fa-commenting cursor-pointer" onClick={() => handleChat(item?.orderInfoId)} />
+              </td>
               {cookies.userType === 'admin' &&
                 <td className="">
                   <i className="fa fa-users cursor-pointer" onClick={() => handleAssign(index)} />
