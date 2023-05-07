@@ -31,6 +31,39 @@ export function RouteMap() {
       }
     }
   }, [cookies.access_token]);
+import AddOrEditAdmin from '@/page/manage/admins/addOrEditAdmin';
+import AllFiles from '@/page/manage/files/allFiles';
+import AllOrders from '@/page/manage/orders/allOrders';
+import AssignOrders from '@/page/manage/orders/assignOrders';
+import ChipOrders from '@/page/manage/orders/chipOrders';
+import OrderChat from '@/page/manage/orders/orderChat';
+import OrderDetail from '@/page/manage/orders/orderDetail';
+import AddOrEditUser from '@/page/manage/users/addOrEditUser';
+import AddOrEditWorker from '@/page/manage/workers/addOrEditWorker';
+import Upload from '@/page/upload';
+import jwt_decode, { JwtPayload } from 'jwt-decode';
+import { useEffect } from 'react';
+import { useCookies } from 'react-cookie';
+import { Navigate, Outlet, Route, Routes, useLocation } from 'react-router-dom';
+import Layout from '@/component/layout/Layout';
+import ManageLayout from '@/component/layout/ManageLayout';
+import { AddNewAddress, Address, Admins, BeforeCheckout, Cart, ChangePassword, CheckEmail, ChipOrder, EmailUnverified, EmailVerified, FeatureComing, Files, ForgetPass, FoundryWorkers, Home, Login, Orders, PageNotFound, Product, Products, Profile, Register, ResetPassword, UpdateAddress, Users } from '@/page/index';
+
+export function RouteMap() {
+  const [cookies, setCookie, removeCookie] = useCookies(['userType', 'access_token', 'username', 'userId']);
+  const location = useLocation();
+
+  useEffect(() => {
+    if (cookies.access_token) {
+      const decoded = jwt_decode<JwtPayload>(cookies.access_token);
+      if (decoded.exp && (decoded.exp * 1000) < Date.now()) {
+        removeCookie('access_token', { path: '/' });
+        removeCookie('userType', { path: '/' });
+        removeCookie('username', { path: '/' });
+        removeCookie('userId', { path: '/' });
+      }
+    }
+  }, [cookies.access_token]);
 
   return (
     <Routes>
