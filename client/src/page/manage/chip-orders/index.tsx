@@ -8,7 +8,7 @@ import ManageRightLayout from '../../../component/layout/ManageRightLayout';
 import Loading from '../../../component/ui/Loading';
 import { CartContext } from '../../../context/CartContext';
 import { ChipOrder } from '../../../types';
-import { metadata } from './metadata';
+import { metadata } from '../orders/metadata';
 
 // List all chip orders for all user types
 function ChipOrders() {

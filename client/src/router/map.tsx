@@ -2,13 +2,11 @@ import AuthLayout from '@/component/layout/AuthLayout';
 import Layout from '@/component/layout/Layout';
 import ManageLayout from '@/component/layout/ManageLayout';
 import { ROLES } from '@/lib/roles';
-import { AddNewAddress, Address, Admins, BeforeCheckout, Cart, ChangePassword, CheckEmail, ChipOrder, EmailUnverified, EmailVerified, FeatureComing, Files, ForgetPass, FoundryWorkers, Home, Login, Orders, PageNotFound, Product, Products, Profile, Register, ResetPassword, UpdateAddress, Users } from '@/page/index';
+import { AddNewAddress, Address, Admins, BeforeCheckout, Cart, ChangePassword, CheckEmail, ChipOrder, EmailUnverified, EmailVerified, FeatureComing, Files, ForgetPass, FoundryWorkers, Home, Login, PageNotFound, Product, Products, Profile, Register, ResetPassword, UpdateAddress, Users, OrderDetail, OrderChat, OwnOrders } from '@/page/index';
 import AddOrEditAdmin from '@/page/manage/admins/addOrEditAdmin';
-import AssignOrders from '@/page/manage/orders/assignOrders';
-import ChipOrders from '@/page/manage/orders/chipOrders';
-import OrderChat from '@/page/manage/orders/orderChat';
-import OrderDetail from '@/page/manage/orders/orderDetail';
-import AddOrEditUser from '@/page/manage/users/addOrEditUser';
+import AssignOrders from '@/page/manage/assign-orders';
+import ChipOrders from '@/page/manage/chip-orders';
+import AddOrEditUser from '@/page/manage/customers/addOrEditUser';
 import AddOrEditWorker from '@/page/manage/workers/addOrEditWorker';
 import Upload from '@/page/upload';
 import jwt_decode, { JwtPayload } from 'jwt-decode';
@@ -184,7 +182,7 @@ export function FlattenedRouteMap() {
                 <Route path={ROUTES.ManageAddressNew} element={<AddNewAddress />} />
                 <Route path={ROUTES.ManageAddressUpdate} element={<UpdateAddress />} />
                 <Route path={ROUTES.ManageFiles} element={<Files />} />
-                <Route path={ROUTES.ManageOrders} element={<Orders />} />
+                <Route path={ROUTES.ManageOrders} element={<OwnOrders />} />
                 <Route path={ROUTES.ManageCart} element={<Cart />} />
               </>
             }

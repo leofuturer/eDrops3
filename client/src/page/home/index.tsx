@@ -3,12 +3,9 @@ import { NavLink } from 'react-router-dom';
 import SEO from '../../component/header/seo';
 import { controlSysId, pcbChipId, testBoardId } from '../../lib/constants/products';
 import { metadata } from './metadata';
+import { ROUTES, idRoute } from '@/router/routes';
 
 export function Home() {
-  const controlSysPageLink = `/product?id=${controlSysId}`;
-  const pcbChipPageLink = `/product?id=${pcbChipId}`;
-  const testBoardPageLink = `/product?id=${testBoardId}`;
-
   const [cookies] = useCookies(['userType']);
 
   return (
@@ -29,7 +26,7 @@ export function Home() {
         </div>
         <div className="bg-[url('/img/control-system-compressed.png')] bg-cover bg-no-repeat bg-center flex flex-col space-y-4 justify-center items-center w-full aspect-[4/3] py-2">
           <h1 className="text-md sm:text-xl md:text-2xl lg:text-4xl xl:text-5xl font-semibold text-center">DMF<br />Control System</h1>
-          <NavLink to={controlSysPageLink} className="text-center py-2 lg:py-6 px-2 md:px-4 xl:px-10 bg-accent w-min md:w-max text-base md:text-lg xl:text-xl font-semibold">VIEW DETAILS</NavLink>
+          <NavLink to={idRoute(ROUTES.Product, controlSysId)} className="text-center py-2 lg:py-6 px-2 md:px-4 xl:px-10 bg-accent w-min md:w-max text-base md:text-lg xl:text-xl font-semibold">VIEW DETAILS</NavLink>
         </div>
       </div>
 
@@ -38,19 +35,19 @@ export function Home() {
           <h1 className="text-secondary text-lg sm:text-xl md:text-2xl lg:text-4xl xl:text-5xl">Products</h1>
         </NavLink>
         <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-2 sm:gap-4 xl:gap-10 w-3/4 xl:w-2/3">
-          <NavLink to={controlSysPageLink} className="flex flex-col">
+          <NavLink to={idRoute(ROUTES.Product, controlSysId)} className="flex flex-col">
             <figure className="scale-90 hover:scale-100 duration-500 ease-in-out">
               <img src="/img/control-system.png" alt="Digital Microfluidics Control System" className="pointer-events-none" />
             </figure>
             <h4 className="text-primary_light text-lg border-t-2 py-8 text-center">Digital Microfluidics Control System</h4>
           </NavLink>
-          <NavLink to={pcbChipPageLink} className="flex flex-col">
+          <NavLink to={idRoute(ROUTES.Product, pcbChipId)} className="flex flex-col">
             <figure className="scale-90 hover:scale-100 duration-500 ease-in-out">
               <img src="/img/pcb_chip.png" alt="PCB-based Digital Microfluidics Chip" className="pointer-events-none" />
             </figure>
             <h4 className="text-primary_light text-lg border-t-2 py-8 text-center">PCB-based Digital Microfluidics Chip</h4>
           </NavLink>
-          <NavLink to={testBoardPageLink} className="flex flex-col">
+          <NavLink to={idRoute(ROUTES.Product, testBoardId)} className="flex flex-col">
             <figure className="scale-90 hover:scale-100 duration-500 ease-in-out">
               <img src="/img/inspection_board.png" alt="Control System Inspection Board" className="pointer-events-none" />
             </figure>
@@ -61,3 +58,5 @@ export function Home() {
     </div >
   );
 }
+
+export default Home;

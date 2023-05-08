@@ -1,24 +1,19 @@
-import { Buffer } from 'buffer';
-import { useContext, useEffect, useRef, useState } from 'react';
+import { ROUTES, idRoute } from '@/router/routes';
+import { useContext, useEffect, useState } from 'react';
 import { useCookies } from 'react-cookie';
-import { NavLink, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
+import { NavLink, useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { Product as ProductType } from 'shopify-buy';
-import { request } from '../../api';
-import {
-  addOrderProductToCart, getCustomerCart, getProductOrders, manipulateCustomerOrders, returnOneItem
-} from '../../api';
-import { ShopifyContext } from '../../context/ShopifyContext';
 import Loading from '../../component/ui/Loading';
+import { CartContext } from '../../context/CartContext';
+import { ShopifyContext } from '../../context/ShopifyContext';
 import {
   controlSysId10, controlSysId5, getProductType, pcbChipId10, pcbChipId5, productIdsJson, testBoardId10, testBoardId5
 } from '../../lib/constants/products';
-import { CartContext } from '../../context/CartContext';
 
 export function Product() {
-  const [productId, setProductId] = useState("");
   const [product, setProduct] = useState<ProductType>({} as ProductType);
   const [quantity, setQuantity] = useState(1);
-  const [bundleSize, setBundleSize] = useState<1|5|10>(1);
+  const [bundleSize, setBundleSize] = useState<1 | 5 | 10>(1);
   const [addingToCart, setAddingToCart] = useState(false);
 
   const shopify = useContext(ShopifyContext);
@@ -26,13 +21,10 @@ export function Product() {
 
   const navigate = useNavigate();
 
-  const [searchParams, setSearchParams] = useSearchParams();
+  const { id: productId } = useParams();
+  if (!productId) navigate(ROUTES.Products);
+  
   const [cookies, setCookie] = useCookies(['access_token', 'userType']);
-
-  useEffect(() => {
-    const id = searchParams.get('id');
-    id ? setProductId(id) : navigate('/products');
-  }, [searchParams]);
 
   // fetch product information from Shopify API
   useEffect(() => {
@@ -49,18 +41,18 @@ export function Product() {
       }).catch((err) => {
         console.error(err);
         // redirect to all items page if product ID is invalid
-        navigate('/products');
+        navigate(ROUTES.Products);
       });
   }, [shopify, productId]);
 
   function handleBundleChange(bsize: 1 | 5 | 10) {
     setBundleSize(bsize)
     const productType = getProductType(productId);
-    setSearchParams({ id: productIdsJson[productType][bsize] });
+    navigate(idRoute(ROUTES.Product, productIdsJson[productType][bsize]), { replace: true });
   }
 
   function handleAddToCart() {
-    if(!cookies.access_token || cookies.userType !== 'customer') { navigate('/login'); return; }
+    if (!cookies.access_token || cookies.userType !== 'customer') { navigate(ROUTES.Login); return; }
     setAddingToCart(true);
     cart.addProduct(product, quantity).then(() => {
       setAddingToCart(false);
@@ -75,7 +67,7 @@ export function Product() {
         </div>
         <div className="col-span-1 flex flex-col justify-between">
           <div className="flex flex-col space-y-2">
-            <NavLink to="/products" className="text-primary_light hover:text-primary mb-4"><i className="fa fa-arrow-left" /> Return to all products</NavLink>
+            <NavLink to={ROUTES.Products} className="text-primary_light hover:text-primary mb-4"><i className="fa fa-arrow-left" /> Return to all products</NavLink>
             <h2 className="text-2xl">{product?.title}</h2>
             <p className="text-justify">
               {product?.description}
@@ -84,7 +76,7 @@ export function Product() {
           <div className="flex flex-col space-y-2">
             <div className="flex justify-between items-center">
               <div className="text-lg font-bold">
-                {/* @ts-expect-error NOTE: Shopify types not updated*/ }
+                {/* @ts-expect-error NOTE: Shopify types not updated*/}
                 Price: {cart.enabled ? `${product?.variants && product?.variants[0].price.amount}` : 'Coming soon'}
               </div>
               <div className="flex space-x-4">
@@ -101,7 +93,7 @@ export function Product() {
                 </div>
                 <div className="flex space-x-1">
                   <label htmlFor="bundlesize" className="font-bold">Bundle Size:</label>
-                  <select id="bundlesize" name="bundlesize" value={bundleSize} onChange={(e) => handleBundleChange(parseInt(e.target.value, 10) as 1|5|10)}
+                  <select id="bundlesize" name="bundlesize" value={bundleSize} onChange={(e) => handleBundleChange(parseInt(e.target.value, 10) as 1 | 5 | 10)}
                     className="outline outline-1 rounded h-full">
                     <option value={1}>1</option>
                     <option value={5}>5</option>

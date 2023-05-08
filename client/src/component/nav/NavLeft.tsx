@@ -47,12 +47,12 @@ function NavLeft() {
           <p className="">Admins</p>
         </AuthNavLeftLink>
         <AuthNavLeftLink to={ROUTES.ManageWorkers} userTypes={['admin']}>
-          <i className="fa fa-users w-6 text-center" />
+          <i className="fa fa-user-group w-6 text-center" />
           <p className="">Foundry Workers</p>
         </AuthNavLeftLink>
-        <AuthNavLeftLink to={ROUTES.ManageUsers} userTypes={['admin']}>
-          <i className="fa fa-address-card w-6 text-center" />
-          <p className="">Users</p>
+        <AuthNavLeftLink to={ROUTES.ManageCustomers} userTypes={['admin']}>
+          <i className="fa fa-users w-6 text-center" />
+          <p className="">Customers</p>
         </AuthNavLeftLink>
       </div>
     </div>
@@ -61,7 +61,7 @@ function NavLeft() {
 
 export default NavLeft;
 
-function AuthNavLeftLink({ to, children, userTypes }: { to: string, children: React.ReactNode, userTypes: string[] }) {
+function AuthNavLeftLink({ to, children, userTypes }: { to: ROUTES, children: React.ReactNode, userTypes: string[] }) {
   return <AuthNavLink
     to={to}
     activeClassName="border-primary_light text-primary_light"

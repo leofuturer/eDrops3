@@ -4,10 +4,10 @@ import {request} from '../../../api';
 import {getChipOrders, getOrderInfoById, getProductOrders} from '../../../api';
 import MessageLayout from '../../../component/layout/MessageLayout';
 import {ChipOrder, DisplayAddress, ProductOrder} from '../../../types';
-import OrderAddress from './orderAddress';
-import OrderItem from './orderItem';
+import OrderAddress from '../../../component/orders/OrderAddress';
+import OrderItem from '@/component/orders/OrderItem';
 
-function OrderDetail() {
+export function OrderDetail() {
   const [doneLoading, setDoneLoading] = useState(false);
   const [orderId, setOrderId] = useState('');
   const [orderLink, setOrderLink] = useState('');

@@ -1,16 +1,14 @@
 import { Suspense } from 'react';
 import { Await } from 'react-router-dom';
 import { Product } from 'shopify-buy';
-import { request, returnAllItems } from '../../api';
 import SEO from '../../component/header/seo';
 import ItemCard from './ItemCard';
 import ItemLoad from './ItemLoad';
 import { metadata } from './metadata';
+import { getProducts } from '@/api/store';
 
 export function Products() {
-  // const [products, setProducts] = useState<Product[]>([]);
-
-  const products = request(returnAllItems, 'GET', {}, false).then((res) => res.data)
+  const products = getProducts();
 
   return (
     <div className="flex flex-col items-center space-y-10 mb-10">

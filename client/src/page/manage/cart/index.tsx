@@ -3,9 +3,10 @@ import { NavLink, useNavigate } from 'react-router-dom';
 import SEO from '../../../component/header/seo';
 import ManageRightLayout from '../../../component/layout/ManageRightLayout';
 import { CartContext } from '../../../context/CartContext';
-import CartChip from './cartChip';
-import CartProduct from './cartProduct';
+import CartChip from './CartChip';
+import CartProduct from './CartProduct';
 import { metadata } from './metadata';
+import { ROUTES } from '@/router/routes';
 
 export function Cart() {
   const cart = useContext(CartContext);
@@ -22,7 +23,7 @@ export function Cart() {
       {cart.numItems > 0
         ? (<div className="flex flex-col w-full space-y-4 -mt-4">
           <div className="flex flex-row justify-end items-center">
-            <button type="button" className="bg-primary rounded-lg text-white px-4 py-2" onClick={() => navigate('/before-checkout')}>Checkout</button>
+            <button type="button" className="bg-primary rounded-lg text-white px-4 py-2" onClick={() => navigate(ROUTES.BeforeCheckout)}>Checkout</button>
           </div>
           <div className="flex flex-col space-y-4">
             {cart.cart?.orderProducts?.length && cart.cart.orderProducts.map((product, index) => <CartProduct
@@ -48,7 +49,7 @@ export function Cart() {
           </div>
         </div>
         )
-        : <p className="text-center">Your cart is currently empty. You can either <NavLink to="/upload" className="text-primary_light hover:text-primary">upload a file</NavLink> for a custom chip order or <NavLink to="/products" className="text-primary_light hover:text-primary">view our products</NavLink>.</p>}
+        : <p className="text-center">Your cart is currently empty. You can either <NavLink to={ROUTES.Upload} className="text-primary_light hover:text-primary">upload a file</NavLink> for a custom chip order or <NavLink to={ROUTES.Products} className="text-primary_light hover:text-primary">view our products</NavLink>.</p>}
     </ManageRightLayout>
   );
 }

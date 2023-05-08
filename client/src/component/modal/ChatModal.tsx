@@ -1,7 +1,7 @@
 import { Tab } from '@headlessui/react';
 import { useContext } from 'react';
 import { ChatContext } from '../../context/ChatContext';
-import { ChatBox } from '../../page/manage/orders/orderChat';
+import { ChatBox } from '../../page/subpage/order-chat';
 
 function ChatModal() {
   const chat = useContext(ChatContext);

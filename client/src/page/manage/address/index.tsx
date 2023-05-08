@@ -7,6 +7,7 @@ import DeleteModal from '../../../component/modal/DeleteModal';
 import Loading from '../../../component/ui/Loading';
 import { Address as AddressType } from '../../../types';
 import AddressTemplate from './AddressTemplate';
+import { ROUTES } from '@/router/routes';
 
 export function Address() {
   const [addressList, setAddressList] = useState<AddressType[]>([]);
@@ -19,11 +20,11 @@ export function Address() {
   const [cookies] = useCookies(['userId'])
 
   function handleAddNewAddress() {
-    navigate('/manage/address/new');
+    navigate(ROUTES.ManageAddressNew);
   }
 
   function handleUpdateAddress() {
-    navigate('/manage/address/update');
+    navigate(ROUTES.ManageAddressUpdate);
   }
 
   function handleDeleteAddress(addrIndex: number) {

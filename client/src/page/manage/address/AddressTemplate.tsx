@@ -1,13 +1,14 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Address } from '../../../types';
+import { ROUTES } from '@/router/routes';
 
 function AddressTemplate({ address, addressNum, onDeletion }: { address: Address, addressNum: number, onDeletion: () => void }) {
 
   const navigate = useNavigate();
 
   function handleUpdateAddress() {
-    navigate('/manage/address/update', {
+    navigate(ROUTES.ManageAddressUpdate, {
       state: {
         addressInfo: address,
         addressId: address.id,

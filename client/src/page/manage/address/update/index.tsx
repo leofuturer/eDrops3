@@ -7,6 +7,7 @@ import FormGroup from '../../../../component/form/FormGroup';
 import ManageRightLayout from '../../../../component/layout/ManageRightLayout';
 import { AddressSchema } from '../../../../schemas/shopify';
 import { Address } from '../../../../types';
+import { ROUTES } from '@/router/routes';
 
 export function UpdateAddress() {
   const [initialInfo, setInitialInfo] = useState<Address>({} as Address);
@@ -24,7 +25,7 @@ export function UpdateAddress() {
     const { addressId } = location.state;
     request(`${customerAddresses.replace('id', cookies.userId)}/${addressId}`, 'PATCH', address, true)
       .then((res) => {
-        navigate('/manage/address');
+        navigate(ROUTES.ManageAddress);
       })
       .catch((error) => {
         console.error(error);

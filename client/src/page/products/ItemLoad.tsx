@@ -1,3 +1,6 @@
+/*
+  Loading template for product items
+*/
 function ItemLoad() {
   return (
     <div className="border-md shadow-box p-4 flex flex-col items-center space-y-2 w-full animate-pulse">

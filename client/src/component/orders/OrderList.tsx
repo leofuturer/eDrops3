@@ -1,0 +1,62 @@
+import { ROUTES, idRoute } from '@/router/routes';
+import { useContext } from 'react';
+import { CartContext } from '@/context/CartContext';
+import { OrderInfo } from '@/types';
+
+/*
+ The order list page for both customer and worker
+ Component that renders the order list
+*/
+export function OrderList({ orderList }: { orderList: OrderInfo[] }) {
+
+  const cart = useContext(CartContext);
+
+  function handleDetail(orderId: number) {
+    // Using the window.open() method to open a new window
+    // and display the page based on the passed in redirectUrl
+    const redirectUrl = idRoute(ROUTES.SubpageOrderDetail, orderId.toString());
+    const strWindowFeatures = 'width=1200px, height=900px';
+    window.open(redirectUrl, '_blank', strWindowFeatures);
+  }
+
+  function handleChat(orderId: number) {
+    const redirectUrl = idRoute(ROUTES.SubpageOrderChat, orderId.toString());
+    const strWindowFeatures = 'width=1200px, height=900px';
+    window.open(redirectUrl, '_blank', strWindowFeatures);
+  }
+
+  return (
+    <table className="table-info">
+      <thead className="">
+        <tr className="border-b-2">
+          <th className="p-2">Order ID</th>
+          <th className="p-2">Order Date</th>
+          <th className="p-2">Process Status</th>
+          <th className="p-2">Total Price</th>
+          <th className="p-2">Other Details</th>
+          <th className="p-2">Chat</th>
+        </tr>
+      </thead>
+      <tbody>
+        {cart.enabled && orderList.length !== 0 && orderList.map((order, index) => (
+          <tr key={index}>
+            <td className="p-2">{order.orderInfoId}</td>
+            <td className="p-2">{order.createdAt.substring(0, order.createdAt.indexOf('T'))}</td>
+            <td className="p-2">{order.status}</td>
+            <td className="p-2">
+              ${order.total_cost ? parseFloat(order.total_cost).toFixed(2) : 0}
+            </td>
+            <td className="p-2">
+              <i className="fa fa-commenting cursor-pointer" onClick={() => order.id && handleDetail(order.id)} />
+            </td>
+            <td className="p-2">
+              <i className="fa fa-commenting cursor-pointer" onClick={() => handleChat(order.id)} />
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  );
+}
+
+export default OrderList;

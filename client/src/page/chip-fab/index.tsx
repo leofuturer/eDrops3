@@ -8,6 +8,7 @@ import { FileInfo } from '../../types';
 import {
   ewodFabServiceId
 } from '../../lib/constants/products';
+import { ROUTES } from '@/router/routes';
 const DXFPreview = React.lazy(() => import('./dxf_preview'));
 
 export function ChipOrder() {
@@ -37,7 +38,7 @@ export function ChipOrder() {
   const cart = useContext(CartContext);
 
   // make sure file information is passed from all files or file upload page
-  useEffect(() => location.state.fileInfo ? setCustomAttrs(attrs => ({ ...attrs, fileInfo: location.state.fileInfo })) : navigate('/manage/files'), [location]);
+  useEffect(() => location.state.fileInfo ? setCustomAttrs(attrs => ({ ...attrs, fileInfo: location.state.fileInfo })) : navigate(ROUTES.ManageFiles), [location]);
 
   useEffect(() => {
     shopify.product.fetch(ewodFabServiceId) // hard coded for chip order
@@ -48,7 +49,7 @@ export function ChipOrder() {
       .catch((err) => {
         console.error(err);
         // redirect to all items page if product ID is invalid
-        navigate('/products');
+        navigate(ROUTES.Products);
       });
   }, [shopify]);
 

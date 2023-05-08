@@ -1,5 +1,4 @@
-import React from 'react';
-import { DisplayAddress } from '../../../types';
+import { DisplayAddress } from '@/types';
 
 function OrderAddress({ address }: { address: DisplayAddress }) {
   return (
