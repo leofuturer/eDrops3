@@ -1,7 +1,7 @@
 import Cookies from 'js-cookie';
 import { useEffect, useState } from 'react';
 import { useCookies } from 'react-cookie';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { request } from '../../../api';
 import {
   adminDownloadFile, customerDeleteFile, customerFileRetrieve, downloadFileById
@@ -12,6 +12,8 @@ import DeleteModal from '../../../component/modal/DeleteModal';
 import { FileInfo } from '../../../types';
 import { padZeroes } from '../../../lib/time';
 import { metadata } from './metadata';
+import { ROLES } from '@/lib/roles';
+import { ROUTES } from '@/router/routes';
 
 export function Files() {
   const [fileList, setFileList] = useState<FileInfo[]>([]);
@@ -26,6 +28,17 @@ export function Files() {
   const navigate = useNavigate();
 
   const [cookies] = useCookies(['userId', 'userType', 'access_token']);
+
+  // Get user id param from url if exists
+  if(cookies.userType === ROLES.Admin) {
+    const { id } = useParams();
+    if(!id) {
+      // Admin is viewing files with no customer id path param
+      if(location.pathname === ROUTES.ManageFiles) {
+        
+      }
+    }
+  }
 
   useEffect(() => {
     // Extra state if admin is retrieving files for a particular customer
