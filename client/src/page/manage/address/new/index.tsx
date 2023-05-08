@@ -7,6 +7,7 @@ import ManageRightLayout from '../../../../component/layout/ManageRightLayout';
 import FormGroup from '../../../../component/form/FormGroup';
 import { Address } from '../../../../types';
 import { AddressSchema } from '../../../../schemas/shopify';
+import { ROUTES } from '@/router/routes';
 
 export function AddNewAddress({ addOnClick }: { addOnClick?: (addr: Address) => void }) {
   const [cartId, setCartId] = useState('');
@@ -45,13 +46,13 @@ export function AddNewAddress({ addOnClick }: { addOnClick?: (addr: Address) => 
         .then(() => request(customerAddresses.replace('id', cookies.userId), 'POST', addressMes, true))
         .then((res) => {
           // console.log(res);
-          navigate('/before-checkout', {
+          navigate(ROUTES.BeforeCheckout, {
             state: {
               cartId: cartId,
               shopifyCheckoutId: shopifyCheckoutId,
               shopifyCheckoutLink: shopifyCheckoutLink,
             }
-          });
+          }); // TODO: I think we can replace navigation state with query params (allows users to refresh page/use back button)
         })
         .catch((error) => {
           console.error(error);
@@ -60,7 +61,7 @@ export function AddNewAddress({ addOnClick }: { addOnClick?: (addr: Address) => 
       request(customerAddresses.replace('id', cookies.userId), 'POST', addressMes, true)
         .then((res) => {
           // console.log(res);
-          navigate('/manage/address');
+          navigate(ROUTES.ManageAddress);
         })
         .catch((error) => {
           console.error(error);

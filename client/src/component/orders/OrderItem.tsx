@@ -1,9 +1,5 @@
 // The order list page for both customer and worker
-function OrderItem({
-  info,
-}: {
-  info: any;
-}) {
+function OrderItem({ info }: { info: any }) {
   return (
     <div className="order-item-card">
       <div className="order-item-title">

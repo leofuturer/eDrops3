@@ -5,7 +5,7 @@ import { assignOrders, foundryWorkerGetName, getAllFoundryWorkers } from '../../
 import ManageRightLayout from '../../../component/layout/ManageRightLayout';
 import TwoChoiceModal from '../../../component/modal/TwoChoiceModal';
 import { Worker } from '../../../types';
-import OrderItem from './orderItem';
+import OrderItem from '@/component/orders/OrderItem';
 
 function AssignOrders() {
   const [workerList, setWorkerList] = useState<Worker[]>([]);

@@ -160,7 +160,7 @@ export function ChatBox({ orderId }: { orderId: number }) {
   );
 }
 
-function OrderChat() {
+export function OrderChat() {
   const [orderId, setOrderId] = useState(0);
   const [searchParams, setSearchParams] = useSearchParams();
 

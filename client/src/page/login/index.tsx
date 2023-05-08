@@ -9,6 +9,7 @@ import {
 import SEO from '../../component/header/seo';
 import { metadata } from './metadata';
 import { LoginSchema } from '../../schemas';
+import { ROUTES } from '@/router/routes';
 
 export function Login() {
   const [showPassword, setShowPassword] = useState(false);
@@ -35,7 +36,7 @@ export function Login() {
         setCookie('userId', res.data.userId, { path: '/' });
         setCookie('userType', res.data.userType, { path: '/' });
         setCookie('username', res.data.username, { path: '/' });
-        navigate(location.state?.path || '/home');
+        navigate(location.state?.path || ROUTES.Home);
         setError(false);
       }).catch((err) => {
         // console.error(err);

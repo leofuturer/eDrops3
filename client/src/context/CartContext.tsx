@@ -6,6 +6,7 @@ import { addOrderChipToCart, addOrderProductToCart, customerGetName, getChipOrde
 import { ShopifyContext } from '../context/ShopifyContext';
 import { Address, ChipOrder, Customer, OrderInfo, ProductOrder } from '../types';
 import { PusherContext } from './PusherContext';
+import { ROUTES } from '@/router/routes';
 
 const useCart = () => {
   const [cart, setCart] = useState<OrderInfo>({} as OrderInfo);
@@ -104,7 +105,7 @@ const useCart = () => {
           ...cart,
           orderProducts: res.data
         }))
-        navigate('/manage/cart');
+        navigate(ROUTES.ManageCart);
       }).catch((err) => console.error(err));
   }
 
@@ -182,7 +183,7 @@ const useCart = () => {
           ...cart,
           orderChips: res.data
         }))
-        navigate('/manage/cart');
+        navigate(ROUTES.ManageCart);
       }).catch((err) => console.error(err));
   }
 
