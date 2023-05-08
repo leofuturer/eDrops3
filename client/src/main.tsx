@@ -1,5 +1,5 @@
 import { ChatContextProvider, PusherContextProvider, ShopifyContextProvider } from '@/context/index';
-import { RouteMap } from '@/router/map';
+import { FlattenedRouteMap } from '@/router/map';
 import React from 'react';
 import { CookiesProvider } from 'react-cookie';
 import ReactDOM from 'react-dom/client';
@@ -15,7 +15,7 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
           <PusherContextProvider>
             <ChatContextProvider>
               <BrowserRouter>
-                <RouteMap />
+                <FlattenedRouteMap />
               </BrowserRouter>
             </ChatContextProvider>
           </PusherContextProvider>
