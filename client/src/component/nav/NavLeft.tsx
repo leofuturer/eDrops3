@@ -26,7 +26,7 @@ function NavLeft() {
           <i className="fa fa-money-bill w-6 text-center" />
           <p className="">Orders</p>
         </AuthNavLeftLink>
-        <AuthNavLeftLink to={ROUTES.ManageOrders} userTypes={['admin']}>
+        <AuthNavLeftLink to={ROUTES.ManageAllOrders} userTypes={['admin']}>
           <i className="fa fa-money-bill w-6 text-center" />
           <p className="">Orders</p>
         </AuthNavLeftLink>
@@ -34,11 +34,11 @@ function NavLeft() {
           <i className="fa fa-database w-6 text-center" />
           <p className="">Mask Files</p>
         </AuthNavLeftLink>
-        <AuthNavLeftLink to={ROUTES.ManageFiles} userTypes={['admin']}>
+        <AuthNavLeftLink to={ROUTES.ManageAllFiles} userTypes={['admin']}>
           <i className="fa fa-database w-6 text-center" />
           <p className="">Mask Files</p>
         </AuthNavLeftLink>
-        <AuthNavLeftLink to={ROUTES.ManageOrders} userTypes={['admin', 'customer', 'worker']}>
+        <AuthNavLeftLink to={ROUTES.ManageChipOrders} userTypes={['admin', 'customer', 'worker']}>
           <i className="fa fa-microchip w-6 text-center" />
           <p className="">Fab Orders</p>
         </AuthNavLeftLink>

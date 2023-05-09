@@ -2,13 +2,16 @@ import { ROUTES, idRoute } from '@/router/routes';
 import { useContext } from 'react';
 import { CartContext } from '@/context/CartContext';
 import { OrderInfo } from '@/types';
+import { SERVICE_EMAIL } from '@/lib/constants/misc';
+import { useCookies } from 'react-cookie';
+import { ROLES } from '@/lib/constants/roles';
 
 /*
  The order list page for both customer and worker
  Component that renders the order list
 */
 export function OrderList({ orderList }: { orderList: OrderInfo[] }) {
-
+  const [cookies] = useCookies(['userType']);
   const cart = useContext(CartContext);
 
   function handleDetail(orderId: number) {
@@ -30,17 +33,19 @@ export function OrderList({ orderList }: { orderList: OrderInfo[] }) {
       <thead className="">
         <tr className="border-b-2">
           <th className="p-2">Order ID</th>
+          {cookies.userType === ROLES.Admin && <th className="p-2">Customer ID</th>}
           <th className="p-2">Order Date</th>
-          <th className="p-2">Process Status</th>
-          <th className="p-2">Total Price</th>
+          <th className="p-2">Status</th>
+          <th className="p-2">Price</th>
           <th className="p-2">Other Details</th>
           <th className="p-2">Chat</th>
         </tr>
       </thead>
       <tbody>
-        {cart.enabled && orderList.length !== 0 && orderList.map((order, index) => (
+        {cart.enabled && orderList.length !== 0 ? orderList.map((order, index) => (
           <tr key={index}>
-            <td className="p-2">{order.orderInfoId}</td>
+            <td className="p-2">{order.orderComplete ? order.orderInfoId : 'In cart'}</td>
+            {cookies.userType === ROLES.Admin && <td>{order.customerId}</td>}
             <td className="p-2">{order.createdAt.substring(0, order.createdAt.indexOf('T'))}</td>
             <td className="p-2">{order.status}</td>
             <td className="p-2">
@@ -53,7 +58,13 @@ export function OrderList({ orderList }: { orderList: OrderInfo[] }) {
               <i className="fa fa-commenting cursor-pointer" onClick={() => handleChat(order.id)} />
             </td>
           </tr>
-        ))}
+        )) : (
+          <tr>
+            <td className="p-2" colSpan={100}>
+              No orders found. If you believe this is an error, please <a href={`mailto:${SERVICE_EMAIL}`}>contact us</a>.
+            </td>
+          </tr>
+        )}
       </tbody>
     </table>
   );

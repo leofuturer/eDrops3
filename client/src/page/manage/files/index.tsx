@@ -12,7 +12,7 @@ import DeleteModal from '../../../component/modal/DeleteModal';
 import { FileInfo } from '../../../types';
 import { padZeroes } from '../../../lib/time';
 import { metadata } from './metadata';
-import { ROLES } from '@/lib/roles';
+import { ROLES } from '@/lib/constants/roles';
 import { ROUTES } from '@/router/routes';
 
 export function Files() {
