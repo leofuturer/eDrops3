@@ -5,7 +5,7 @@ import { adminDownloadFile, getAllFileInfos } from '../../../api';
 import ManageRightLayout from '../../../component/layout/ManageRightLayout';
 import { FileInfo } from '../../../types';
 
-function AllFiles() {
+export function AllFiles() {
   const [fileList, setFileList] = useState<FileInfo[]>([]);
 
   const [cookies] = useCookies(['access_token']);

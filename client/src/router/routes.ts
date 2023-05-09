@@ -22,6 +22,8 @@ export enum ROUTES {
   ManageChangePassword = '/manage/change-password',
   ManageChipOrders = '/manage/chip-orders',
   // Admin routes
+  ManageAllFiles = '/manage/all-files',
+  ManageAllOrders = '/manage/all-orders',
   ManageAdmins = '/manage/admins',
   ManageAdminsAdd = '/manage/admins/add',
   ManageAdminsUpdate = '/manage/admins/:id',
