@@ -10,7 +10,7 @@ export const defaultCustomers: DTO<Customer & User & Partial<Omit<CustomerAddres
     customerType: 'person',
     username: 'customerA',
     password: 'edropTest123',
-    email: '18811370211@163.com',
+    email: 'edropswebsite+customerA@gmail.com',
     emailVerified: true,
   },
   {
@@ -21,7 +21,7 @@ export const defaultCustomers: DTO<Customer & User & Partial<Omit<CustomerAddres
     customerType: 'person',
     username: 'customerB',
     password: 'edropTest123',
-    email: 'qiningwang_bit@163.com',
+    email: 'edropswebsite+customerB@gmail.com',
     emailVerified: true,
   },
 ];
