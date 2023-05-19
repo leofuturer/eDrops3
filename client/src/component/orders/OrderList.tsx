@@ -38,7 +38,6 @@ export function OrderList({ orderList }: { orderList: OrderInfo[] }) {
           <th className="p-2">Status</th>
           <th className="p-2">Price</th>
           <th className="p-2">Other Details</th>
-          <th className="p-2">Chat</th>
         </tr>
       </thead>
       <tbody>
@@ -53,9 +52,6 @@ export function OrderList({ orderList }: { orderList: OrderInfo[] }) {
             </td>
             <td className="p-2">
               <i className="fa fa-commenting cursor-pointer" onClick={() => order.id && handleDetail(order.id)} />
-            </td>
-            <td className="p-2">
-              <i className="fa fa-commenting cursor-pointer" onClick={() => handleChat(order.id)} />
             </td>
           </tr>
         )) : (
