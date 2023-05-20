@@ -10,8 +10,8 @@ services:
       - ./deploy/dev/mysql.env
     command: --default_authentication_plugin=mysql_native_password
     restart: always
-    ports:
-      - 3306:3306
+    # ports:
+    #   - 3306:3306
     volumes:
       - dockerdbdev:/var/lib/mysql # persistent storage for DB
     healthcheck:
