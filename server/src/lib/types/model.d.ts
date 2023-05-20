@@ -1,3 +1,5 @@
-import { Entity } from "@loopback/repository";
+import type { Entity } from "@loopback/repository";
 
-type DTO<T extends Entity> = Omit<T, keyof Entity>;
+export type DTO<T extends Entity> = Omit<T, keyof Entity>;
+
+export type * from '../../models';

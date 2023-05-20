@@ -8,6 +8,7 @@ import FormGroup from '../../../component/form/FormGroup';
 import ManageRightLayout from '../../../component/layout/ManageRightLayout';
 import { UserSchema, UserSubmitSchema } from '../../../schemas';
 import { Customer, Signup } from '../../../types';
+import { ROUTES } from '@/router/routes';
 
 function AddOrEditUser() {
   const [initialInfo, setInitialInfo] = useState<Partial<Signup<Customer>>>({
@@ -102,8 +103,8 @@ function AddOrEditUser() {
           <FormGroup name="lastName" type="text" required autoComplete="family-name" />
           <FormGroup name="phoneNumber" type="text" required autoComplete="tel-national" />
           <div className="flex items-center space-x-4">
-            <NavLink to="/manage/users" className="bg-primary_light text-white px-4 py-2 w-max rounded-lg">Cancel</NavLink>
-            <button type="submit" className="bg-green-500 text-white px-4 py-2 w-max rounded-lg" >Save</button>
+            <NavLink to={ROUTES.ManageCustomers} className="bg-primary_light text-white px-4 py-2 w-max rounded-lg">Cancel</NavLink>
+            <button type="submit" className="bg-green-500 text-white px-4 py-2 w-max rounded-lg">Save</button>
           </div>
         </Form>
       </Formik>

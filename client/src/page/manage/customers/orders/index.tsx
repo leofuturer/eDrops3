@@ -1,12 +1,11 @@
-import { useEffect, useState } from 'react';
-import { useCookies } from 'react-cookie';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
-import { customerOrderRetrieve, getAllOrderInfos, request } from '@/api';
+import { getCustomerOrders } from '@/api/customer';
 import SEO from '@/component/header/seo';
 import ManageRightLayout from '@/component/layout/ManageRightLayout';
-import { OrderInfo } from '@/types';
 import OrderList from '@/component/orders/OrderList';
 import { ROUTES } from '@/router/routes';
+import { OrderInfo } from '@/types';
+import { useEffect, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 
 /*
  The order list page for admins to view a given customer's orders
@@ -17,25 +16,20 @@ export function CustomerOrders() {
   const navigate = useNavigate();
 
   const { id: customerId } = useParams();
-  if (!customerId) {
-    // Go back to the manage customers page if the customer id is not provided
-    navigate(ROUTES.ManageCustomers);
-  }
-
-  const [cookies, setCookie] = useCookies(['userType', 'userId', 'username', 'token']);
 
   useEffect(() => {
-    request(`${getAllOrderInfos}?filter={"where": {"customerId": ${customerId}, "orderComplete": true}}`, 'GET', {}, true)
-      .then((res) => {
-        // console.log(res.data)
-        setOrderList(res.data);
-      })
-      .catch((err) => {
+    if (!customerId) {
+      // Go back to the manage customers page if the customer id is not provided
+      navigate(ROUTES.ManageCustomers);
+    }
+    else {
+      getCustomerOrders(customerId, false).then((orders) => {
+        setOrderList(orders);
+      }).catch((err) => {
         console.error(err);
       });
-
-    
-  }, []);
+    }
+  }, [customerId]);
 
   function handleDetail(orderId: number) {
     // Using the window.open() method to open a new window

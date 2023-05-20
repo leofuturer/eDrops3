@@ -18,7 +18,7 @@ import { SecurityBindings, UserProfile } from '@loopback/security';
 import { compare } from 'bcryptjs';
 import { CustomerCreateInterceptor } from '../interceptors';
 import { DTO } from '../lib/types/model';
-import { Customer, CustomerAddress, OrderInfo, User } from '../models';
+import { Customer, Address, OrderInfo, User } from '../models';
 import { CustomerRepository, UserRepository } from '../repositories';
 
 export class CustomerController {
@@ -50,7 +50,7 @@ export class CustomerController {
         },
       },
     })
-    customer: DTO<Customer & User & CustomerAddress>,
+    customer: DTO<Customer & User & Address>,
   ): Promise<Customer> {
     return this.customerRepository.createCustomer(customer);
   }
@@ -87,7 +87,7 @@ export class CustomerController {
     @param.filter(Customer, { exclude: 'where' })
     filter?: FilterExcludingWhere<Customer>,
   ): Promise<Customer> {
-    return this.customerRepository.findById(id, { include: ['user', 'customerAddresses'], ...filter });
+    return this.customerRepository.findById(id, { include: ['user', 'Addresses'], ...filter });
   }
 
   @del('/customers/{id}')

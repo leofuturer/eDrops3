@@ -1,8 +1,7 @@
 import {Entity, model, property} from '@loopback/repository';
 
-// @model({settings: {validateUpsert: true, idInjection: true}})
-@model({settings: {description: 'Customer address information', forceId: false}})
-export class CustomerAddress extends Entity {
+@model({settings: {description: 'Address information', forceId: false}})
+export class Address extends Entity {
   @property({
     type: 'number',
     id: 1,
@@ -55,16 +54,16 @@ export class CustomerAddress extends Entity {
   @property({
     type: 'string',
   })
-  customerId?: string;
+  userId?: string;
 
-  constructor(data?: Partial<CustomerAddress>) {
+  constructor(data?: Partial<Address>) {
     super(data);
   }
 }
 
-export interface CustomerAddressRelations {
+export interface AddressRelations {
   // describe navigational properties here
 }
 
-export type CustomerAddressWithRelations = CustomerAddress &
-  CustomerAddressRelations;
+export type AddressWithRelations = Address &
+  AddressRelations;

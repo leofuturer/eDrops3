@@ -18,7 +18,7 @@ function AddressTemplate({ address, addressNum, onDeletion }: { address: Address
 
   return (
     <div className="flex flex-col bg-white rounded-lg p-4 shadow-box space-y-2">
-      <div className="flex flex-row justify-between items-center">
+      <div className="flex flex-row justify-between items-center h-10">
         <h3 className="text-xl">Address {addressNum}</h3>
         {address.isDefault && (
           <div className="text-sm">

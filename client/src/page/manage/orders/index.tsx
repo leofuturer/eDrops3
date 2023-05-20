@@ -1,4 +1,4 @@
-import { getCutomerOrders } from '@/api/customer';
+import { getCustomerOrders } from '@/api/customer';
 import SEO from '@/component/header/seo';
 import ManageRightLayout from '@/component/layout/ManageRightLayout';
 import { OrderList } from '@/component/orders/OrderList';
@@ -15,7 +15,7 @@ export function OwnOrders() {
   const [cookies] = useCookies(['userId']);
 
   useEffect(() => {
-    getCutomerOrders(cookies.userId).then((orders) => {
+    getCustomerOrders(cookies.userId).then((orders) => {
       setOrderList(orders);
     });
   }, []);

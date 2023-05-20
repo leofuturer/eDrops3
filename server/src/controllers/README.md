@@ -21,7 +21,7 @@ Config endpoints not in server [
   '/foundryWorkers/{id}/workerOrders' => /foundryWorkers/{id}/orders -> foundryWorker.getOrders()
 ]
 Server endpoints not in config [
-  '/customers/{id}/customerAddresses/{customerAddressId}', => /customers/{id}/addresses/{addressId}  -> customer.getAddress()
+  '/customers/{id}/Addresses/{AddressId}', => /customers/{id}/addresses/{addressId}  -> customer.getAddress()
   'undefined', 
   '/orderInfos/newOrderCreated',  /orders/{id}/newOrderCreated // Webhook
   '/orderMessages/count', // deprecated?
@@ -75,7 +75,7 @@ Intersection [
   '/users/change-password',
   '/users/reset-password',
   '/customers',
-  '/customers/{id}/customerAddresses',
+  '/customers/{id}/Addresses',
   '/customers/{id}',
   '/customers/{id}',
   '/customers/{id}',

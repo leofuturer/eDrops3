@@ -1,7 +1,7 @@
-import { Customer, CustomerAddress, User } from '../../models';
+import { Customer, Address, User } from '../../models';
 import { DTO } from '../types/model';
 
-export const defaultCustomers: DTO<Customer & User & Partial<Omit<CustomerAddress, 'id'>>>[] = [
+export const defaultCustomers: DTO<Customer & User & Partial<Omit<Address, 'id'>>>[] = [
   {
     id: 'aaaaaaaa-bbbb-aaaa-aaaa-aaaaaaaaaaaa',
     firstName: 'Ryan',

@@ -15,113 +15,8 @@ import { useCookies } from 'react-cookie';
 import { Navigate, Outlet, Route, Routes, useLocation } from 'react-router-dom';
 import { ROUTES } from './routes';
 
-// export function RouteMap() {
-//   const [cookies, setCookie, removeCookie] = useCookies(['userType', 'access_token', 'username', 'userId']);
-//   const location = useLocation();
-
-//   useEffect(() => {
-//     if (cookies.access_token) {
-//       const decoded = jwt_decode<JwtPayload>(cookies.access_token);
-//       if (decoded.exp && (decoded.exp * 1000) < Date.now()) {
-//         removeCookie('access_token', { path: '/' });
-//         removeCookie('userType', { path: '/' });
-//         removeCookie('username', { path: '/' });
-//         removeCookie('userId', { path: '/' });
-//       }
-//     }
-//   }, [cookies.access_token]);
-
-//   return (
-//     <Routes>
-//       <Route path="/" element={<Layout />}>
-//         <Route index element={<Navigate to="/home" replace />} />
-//         <Route path="home" element={<Home />} />
-//         <Route path="products" element={<Products />} />
-//         <Route path="product">
-//           <Route path=":id" element={<Product />} />
-//         </Route>
-//         <Route path="coming-soon" element={<FeatureComing />} />
-//         {/* The project page is currently unused */}
-//         {/* <Route path="project" element={<Project />} /> */}
-//         <Route path="login" element={<Login />} />
-//         <Route path="signup" element={<Register />} />
-//         <Route path="forgot-password" element={<ForgetPass />} />
-//         <Route path="reset-password" element={<ResetPassword />} />
-//         <Route path="check-email" element={<CheckEmail />} />
-//         <Route path="email-verified" element={<EmailVerified />} />
-//         <Route path="email-unverified" element={<EmailUnverified />} />
-//         <Route element={cookies.access_token ? <Outlet /> : <Navigate to="/login" replace state={{ path: location.pathname }} />} >
-//           <Route path="upload" element={<Upload />} />
-//           <Route path="chip-fab" element={<ChipOrder />} />
-//           <Route path="before-checkout" element={<BeforeCheckout />} />
-//           <Route path="manage" element={<ManageLayout />}>
-//             {/* Pages for admins */
-//               cookies.userType === 'admin' && <>
-//                 <Route path="admins"  >
-//                   <Route index element={<Admins />} />
-//                   <Route path="add" element={<AddOrEditAdmin />} />
-//                   <Route path=":id" >
-//                     <Route index element={<AddOrEditAdmin />} />
-//                     <Route path="edit" element={<AddOrEditAdmin />} />
-//                   </Route>
-//                 </Route>
-//                 <Route path="customers">
-//                   <Route index element={<Users />} />
-//                   <Route path="add" element={<AddOrEditUser />} />
-//                   <Route path=":id" >
-//                     <Route index element={<AddOrEditUser />} />
-//                     <Route path="edit" element={<AddOrEditUser />} />
-//                     <Route path="files" element={<Files />} />
-//                     <Route path="orders" element={<CustomerOrders />} />
-//                   </Route>
-//                 </Route>
-//                 <Route path="workers" >
-//                   <Route index element={<FoundryWorkers />} />
-//                   <Route path="add" element={<AddOrEditWorker />} />
-//                   <Route path=":id" >
-//                     <Route index element={<AddOrEditWorker />} />
-//                     <Route path="edit" element={<AddOrEditWorker />} />
-//                     <Route path="files" element={<Files />} />
-//                     <Route path="orders" element={<ChipOrders />} />
-//                   </Route>
-//                 </Route>
-//                 {/* <Route path="all-files" element={<AllFiles />} />
-//                 <Route path="all-orders" element={<AllOrders />} /> */}
-//                 {/* <Route path="admin-retrieve-worker-orders" element={<ChipOrders />} />
-//                 <Route path="admin-retrieve-user-orders" element={<Orders />} /> */}
-//                 <Route path="assign-orders" element={<AssignOrders />} /> {/* Do we still use this page? And if so, should be under orders? */}
-//               </>}
-//             {/* Pages for customers */
-//               cookies.userType === 'customer' && <>
-//                 <Route path="address">
-//                   <Route index element={<Address />} />
-//                   <Route path="new" element={<AddNewAddress />} />
-//                   <Route path="update" element={<UpdateAddress />} />
-//                 </Route>
-//                 <Route path="files" element={<Files />} />
-//                 <Route path="orders" element={<OwnOrders />} />
-//                 <Route path="cart" element={<Cart />} />
-//               </>
-//             }
-//             <Route path="profile" element={<Profile />} />
-//             <Route path="change-password" element={<ChangePassword />} />
-//             <Route path="chip-orders" element={<ChipOrders />} />
-//             <Route path="*" element={<Navigate to="profile" replace />} />
-//           </Route>
-//         </Route>
-//         <Route path="*" element={<PageNotFound />} />
-//       </Route >
-//       <Route path="subpage">
-//         <Route path="order-detail" element={<OrderDetail />} />
-//         <Route path="order-chat" element={<OrderChat />} />
-//       </Route>
-//     </Routes >
-//   );
-// }
-
 export function FlattenedRouteMap() {
   const [cookies, setCookie, removeCookie] = useCookies(['userType', 'access_token', 'username', 'userId']);
-  const location = useLocation();
 
   useEffect(() => {
     if (cookies.access_token) {
@@ -172,9 +67,6 @@ export function FlattenedRouteMap() {
                 <Route path={ROUTES.ManageWorkersOrders} element={<ChipOrders />} />
                 <Route path={ROUTES.ManageAllFiles} element={<AllFiles />} />
                 <Route path={ROUTES.ManageAllOrders} element={<AllOrders />} />
-                {/* <Route path="admin-retrieve-worker-orders" element={<ChipOrders />} />
-                <Route path="admin-retrieve-user-orders" element={<Orders />} /> */}
-                <Route path={ROUTES.ManageAssignOrders} element={<AssignOrders />} /> {/* Do we still use this page? And if so, should be under orders? */}
               </>}
             {/* Pages for customers */
               cookies.userType === ROLES.Customer && <>

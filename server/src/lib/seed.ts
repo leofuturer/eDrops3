@@ -2,13 +2,13 @@ import { EdropsBackendApplication } from '../application';
 import {
   Admin,
   Customer,
-  CustomerAddress,
+  Address,
   Post,
   PostComment, User
 } from '../models';
 import {
   AdminRepository,
-  CustomerAddressRepository,
+  AddressRepository,
   CustomerRepository,
   FileInfoRepository,
   FoundryWorkerRepository,
@@ -29,7 +29,7 @@ import {
 } from '../repositories';
 import {
   defaultAdmins,
-  defaultCustomerAddresses,
+  defaultAddresses,
   defaultCustomers,
   defaultFoundryWorkers,
   defaultPostComments,
@@ -51,12 +51,12 @@ export async function clearDb(this: EdropsBackendApplication): Promise<void> {
   await customerRepo.deleteAll();
   await customerRepo.execute('ALTER TABLE Customer AUTO_INCREMENT = ?', [1]);
 
-  /* Clear CustomerAddress table */
-  const customerAddressRepo: CustomerAddressRepository =
-    await this.getRepository(CustomerAddressRepository);
-  await customerAddressRepo.deleteAll();
-  await customerAddressRepo.execute(
-    'ALTER TABLE CustomerAddress AUTO_INCREMENT = ?',
+  /* Clear Address table */
+  const AddressRepo: AddressRepository =
+    await this.getRepository(AddressRepository);
+  await AddressRepo.deleteAll();
+  await AddressRepo.execute(
+    'ALTER TABLE Address AUTO_INCREMENT = ?',
     [1],
   );
 
@@ -206,14 +206,14 @@ export async function seedDb(this: EdropsBackendApplication): Promise<void> {
     ),
   );
 
-  /* Seed CustomerAddress table */
-  const customerAddressRepo: CustomerAddressRepository =
-    await this.getRepository(CustomerAddressRepository);
-  const customerAddresses: CustomerAddress[] = await Promise.all(
-    defaultCustomerAddresses.map(customerAddress =>
+  /* Seed Address table */
+  const addressRepo: AddressRepository =
+    await this.getRepository(AddressRepository);
+  const addresses: Address[] = await Promise.all(
+    defaultAddresses.map(address =>
       customerRepo
-        .customerAddresses(customerAddress.customerId)
-        .create(customerAddress),
+        .addresses(address.userId)
+        .create(address),
     ),
   );
 
