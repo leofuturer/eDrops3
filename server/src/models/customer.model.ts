@@ -43,7 +43,7 @@ export class Customer extends Entity {
   })
   customerType: 'person' | 'company';
 
-  @hasMany(() => Address)
+  @hasMany(() => Address, { keyTo: 'userId' })
   addresses?: Address[];
 
   @hasMany(() => FileInfo)
