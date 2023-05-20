@@ -57,7 +57,7 @@ export function OrderList({ orderList }: { orderList: OrderInfo[] }) {
         )) : (
           <tr>
             <td className="p-2" colSpan={100}>
-              No orders found. If you believe this is an error, please <a href={`mailto:${SERVICE_EMAIL}`}>contact us</a>.
+              No orders found.
             </td>
           </tr>
         )}

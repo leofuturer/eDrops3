@@ -1,0 +1,1 @@
+export type * from '../../../server/src/lib/types/model';

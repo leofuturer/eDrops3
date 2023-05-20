@@ -3,10 +3,8 @@ import React, { useEffect, useState } from 'react'
 import { useCookies } from 'react-cookie';
 import { customerAddresses, customerGetProfile, request, updateCustomerProfile } from '../../../api'
 import FormGroup from '../../../component/form/FormGroup';
-import { customer } from '@/api/lib/newServerConfig';
-import { getCustomerInfo } from '@/api/customer';
 
-function CustomerProfile({ userId }: { userId: string }) {
+function CustomerProfile() {
   const [initialInfo, setInitialInfo] = useState({
     username: '',
     email: '',
@@ -21,27 +19,30 @@ function CustomerProfile({ userId }: { userId: string }) {
     country: '',
   });
 
+  const [cookies] = useCookies(['userId']);
   const [defaultAddressId, setDefaultAddressId] = useState(-1);
 
   useEffect(() => {
-    getCustomerInfo(userId).then((customer) => {
-      const defaultAddress = customer.customerAddresses.find((address) => address.isDefault);
-      setInitialInfo({
-        username: customer.user.username,
-        email: customer.user.email,
-        phoneNumber: customer.phoneNumber,
-        firstName: customer.firstName,
-        lastName: customer.lastName,
-        street: defaultAddress?.street || '',
-        streetLine2: defaultAddress?.streetLine2 || '',
-        city: defaultAddress?.city || '',
-        state: defaultAddress?.state || '',
-        zipCode: defaultAddress?.zipCode || '',
-        country:  defaultAddress?.country || '',
-      });
-      setDefaultAddressId(defaultAddress?.id || -1);
-    })
-  }, [userId])
+    Promise.all([request(customerGetProfile.replace('id', cookies.userId), 'GET', {}, true),
+    request(`${customerAddresses.replace('id', cookies.userId)}?filter={"where":{"isDefault":true}}`, 'GET', {}, true)
+    ])
+      .then(([res1, res2]) => {
+        setInitialInfo({
+          username: res1.data.user.username,
+          email: res1.data.user.email,
+          phoneNumber: res1.data.phoneNumber,
+          firstName: res1.data.firstName,
+          lastName: res1.data.lastName,
+          street: res2.data[0].street,
+          streetLine2: res2.data[0].streetLine2,
+          city: res2.data[0].city,
+          state: res2.data[0].state,
+          zipCode: res2.data[0].zipCode,
+          country: res2.data[0].country,
+        });
+        setDefaultAddressId(res2.data[0].id);
+      })
+  }, [])
 
   return (
     <Formik
@@ -61,8 +62,8 @@ function CustomerProfile({ userId }: { userId: string }) {
           zipCode: values.zipCode,
           country: values.country,
         }
-        Promise.all([request(updateCustomerProfile.replace('id', userId), 'PATCH', customerData, true),
-        request(`${customerAddresses.replace('id', userId)}/${defaultAddressId}`, 'PATCH', addressData, true)
+        Promise.all([request(updateCustomerProfile.replace('id', cookies.userId), 'PATCH', customerData, true),
+        request(`${customerAddresses.replace('id', cookies.userId)}/${defaultAddressId}`, 'PATCH', addressData, true)
         ])
       }}>
       <Form className="flex flex-col space-y-2">

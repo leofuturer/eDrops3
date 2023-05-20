@@ -6,7 +6,7 @@ const HTTP_METHODS = ['@post', '@get', '@put', '@patch', '@del'];
 const SERVER_MATCHER = /@([a-z]+)\(['"](.*)['"]/;
 const CLIENT_MATCHER = /\$\{ApiRootUrl\}(.*)\`/;
 
-const controllerDir = path.resolve(__dirname, './controllers');
+const controllerDir = path.resolve(__dirname, '../src/controllers');
 const endpoints = fs
   .readdir(controllerDir)
   .then(res =>

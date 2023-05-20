@@ -4,8 +4,9 @@ import { request, customerDeleteById, getAllCustomers, userBaseDeleteById, userB
 import ManageRightLayout from '@/component/layout/ManageRightLayout';
 import DeleteModal from '@/component/modal/DeleteModal';
 import { Customer } from '@/types';
+import { ROUTES, idRoute } from '@/router/routes';
 
-export function Users() {
+export function Customers() {
   const [customerList, setCustomerList] = useState<Customer[]>([]);
   const [showDelete, setShowDelete] = useState(false);
   const [deleteCustomer, setDeleteCustomer] = useState<Customer>({} as Customer);
@@ -13,27 +14,15 @@ export function Users() {
   const navigate = useNavigate();
 
   function handleAddUsers() {
-    navigate('/manage/users/add');
+    navigate(ROUTES.ManageCustomersAdd);
   }
 
   function handleRetrieveFiles(customer: Customer) {
-    navigate('/manage/admin-retrieve-user-files', {
-      state: {
-        userId: customer.id,
-        isCustomer: true,
-        username: customer.username,
-      }
-    });
+    navigate(idRoute(ROUTES.ManageCustomersFiles, customer.id));
   }
 
   function handleRetrieveOrders(customer: Customer) {
-    navigate('/manage/admin-retrieve-user-orders', {
-      state: {
-        userId: customer.id,
-        isCustomer: true,
-        username: customer.username,
-      }
-    });
+    navigate(idRoute(ROUTES.ManageCustomersOrders, customer.id));
   }
 
   function handleDeleteCustomer(customer: Customer) {
@@ -71,8 +60,11 @@ export function Users() {
 
   return (
     <ManageRightLayout title="All Users">
-      <div>
-        <button type="button" className="btn btn-primary" onClick={handleAddUsers}>Add New User</button>
+      <div className="flex justify-end mb-4 -mt-4">
+        <button type="button" className="bg-green-500 text-white px-4 py-2 w-max rounded-lg flex items-center space-x-2" onClick={handleAddUsers}>
+          <i className="fa fa-plus" />
+          <p>Add New User</p>
+        </button>
       </div>
       <table className="table-info">
         <thead>

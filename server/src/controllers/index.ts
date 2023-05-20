@@ -1,5 +1,5 @@
 export * from './admin.controller';
-export * from './customer-customer-address.controller';
+export * from './customer-address.controller';
 export * from './customer-file-info.controller';
 export * from './customer-order-info.controller';
 export * from './customer.controller';

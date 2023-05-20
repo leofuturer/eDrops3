@@ -2,7 +2,7 @@ import fetch from 'node-fetch'
 import * as dotenv from 'dotenv'
 
 dotenv.config({
-    path: '../deploy/dev/backend.env'
+    path: '../../deploy/dev/backend.env'
 })
 const BASE_URL = `https://${process.env.SHOPIFY_ADMIN_KEY}:${process.env.SHOPIFY_ADMIN_SECRET}@${process.env.SHOPIFY_DOMAIN}/admin/api/2022-10/`;
 
