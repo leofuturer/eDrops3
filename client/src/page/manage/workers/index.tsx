@@ -3,45 +3,36 @@ import { useNavigate } from 'react-router-dom';
 import { request, editFoundryWorker, getAllFoundryWorkers, userBaseDeleteById, userBaseFind } from '@/api';
 import ManageRightLayout from '@/component/layout/ManageRightLayout';
 import DeleteModal from '@/component/modal/DeleteModal';
-import { Worker } from '@/types';
+import { FoundryWorker } from '@/types';
+import { ROUTES, idRoute } from '@/router/routes';
 
 export function FoundryWorkers() {
-  const [workerList, setWorkerList] = useState<Worker[]>([]);
+  const [workerList, setWorkerList] = useState<FoundryWorker[]>([]);
   const [showDelete, setShowDelete] = useState(false);
-  const [deleteWorker, setDeleteWorker] = useState<Worker>({} as Worker);
+  const [deleteWorker, setDeleteWorker] = useState<FoundryWorker>({} as FoundryWorker);
 
   const navigate = useNavigate();
 
   function handleAddWorker() {
-    navigate('/manage/foundryworkers/addfoundryworker');
+    navigate(ROUTES.ManageWorkersAdd);
   }
 
-  function handleRetrieveChipOrders(worker: Worker) {
-    navigate('/manage/admin-retrieve-worker-orders', {
-      state: {
-        workerId: worker.id,
-        isCustomer: false,
-      },
-    });
+  function handleRetrieveChipOrders(worker: FoundryWorker) {
+    navigate(idRoute(ROUTES.ManageWorkersOrders, worker.id as string));
   }
 
-  function handleEditWorker(worker: Worker) {
-    navigate('/manage/foundryworkers/editworker', {
-      state: {
-        workerId: worker.id,
-        workerInfo: worker,
-      }
-    });
+  function handleEditWorker(worker: FoundryWorker) {
+    navigate(idRoute(ROUTES.ManageWorkersUpdate, worker.id as string));
   }
 
-  function handleDeleteWorker(worker: Worker) {
+  function handleDeleteWorker(worker: FoundryWorker) {
     setShowDelete(true);
     setDeleteWorker(worker);
   }
 
   function handleDelete() {
     // we need to delete both userBase and worker instances
-    let url = `${userBaseFind}?filter={"where": {"email": "${deleteWorker.email}"}}`;
+    let url = `${userBaseFind}?filter={"where": {"email": "${deleteWorker.id}"}}`;
     request(url, 'GET', {}, true)
       .then((res) => request(userBaseDeleteById.replace('id', res.data[0].id), 'DELETE', {}, true))
       .then((res) => request(editFoundryWorker.replace('id', deleteWorker.id), 'DELETE', {}, true))

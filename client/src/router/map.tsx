@@ -2,10 +2,8 @@ import AuthLayout from '@/component/layout/AuthLayout';
 import Layout from '@/component/layout/Layout';
 import ManageLayout from '@/component/layout/ManageLayout';
 import { ROLES } from '@/lib/constants/roles';
-import { AddNewAddress, Address, Admins, BeforeCheckout, Cart, ChangePassword, CheckEmail, ChipOrder, EmailUnverified, EmailVerified, FeatureComing, Files, ForgetPass, FoundryWorkers, Home, Login, PageNotFound, Product, Products, Profile, Register, ResetPassword, UpdateAddress, Users, OrderDetail, OrderChat, OwnOrders, CustomerOrders, AllFiles, AllOrders } from '@/page/index';
+import { AddNewAddress, Address, Admins, BeforeCheckout, Cart, ChangePassword, CheckEmail, ChipOrder, EmailUnverified, EmailVerified, FeatureComing, Files, ForgetPass, FoundryWorkers, Home, Login, PageNotFound, Product, Products, Profile, Register, ResetPassword, UpdateAddress, OrderDetail, OrderChat, OwnOrders, CustomerOrders, AllFiles, AllOrders, Customers } from '@/page/index';
 import AddOrEditAdmin from '@/page/manage/admins/addOrEditAdmin';
-import AssignOrders from '@/page/manage/assign-orders';
-import ChipOrders from '@/page/manage/chip-orders';
 import AddOrEditUser from '@/page/manage/customers/addOrEditUser';
 import AddOrEditWorker from '@/page/manage/workers/addOrEditWorker';
 import Upload from '@/page/upload';
@@ -55,7 +53,7 @@ export function FlattenedRouteMap() {
                 <Route path={ROUTES.ManageAdmins} element={<Admins />} />
                 <Route path={ROUTES.ManageAdminsAdd} element={<AddOrEditAdmin />} />
                 <Route path={ROUTES.ManageAdminsUpdate} element={<AddOrEditAdmin />} />
-                <Route path={ROUTES.ManageCustomers} element={<Users />} />
+                <Route path={ROUTES.ManageCustomers} element={<Customers />} />
                 <Route path={ROUTES.ManageCustomersAdd} element={<AddOrEditUser />} />
                 <Route path={ROUTES.ManageCustomersUpdate} element={<AddOrEditUser />} />
                 <Route path={ROUTES.ManageCustomersFiles} element={<Files />} />

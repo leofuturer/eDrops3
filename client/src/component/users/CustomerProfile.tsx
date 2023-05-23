@@ -1,8 +1,8 @@
 import { Form, Formik } from 'formik';
 import React, { useEffect, useState } from 'react'
 import { useCookies } from 'react-cookie';
-import { customerAddresses, customerGetProfile, request, updateCustomerProfile } from '../../../api'
-import FormGroup from '../../../component/form/FormGroup';
+import { customerAddresses, customerGetProfile, request, updateCustomerProfile } from '@/api'
+import FormGroup from '@/component/form/FormGroup';
 
 function CustomerProfile() {
   const [initialInfo, setInitialInfo] = useState({

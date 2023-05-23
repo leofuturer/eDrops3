@@ -7,12 +7,12 @@ import SEO from '../../../component/header/seo';
 import ManageRightLayout from '../../../component/layout/ManageRightLayout';
 import Loading from '../../../component/ui/Loading';
 import { CartContext } from '../../../context/CartContext';
-import { ChipOrder } from '../../../types';
+import { OrderChip } from '../../../types';
 import { metadata } from '../orders/metadata';
 
 // List all chip orders for all user types
 function ChipOrders() {
-  const [orderList, setOrderList] = useState<ChipOrder[]>([]);
+  const [orderList, setOrderList] = useState<OrderChip[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [workerId, setWorkerId] = useState('');
   const [isCustomer, setIsCustomer] = useState(false);
@@ -50,7 +50,7 @@ function ChipOrders() {
     request(url, 'GET', {}, true)
       .then((res) => {
         if (workerId) {
-          res.data = res.data.filter((orderChip: ChipOrder) => orderChip.workerId === workerId);
+          res.data = res.data.filter((orderChip: OrderChip) => orderChip.workerId === workerId);
         }
         // console.log(res)
         setOrderList(res.data);
