@@ -3,8 +3,12 @@ import React, { useEffect, useState } from 'react'
 import { useCookies } from 'react-cookie';
 import { customerAddresses, customerGetProfile, request, updateCustomerProfile } from '@/api'
 import FormGroup from '@/component/form/FormGroup';
+import { Customer, Address, DTO } from '@/types';
 
-function CustomerProfile() {
+type CustomerInfo = DTO<Customer & Address>;
+
+function CustomerProfile({ userId }: { userId: string }) {
+  const [info, setInfo] = useState({} as CustomerInfo)
   const [initialInfo, setInitialInfo] = useState({
     username: '',
     email: '',
@@ -19,7 +23,6 @@ function CustomerProfile() {
     country: '',
   });
 
-  const [cookies] = useCookies(['userId']);
   const [defaultAddressId, setDefaultAddressId] = useState(-1);
 
   useEffect(() => {

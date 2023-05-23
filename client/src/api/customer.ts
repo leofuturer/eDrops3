@@ -1,20 +1,29 @@
-import type { Customer, DTO, OrderInfo } from "@/types";
+import type { Address, Customer, OrderInfo } from "@/types";
 import request from "./lib/api";
-import { customer } from "./lib/newServerConfig";
+import { Resource } from "./lib/endpoint";
 
-// Get customer info
-export function getCustomerInfo(customerId: string): Promise<DTO<Customer>> {
-  return request(customer.getById(customerId), 'GET', {}, true)
-    .then((res) => {
-      return res.data as DTO<Customer>;
+class Cust extends Resource<Customer> {
+  constructor() {
+    super('/customers');
+  }
+
+  getAddresses(id: string): Promise<Address[]> {
+    return request<Address[]>(`${this.baseURL}/${id}/addresses`, 'GET', {}, true).then((res) => {
+      return res.data as Address[];
     });
+  }
+
+  getOrders(id: string, completed: boolean = true): Promise<OrderInfo[]> {
+    return request<OrderInfo[]>(`${this.baseURL}/${id}/orders`, 'GET', { where: { orderComplete: completed } }, true).then((res) => {
+      return res.data as OrderInfo[];
+    });
+  }
+
+  getCart(id: string): Promise<OrderInfo> {
+    return request<OrderInfo>(`${this.baseURL}/${id}/cart`, 'GET', {}, true).then((res) => {
+      return res.data as OrderInfo;
+    });
+  }
 }
 
-export function getCustomerOrders(customerId: string, completed: boolean = true): Promise<DTO<OrderInfo>[]> {
-  return request(customer.getOrdersById(customerId), 'GET', { where: { orderComplete: completed } }, true)
-    .then((res) => {
-      // console.log(res.data)
-      return res.data as OrderInfo[];
-    })
-}
-// Get customer 
+export const customer = new Cust();

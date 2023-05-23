@@ -1,24 +1,18 @@
-import { authenticate } from '@loopback/authentication';
-import { inject, intercept } from '@loopback/core';
+import { intercept } from '@loopback/core';
 import { Filter, FilterExcludingWhere, repository } from '@loopback/repository';
 import {
   del,
   get,
   getModelSchemaRef,
-  HttpErrors,
   param,
   patch,
   post,
   requestBody,
-  Response,
-  response,
-  RestBindings
+  response
 } from '@loopback/rest';
-import { SecurityBindings, UserProfile } from '@loopback/security';
-import { compare } from 'bcryptjs';
 import { CustomerCreateInterceptor } from '../interceptors';
 import { DTO } from '../lib/types/model';
-import { Customer, Address, OrderInfo, User } from '../models';
+import { Address, Customer, OrderInfo, User } from '../models';
 import { CustomerRepository, UserRepository } from '../repositories';
 
 export class CustomerController {
@@ -155,7 +149,7 @@ export class CustomerController {
     };
   }
 
-  @get('/customers/{id}/getCustomerCart')
+  @get('/customers/{id}/cart')
   @response(200, {
     description: 'Customer cart',
     content: {

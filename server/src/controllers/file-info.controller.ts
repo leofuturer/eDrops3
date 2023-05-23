@@ -14,7 +14,8 @@ export class FileInfoController {
     public fileInfoRepository : FileInfoRepository,
   ) {}
 
-  @get('/fileInfos')
+  // TODO:RBAC Admin only
+  @get('/files')
   @response(200, {
     description: 'Array of FileInfo model instances',
     content: {

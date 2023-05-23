@@ -2,20 +2,18 @@ import { authenticate } from '@loopback/authentication';
 import { inject } from '@loopback/core';
 import { CountSchema, Filter, repository } from '@loopback/repository';
 import {
-  del,
   ExpressRequestHandler,
+  Request,
+  Response,
+  RestBindings,
+  del,
   get,
   getModelSchemaRef,
-  HttpErrors,
   oas,
   param,
   post,
-  Request,
-  requestBody,
-  Response,
-  RestBindings,
+  requestBody
 } from '@loopback/rest';
-import path from 'path';
 import { Customer, FileInfo } from '../models';
 import { CustomerRepository, FileInfoRepository } from '../repositories';
 import { FILE_UPLOAD_SERVICE, STORAGE_DIRECTORY } from '../services';
@@ -34,7 +32,7 @@ export class CustomerFileInfoController {
     @inject(STORAGE_DIRECTORY) private storageDirectory: string,
   ) { }
 
-  @get('/customers/{id}/customerFiles', {
+  @get('/customers/{id}/files', {
     responses: {
       '200': {
         description: 'Retrieve all customer files',
@@ -54,7 +52,7 @@ export class CustomerFileInfoController {
   }
 
   @authenticate('jwt')
-  @post('/customers/{id}/uploadFile', {
+  @post('/customers/{id}/files', {
     responses: {
       '200': {
         description: 'Upload a file',
@@ -98,7 +96,7 @@ export class CustomerFileInfoController {
   }
 
   @oas.response.file()
-  @get('/customers/{id}/downloadFile', {
+  @get('/customers/{id}/files/{fileId}', {
     responses: {
       '200': {
         description: 'Download a file',
@@ -112,7 +110,7 @@ export class CustomerFileInfoController {
   })
   async downloadFile(
     @param.path.string('id') id: typeof Customer.prototype.id,
-    @param.query.number('fileId') fileId: number,
+    @param.path.number('fileId') fileId: number,
     @inject(RestBindings.Http.RESPONSE) response: Response,
   ): Promise<Response> {
     const filename = await this.customerRepository
@@ -126,7 +124,7 @@ export class CustomerFileInfoController {
       : this.fileRepository.downloadS3(filename, response);
   }
 
-  @del('/customers/{id}/deleteFile', {
+  @del('/customers/{id}/files/{fileId}', {
     responses: {
       '200': {
         description: 'Customer.FileInfo DELETE success count',
@@ -136,7 +134,7 @@ export class CustomerFileInfoController {
   })
   async delete(
     @param.path.string('id') id: typeof Customer.prototype.id,
-    @param.query.number('fileId') fileId: number,
+    @param.path.number('fileId') fileId: number,
   ): Promise<void> {
     // Soft delete
     this.customerRepository.fileInfos(id).delete({ id: fileId });

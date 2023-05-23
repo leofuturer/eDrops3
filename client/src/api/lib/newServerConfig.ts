@@ -24,9 +24,12 @@ export const user = {
 export const customer = {
   get: '/customers',
   getById: (id: string) => `/customers/${id}`,
-  getAddressesById: (id: string) => `/customers/${id}/customerAddresses`,
-  getCartById: (id: string) => `/customers/${id}/getCustomerCart`, // should be renamed to /cart
-  getOrdersById: (id: string) => `/customers/${id}/customerOrders`, // should be renamed to /orders
+  getAddressesById: (id: string) => `/customers/${id}/addresses`,
+  getCartById: (id: string) => `/customers/${id}/cart`, 
+  getOrdersById: (id: string) => `/customers/${id}/orders`, 
+  getChipOrdersById: (id: string) => `/customers/${id}/chip-orders`,
+  getFiles: (id: string) => `/customers/${id}/files`,
+  getFileById: (id: string, fileId: number) => `/customers/${id}/files/${fileId}`,
 }
 
 export const admin = {
@@ -45,8 +48,6 @@ export const worker = {
 }
 
 
-export const customerFileRetrieve = `${ApiRootUrl}/customers/id/customerFiles`;
-export const customerDeleteFile = `${ApiRootUrl}/customers/id/deleteFile`;
 export const workerDownloadFile = `${ApiRootUrl}/foundryWorkers/id/downloadFile`;
 export const downloadFileById = `${ApiRootUrl}/customers/id/downloadFile`;
 export const uploadFile = `${ApiRootUrl}/customers/id/uploadFile`;
@@ -66,7 +67,6 @@ export const orders = {
   getChipById: (id: string) => `/orderChips/${id}`,
 }
 
-export const customerOrderRetrieve = `${ApiRootUrl}/customers/id/customerOrders`;
 export const workerOrderRetrieve = `${ApiRootUrl}/foundryWorkers/id/workerOrders`;
 
 export const editOrderStatus = `${ApiRootUrl}/orderChips/id`;
@@ -77,5 +77,4 @@ export const addOrderMessage = `${ApiRootUrl}/orderMessages`;
 
 // For chip order page
 export const adminGetChipOrders = `${ApiRootUrl}/admins/orderChips`;
-export const customerGetChipOrders = `${ApiRootUrl}/customers/id/orderChips`;
 export const workerGetChipOrders = `${ApiRootUrl}/foundryWorkers/id/orderChips`;

@@ -1,8 +1,8 @@
 import { Form, Formik } from 'formik'
 import React, { useState, useEffect } from 'react'
 import { useCookies } from 'react-cookie'
-import { foundryWorkerGetProfile, request, updateWorkerProfile } from '../../../api';
-import FormGroup from '../../../component/form/FormGroup'
+import { foundryWorkerGetProfile, request, updateWorkerProfile } from '@/api';
+import FormGroup from '@/component/form/FormGroup'
 
 function WorkerProfile() {
   const [initialInfo, setInitialInfo] = useState({
