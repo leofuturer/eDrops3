@@ -1,78 +1,49 @@
-import {useEffect, useState} from 'react';
-import {useSearchParams} from 'react-router-dom';
-import {request} from '../../../api';
-import {getChipOrders, getOrderInfoById, getProductOrders} from '../../../api';
-import MessageLayout from '../../../component/layout/MessageLayout';
-import {ChipOrder, DisplayAddress, ProductOrder} from '../../../types';
-import OrderAddress from '../../../component/orders/OrderAddress';
 import OrderItem from '@/component/orders/OrderItem';
+import { ROUTES } from '@/router/routes';
+import { Address, OrderChip, OrderInfo, OrderProduct } from '@/types';
+import { useEffect, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import { getChipOrders, getOrderInfoById, getProductOrders, request } from '../../../api';
+import MessageLayout from '../../../component/layout/MessageLayout';
+
 
 export function OrderDetail() {
   const [doneLoading, setDoneLoading] = useState(false);
-  const [orderId, setOrderId] = useState('');
-  const [orderLink, setOrderLink] = useState('');
-  const [orderDetail, setOrderDetail] = useState<any>({}); // TODO: type order detail
-  const [shippingAddress, setShippingAddress] = useState<DisplayAddress>(
-    {} as DisplayAddress,
-  );
-  const [billingAddress, setBillingAddress] = useState<DisplayAddress>(
-    {} as DisplayAddress,
-  );
-  const [productOrders, setProductOrders] = useState<ProductOrder[]>([]);
-  const [chipOrders, setChipOrders] = useState<ChipOrder[]>([]);
+  const [order, setOrder] = useState<OrderInfo>({} as OrderInfo);
+  const [productOrders, setProductOrders] = useState<OrderProduct[]>([]);
+  const [chipOrders, setChipOrders] = useState<OrderChip[]>([]);
   const [totalPrice, setTotalPrice] = useState(0);
 
-  const [searchParams] = useSearchParams();
+  const { id: orderId } = useParams();
+  const navigate = useNavigate();
 
   useEffect(() => {
-    setOrderId(searchParams.get('id') as string);
-  }, [searchParams]);
-
-  useEffect(() => {
-    orderId &&
-      request(getOrderInfoById.replace('id', orderId), 'GET', {}, true)
-        .then(res => {
-          setOrderDetail(res.data);
-          console.log(res.data);
-          setOrderLink(res.data.checkoutLink);
-          setShippingAddress({
-            type: 'Shipping',
-            name: res.data.sa_name,
-            street: res.data.sa_address1,
-            streetLine2: res.data.sa_address2,
-            city: res.data.sa_city,
-            state: res.data.sa_province,
-            country: res.data.sa_country,
-            zipCode: res.data.sa_zip,
-          });
-          setBillingAddress({
-            type: 'Billing',
-            name: res.data.ba_name,
-            street: res.data.ba_address1,
-            streetLine2: res.data.ba_address2,
-            city: res.data.ba_city,
-            state: res.data.ba_province,
-            country: res.data.ba_country,
-            zipCode: res.data.ba_zip,
-          });
-          return Promise.all([
-            request(
-              getProductOrders.replace('id', res.data.id),
-              'GET',
-              {},
-              true,
-            ),
-            request(getChipOrders.replace('id', res.data.id), 'GET', {}, true),
-          ]);
-        })
-        .then(([res1, res2]) => {
-          setProductOrders(res1.data);
-          setChipOrders(res2.data);
-          setDoneLoading(true);
-        })
-        .catch(err => {
-          console.error(err);
-        });
+    if (!orderId) {
+      navigate(ROUTES.ManageOrders);
+      return;
+    }
+    request(getOrderInfoById.replace('id', orderId), 'GET', {}, true)
+      .then(res => {
+        setOrder(res.data);
+        console.log(res.data);
+        return Promise.all([
+          request(
+            getProductOrders.replace('id', res.data.id),
+            'GET',
+            {},
+            true,
+          ),
+          request(getChipOrders.replace('id', res.data.id), 'GET', {}, true),
+        ]);
+      })
+      .then(([res1, res2]) => {
+        setProductOrders(res1.data);
+        setChipOrders(res2.data);
+        setDoneLoading(true);
+      })
+      .catch(err => {
+        console.error(err);
+      });
   }, [orderId]);
 
   useEffect(() => {
@@ -90,12 +61,10 @@ export function OrderDetail() {
   return (
     <MessageLayout
       title="eDrops Order Details"
-      message={`Order Number: ${
-        orderDetail.orderComplete ? orderDetail.orderInfoId : 'N/A'
-      }`}
+      message={`Order Number: ${order.orderComplete ? order.orderInfoId : 'N/A'}`}
     >
-      {orderDetail.orderComplete ? (
-        <a className="text-center text-xs" href={orderLink}>
+      {order.orderComplete ? (
+        <a className="text-center text-xs" href={order.checkoutLink}>
           <u>See full order details</u>
         </a>
       ) : null}
@@ -106,29 +75,53 @@ export function OrderDetail() {
       ) : (
         <div className="flex flex-col space-y-4">
           <div className="grid grid-cols-2 gap-4">
-            <OrderAddress address={shippingAddress} />
-            <OrderAddress address={billingAddress} />
+            <div className="shadow-box-sm p-4">
+              <div className="flex">
+                <h4>Shipping Address</h4>
+              </div>
+              <div className="flex flex-col">
+                <div className="">{order.sa_name}</div>
+                <div className="">{order.sa_address1}</div>
+                <div className="">{order.sa_address2}</div>
+                <div className="">{order.sa_city}</div>
+                <div className="">{order.sa_province}</div>
+                <div className="">{order.sa_country}</div>
+                <div className="">{order.sa_zip}</div>
+              </div>
+            </div >
+            <div className="shadow-box-sm p-4">
+              <div className="flex">
+                <h4>Billing Address</h4>
+              </div>
+              <div className="flex flex-col">
+                <div className="">{order.ba_name}</div>
+                <div className="">{order.ba_address1}</div>
+                <div className="">{order.ba_address2}</div>
+                <div className="">{order.ba_city}</div>
+                <div className="">{order.ba_province}</div>
+                <div className="">{order.ba_country}</div>
+                <div className="">{order.ba_zip}</div>
+              </div>
+            </div >
           </div>
-          {productOrders.map((oneProduct, index) => (
-            <OrderItem key={index} info={oneProduct} />
+          {productOrders.map((product) => (
+            <OrderItem key={product.id} info={product} />
           ))}
-          {chipOrders.map((oneProduct, index) => (
-            <OrderItem key={index} info={oneProduct} />
+          {chipOrders.map((chip) => (
+            <OrderItem key={chip.id} info={chip} />
           ))}
           <div className="flex flex-col">
             <p className="text-right">Subtotal: ${totalPrice.toFixed(2)}</p>
             <p className="text-right">
               Fees and Taxes: $
-              {orderDetail.orderComplete
-                ? parseFloat(orderDetail.fees_and_taxes).toFixed(2)
+              {order.orderComplete
+                ? parseFloat(order.fees_and_taxes as string).toFixed(2)
                 : 'N/A'}
             </p>
             <p className="text-right font-bold">
               Total: $
-              {orderDetail.orderComplete
-                ? (totalPrice + parseFloat(orderDetail.fees_and_taxes)).toFixed(
-                    2,
-                  )
+              {order.orderComplete
+                ? (totalPrice + parseFloat(order.fees_and_taxes as string)).toFixed(2)
                 : 'N/A'}
             </p>
           </div>
