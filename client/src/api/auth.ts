@@ -1,5 +1,5 @@
 import request from "./lib/api";
-import { userLogin } from "./lib/serverConfig";
+import { customer, user } from "./lib/newServerConfig";
 
 export function login(username: string, password: string): Promise<boolean> {
   const data = (/@/.test(username)) ? {
@@ -9,7 +9,7 @@ export function login(username: string, password: string): Promise<boolean> {
     username: username,
     password: password,
   };
-  return request(userLogin, 'POST', data, false)
+  return request(user.login, 'POST', data, false)
     .then((res) => {
       return res.status === 200;
     }).catch((err) => {
@@ -20,13 +20,14 @@ export function login(username: string, password: string): Promise<boolean> {
     });
 }
 
+// Only customers signup through the website (admins and workers are created by the admin)
 export function signup(username: string, password: string, email: string): Promise<boolean> {
   const data = {
     username: username,
     password: password,
     email: email,
   };
-  return request(userLogin, 'POST', data, false)
+  return request(customer.get, 'POST', data, false)
     .then((res) => {
       return res.status === 200;
     }).catch((err) => {
@@ -35,6 +36,10 @@ export function signup(username: string, password: string, email: string): Promi
       }
       return false;
     });
+}
+
+export function verifyEmail(){
+
 }
 
 export { }
