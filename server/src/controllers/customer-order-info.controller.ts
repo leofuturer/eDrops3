@@ -20,7 +20,7 @@ export class CustomerOrderInfoController {
     protected orderInfoRepository: OrderInfoRepository,
   ) {}
 
-  @get('/customers/{id}/orderChips', {
+  @get('/customers/{id}/chip-orders', {
     responses: {
       '200': {
         description: 'Get all chip orders of a customer',
@@ -41,7 +41,7 @@ export class CustomerOrderInfoController {
     }, [] as OrderChip[]);
   }
 
-  @get('/customers/{id}/customerOrders', {
+  @get('/customers/{id}/orders', {
     responses: {
       '200': {
         description: 'Get customer orders',
@@ -60,7 +60,7 @@ export class CustomerOrderInfoController {
     return this.customerRepository.orderInfos(id).find(filter);
   }
 
-  @post('/customers/{id}/customerOrders')
+  @post('/customers/{id}/orders')
   @response(200, {
     description: 'Add order to customer cart',
     content: {
