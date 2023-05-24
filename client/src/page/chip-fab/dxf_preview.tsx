@@ -1,9 +1,7 @@
-import React, { useEffect, useState } from 'react';
-import Cookies from 'js-cookie';
-import { downloadFileById } from '../../api';
-import { request } from '../../api';
 import { Helper } from 'dxf';
+import { useEffect, useState } from 'react';
 import { useCookies } from 'react-cookie';
+import { api } from '../../api';
 
 function DXFPreview({ fileInfo }: { fileInfo: any }) {
   const [svg, setSvg] = useState('');
@@ -11,18 +9,16 @@ function DXFPreview({ fileInfo }: { fileInfo: any }) {
   const [cookies] = useCookies(['userId', 'userType', 'access_token']);
 
   useEffect(() => {
-    request(`${downloadFileById.replace('id', cookies.userId)}?fileId=${fileInfo.id}`, 'GET', {}, true)
-      .then((res) => {
-        // dxf.config.verbose = true //for debugging purposes
-        const helper = new Helper(res.data);
-        // console.log(`Number of entities: ${helper.denormalised.length}`);
-        const svg = helper.toSVG();
-        setSvg(svg);
-        // rescaleSvg(svg);
-      })
-      .catch((err) => {
-        console.error(err);
-      });
+    api.customer.downloadFile(cookies.userId, fileInfo.id).then((data) => {
+      // dxf.config.verbose = true //for debugging purposes
+      const helper = new Helper(data);
+      // console.log(`Number of entities: ${helper.denormalised.length}`);
+      const svg = helper.toSVG();
+      setSvg(svg);
+      // rescaleSvg(svg);
+    }).catch((err) => {
+      console.error(err);
+    });
   }, [fileInfo.id]);
 
   /**

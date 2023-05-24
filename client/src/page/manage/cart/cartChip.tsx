@@ -3,6 +3,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import Loading from '../../../component/ui/Loading';
 import { ChipOrder } from '../../../types';
+import { ROUTES } from '@/router/routes';
 
 function CartChip({ chip, onDelete, onChange }: { chip: ChipOrder, onDelete: () => Promise<void>, onChange: (chip: ChipOrder, quantity: number) => void }) {
   const chipFabState = {
@@ -41,7 +42,7 @@ function CartChip({ chip, onDelete, onChange }: { chip: ChipOrder, onDelete: () 
   return (
     <div className="bg-white rounded-md shadow-box p-4 flex flex-row justify-between">
       <div className="flex flex-col">
-        <NavLink to="/chipfab" state={chipFabState} className="text-primary_light hover:text-primary">
+        <NavLink to={ROUTES.ChipFab} state={chipFabState} className="text-primary_light hover:text-primary">
           <h3>{chip.name}</h3>
         </NavLink>
         <div className="">

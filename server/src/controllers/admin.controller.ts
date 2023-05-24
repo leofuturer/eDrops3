@@ -165,31 +165,4 @@ export class AdminController {
 
     return allOrderChips;
   }
-
-  @get('/admins/getApi')
-  @response(200, {
-    description: 'Get API token',
-    content: {
-      'application/json': {
-        schema: {
-          properties: {
-            token: {
-              type: 'string',
-            },
-            domain: {
-              type: 'string',
-            },
-          },
-        },
-      },
-    },
-  })
-  async getApiToken(): Promise<object> {
-    const info = {
-      token: process.env.SHOPIFY_TOKEN as string,
-      domain: process.env.SHOPIFY_DOMAIN as string,
-    };
-    console.log(info);
-    return info;
-  }
 }

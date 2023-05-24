@@ -1,16 +1,16 @@
 import { useEffect, useState } from 'react';
 import { useCookies } from 'react-cookie';
 import { useNavigate } from 'react-router-dom';
-import { customerAddresses, request } from '../../../api';
+import { api } from '../../../api';
 import ManageRightLayout from '../../../component/layout/ManageRightLayout';
 import DeleteModal from '../../../component/modal/DeleteModal';
 import Loading from '../../../component/ui/Loading';
-import { Address as AddressType } from '../../../types';
+import { Address as AddressType, DTO } from '@/types';
 import AddressTemplate from './AddressTemplate';
 import { ROUTES } from '@/router/routes';
 
 export function Address() {
-  const [addressList, setAddressList] = useState<AddressType[]>([]);
+  const [addressList, setAddressList] = useState<DTO<AddressType>[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [showDelete, setShowDelete] = useState(false);
   const [addrIndex, setAddrIndex] = useState(0);
@@ -35,27 +35,19 @@ export function Address() {
   function handleDelete() {
     const address = addressList[addrIndex];
     const addressId = address.id;
-    const where = {
-      id: addressId,
-    }
-    const url = `${customerAddresses.replace('id', cookies.userId)}?where=${JSON.stringify(where)}`;
 
-    // Use axios to send request
-    request(url, 'DELETE', {}, true)
-      .then((res) => {
-        console.log(res);
-        setAddressList(addressList.filter((addr) => addr.id !== addressId));
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    api.customer.deleteAddress(cookies.userId, addressId as number).then((res) => {
+      console.log(res);
+      setAddressList(addressList.filter((addr) => addr.id !== addressId));
+    }).catch((err) => {
+      console.log(err);
+    });
   }
 
   useEffect(() => {
-    request(customerAddresses.replace('id', cookies.userId), 'GET', {}, true)
-      .then((res) => {
+    api.customer.getAddresses(cookies.userId).then((addresses) => {
         // console.log(res.data);
-        setAddressList(res.data);
+        setAddressList(addresses);
         setIsLoading(false);
       })
       .catch((err) => {
