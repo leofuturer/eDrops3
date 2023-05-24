@@ -196,12 +196,29 @@ export class CustomerRepository extends DefaultCrudRepository<
       });
   }
 
+  async uploadFile(request: Request, response: Response, id: typeof Customer.prototype.id): Promise<FileInfo> {
+    const username = await this.user(id).then(user => user.username);
+    return process.env.NODE_ENV !== 'production'
+      ? await this.uploadDisk(
+        request,
+        response,
+        username,
+        id as string,
+      )
+      : await this.uploadS3(
+        request,
+        response,
+        username,
+        id as string,
+      )
+  }
+
   async uploadDisk(
     request: Request,
     response: Response,
     username: string,
     id: string,
-  ): Promise<object> {
+  ): Promise<FileInfo> {
     const mapper = (f: Express.Multer.File) => ({
       fieldname: f.fieldname,
       originalname: f.originalname,
@@ -239,10 +256,10 @@ export class CustomerRepository extends DefaultCrudRepository<
       },
     );
 
-    const fields = request.body;
+    // const fields = request.body;
     const fileInfo = await this.fileInfos(id).create(fileInfos[0]);
     // return {files, fields};
-    return { fileInfo, fields };
+    return fileInfo;
   }
 
   async uploadS3(
@@ -250,7 +267,7 @@ export class CustomerRepository extends DefaultCrudRepository<
     response: Response,
     username: string,
     id: string,
-  ): Promise<object> {
+  ): Promise<FileInfo> {
     const mapper = (f: Express.MulterS3.File) => ({
       fieldname: f.fieldname,
       originalname: f.originalname,
@@ -295,7 +312,17 @@ export class CustomerRepository extends DefaultCrudRepository<
     const fields = request.body;
     const fileInfo = await this.fileInfos(id).create(fileInfos[0]);
     // return {files, fields};
-    return { fileInfo, fields };
+    return fileInfo;
+  }
+
+  async downloadById(userId: typeof Customer.prototype.id, fileId: typeof FileInfo.prototype.id, response: Response): Promise<Response> {
+    const file = await this.fileInfos(userId).find({ where: { id: fileId } });
+    if (!file[0]) {
+      throw new HttpErrors.NotFound('File not found');
+    }
+    return process.env.NODE_ENV !== 'production' ?
+      this.downloadDisk(file[0].containerFileName, response) :
+      this.downloadS3(file[0].containerFileName, response);
   }
 
   async downloadDisk(filename: string, response: Response): Promise<Response> {
