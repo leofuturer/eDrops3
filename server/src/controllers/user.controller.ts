@@ -399,7 +399,6 @@ export class UserController {
     );
   }
 
-  // Only from email
   @post('/users/reset-password')
   @response(200, {
     description: 'User RESET PASSWORD success',

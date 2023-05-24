@@ -1,7 +1,7 @@
 import { useContext, useState } from 'react';
 import { useCookies } from 'react-cookie';
 import { NavLink } from 'react-router-dom';
-import { CartContext } from '../../context/CartContext';
+import { CartContext } from '@/context/CartContext';
 import UserMenu from './UserMenu';
 import { ROUTES } from '@/router/routes';
 

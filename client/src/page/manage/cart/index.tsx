@@ -1,8 +1,8 @@
 import { useContext } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
-import SEO from '../../../component/header/seo';
-import ManageRightLayout from '../../../component/layout/ManageRightLayout';
-import { CartContext } from '../../../context/CartContext';
+import SEO from '@/component/header/seo';
+import ManageRightLayout from '@/component/layout/ManageRightLayout';
+import { CartContext } from '@/context/CartContext';
 import CartChip from './CartChip';
 import CartProduct from './CartProduct';
 import { metadata } from './metadata';

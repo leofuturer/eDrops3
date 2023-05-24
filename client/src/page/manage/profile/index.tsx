@@ -1,6 +1,6 @@
 import { useCookies } from 'react-cookie';
-import SEO from '../../../component/header/seo';
-import ManageRightLayout from '../../../component/layout/ManageRightLayout';
+import SEO from '@/component/header/seo';
+import ManageRightLayout from '@/component/layout/ManageRightLayout';
 import { metadata } from './metadata';
 import { AdminProfile, WorkerProfile, CustomerProfile } from '@/component/users';
 
@@ -14,9 +14,9 @@ export function Profile() {
         description=""
         metadata={metadata}
       />
-      {cookies.userType === 'admin' && <AdminProfile adminId={cookies.userId} />}
-      {cookies.userType === 'customer' && <CustomerProfile customerId={cookies.userId} />}
-      {cookies.userType === 'worker' && <WorkerProfile workerId={cookies.userId} />}
+      {cookies.userType === ROLES.Admin && <AdminProfile adminId={cookies.userId} />}
+      {cookies.userType === ROLES.Customer && <CustomerProfile customerId={cookies.userId} />}
+      {cookies.userType === ROLES.Worker && <WorkerProfile workerId={cookies.userId} />}
     </ManageRightLayout>
   );
 }

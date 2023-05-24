@@ -2,7 +2,7 @@ import { ROUTES } from '@/router/routes';
 import { useContext, useEffect, useState } from 'react';
 import { useCookies } from 'react-cookie';
 import { useNavigate, useParams } from 'react-router-dom';
-import { PusherContext } from '../../../../context/PusherContext';
+import { PusherContext } from '@/context/PusherContext';
 import { api } from '@/api';
 import { DTO, OrderMessage } from '@/types';
 
@@ -128,7 +128,7 @@ export function ChatBox({ orderId }: { orderId: number }) {
           </>
         )}
       </div>
-      {cookies.userType !== 'admin' &&
+      {cookies.userType !== ROLES.Admin &&
         <div className="bg-gray-300 p-4 w-full flex items-center">
           <input
             className="flex items-center h-10 w-full rounded-l px-3 text-sm focus:outline-none"

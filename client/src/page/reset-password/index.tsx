@@ -1,11 +1,10 @@
 import { Formik, Form } from 'formik';
 import { useEffect, useState } from 'react';
 import { NavLink, useNavigate, useSearchParams } from 'react-router-dom';
-import { request } from '../../api';
-import { userResetPass } from '../../api';
-import FormGroup from '../../component/form/FormGroup';
-import MessageLayout from '../../component/layout/MessageLayout';
-import { ResetPasswordSchema } from '../../schemas';
+import { api } from '@/api';
+import FormGroup from '@/component/form/FormGroup';
+import MessageLayout from '@/component/layout/MessageLayout';
+import { ResetPasswordSchema } from '@/schemas';
 import { ROUTES } from '@/router/routes';
 
 export function ResetPassword() {
@@ -13,7 +12,7 @@ export function ResetPassword() {
   const [passwordChanged, setPasswordChanged] = useState(false);
   const [resetToken, setResetToken] = useState('');
 
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -21,21 +20,15 @@ export function ResetPassword() {
     resetToken ? setResetToken(resetToken) : navigate(ROUTES.ForgotPassword);
   }, [searchParams])
 
-  function handleReset({ newPassword, confirmNewPassword }: { newPassword: string, confirmNewPassword: string }) {
-    const body = {
-      newPassword: newPassword,
-      accessToken: resetToken,
-    };
-    request(userResetPass, 'POST', body, false)
-      .then((res) => {
-        setPasswordChanged(true);
-        setErrorDetected(false);
-      })
-      .catch((err) => {
-        console.log(err);
-        setErrorDetected(true);
-        setPasswordChanged(false);
-      });
+  function handleReset(newPassword: string) {
+    api.user.resetPassword(newPassword, resetToken).then(() => {
+      setPasswordChanged(true);
+      setErrorDetected(false);
+    }).catch((err) => {
+      console.log(err);
+      setErrorDetected(true);
+      setPasswordChanged(false);
+    });
   }
 
   return (
@@ -48,7 +41,9 @@ export function ResetPassword() {
       <Formik
         initialValues={{ newPassword: '', confirmNewPassword: '' }}
         validationSchema={ResetPasswordSchema}
-        onSubmit={handleReset}
+        onSubmit={(values) => {
+          handleReset(values.newPassword)
+        }}
       >
         <Form className="flex flex-col space-y-2 items-center">
           <FormGroup name="newPassword" type="password" required autoComplete="new-password" />

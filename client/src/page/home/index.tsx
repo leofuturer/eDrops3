@@ -1,7 +1,7 @@
 import { useCookies } from 'react-cookie';
 import { NavLink } from 'react-router-dom';
-import SEO from '../../component/header/seo';
-import { controlSysId, pcbChipId, testBoardId } from '../../lib/constants/products';
+import SEO from '@/component/header/seo';
+import { controlSysId, pcbChipId, testBoardId } from '@/lib/constants/products';
 import { metadata } from './metadata';
 import { ROUTES, idRoute } from '@/router/routes';
 
@@ -22,7 +22,7 @@ export function Home() {
         </div>
         <div className="bg-[url('/img/EWOD-chip-compressed.png')] bg-cover bg-no-repeat bg-center flex flex-col space-y-4 justify-center items-center w-full aspect-[4/3] py-2">
           <h1 className="text-md sm:text-xl md:text-2xl lg:text-4xl xl:text-5xl font-semibold text-center">Foundry<br />Service</h1>
-          <NavLink to={cookies.userType === 'customer' ? "/upload" : "/login"} className="text-center py-2 lg:py-6 px-2 md:px-4 xl:px-10 bg-accent w-min md:w-max text-base md:text-lg xl:text-xl font-semibold">UPLOAD FILE</NavLink>
+          <NavLink to={cookies.userType === ROLES.Customer ? "/upload" : "/login"} className="text-center py-2 lg:py-6 px-2 md:px-4 xl:px-10 bg-accent w-min md:w-max text-base md:text-lg xl:text-xl font-semibold">UPLOAD FILE</NavLink>
         </div>
         <div className="bg-[url('/img/control-system-compressed.png')] bg-cover bg-no-repeat bg-center flex flex-col space-y-4 justify-center items-center w-full aspect-[4/3] py-2">
           <h1 className="text-md sm:text-xl md:text-2xl lg:text-4xl xl:text-5xl font-semibold text-center">DMF<br />Control System</h1>
