@@ -2,7 +2,7 @@ import { Formik, Form } from 'formik';
 import { useEffect, useState } from 'react';
 import { useCookies } from 'react-cookie';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { customerAddresses, request } from '../../../../api';
+import { api } from '@/api';
 import FormGroup from '../../../../component/form/FormGroup';
 import ManageRightLayout from '../../../../component/layout/ManageRightLayout';
 import { AddressSchema } from '../../../../schemas/shopify';
@@ -23,13 +23,11 @@ export function UpdateAddress() {
 
   function handleUpdateAddress(address: Address) {
     const { addressId } = location.state;
-    request(`${customerAddresses.replace('id', cookies.userId)}/${addressId}`, 'PATCH', address, true)
-      .then((res) => {
-        navigate(ROUTES.ManageAddress);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
+    api.customer.updateAddress(cookies.userId, addressId, address).then(() => {
+      navigate(ROUTES.ManageAddress);
+    }).catch((error) => {
+      console.error(error);
+    });
   }
 
   return (

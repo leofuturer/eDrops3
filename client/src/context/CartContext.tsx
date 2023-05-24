@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { useCookies } from 'react-cookie';
 import { useNavigate } from 'react-router-dom';
 import { LineItem, Product } from 'shopify-buy';
-import { addOrderChipToCart, addOrderProductToCart, customerGetName, getChipOrders, getCustomerCart, getProductOrders, getWorkerId, manipulateCustomerOrders, modifyChipOrders, modifyProductOrders, request } from '../api';
+import { api} from '@/api';
 import { ShopifyContext } from '../context/ShopifyContext';
 import { Address, ChipOrder, Customer, OrderInfo, ProductOrder } from '../types';
 import { PusherContext } from './PusherContext';

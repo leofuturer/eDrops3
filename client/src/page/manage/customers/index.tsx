@@ -31,12 +31,9 @@ export function Customers() {
   }
 
   function handleDelete() {
-    // we need to delete both userBase and customer instances
-    request(`${userBaseFind}?filter={"where": {"email": "${deleteCustomer.email}"}}`, 'GET', {}, true)
-      .then((res) => request(userBaseDeleteById.replace('id', res.data[0].id), 'DELETE', {}, true))
-      .then((res) => request(customerDeleteById.replace('id', deleteCustomer.id), 'DELETE', {}, true))
-      .then((res) => setCustomerList(customerList.filter((customer) => customer.id !== deleteCustomer.id)))
-      .catch((err) => console.error(err));
+    api.customer.delete(deleteCustomer.id as string).then(() => {
+      setCustomerList(customerList.filter((customer) => customer.id !== deleteCustomer.id))
+    }).catch((err) => console.error(err));
   }
 
   function handleEdit(customer: Customer) {

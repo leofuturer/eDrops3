@@ -13,7 +13,6 @@ import {
   HttpErrors,
 } from '@loopback/rest';
 import {SecurityBindings, UserProfile} from '@loopback/security';
-import { compare } from 'bcryptjs';
 import {FoundryWorker, User} from '../models';
 import {FoundryWorkerRepository, UserRepository} from '../repositories';
 import { DTO } from '../lib/types/model';
@@ -88,7 +87,7 @@ export class FoundryWorkerController {
     description: 'FoundryWorker DELETE success',
   })
   async deleteById(@param.path.string('id') id: string): Promise<void> {
-    await this.foundryWorkerRepository.deleteById(id);
+    await this.foundryWorkerRepository.deleteFoundryWorker(id);
   }
 
   @patch('/foundry-workers/{id}')
