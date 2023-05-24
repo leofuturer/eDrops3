@@ -93,18 +93,16 @@ class CustomerResource extends Resource<Customer> {
     });
   }
 
-  async uploadFile(id: string, file: File): Promise<DTO<FileInfo>> {
-    const formData = new FormData();
-    formData.append('file', file);
-    return request<DTO<FileInfo>>(`${this.baseURL}/${id}/files`, 'POST', formData).then((res) => {
+  async uploadFile(id: string, formData: FormData): Promise<DTO<FileInfo>> {
+    return request<DTO<FileInfo>>(`${this.baseURL}/${id}/files`, 'POST', formData, {
+      'Content-Type': 'multipart/form-data'
+    }).then((res) => {
       return res.data;
     });
   }
 
-  async downloadFile(id: string, fileId: string): Promise<any> {
-    return request<DTO<FileInfo>>(`${this.baseURL}/${id}/files/${fileId}`, 'GET', {}).then((res) => {
-      return res.data;
-    });
+  async downloadFile(id: string, fileId: string): Promise<Response> {
+    request<Response>(`${this.baseURL}/${id}/files/${fileId}/download`, 'GET', {});
   }
 }
 

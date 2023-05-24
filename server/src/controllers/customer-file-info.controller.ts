@@ -64,31 +64,14 @@ export class CustomerFileInfoController {
     @param.path.string('id') id: typeof Customer.prototype.userId,
     @requestBody.file() request: Request,
     @inject(RestBindings.Http.RESPONSE) response: Response,
-  ): Promise<object> {
-    const username = await this.customerRepository
-      .user(id)
-      .then(user => {
-        return user.username;
-      });
-    return new Promise<object>((resolve, reject) => {
+  ): Promise<FileInfo> {
+    return new Promise<FileInfo>((resolve, reject) => {
       this.handler(request, response, async (err: unknown) => {
         if (err) reject(err);
         else {
           // console.log(request.files);
           resolve(
-            process.env.NODE_ENV !== 'production'
-              ? await this.customerRepository.uploadDisk(
-                request,
-                response,
-                username as string,
-                id as string,
-              )
-              : await this.customerRepository.uploadS3(
-                request,
-                response,
-                username as string,
-                id as string,
-              ),
+            await this.customerRepository.uploadFile(request, response, id)
           );
         }
       });
@@ -96,7 +79,7 @@ export class CustomerFileInfoController {
   }
 
   @oas.response.file()
-  @get('/customers/{id}/files/{fileId}', {
+  @get('/customers/{id}/files/{fileId}/download', {
     responses: {
       '200': {
         description: 'Download a file',
@@ -113,15 +96,7 @@ export class CustomerFileInfoController {
     @param.path.number('fileId') fileId: number,
     @inject(RestBindings.Http.RESPONSE) response: Response,
   ): Promise<Response> {
-    const filename = await this.customerRepository
-      .fileInfos(id)
-      .find({ where: { id: fileId } })
-      .then(files => {
-        return files[0].containerFileName;
-      });
-    return process.env.NODE_ENV !== 'production'
-      ? this.fileRepository.downloadDisk(filename, response)
-      : this.fileRepository.downloadS3(filename, response);
+    return this.customerRepository.downloadById(id, fileId, response);
   }
 
   @del('/customers/{id}/files/{fileId}', {

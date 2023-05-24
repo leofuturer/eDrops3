@@ -3,17 +3,16 @@ import { redirect, useNavigate } from 'react-router-dom';
 
 import { useCookies } from 'react-cookie';
 import { FileRejection, useDropzone } from 'react-dropzone';
-import { request } from '@/api';
-import { customerFileRetrieve, uploadFile } from '@/api';
+import { api } from '@/api';
 import SEO from '@/component/header/seo';
 import TwoChoiceModal from '@/component/modal/TwoChoiceModal';
 import { metadata } from './metadata';
-import { FileInfo } from '@/types';
+import { DTO, FileInfo } from '@/types';
 import { ROUTES } from '@/router/routes';
 
 function Upload() {
   const [file, setFile] = useState<File | undefined>(undefined);
-  const [fileInfo, setFileInfo] = useState(undefined);
+  const [fileInfo, setFileInfo] = useState<DTO<FileInfo>>({} as DTO<FileInfo>);
   const [originalName, setOriginalName] = useState('');
   const [progress, setProgress] = useState(0);
 
@@ -61,10 +60,10 @@ function Upload() {
   }
 
   function onFileUpload() {
-    file && request(customerFileRetrieve.replace('id', cookies.userId), 'GET', {}, true).then((res) => {
+    file && api.customer.getFiles(cookies.userId).then((files) => {
       // console.log(res);
-      const noDuplicate = res.data.every((f: FileInfo) => !(f.fileName === file.name && !f.isDeleted && !checked));
-      noDuplicate ? uploadFileRequest({
+      const noDuplicate = files.every((f: DTO<FileInfo>) => !(f.fileName === file.name && !f.isDeleted && !checked));
+      noDuplicate ? handleFileUpload({
         isPublic: pType,
         unit: uType,
       }) : setShowConfirm(true);
@@ -82,21 +81,19 @@ function Upload() {
     }
   }, [progress])
 
-  function uploadFileRequest(extraFields: object) {
+  function handleFileUpload(extraFields: object) {
     for (let i = 0; i <= 70; i += 1) {
       setTimeout(() => {
         setProgress(i);
       }, i * 10);
     }
-    const uploadUrl = uploadFile.replace('id', cookies.userId);
     const formData = new FormData();
     formData.append('www', file as File);
     formData.append('fields', JSON.stringify(extraFields));
-    const headers = { 'Content-Type': 'multipart/form-data' };
-    request(uploadUrl, 'POST', formData, true, headers).then((res) => {
+    api.customer.uploadFile(cookies.userId, formData).then((fileInfo) => {
       // console.log(res);
       setShowConfirm(false);
-      setFileInfo(res.data.fileInfo);
+      setFileInfo(fileInfo);
       for (let i = 70; i <= 101; i += 1) {
         if (i <= 100) {
           setTimeout(() => {
@@ -131,7 +128,7 @@ function Upload() {
     const oriname = originalName;
     setChecked(true);
     const date = new Date().toISOString().replace(/[^a-zA-Z0-9 ]/g, '');
-    uploadFileRequest({
+    handleFileUpload({
       isPublic: pType,
       unit: uType,
       newName: `${oriname.slice(0, ind)}(${date})${oriname.slice(ind)}`,

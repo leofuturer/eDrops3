@@ -11,9 +11,11 @@ function DXFPreview({ fileInfo }: { fileInfo: any }) {
   useEffect(() => {
     api.customer.downloadFile(cookies.userId, fileInfo.id).then((data) => {
       // dxf.config.verbose = true //for debugging purposes
-      const helper = new Helper(data);
+      // Convert data blob to string
+      console.log(data);
+      // const helper = new Helper(data.blob());
       // console.log(`Number of entities: ${helper.denormalised.length}`);
-      const svg = helper.toSVG();
+      // const svg = helper.toSVG();
       setSvg(svg);
       // rescaleSvg(svg);
     }).catch((err) => {
