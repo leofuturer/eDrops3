@@ -1,15 +1,15 @@
+import { api } from '@/api';
+import AddAddress from '@/component/address/AddAddress';
+import MessageLayout from '@/component/layout/MessageLayout';
+import ModalBackground from '@/component/modal/ModalBackground';
+import Loading from '@/component/ui/Loading';
+import { CartContext } from '@/context/CartContext';
+import { ROUTES } from '@/router/routes';
+import { Address, Customer, DTO, IncludeAddress } from '@/types';
 import { useContext, useEffect, useState } from 'react';
 import { useCookies } from 'react-cookie';
 import { useNavigate } from 'react-router-dom';
-import { api } from '../../api';
-import MessageLayout from '../../component/layout/MessageLayout';
-import ModalBackground from '../../component/modal/ModalBackground';
-import Loading from '../../component/ui/Loading';
-import { CartContext } from '../../context/CartContext';
-import { Address, Customer, DTO, IncludeAddress } from '@/types';
-import { AddNewAddress } from '../manage/address/new';
 import SingleAddress from './singleAddress';
-import { ROUTES } from '@/router/routes';
 
 export function BeforeCheckout() {
   const [addressList, setAddressList] = useState<DTO<Address>[]>([]);
@@ -67,11 +67,11 @@ export function BeforeCheckout() {
               </div>}
           </div>
           <div className="grid grid-cols-2 w-full gap-4">
-            {addressList.map((oneAddress, index) => (
+            {addressList.map((address, index) => (
               <SingleAddress
                 key={index}
                 selected={index === selectedAddrIndex}
-                address={oneAddress}
+                address={address}
                 addressNum={index + 1}
                 onClick={() => setSelectedAddrIndex(index)}
               />
@@ -86,7 +86,7 @@ export function BeforeCheckout() {
               <i className="fa fa-xmark cursor-pointer text-gray-400 hover:text-gray-600" onClick={() => setShowAdd(false)} />
             </div>
             <div className="px-8">
-              <AddNewAddress addOnClick={(addr) => {
+              <AddAddress userId={cookies.userId} onAdd={(addr) => {
                 setShowAdd(false)
                 setAddressList([...addressList, addr])
               }} />

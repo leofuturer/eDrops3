@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { NavLink } from 'react-router-dom';
-import { api } from '../../../api';
-import ManageRightLayout from '../../../component/layout/ManageRightLayout';
-import TwoChoiceModal from '../../../component/modal/TwoChoiceModal';
+import { api } from '@/api';
+import ManageRightLayout from '@/component/layout/ManageRightLayout';
+import TwoChoiceModal from '@/component/modal/TwoChoiceModal';
 import { DTO, FoundryWorker, IncludeUser } from '@/types';
 import OrderItem from '@/component/orders/OrderItem';
 

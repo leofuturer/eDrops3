@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useCookies } from 'react-cookie';
 import { api } from '@/api';
-import ManageRightLayout from '../../../component/layout/ManageRightLayout';
-import { DTO, FileInfo } from '../../../types';
+import ManageRightLayout from '@/component/layout/ManageRightLayout';
+import { DTO, FileInfo } from '@/types';
 import { idRoute } from '@/router/routes';
 
 export function AllFiles() {

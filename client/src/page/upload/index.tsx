@@ -3,12 +3,12 @@ import { redirect, useNavigate } from 'react-router-dom';
 
 import { useCookies } from 'react-cookie';
 import { FileRejection, useDropzone } from 'react-dropzone';
-import { request } from '../../api';
-import { customerFileRetrieve, uploadFile } from '../../api';
-import SEO from '../../component/header/seo';
-import TwoChoiceModal from '../../component/modal/TwoChoiceModal';
+import { request } from '@/api';
+import { customerFileRetrieve, uploadFile } from '@/api';
+import SEO from '@/component/header/seo';
+import TwoChoiceModal from '@/component/modal/TwoChoiceModal';
 import { metadata } from './metadata';
-import { FileInfo } from '../../types';
+import { FileInfo } from '@/types';
 import { ROUTES } from '@/router/routes';
 
 function Upload() {

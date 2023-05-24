@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
 import { useCookies } from 'react-cookie';
 import { useNavigate } from 'react-router-dom';
-import { api } from '../../../api';
-import ManageRightLayout from '../../../component/layout/ManageRightLayout';
-import DeleteModal from '../../../component/modal/DeleteModal';
-import Loading from '../../../component/ui/Loading';
+import { api } from '@/api';
+import ManageRightLayout from '@/component/layout/ManageRightLayout';
+import DeleteModal from '@/component/modal/DeleteModal';
+import Loading from '@/component/ui/Loading';
 import { Address as AddressType, DTO } from '@/types';
 import AddressTemplate from './AddressTemplate';
 import { ROUTES } from '@/router/routes';

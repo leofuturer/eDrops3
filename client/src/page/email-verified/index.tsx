@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom';
-import MessageLayout from '../../component/layout/MessageLayout';
+import MessageLayout from '@/component/layout/MessageLayout';
 import { ROUTES } from '@/router/routes';
 
 export function EmailVerified() {

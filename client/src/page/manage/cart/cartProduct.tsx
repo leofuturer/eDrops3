@@ -1,8 +1,8 @@
 import _ from 'lodash';
 import { useCallback, useEffect, useState } from 'react';
 import { NavLink } from 'react-router-dom';
-import Loading from '../../../component/ui/Loading';
-import { ProductOrder } from '../../../types';
+import Loading from '@/component/ui/Loading';
+import { ProductOrder } from '@/types';
 import { ROUTES, idRoute } from '@/router/routes';
 
 function CartProduct({ product, onDelete, onChange }: { product: ProductOrder, onDelete: () => Promise<void>, onChange: (product: ProductOrder, quantity: number) => void }) {

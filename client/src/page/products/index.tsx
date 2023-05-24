@@ -1,7 +1,7 @@
 import { Suspense } from 'react';
 import { Await } from 'react-router-dom';
 import { Product } from 'shopify-buy';
-import SEO from '../../component/header/seo';
+import SEO from '@/component/header/seo';
 import ItemCard from './ItemCard';
 import ItemLoad from './ItemLoad';
 import { metadata } from './metadata';

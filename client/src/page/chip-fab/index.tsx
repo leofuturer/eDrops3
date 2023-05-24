@@ -1,13 +1,13 @@
 import React, { Suspense, useContext, useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Product } from 'shopify-buy'; // TODO: waiting on @types/shopify-buy to be updated
-import Loading from '../../component/ui/Loading';
-import { CartContext } from '../../context/CartContext';
-import { ShopifyContext } from '../../context/ShopifyContext';
-import { FileInfo } from '../../types';
+import Loading from '@/component/ui/Loading';
+import { CartContext } from '@/context/CartContext';
+import { ShopifyContext } from '@/context/ShopifyContext';
+import { FileInfo } from '@/types';
 import {
   ewodFabServiceId
-} from '../../lib/constants/products';
+} from '@/lib/constants/products';
 import { ROUTES } from '@/router/routes';
 const DXFPreview = React.lazy(() => import('./dxf_preview'));
 

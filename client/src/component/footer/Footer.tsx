@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom';
-import { controlSysId, pcbChipId } from '../../lib/constants/products';
+import { controlSysId, pcbChipId } from '@/lib/constants/products';
 
 function FooterPage() {
   const controlSysPageLink = `/product?id=${controlSysId}`;

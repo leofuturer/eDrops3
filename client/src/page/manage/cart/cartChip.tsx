@@ -1,8 +1,8 @@
 import _ from 'lodash';
 import { useCallback, useEffect, useState } from 'react';
 import { NavLink } from 'react-router-dom';
-import Loading from '../../../component/ui/Loading';
-import { ChipOrder } from '../../../types';
+import Loading from '@/component/ui/Loading';
+import { ChipOrder } from '@/types';
 import { ROUTES } from '@/router/routes';
 
 function CartChip({ chip, onDelete, onChange }: { chip: ChipOrder, onDelete: () => Promise<void>, onChange: (chip: ChipOrder, quantity: number) => void }) {

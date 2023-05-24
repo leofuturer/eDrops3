@@ -4,7 +4,7 @@ import { Address, DTO, OrderChip, OrderInfo, OrderProduct } from '@/types';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { api } from '@/api';
-import MessageLayout from '../../../../component/layout/MessageLayout';
+import MessageLayout from '@/component/layout/MessageLayout';
 
 
 export function OrderDetail() {

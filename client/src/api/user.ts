@@ -48,6 +48,10 @@ class UserResource extends Resource<User> {
     });
   }
 
+  async resetPassword(newPassword: string, resetToken: string): Promise<void> {
+    request(`${this.baseURL}/reset-password`, 'POST', { newPassword: newPassword, accessToken: resetToken });
+  }
+
   async forgotPassword(email: string): Promise<void> {
     request(`${this.baseURL}/forgot-password`, 'POST', { email: email });
   }

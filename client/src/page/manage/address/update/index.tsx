@@ -3,10 +3,10 @@ import { useEffect, useState } from 'react';
 import { useCookies } from 'react-cookie';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { api } from '@/api';
-import FormGroup from '../../../../component/form/FormGroup';
-import ManageRightLayout from '../../../../component/layout/ManageRightLayout';
-import { AddressSchema } from '../../../../schemas/shopify';
-import { Address } from '../../../../types';
+import FormGroup from '@/component/form/FormGroup';
+import ManageRightLayout from '@/component/layout/ManageRightLayout';
+import { AddressSchema } from '@/schemas/shopify';
+import { Address } from '@/types';
 import { ROUTES } from '@/router/routes';
 
 export function UpdateAddress() {
