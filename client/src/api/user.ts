@@ -1,46 +1,58 @@
+import { User } from "@/types";
 import request from "./lib/api";
-import { customer, user } from "./lib/newServerConfig";
+import { Resource } from "./lib/resource";
 
-export function login(username: string, password: string): Promise<boolean> {
-  const data = (/@/.test(username)) ? {
-    email: username,
-    password: password,
-  } : {
-    username: username,
-    password: password,
-  };
-  return request(user.login, 'POST', data, false)
-    .then((res) => {
-      return res.status === 200;
-    }).catch((err) => {
-      // console.error(err);
-      if (err.response.status === 401) {
-      }
-      return false;
+class UserResource extends Resource<User> {
+  constructor() {
+    super('/users');
+  }
+
+  async login(username: string, password: string): Promise<boolean> {
+    const data = (/@/.test(username)) ? {
+      email: username,
+      password: password,
+    } : {
+      username: username,
+      password: password,
+    };
+    return request(`${this.baseURL}/login`, 'POST', data)
+      .then((res) => {
+        return res.status === 200;
+      }).catch((err) => {
+        // console.error(err);
+        if (err.response.status === 401) {
+        }
+        return false;
+      });
+  }
+
+  async signup(username: string, password: string, email: string): Promise<boolean> {
+    const data = {
+      username: username,
+      password: password,
+      email: email,
+    };
+    return false;
+    // request(customer.get, 'POST', data, false)
+    //   .then((res) => {
+    //     return res.status === 200;
+    //   }).catch((err) => {
+    //     // console.error(err);
+    //     if (err.response.status === 401) {
+    //     }
+    //     return false;
+    //   });
+  }
+
+  async credsTaken(username: string, email: string): Promise<boolean> {
+    return request<boolean>(`${this.baseURL}/creds-taken`, 'POST', { username: username, email: email }).then((res) => {
+      return res.data;
     });
+  }
+
+  async verifyEmail(): Promise<void> {
+     request(`${this.baseURL}/verify-email`, 'POST', {});
+  }
 }
 
-// Only customers signup through the website (admins and workers are created by the admin)
-export function signup(username: string, password: string, email: string): Promise<boolean> {
-  const data = {
-    username: username,
-    password: password,
-    email: email,
-  };
-  return request(customer.get, 'POST', data, false)
-    .then((res) => {
-      return res.status === 200;
-    }).catch((err) => {
-      // console.error(err);
-      if (err.response.status === 401) {
-      }
-      return false;
-    });
-}
-
-export function verifyEmail(){
-
-}
-
-export { }
-// TODO: add auth api call wrappers
+export const user = new UserResource();

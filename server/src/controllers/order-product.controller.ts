@@ -26,7 +26,7 @@ export class OrderProductController {
     public orderProductRepository : OrderProductRepository,
   ) {}
 
-  @post('/orderProducts')
+  @post('/order-products')
   @response(200, {
     description: 'OrderProduct model instance',
     content: {'application/json': {schema: getModelSchemaRef(OrderProduct)}},
@@ -47,7 +47,7 @@ export class OrderProductController {
     return this.orderProductRepository.create(orderProduct);
   }
 
-  @get('/orderProducts/count')
+  @get('/order-products/count')
   @response(200, {
     description: 'OrderProduct model count',
     content: {'application/json': {schema: CountSchema}},
@@ -58,7 +58,7 @@ export class OrderProductController {
     return this.orderProductRepository.count(where);
   }
 
-  @get('/orderProducts')
+  @get('/order-products')
   @response(200, {
     description: 'Array of OrderProduct model instances',
     content: {
@@ -76,7 +76,7 @@ export class OrderProductController {
     return this.orderProductRepository.find(filter);
   }
 
-  @patch('/orderProducts')
+  @patch('/order-products')
   @response(200, {
     description: 'OrderProduct PATCH success count',
     content: {'application/json': {schema: CountSchema}},
@@ -95,7 +95,7 @@ export class OrderProductController {
     return this.orderProductRepository.updateAll(orderProduct, where);
   }
 
-  @get('/orderProducts/{id}')
+  @get('/order-products/{id}')
   @response(200, {
     description: 'OrderProduct model instance',
     content: {
@@ -111,7 +111,7 @@ export class OrderProductController {
     return this.orderProductRepository.findById(id, filter);
   }
 
-  @patch('/orderProducts/{id}')
+  @patch('/order-products/{id}')
   @response(204, {
     description: 'OrderProduct PATCH success',
   })
@@ -129,7 +129,7 @@ export class OrderProductController {
     await this.orderProductRepository.updateById(id, orderProduct);
   }
 
-  @put('/orderProducts/{id}')
+  @put('/order-products/{id}')
   @response(204, {
     description: 'OrderProduct PUT success',
   })
@@ -140,7 +140,7 @@ export class OrderProductController {
     await this.orderProductRepository.replaceById(id, orderProduct);
   }
 
-  @del('/orderProducts/{id}')
+  @del('/order-products/{id}')
   @response(204, {
     description: 'OrderProduct DELETE success',
   })

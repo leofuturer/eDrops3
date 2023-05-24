@@ -31,7 +31,7 @@ export class OrderInfoController {
   ) {}
 
   // Shopify webhook (not for end users)
-  @post('/orderInfos/newOrderCreated')
+  @post('/orders/order-completed')
   @response(200, {
     description: 'OrderInfo model instance',
     content: {'application/json': {schema: getModelSchemaRef(OrderInfo)}},
@@ -59,7 +59,7 @@ export class OrderInfoController {
     );
   }
 
-  @get('/orderInfos/{id}')
+  @get('/orders/{id}')
   @response(200, {
     description: 'OrderInfo model instance',
     content: {
@@ -76,7 +76,7 @@ export class OrderInfoController {
     return this.orderInfoRepository.findById(id, filter);
   }
 
-  @get('/orderInfos')
+  @get('/orders')
   @response(200, {
     description: 'Array of OrderInfo model instances',
     content: {

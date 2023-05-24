@@ -1,19 +1,18 @@
 import {
-  Count,
-  CountSchema,
-  Filter, repository,
-  Where
+  repository
 } from '@loopback/repository';
 import {
-  del, get,
-  getModelSchemaRef, param, patch, post, put, requestBody,
+  get,
+  getModelSchemaRef, param,
+  post,
+  requestBody,
   response
 } from '@loopback/rest';
 import dotenv from 'dotenv';
 import path from 'path';
 import Pusher from 'pusher';
 import { OrderMessage } from '../models';
-import { OrderMessageRepository } from '../repositories';
+import { OrderInfoRepository } from '../repositories';
 
 dotenv.config({ path: path.resolve(__dirname, '.env') });
 
@@ -27,11 +26,11 @@ const pusher = new Pusher({
 
 export class OrderMessageController {
   constructor(
-    @repository(OrderMessageRepository)
-    public orderMessageRepository: OrderMessageRepository,
+    @repository(OrderInfoRepository)
+    public orderInfoRepository: OrderInfoRepository,
   ) { }
 
-  @post('/orderMessages')
+  @post('/orders/{id}/messages')
   @response(200, {
     description: 'OrderMessage model instance',
     content: { 'application/json': { schema: getModelSchemaRef(OrderMessage) } },
@@ -47,67 +46,20 @@ export class OrderMessageController {
       },
     })
     orderMessage: Omit<OrderMessage, 'id'>,
+    @param.path.number('id') id: number,
   ): Promise<OrderMessage> {
     const newMsgEntry = {
       message: orderMessage.message,
       userId: orderMessage.userId,
       timestamp: orderMessage.timestamp,
     };
-    return await this.orderMessageRepository.create(orderMessage).then(async (res) => {
+    return await this.orderInfoRepository.orderMessages(id).create(orderMessage).then(async (res) => {
       await pusher.trigger(`chat-${orderMessage.orderId}`, 'new-message', newMsgEntry)
       return res;
     });
   }
 
-  @get('/orderMessages/count')
-  @response(200, {
-    description: 'OrderMessage model count',
-    content: { 'application/json': { schema: CountSchema } },
-  })
-  async count(
-    @param.where(OrderMessage) where?: Where<OrderMessage>,
-  ): Promise<Count> {
-    return this.orderMessageRepository.count(where);
-  }
-
-  @get('/orderMessages')
-  @response(200, {
-    description: 'Array of OrderMessage model instances',
-    content: {
-      'application/json': {
-        schema: {
-          type: 'array',
-          items: getModelSchemaRef(OrderMessage, { includeRelations: true }),
-        },
-      },
-    },
-  })
-  async find(
-    @param.filter(OrderMessage) filter?: Filter<OrderMessage>,
-  ): Promise<OrderMessage[]> {
-    return this.orderMessageRepository.find(filter);
-  }
-
-  @patch('/orderMessages')
-  @response(200, {
-    description: 'OrderMessage PATCH success count',
-    content: { 'application/json': { schema: CountSchema } },
-  })
-  async updateAll(
-    @requestBody({
-      content: {
-        'application/json': {
-          schema: getModelSchemaRef(OrderMessage, { partial: true }),
-        },
-      },
-    })
-    orderMessage: OrderMessage,
-    @param.where(OrderMessage) where?: Where<OrderMessage>,
-  ): Promise<Count> {
-    return this.orderMessageRepository.updateAll(orderMessage, where);
-  }
-
-  @get('/orderMessages/{id}')
+  @get('/orders/{id}/messages')
   @response(200, {
     description: 'OrderMessage model instance',
     content: {
@@ -121,43 +73,6 @@ export class OrderMessageController {
   async findById(
     @param.path.number('id') id: number,
   ): Promise<OrderMessage[]> {
-    return this.orderMessageRepository.find({ where: { orderId: id } });
-  }
-
-  @patch('/orderMessages/{id}')
-  @response(204, {
-    description: 'OrderMessage PATCH success',
-  })
-  async updateById(
-    @param.path.number('id') id: number,
-    @requestBody({
-      content: {
-        'application/json': {
-          schema: getModelSchemaRef(OrderMessage, { partial: true }),
-        },
-      },
-    })
-    orderMessage: OrderMessage,
-  ): Promise<void> {
-    await this.orderMessageRepository.updateById(id, orderMessage);
-  }
-
-  @put('/orderMessages/{id}')
-  @response(204, {
-    description: 'OrderMessage PUT success',
-  })
-  async replaceById(
-    @param.path.number('id') id: number,
-    @requestBody() orderMessage: OrderMessage,
-  ): Promise<void> {
-    await this.orderMessageRepository.replaceById(id, orderMessage);
-  }
-
-  @del('/orderMessages/{id}')
-  @response(204, {
-    description: 'OrderMessage DELETE success',
-  })
-  async deleteById(@param.path.number('id') id: number): Promise<void> {
-    await this.orderMessageRepository.deleteById(id);
+    return this.orderInfoRepository.orderMessages(id).find();
   }
 }

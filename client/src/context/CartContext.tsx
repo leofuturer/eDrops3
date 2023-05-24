@@ -250,6 +250,7 @@ const useCart = () => {
       fetchCart();
       pusher.unsubscribe(`checkout-${cart.checkoutToken}`);
     })
+    // api.orders.checkout(cart.id, customer.id)
     // @ts-expect-error
     return shopify.checkout.updateEmail(cart.checkoutIdClient, customer.user.email)
       .then((res: any) => {

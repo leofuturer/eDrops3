@@ -31,3 +31,4 @@ export * from './user-saved-project.controller';
 export * from './user-user-profile.controller';
 export * from './user.controller';
 
+export * from './product.controller';

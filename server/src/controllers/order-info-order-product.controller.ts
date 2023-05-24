@@ -19,7 +19,7 @@ export class OrderInfoOrderProductController {
     @inject(RestBindings.Http.REQUEST) private request: Request,
   ) {}
 
-  @get('/orderInfos/{id}/orderProducts', {
+  @get('/orders/{id}/order-products', {
     responses: {
       '200': {
         description: 'Array of OrderInfo has many OrderProduct',
@@ -42,7 +42,7 @@ export class OrderInfoOrderProductController {
 
   @authenticate('jwt')
   @intercept(OrderItemCreateInterceptor.BINDING_KEY)
-  @post('/orderInfos/{id}/addOrderProductToCart', {
+  @post('/orders/{id}/order-products', {
     responses: {
       '200': {
         description: 'OrderInfo model instance',
@@ -104,7 +104,7 @@ export class OrderInfoOrderProductController {
       });
   }
 
-  @patch('/orderInfos/{id}/updateProductLineItemId')
+  @patch('/orders/{id}/order-products')
   @response(204, {
     description: 'OrderProduct LineItemIdShopify PATCH success',
   })

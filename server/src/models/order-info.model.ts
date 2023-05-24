@@ -191,7 +191,7 @@ export class OrderInfo extends Entity {
   @hasMany(() => OrderChip)
   orderChips: OrderChip[];
 
-  @hasMany(() => OrderMessage, {keyTo: 'orderId'})
+  @hasMany(() => OrderMessage)
   orderMessages: OrderMessage[];
 
   constructor(data?: Partial<OrderInfo>) {
