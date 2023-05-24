@@ -1,4 +1,4 @@
-import { Product } from "shopify-buy";
+import type { Product } from "shopify-buy";
 import request from "./lib/api";
 import { ResourceInterface } from "./lib/resource";
 
@@ -9,11 +9,11 @@ class ProductResource implements Omit<ResourceInterface<Product>, 'create' | 're
   }
 
   async getAll(): Promise<Product[]> {
-    return request<Product[]>('/products', 'GET', {}).then((res) => res.data);
+    return request<Product[]>(`${this.baseURL}`, 'GET', {}).then((res) => res.data);
   }
 
   async get(id: string): Promise<Product> {
-    return request<Product>(`/products/${id}`, 'GET', {}).then((res) => res.data);
+    return request<Product>(`${this.baseURL}/${id}`, 'GET', {}).then((res) => res.data);
   }
 }
 

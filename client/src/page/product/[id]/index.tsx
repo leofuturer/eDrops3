@@ -1,53 +1,54 @@
-import { ROUTES, idRoute } from '@/router/routes';
-import { useContext, useEffect, useState } from 'react';
-import { useCookies } from 'react-cookie';
-import { NavLink, useNavigate, useParams, useSearchParams } from 'react-router-dom';
-import { Product as ProductType } from 'shopify-buy';
+import { api } from '@/api';
 import Loading from '@/component/ui/Loading';
 import { CartContext } from '@/context/CartContext';
-import { ShopifyContext } from '@/context/ShopifyContext';
 import {
   controlSysId10, controlSysId5, getProductType, pcbChipId10, pcbChipId5, productIdsJson, testBoardId10, testBoardId5
 } from '@/lib/constants/products';
+import { ROLES } from '@/lib/constants/roles';
+import { ROUTES, idRoute } from '@/router/routes';
+import { useContext, useEffect, useState } from 'react';
+import { useCookies } from 'react-cookie';
+import { NavLink, useNavigate, useParams } from 'react-router-dom';
+import type { Product as ShopifyProduct } from 'shopify-buy';
 
 export function Product() {
-  const [product, setProduct] = useState<ProductType>({} as ProductType);
+  const [product, setProduct] = useState<ShopifyProduct>({} as ShopifyProduct);
   const [quantity, setQuantity] = useState(1);
   const [bundleSize, setBundleSize] = useState<1 | 5 | 10>(1);
   const [addingToCart, setAddingToCart] = useState(false);
 
-  const shopify = useContext(ShopifyContext);
   const cart = useContext(CartContext);
 
   const navigate = useNavigate();
 
   const { id: productId } = useParams();
-  if (!productId) navigate(ROUTES.Products);
-  
+
   const [cookies, setCookie] = useCookies(['access_token', 'userType']);
 
   // fetch product information from Shopify API
   useEffect(() => {
-    productId && shopify.product
-      .fetch(productId)
-      .then((res) => {
-        setProduct(res);
-        if ([controlSysId5, testBoardId5, pcbChipId5].includes(productId)) {
-          setBundleSize(5);
-        }
-        if ([controlSysId10, testBoardId10, pcbChipId10].includes(productId)) {
-          setBundleSize(10);
-        }
-      }).catch((err) => {
-        console.error(err);
-        // redirect to all items page if product ID is invalid
-        navigate(ROUTES.Products);
-      });
-  }, [shopify, productId]);
+    if (!productId) {
+      navigate(ROUTES.Products);
+      return;
+    }
+    api.product.get(productId).then((product) => {
+      setProduct(product);
+      if ([controlSysId5, testBoardId5, pcbChipId5].includes(productId)) {
+        setBundleSize(5);
+      }
+      if ([controlSysId10, testBoardId10, pcbChipId10].includes(productId)) {
+        setBundleSize(10);
+      }
+    }).catch((err) => {
+      console.error(err);
+      // redirect to all items page if product ID is invalid
+      navigate(ROUTES.Products);
+    });
+  }, [productId]);
 
   function handleBundleChange(bsize: 1 | 5 | 10) {
     setBundleSize(bsize)
-    const productType = getProductType(productId);
+    const productType = getProductType(productId as string);
     navigate(idRoute(ROUTES.Product, productIdsJson[productType][bsize]), { replace: true });
   }
 

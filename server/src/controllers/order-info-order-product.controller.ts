@@ -11,13 +11,14 @@ import {
 import { OrderItemCreateInterceptor } from '../interceptors';
 import { OrderInfo, OrderProduct } from '../models';
 import { OrderInfoRepository } from '../repositories';
+import { Product } from 'shopify-buy';
 
 export class OrderInfoOrderProductController {
   constructor(
     @repository(OrderInfoRepository)
     protected orderInfoRepository: OrderInfoRepository,
     @inject(RestBindings.Http.REQUEST) private request: Request,
-  ) {}
+  ) { }
 
   @get('/orders/{id}/order-products', {
     responses: {
@@ -25,7 +26,7 @@ export class OrderInfoOrderProductController {
         description: 'Array of OrderInfo has many OrderProduct',
         content: {
           'application/json': {
-            schema: {type: 'array', items: getModelSchemaRef(OrderProduct)},
+            schema: { type: 'array', items: getModelSchemaRef(OrderProduct) },
           },
         },
       },
@@ -36,7 +37,7 @@ export class OrderInfoOrderProductController {
     // @param.query.object('filter') filter?: Filter<OrderProduct>,
   ): Promise<OrderProduct[]> {
     // return this.orderInfoRepository.orderProducts(id).find(filter);
-    const orderInfo = await this.orderInfoRepository.findById(id, {include: [{relation: 'orderProducts' }]});
+    const orderInfo = await this.orderInfoRepository.findById(id, { include: [{ relation: 'orderProducts' }] });
     return orderInfo.orderProducts ?? [];
   }
 
@@ -47,7 +48,7 @@ export class OrderInfoOrderProductController {
       '200': {
         description: 'OrderInfo model instance',
         content: {
-          'application/json': {schema: getModelSchemaRef(OrderProduct)},
+          'application/json': { schema: getModelSchemaRef(OrderProduct) },
         },
       },
     },
@@ -65,16 +66,9 @@ export class OrderInfoOrderProductController {
         },
       },
     })
-    orderProduct: Omit<OrderProduct, 'id'>,
+    product: Product,
   ): Promise<void> {
-    this.orderInfoRepository
-      .orderProducts(id)
-      .find({
-        where: {
-          variantIdShopify: orderProduct.variantIdShopify,
-          otherDetails: orderProduct.otherDetails,
-        },
-      })
+    this.orderInfoRepository.orderProducts(id).find({ where: { id: product.id } })
       .then(orderProducts => {
         if (orderProducts.length > 1) {
           throw new HttpErrors.UnprocessableEntity('More than one entry for product');
@@ -92,9 +86,9 @@ export class OrderInfoOrderProductController {
           this.orderInfoRepository.orderProducts(id).patch({
             quantity: orderProducts[0].quantity + orderProduct.quantity,
           }, { id: orderProducts[0].id })
-          .catch(err => {
-            console.error(err);
-          });
+            .catch(err => {
+              console.error(err);
+            });
         } else {
           throw new HttpErrors.UnprocessableEntity('Unknown entries for product');
         }
@@ -110,9 +104,9 @@ export class OrderInfoOrderProductController {
   })
   async patch(
     @param.path.number('id') id: typeof OrderInfo.prototype.id,
-    @requestBody() body: { 
-      lineItemIdShopify: string; 
-      variantIdShopify: string; 
+    @requestBody() body: {
+      lineItemIdShopify: string;
+      variantIdShopify: string;
       otherDetails: string;
     },
   ): Promise<void> {
@@ -133,9 +127,9 @@ export class OrderInfoOrderProductController {
           this.orderInfoRepository.orderProducts(id).patch({
             lineItemIdShopify: body.lineItemIdShopify,
           }, { id: orderProducts[0].id })
-          .catch(err => {
-            console.error(err);
-          });
+            .catch(err => {
+              console.error(err);
+            });
         } else {
           throw new HttpErrors.UnprocessableEntity('Unknown entries for product');
         }

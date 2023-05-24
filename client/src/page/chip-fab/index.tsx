@@ -3,12 +3,13 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { Product } from 'shopify-buy'; // TODO: waiting on @types/shopify-buy to be updated
 import Loading from '@/component/ui/Loading';
 import { CartContext } from '@/context/CartContext';
-import { ShopifyContext } from '@/context/ShopifyContext';
+// import { ShopifyContext } from '@/context/ShopifyContext';
 import { FileInfo } from '@/types';
 import {
   ewodFabServiceId
 } from '@/lib/constants/products';
 import { ROUTES } from '@/router/routes';
+import { api } from '@/api';
 const DXFPreview = React.lazy(() => import('./dxf_preview'));
 
 export function ChipOrder() {
@@ -34,14 +35,13 @@ export function ChipOrder() {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const shopify = useContext(ShopifyContext);
   const cart = useContext(CartContext);
 
   // make sure file information is passed from all files or file upload page
   useEffect(() => location.state.fileInfo ? setCustomAttrs(attrs => ({ ...attrs, fileInfo: location.state.fileInfo })) : navigate(ROUTES.ManageFiles), [location]);
 
   useEffect(() => {
-    shopify.product.fetch(ewodFabServiceId) // hard coded for chip order
+    api.product.get(ewodFabServiceId) // hard coded for chip order
       .then((product) => {
         // console.log(product);
         setProduct(product);
@@ -51,7 +51,7 @@ export function ChipOrder() {
         // redirect to all items page if product ID is invalid
         navigate(ROUTES.Products);
       });
-  }, [shopify]);
+  }, []);
 
   function setMaterial(material: Material) {
     setCustomAttrs(attrs => ({ ...attrs, material }));

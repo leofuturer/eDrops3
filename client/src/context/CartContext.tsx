@@ -2,61 +2,41 @@ import React, { useContext, useEffect, useState } from 'react';
 import { useCookies } from 'react-cookie';
 import { useNavigate } from 'react-router-dom';
 import { LineItem, Product } from 'shopify-buy';
-import { api} from '@/api';
-import { ShopifyContext } from '../context/ShopifyContext';
-import { Address, ChipOrder, Customer, OrderInfo, ProductOrder } from '../types';
-import { PusherContext } from './PusherContext';
+import { api } from '@/api';
+import { Address, Customer, DTO, FileInfo, OrderInfo } from '@/types';
+import { PusherContext } from '@/context';
 import { ROUTES } from '@/router/routes';
 
 const useCart = () => {
-  const [cart, setCart] = useState<OrderInfo>({} as OrderInfo);
+  const [cart, setCart] = useState<DTO<OrderInfo>>({} as DTO<OrderInfo>);
   const [numItems, setNumItems] = useState(0);
   const [totalPrice, setTotalPrice] = useState(0);
   const enabled = true;
 
-  const shopify = useContext(ShopifyContext);
   const pusher = useContext(PusherContext);
 
   const [cookies] = useCookies(['userId']);
   const navigate = useNavigate();
 
   async function createCart() {
-    shopify && shopify.checkout.create().then((res) => {
-      // console.log(res);
-      const lastSlash = res.webUrl.lastIndexOf('/');
-      const lastQuestionMark = res.webUrl.lastIndexOf('?');
-      const data: Omit<OrderInfo, 'id'> = {
-        checkoutIdClient: res.id as string,
-        checkoutToken: res.webUrl.slice(lastSlash + 1, lastQuestionMark),
-        checkoutLink: res.webUrl,
-        // @ts-expect-error
-        createdAt: res.createdAt,
-        // @ts-expect-error
-        lastModifiedAt: res.updatedAt,
-        orderComplete: false,
-        status: 'Order in progress',
-        customerId: cookies.userId,
-        shippingAddressId: 0, // 0 to indicate no address selected yet (pk cannot be 0)
-        billingAddressId: 0,
-      };
-      // and then create orderInfo in our backend
-      return request(manipulateCustomerOrders.replace('id', cookies.userId), 'POST', data, true)
-    }).then((res) => {
-      setCart(res.data)
+    api.customer.createCart(cookies.userId).then((cart) => {
+      setCart(cart)
     }).catch((err) => {
       console.error(err);
     });
   }
 
   function fetchCart() {
-    cookies.userId && request(getCustomerCart.replace('id', cookies.userId), 'GET', {}, true).then((res) =>
-      res.data ? setCart(res.data) : createCart()
-    ).catch((err) => console.error(err));
+    api.customer.getCart(cookies.userId).then((cart) => {
+      cart ? setCart(cart) : createCart();
+    }).catch((err) => console.error(err));
   }
 
   // create cart if it doesn't exist, otherwise get cart info
   useEffect(() => {
-    fetchCart();
+    if(cookies.userId) {
+      fetchCart();
+    }
   }, [cookies.userId]);
 
   // count number of items in cart
@@ -80,6 +60,7 @@ const useCart = () => {
     const variantId = product.variants[0].id;
     // console.log(product)
     // console.log(cart)
+
     if (!shopify || !cart.checkoutIdClient) return Promise.reject('Shopify or cart not initialized')
     return shopify.checkout.addLineItems(cart.checkoutIdClient, [{ variantId, quantity }]).then((res) => {
       // @ts-expect-error NOTE: Shopify types not updated
@@ -109,7 +90,7 @@ const useCart = () => {
       }).catch((err) => console.error(err));
   }
 
-  async function addChip(chip: Product, quantity: number, customAttrs: { material: string, wcpa: string, fileInfo: { fileName: string; id: number } }): Promise<void> {
+  async function addChip(chip: Product, quantity: number, customAttrs: { material: string, wcpa: string, fileInfo: FileInfo }): Promise<void> {
     if (!cart.checkoutIdClient) await createCart();
     const variantId = chip.variants[0].id;
     const customAttributes = [
