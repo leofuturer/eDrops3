@@ -52,6 +52,7 @@ export class OrderItemCreateInterceptor implements Provider<Interceptor> {
   ) {
     try {
       // Add pre-invocation logic here
+      // Check if user is customer
       this.getCurrentUser()
         .then((user: UserProfile) => {
           if (user.userType !== 'customer') {

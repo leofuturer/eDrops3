@@ -2,30 +2,46 @@ import { ErrorMessage, Field, Form, Formik, FormikConfig } from 'formik';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ValidationError } from 'yup';
-import { request } from '../../api';
-import { customerSignUp } from '../../api';
+import { api } from '../../api';
 import FormGroup from '../../component/form/FormGroup';
 import SEO from '../../component/header/seo';
 import { UserSchema, UserSubmitSchema } from '../../schemas';
-import { Address, Customer } from '../../types';
+import { Address, Customer, User, DTO } from '@/types';
 import { metadata } from './metadata';
+import { ROUTES } from '@/router/routes';
 
 export function Register() {
+  const [initialInfo, setInitialInfo] = useState({
+    street: '',
+    streetLine2: '',
+    firstName: '',
+    lastName: '',
+    phoneNumber: '',
+    country: '',
+    state: '',
+    city: '',
+    zipCode: '',
+    customerType: 'person',
+    username: '',
+    email: '',
+    password: '',
+    confirmPassword: '',
+    isDefault: true,
+  });
+
   const [requestInProgress, setRequestInProgress] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const navigate = useNavigate();
 
-  function handleRegister(customerData: Omit<Address, 'id'> & Omit<Customer, 'id'>) {
-    request(customerSignUp, 'POST', customerData, false)
-      .then((res) => {
-        navigate('/checkEmail');
-        setErrorMessage('');
-      })
-      .catch((error) => {
-        console.error(error);
-        setRequestInProgress(false);
-        setErrorMessage('There was an error when registering your account. Please try again.');
-      });
+  function handleRegister(customerData: DTO<Customer & User & Address>) {
+    api.customer.create(customerData).then(() => {
+      navigate(ROUTES.CheckEmail);
+      setErrorMessage('');
+    }).catch((error) => {
+      console.error(error);
+      setRequestInProgress(false);
+      setErrorMessage('There was an error when registering your account. Please try again.');
+    });
   }
 
   return (
@@ -39,24 +55,9 @@ export function Register() {
         <h3 className="text-secondary text-2xl text-center font-bold border-b-2 pb-2 border-secondary">Sign Up</h3>
         <Formik
           validationSchema={UserSchema}
-          initialValues={{
-            street: '',
-            streetLine2: '',
-            firstName: '',
-            lastName: '',
-            phoneNumber: '',
-            country: '',
-            state: '',
-            city: '',
-            zipCode: '',
-            customerType: 'person',
-            username: '',
-            email: '',
-            password: '',
-            confirmPassword: '',
-          }}
+          initialValues={initialInfo}
           onSubmit={(values, actions) => UserSubmitSchema.validate(values, { abortEarly: false }).then(() => {
-            handleRegister({ ...values, isDefault: true })
+            handleRegister({ ...values } as DTO<Customer & User & Address>)
           }).catch(
             (err) => {
               const errors = err.inner.reduce((acc: object, curr: ValidationError) => {

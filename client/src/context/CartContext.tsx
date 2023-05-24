@@ -232,6 +232,7 @@ const useCart = () => {
   }
 
   function removeChip(chip: ChipOrder) {
+    // api.order.deleteChipOrder(cart.id, chip.id)
     if (!shopify || !cart.checkoutIdClient) return Promise.reject('Shopify or cart not initialized');
     return shopify.checkout.removeLineItems(cart.checkoutIdClient, [chip.lineItemIdShopify]).then((checkout) => {
       return request(modifyChipOrders.replace('id', chip.id.toString()), 'DELETE', {}, true)

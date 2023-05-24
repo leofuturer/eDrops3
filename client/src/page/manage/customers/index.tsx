@@ -1,13 +1,13 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { request, customerDeleteById, getAllCustomers, userBaseDeleteById, userBaseFind } from '@/api';
+import { api } from '@/api';
 import ManageRightLayout from '@/component/layout/ManageRightLayout';
 import DeleteModal from '@/component/modal/DeleteModal';
-import { Customer } from '@/types';
+import { Customer, IncludeUser, DTO } from '@/types';
 import { ROUTES, idRoute } from '@/router/routes';
 
 export function Customers() {
-  const [customerList, setCustomerList] = useState<Customer[]>([]);
+  const [customerList, setCustomerList] = useState<DTO<IncludeUser<Customer>>[]>([]);
   const [showDelete, setShowDelete] = useState(false);
   const [deleteCustomer, setDeleteCustomer] = useState<Customer>({} as Customer);
 
@@ -18,11 +18,11 @@ export function Customers() {
   }
 
   function handleRetrieveFiles(customer: Customer) {
-    navigate(idRoute(ROUTES.ManageCustomersFiles, customer.id));
+    navigate(idRoute(ROUTES.ManageCustomersFiles, customer.id as string));
   }
 
   function handleRetrieveOrders(customer: Customer) {
-    navigate(idRoute(ROUTES.ManageCustomersOrders, customer.id));
+    navigate(idRoute(ROUTES.ManageCustomersOrders, customer.id as string));
   }
 
   function handleDeleteCustomer(customer: Customer) {
@@ -40,22 +40,15 @@ export function Customers() {
   }
 
   function handleEdit(customer: Customer) {
-    navigate('/manage/users/edituser', {
-      state: {
-        customerId: customer.id,
-        customerInfo: customer,
-      }
-    });
+    navigate(idRoute(ROUTES.ManageCustomersUpdate, customer.id as string));
   }
 
   useEffect(() => {
-    request(getAllCustomers, 'GET', {}, true)
-      .then((res) => {
-        setCustomerList(res.data);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    api.customer.getAll().then((customers) => {
+      setCustomerList(customers);
+    }).catch((err) => {
+      console.log(err);
+    });
   }, []);
 
   return (
@@ -85,8 +78,8 @@ export function Customers() {
             <tr key={customer.id}>
               <td>{customer.id}</td>
               <td>{`${customer.firstName} ${customer.lastName}`}</td>
-              <td>{customer.username}</td>
-              <td>{customer.email}</td>
+              <td>{customer.user.username}</td>
+              <td>{customer.user.email}</td>
               <td>{customer.phoneNumber}</td>
               <td><i className="fa fa-database cursor-pointer" onClick={() => handleRetrieveFiles(customer)} /></td>
               <td><i className="fa fa-money-bill cursor-pointer" onClick={() => handleRetrieveOrders(customer)} /></td>

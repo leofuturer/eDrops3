@@ -9,6 +9,7 @@ import SEO from '../../component/header/seo';
 import TwoChoiceModal from '../../component/modal/TwoChoiceModal';
 import { metadata } from './metadata';
 import { FileInfo } from '../../types';
+import { ROUTES } from '@/router/routes';
 
 function Upload() {
   const [file, setFile] = useState<File | undefined>(undefined);
@@ -114,7 +115,7 @@ function Upload() {
 
   function handleShopping() {
     setShowUpload(false);
-    navigate('/chipfab', {
+    navigate(ROUTES.ChipFab, {
       state: {
         fileInfo: fileInfo,
       }
@@ -122,7 +123,7 @@ function Upload() {
   }
 
   function handleLibrary() {
-    navigate('/manage/files');
+    navigate(ROUTES.ManageFiles);
   }
 
   function handleRename() {

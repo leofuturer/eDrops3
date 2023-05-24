@@ -7,40 +7,37 @@ import MessageLayout from '../../component/layout/MessageLayout';
 export function ForgetPass() {
   const [successMessage, setSuccessMessage] = useState(false);
 
-  function handleHelp(email: string, helpType: 'resetPassword' | 'resendEmail') {
-    const data = {
-      email: email,
-    };
+  enum HelpType {
+    ResetPassword,
+    ResendEmail,
+  }
+
+  function handleHelp(email: string, helpType: HelpType) {
     switch (helpType) {
-      case 'resetPassword':
-        request(userForgetPass, 'POST', data, false)
-          .then((res) => {
-          }).catch((err) => {
-            if (import.meta.env.DEV) {
-              console.error(err); // Maybe take out as attackers can view console & brute force emails
-            }
-          }).finally(() => {
-            // Display a success message either way so attackers can't brute-force customer emails
-            setSuccessMessage(true);
-          });
+      case HelpType.ResetPassword:
+        api.user.forgotPassword(email).catch((err) => {
+          if (import.meta.env.DEV) {
+            console.error(err); // Maybe take out as attackers can view console & brute force emails
+          }
+        }).finally(() => {
+          // Display a success message either way so attackers can't brute-force customer emails
+          setSuccessMessage(true);
+        });
         break;
-      case 'resendEmail':
-        request(customerResendVerifyEmail, 'POST', data, false)
-          .then((res) => {
-          })
-          .catch((err) => {
-            if (import.meta.env.DEV) {
-              console.error(err); // Maybe take out as attackers can view console & brute force emails
-            }
-          }).finally(() => {
-            // Display a success message either way so attackers can't brute-force customer emails
-            setSuccessMessage(true);
-          });;
+      case HelpType.ResendEmail:
+        api.user.verifyEmail(email).catch((err) => {
+          if (import.meta.env.DEV) {
+            console.error(err); // Maybe take out as attackers can view console & brute force emails
+          }
+        }).finally(() => {
+          // Display a success message either way so attackers can't brute-force customer emails
+          setSuccessMessage(true);
+        });;
         break;
     }
   }
 
-  let submitAction: 'resetPassword' | 'resendEmail' = 'resetPassword';
+  let submitAction: HelpType = HelpType.ResetPassword;
   return (
     <MessageLayout
       title="Account Assistance"
@@ -52,14 +49,7 @@ export function ForgetPass() {
           email: Yup.string().required('Email is required').email('Email is invalid'),
         })}
         onSubmit={(values, { setSubmitting }) => {
-          switch (submitAction) {
-            case 'resetPassword':
-              handleHelp(values.email, 'resetPassword');
-              break;
-            case 'resendEmail':
-              handleHelp(values.email, 'resendEmail');
-              break;
-          }
+          handleHelp(values.email, submitAction);
         }}
       >
         {({ handleSubmit }) => (
@@ -80,10 +70,10 @@ export function ForgetPass() {
                 />
               )}
             </Field>
-            <button type="button" className="bg-secondary text-white px-4 py-2 rounded" onClick={() => { submitAction = 'resetPassword'; handleSubmit() }}>
+            <button type="button" className="bg-secondary text-white px-4 py-2 rounded" onClick={() => { submitAction = HelpType.ResetPassword; handleSubmit() }}>
               Reset Password
             </button>
-            <button type="button" className="bg-secondary text-white px-4 py-2 rounded" onClick={() => { submitAction = 'resendEmail'; handleSubmit() }}>
+            <button type="button" className="bg-secondary text-white px-4 py-2 rounded" onClick={() => { submitAction = HelpType.ResendEmail; handleSubmit() }}>
               Resend Verification Email
             </button>
           </Form>

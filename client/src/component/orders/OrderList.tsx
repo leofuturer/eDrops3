@@ -1,7 +1,7 @@
 import { ROUTES, idRoute } from '@/router/routes';
 import { useContext } from 'react';
 import { CartContext } from '@/context/CartContext';
-import { OrderInfo } from '@/types';
+import { DTO, OrderInfo } from '@/types';
 import { SERVICE_EMAIL } from '@/lib/constants/misc';
 import { useCookies } from 'react-cookie';
 import { ROLES } from '@/lib/constants/roles';
@@ -10,7 +10,7 @@ import { ROLES } from '@/lib/constants/roles';
  The order list page for both customer and worker
  Component that renders the order list
 */
-export function OrderList({ orderList }: { orderList: OrderInfo[] }) {
+export function OrderList({ orderList }: { orderList: DTO<OrderInfo>[] }) {
   const [cookies] = useCookies(['userType']);
   const cart = useContext(CartContext);
 

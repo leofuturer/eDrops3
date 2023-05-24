@@ -1,9 +1,9 @@
-import { getCustomerOrders } from '@/api/customer';
+import { api } from '@/api';
 import SEO from '@/component/header/seo';
 import ManageRightLayout from '@/component/layout/ManageRightLayout';
 import OrderList from '@/component/orders/OrderList';
-import { ROUTES } from '@/router/routes';
-import { OrderInfo } from '@/types';
+import { ROUTES, idRoute } from '@/router/routes';
+import { DTO, OrderInfo } from '@/types';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
@@ -11,7 +11,7 @@ import { useNavigate, useParams } from 'react-router-dom';
  The order list page for admins to view a given customer's orders
 */
 export function CustomerOrders() {
-  const [orderList, setOrderList] = useState<OrderInfo[]>([]);
+  const [orderList, setOrderList] = useState<DTO<OrderInfo>[]>([]);
 
   const navigate = useNavigate();
 
@@ -23,7 +23,7 @@ export function CustomerOrders() {
       navigate(ROUTES.ManageCustomers);
     }
     else {
-      getCustomerOrders(customerId, false).then((orders) => {
+      api.customer.getOrders(customerId, false).then((orders) => {
         setOrderList(orders);
       }).catch((err) => {
         console.error(err);
@@ -34,13 +34,13 @@ export function CustomerOrders() {
   function handleDetail(orderId: number) {
     // Using the window.open() method to open a new window
     // and display the page based on the passed in redirectUrl
-    const redirectUrl = `/subpage/order-detail?id=${orderId}`;
+    const redirectUrl = idRoute(ROUTES.SubpageOrderDetail, orderId);
     const strWindowFeatures = 'width=1200px, height=900px';
     const WindowForOrderDetail = window.open(redirectUrl, '_blank', strWindowFeatures);
   }
 
   function handleChat(orderId: number) {
-    const redirectUrl = `/subpage/order-chat?id=${orderId}`;
+    const redirectUrl = idRoute(ROUTES.SubpageOrderChat, orderId);
     const strWindowFeatures = 'width=1200px, height=900px';
     const WindowForOrderDetail = window.open(redirectUrl, '_blank', strWindowFeatures);
   }

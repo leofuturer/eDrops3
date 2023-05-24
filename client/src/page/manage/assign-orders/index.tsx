@@ -1,26 +1,23 @@
 import { useEffect, useState } from 'react';
 import { NavLink } from 'react-router-dom';
-import { request } from '../../../api';
-import { assignOrders, foundryWorkerGetName, getAllFoundryWorkers } from '../../../api';
+import { api } from '../../../api';
 import ManageRightLayout from '../../../component/layout/ManageRightLayout';
 import TwoChoiceModal from '../../../component/modal/TwoChoiceModal';
-import { Worker } from '../../../types';
+import { DTO, FoundryWorker, IncludeUser } from '@/types';
 import OrderItem from '@/component/orders/OrderItem';
 
 function AssignOrders() {
-  const [workerList, setWorkerList] = useState<Worker[]>([]);
+  const [workerList, setWorkerList] = useState<DTO<IncludeUser<FoundryWorker>>[]>([]);
   const [assignId, setAssignId] = useState('');
   const [chipOrder, setChipOrder] = useState(undefined);
   const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
-    request(getAllFoundryWorkers, 'GET', {}, true)
-      .then((res) => {
-        setWorkerList(res.data);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    api.worker.getAll().then((workers) => {
+      setWorkerList(workers);
+    }).catch((err) => {
+      console.log(err);
+    });
   }, []);
 
   function handleAssignId(id: string) {
@@ -82,34 +79,34 @@ function AssignOrders() {
             <td>{order.status}</td>
           </tr>
         </table>
-          <table className="table-info">
-            <thead>
-              <tr>
-                <th>Full Name</th>
-                <th>Username</th>
-                <th>E-mail</th>
-                <th>Phone</th>
-                <th>Affiliation</th>
-                <th>Assign</th>
+        <table className="table-info">
+          <thead>
+            <tr>
+              <th>Full Name</th>
+              <th>Username</th>
+              <th>E-mail</th>
+              <th>Phone</th>
+              <th>Affiliation</th>
+              <th>Assign</th>
+            </tr>
+          </thead>
+          <tbody>
+            {workerList.map((worker, index) => (
+              <tr key={index}>
+                <td>{`${worker.firstName} ${worker.lastName}`}</td>
+                <td>{worker.user.username}</td>
+                <td>{worker.user.email}</td>
+                <td>{worker.phoneNumber}</td>
+                <td>{worker.affiliation}</td>
+                <td onClick={() => handleAssignId(worker.id as string)}>
+                  <NavLink id={`file${worker.id}`} to="#">
+                    Assign to Him/Her
+                  </NavLink>
+                </td>
               </tr>
-            </thead>
-            <tbody>
-              {workerList.map((worker, index) => (
-                <tr key={index}>
-                  <td>{`${worker.firstName} ${worker.lastName}`}</td>
-                  <td>{worker.username}</td>
-                  <td>{worker.email}</td>
-                  <td>{worker.phoneNumber}</td>
-                  <td>{worker.affiliation}</td>
-                  <td onClick={() => handleAssignId(worker.id)}>
-                    <NavLink id={`file${worker.id}`} to="#">
-                      Assign to Him/Her
-                    </NavLink>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+            ))}
+          </tbody>
+        </table>
       </div>
       {showModal && (
         <TwoChoiceModal

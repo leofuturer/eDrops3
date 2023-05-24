@@ -2,15 +2,12 @@ import AuthLayout from '@/component/layout/AuthLayout';
 import Layout from '@/component/layout/Layout';
 import ManageLayout from '@/component/layout/ManageLayout';
 import { ROLES } from '@/lib/constants/roles';
-import { AddNewAddress, Address, Admins, BeforeCheckout, Cart, ChangePassword, CheckEmail, ChipOrder, EmailUnverified, EmailVerified, FeatureComing, Files, ForgetPass, FoundryWorkers, Home, Login, PageNotFound, Product, Products, Profile, Register, ResetPassword, UpdateAddress, OrderDetail, OrderChat, OwnOrders, CustomerOrders, AllFiles, AllOrders, Customers } from '@/page/index';
-import AddOrEditAdmin from '@/page/manage/admins/addOrEditAdmin';
-import AddOrEditUser from '@/page/manage/customers/addOrEditUser';
-import AddOrEditWorker from '@/page/manage/workers/addOrEditWorker';
+import { AddAdmin, AddCustomer, AddNewAddress, AddWorker, Address, Admins, AllFiles, AllOrders, BeforeCheckout, Cart, ChangePassword, CheckEmail, ChipOrder, CustomerOrders, Customers, EmailUnverified, EmailVerified, FeatureComing, Files, ForgetPass, FoundryWorkers, Home, Login, ManageAdmin, ManageCustomer, ManageWorker, OrderChat, OrderDetail, OwnOrders, PageNotFound, Product, Products, Profile, Register, ResetPassword, UpdateAddress } from '@/page/index';
 import Upload from '@/page/upload';
 import jwt_decode, { JwtPayload } from 'jwt-decode';
 import { useEffect } from 'react';
 import { useCookies } from 'react-cookie';
-import { Navigate, Outlet, Route, Routes, useLocation } from 'react-router-dom';
+import { Navigate, Route, Routes } from 'react-router-dom';
 import { ROUTES } from './routes';
 
 export function FlattenedRouteMap() {
@@ -51,16 +48,16 @@ export function FlattenedRouteMap() {
             {/* Pages for admins */
               cookies.userType === ROLES.Admin && <>
                 <Route path={ROUTES.ManageAdmins} element={<Admins />} />
-                <Route path={ROUTES.ManageAdminsAdd} element={<AddOrEditAdmin />} />
-                <Route path={ROUTES.ManageAdminsUpdate} element={<AddOrEditAdmin />} />
+                <Route path={ROUTES.ManageAdminsAdd} element={<AddAdmin />} />
+                <Route path={ROUTES.ManageAdminsUpdate} element={<ManageAdmin />} />
                 <Route path={ROUTES.ManageCustomers} element={<Customers />} />
-                <Route path={ROUTES.ManageCustomersAdd} element={<AddOrEditUser />} />
-                <Route path={ROUTES.ManageCustomersUpdate} element={<AddOrEditUser />} />
+                <Route path={ROUTES.ManageCustomersAdd} element={<AddCustomer />} />
+                <Route path={ROUTES.ManageCustomersUpdate} element={<ManageCustomer />} />
                 <Route path={ROUTES.ManageCustomersFiles} element={<Files />} />
                 <Route path={ROUTES.ManageCustomersOrders} element={<CustomerOrders />} />
                 <Route path={ROUTES.ManageWorkers} element={<FoundryWorkers />} />
-                <Route path={ROUTES.ManageWorkersAdd} element={<AddOrEditWorker />} />
-                <Route path={ROUTES.ManageWorkersUpdate} element={<AddOrEditWorker />} />
+                <Route path={ROUTES.ManageWorkersAdd} element={<AddWorker />} />
+                <Route path={ROUTES.ManageWorkersUpdate} element={<ManageWorker />} />
                 <Route path={ROUTES.ManageWorkersFiles} element={<Files />} />
                 <Route path={ROUTES.ManageWorkersOrders} element={<ChipOrders />} />
                 <Route path={ROUTES.ManageAllFiles} element={<AllFiles />} />

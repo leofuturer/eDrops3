@@ -1,22 +1,18 @@
+import { ROUTES } from '@/router/routes';
 import { useContext, useEffect, useState } from 'react';
 import { useCookies } from 'react-cookie';
-import { useSearchParams } from 'react-router-dom';
-import { addOrderMessage, foundryWorkerGetProfile, getOrderMessagesById, request } from '../../../api';
-import { PusherContext } from '../../../context/PusherContext';
-
-interface Message {
-  message: string;
-  timestamp: Date;
-  userId: string;
-}
+import { useNavigate, useParams } from 'react-router-dom';
+import { PusherContext } from '../../../../context/PusherContext';
+import { api } from '@/api';
+import { DTO, OrderMessage } from '@/types';
 
 export function ChatBox({ orderId }: { orderId: number }) {
   const pusher = useContext(PusherContext);
 
   const [typed, setTyped] = useState('');
   // const [worker, setWorker] = useState<any>(null); // TODO: Change to Worker type
-  const [messages, setMessages] = useState<Message[]>([]);
-  const [filteredMessages, setFilteredMessages] = useState<Record<number, Message[]>>({});
+  const [messages, setMessages] = useState<DTO<OrderMessage>[]>([]);
+  const [filteredMessages, setFilteredMessages] = useState<Record<number, DTO<OrderMessage>[]>>({});
 
   const [cookies] = useCookies(['userType', 'userId'])
 
@@ -27,7 +23,7 @@ export function ChatBox({ orderId }: { orderId: number }) {
   useEffect(() => {
     if (pusher) {
       const channel = pusher.subscribe(`chat-${orderId}`);
-      channel.bind('new-message', (msg: Message) => fetchMessages());
+      channel.bind('new-message', (msg: OrderMessage) => fetchMessages());
     }
   }, [orderId, pusher]);
 
@@ -37,9 +33,9 @@ export function ChatBox({ orderId }: { orderId: number }) {
   }, [orderId]);
 
   function fetchMessages() {
-    request(getOrderMessagesById.replace('id', orderId.toString()), 'GET', {}, true).then((res) => {
+    api.order.getMessages(orderId).then((messages) => {
       // console.log(res.data);
-      setMessages(res.data)
+      setMessages(messages);
     }).catch((err) => {
       console.log(err);
     });
@@ -47,28 +43,23 @@ export function ChatBox({ orderId }: { orderId: number }) {
 
   function handleSend() {
     const msg = {
+      orderId: orderId,
       message: typed,
       userId: cookies.userId,
       timestamp: new Date(),
     }
-    const data = {
-      orderId: orderId,
-      ...msg
-    };
-    request(addOrderMessage, 'POST', data, false)
-      .then((res) => {
-        setMessages([...messages, msg]);
-        setTyped('');
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    api.order.addMessage(orderId, msg).then((message) => {
+      setMessages([...messages, msg]);
+      setTyped('');
+    }).catch((err) => {
+      console.log(err);
+    });
   }
 
   // Group messages by time (if they are close enough)
   // Return dict with grouped time as key and list of messages as value
-  function groupMessages(messages: Message[]) {
-    const grouped: Record<number, Message[]> = {};
+  function groupMessages(messages: DTO<OrderMessage>[]) {
+    const grouped: Record<number, DTO<OrderMessage>[]> = {};
     let trackedTime = 0;
     const current = new Date();
     messages.forEach((msg) => {
@@ -129,13 +120,13 @@ export function ChatBox({ orderId }: { orderId: number }) {
       </div>
       <div className="flex flex-col flex-grow h-[50vh] px-4 py-8 space-y-2 overflow-auto">
         {Object.keys(filteredMessages).sort((a, b) => parseInt(a) - parseInt(b)).map((time, i) =>
-            <>
-              <small className="text-center">{convertEpoch(time)}</small>
-              {filteredMessages[parseInt(time)].map((msg, j) =>
-                <ChatMessage key={parseInt(time) + j} msg={msg} />
-              )}
-            </>
-          )}
+          <>
+            <small className="text-center">{convertEpoch(time)}</small>
+            {filteredMessages[parseInt(time)].map((msg, j) =>
+              <ChatMessage key={parseInt(time) + j} msg={msg} />
+            )}
+          </>
+        )}
       </div>
       {cookies.userType !== 'admin' &&
         <div className="bg-gray-300 p-4 w-full flex items-center">
@@ -162,11 +153,16 @@ export function ChatBox({ orderId }: { orderId: number }) {
 
 export function OrderChat() {
   const [orderId, setOrderId] = useState(0);
-  const [searchParams, setSearchParams] = useSearchParams();
+  const navigate = useNavigate()
+  const { id } = useParams();
 
   useEffect(() => {
-    setOrderId(parseInt(searchParams.get('id') as string, 10));
-  }, [searchParams]);
+    if (!id) {
+      navigate(ROUTES.ManageOrders);
+      return;
+    }
+    setOrderId(parseInt(id));
+  }, [id]);
 
   return (
     <div className="w-screen h-screen flex justify-center">
@@ -177,7 +173,7 @@ export function OrderChat() {
 
 export default OrderChat;
 
-function ChatMessage({ msg }: { msg: Message }) {
+function ChatMessage({ msg }: { msg: DTO<OrderMessage> }) {
   const [cookies] = useCookies(['userId']);
 
   const self: boolean = msg.userId === cookies.userId;

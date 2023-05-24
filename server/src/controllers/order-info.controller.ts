@@ -12,6 +12,7 @@ import {
 } from '@loopback/rest';
 import { OrderInfo } from '../models';
 import { OrderInfoRepository } from '../repositories';
+import { authenticate } from '@loopback/authentication';
 
 export interface CustomRequest extends Request {
   'headers': {
@@ -59,6 +60,7 @@ export class OrderInfoController {
     );
   }
 
+  @authenticate('jwt')
   @get('/orders/{id}')
   @response(200, {
     description: 'OrderInfo model instance',
@@ -76,6 +78,7 @@ export class OrderInfoController {
     return this.orderInfoRepository.findById(id, filter);
   }
 
+  @authenticate('jwt')
   @get('/orders')
   @response(200, {
     description: 'Array of OrderInfo model instances',

@@ -1,10 +1,9 @@
-import { Form, Formik } from 'formik'
-import React, { useState, useEffect } from 'react'
-import { useCookies } from 'react-cookie'
-import { foundryWorkerGetProfile, request, updateWorkerProfile } from '@/api';
-import FormGroup from '@/component/form/FormGroup'
+import { api } from '@/api';
+import FormGroup from '@/component/form/FormGroup';
+import { Form, Formik } from 'formik';
+import { useEffect, useState } from 'react';
 
-function WorkerProfile() {
+export function WorkerProfile({ workerId }: { workerId: string }) {
   const [initialInfo, setInitialInfo] = useState({
     username: '',
     email: '',
@@ -20,26 +19,23 @@ function WorkerProfile() {
     affiliation: '',
   });
 
-  const [cookies] = useCookies(['userId']);
-
   useEffect(() => {
-    request(foundryWorkerGetProfile.replace('id', cookies.userId), 'GET', {}, true)
-      .then((res) => {
-        setInitialInfo({
-          username: res.data.user.username,
-          email: res.data.user.email,
-          phoneNumber: res.data.phoneNumber,
-          firstName: res.data.firstName,
-          lastName: res.data.lastName,
-          street: res.data.street,
-          streetLine2: res.data.streetLine2,
-          city: res.data.city,
-          state: res.data.state,
-          zipCode: res.data.zipCode,
-          country: res.data.country,
-          affiliation: res.data.affiliation,
-        });
-      })
+    api.worker.get(workerId).then((worker) => {
+      setInitialInfo({
+        username: worker.user.username,
+        email: worker.user.email,
+        phoneNumber: worker.phoneNumber,
+        firstName: worker.firstName,
+        lastName: worker.lastName,
+        street: worker.street as string,
+        streetLine2: worker.streetLine2 as string,
+        city: worker.city as string,
+        state: worker.state as string,
+        zipCode: worker.zipCode as string,
+        country: worker.country as string,
+        affiliation: worker.affiliation,
+      });
+    })
   }, [])
 
   return (
@@ -47,7 +43,7 @@ function WorkerProfile() {
       initialValues={initialInfo}
       enableReinitialize={true}
       onSubmit={(values) => {
-        request(updateWorkerProfile.replace('id', cookies.userId), 'PATCH', values, true)
+        api.worker.update(workerId, values);
       }}>
       <Form className="flex flex-col space-y-2">
         <FormGroup name="username" disabled />

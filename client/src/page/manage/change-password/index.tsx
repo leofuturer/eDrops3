@@ -2,12 +2,12 @@ import { Form, Formik } from 'formik';
 import { useState } from 'react';
 import { useCookies } from 'react-cookie';
 import { useNavigate } from 'react-router-dom';
-import { request } from '../../../api';
-import { userChangePass } from '../../../api';
+import { api } from '../../../api';
 import FormGroup from '../../../component/form/FormGroup';
 import ManageRightLayout from '../../../component/layout/ManageRightLayout';
 import Loading from '../../../component/ui/Loading';
 import { ChangePasswordSchema } from '../../../schemas';
+import { ROUTES } from '@/router/routes';
 
 export function ChangePassword() {
   const [isLoading, setIsLoading] = useState(false);
@@ -22,31 +22,11 @@ export function ChangePassword() {
     confirmNewPassword: string;
   }, { setErrors }: { setErrors: any }) {
     setIsLoading(false);
-    const data = {
-      oldPassword: values.oldPassword,
-      newPassword: values.newPassword,
-    };
     // check if errors is empty
-    request(userChangePass, 'POST', data, true)
-      // .then((res) => {
-      //   const userToken = Cookies.get('access_token');
-      //   Cookies.remove('access_token');
-      //   request(userChangePass, 'POST', data, true)
-      //     .then((res) => {
-      //       alert('Password successfully changed');
-      //       Cookies.set('access_token', userToken);
-      //       props.history.push('/manage/profile');
-      //     }).catch((error) => {
-      //       // Reset user base password failed
-      //       console.error(error);
-      //       setState({
-      //         isLoading: false,
-      //       });
-      //     });
-      // })
+    api.user.changePassword(values.oldPassword, values.newPassword)
       .then((res) => {
         alert('Password successfully changed');
-        navigate('/manage/profile');
+        navigate(ROUTES.ManageProfile);
       })
       .catch((error) => {
         console.error(error.response.data.error.message);

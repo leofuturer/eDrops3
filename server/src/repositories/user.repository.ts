@@ -321,7 +321,7 @@ export class UserRepository extends DefaultCrudRepository<
             },
           ],
           dynamic_template_data: {
-            link: `${baseURL}/resetPassword?reset_token=${reset_token}`,
+            link: `${baseURL}/reset-password?reset_token=${reset_token}`,
           },
         },
       ],

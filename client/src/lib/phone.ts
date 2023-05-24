@@ -6,7 +6,7 @@ const formatPhoneNumber = (phoneNumberString: string) => {
     const countryCode = match[1] ? `+${match[1]}-` : '';
     return [countryCode, match[2], '-', match[3], '-', match[4]].join('');
   }
-  return null;
+  return undefined;
 };
 
 export { formatPhoneNumber };

@@ -18,7 +18,7 @@ export function ResetPassword() {
 
   useEffect(() => {
     const resetToken = searchParams.get('reset_token');
-    resetToken ? setResetToken(resetToken) : navigate('/forgetPass');
+    resetToken ? setResetToken(resetToken) : navigate(ROUTES.ForgotPassword);
   }, [searchParams])
 
   function handleReset({ newPassword, confirmNewPassword }: { newPassword: string, confirmNewPassword: string }) {

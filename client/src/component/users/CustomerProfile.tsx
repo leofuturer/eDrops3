@@ -1,14 +1,10 @@
-import { Form, Formik } from 'formik';
-import React, { useEffect, useState } from 'react'
-import { useCookies } from 'react-cookie';
-import { customerAddresses, customerGetProfile, request, updateCustomerProfile } from '@/api'
+import { api } from '@/api';
 import FormGroup from '@/component/form/FormGroup';
-import { Customer, Address, DTO } from '@/types';
+import { Address, Customer, DTO } from '@/types';
+import { Form, Formik } from 'formik';
+import { useEffect, useState } from 'react';
 
-type CustomerInfo = DTO<Customer & Address>;
-
-function CustomerProfile({ userId }: { userId: string }) {
-  const [info, setInfo] = useState({} as CustomerInfo)
+export function CustomerProfile({ customerId }: { customerId: string }) {
   const [initialInfo, setInitialInfo] = useState({
     username: '',
     email: '',
@@ -26,24 +22,22 @@ function CustomerProfile({ userId }: { userId: string }) {
   const [defaultAddressId, setDefaultAddressId] = useState(-1);
 
   useEffect(() => {
-    Promise.all([request(customerGetProfile.replace('id', cookies.userId), 'GET', {}, true),
-    request(`${customerAddresses.replace('id', cookies.userId)}?filter={"where":{"isDefault":true}}`, 'GET', {}, true)
-    ])
-      .then(([res1, res2]) => {
+    Promise.all([api.customer.get(customerId), api.customer.getDefaultAddress(customerId)])
+      .then(([customer, address]) => {
         setInitialInfo({
-          username: res1.data.user.username,
-          email: res1.data.user.email,
-          phoneNumber: res1.data.phoneNumber,
-          firstName: res1.data.firstName,
-          lastName: res1.data.lastName,
-          street: res2.data[0].street,
-          streetLine2: res2.data[0].streetLine2,
-          city: res2.data[0].city,
-          state: res2.data[0].state,
-          zipCode: res2.data[0].zipCode,
-          country: res2.data[0].country,
+          username: customer.user.username,
+          email: customer.user.email,
+          phoneNumber: customer.phoneNumber as string,
+          firstName: customer.firstName,
+          lastName: customer.lastName,
+          street: address.street,
+          streetLine2: address.streetLine2 as string,
+          city: address.city,
+          state: address.state as string,
+          zipCode: address.zipCode,
+          country: address.country,
         });
-        setDefaultAddressId(res2.data[0].id);
+        setDefaultAddressId(address.id as number);
       })
   }, [])
 
@@ -52,12 +46,12 @@ function CustomerProfile({ userId }: { userId: string }) {
       initialValues={initialInfo}
       enableReinitialize={true}
       onSubmit={(values) => {
-        const customerData = {
+        const customerData: Partial<DTO<Customer>> = {
           firstName: values.firstName,
           lastName: values.lastName,
           phoneNumber: values.phoneNumber,
         }
-        const addressData = {
+        const addressData: Partial<DTO<Address>> = {
           street: values.street,
           streetLine2: values.streetLine2,
           city: values.city,
@@ -65,9 +59,7 @@ function CustomerProfile({ userId }: { userId: string }) {
           zipCode: values.zipCode,
           country: values.country,
         }
-        Promise.all([request(updateCustomerProfile.replace('id', cookies.userId), 'PATCH', customerData, true),
-        request(`${customerAddresses.replace('id', cookies.userId)}/${defaultAddressId}`, 'PATCH', addressData, true)
-        ])
+        Promise.all([api.customer.update(customerId, customerData), api.customer.updateDefaultAddress(customerId, defaultAddressId, addressData)]);
       }}>
       <Form className="flex flex-col space-y-2">
         <FormGroup name="username" disabled />

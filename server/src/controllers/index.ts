@@ -10,7 +10,7 @@ export * from './order-chip.controller';
 export * from './order-info-order-chip.controller';
 export * from './order-info-order-product.controller';
 export * from './order-info.controller';
-export * from './order-message.controller';
+export * from './order-info-order-message.controller';
 export * from './order-product.controller';
 export * from './ping.controller';
 export * from './post-comment-post-comment.controller';

@@ -309,6 +309,7 @@ export class UserController {
     }
   }
 
+  // Only from email
   @get('/users/verify')
   @response(200, {
     description: 'User model instance',
@@ -339,7 +340,7 @@ export class UserController {
     return user;
   }
 
-  @post('/users/reset')
+  @post('/users/forgot-password')
   @response(200, {
     description: 'User RESET success',
   })
@@ -398,6 +399,7 @@ export class UserController {
     );
   }
 
+  // Only from email
   @post('/users/reset-password')
   @response(200, {
     description: 'User RESET PASSWORD success',
