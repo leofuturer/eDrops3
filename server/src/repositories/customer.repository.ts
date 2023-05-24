@@ -27,6 +27,7 @@ import { AddressRepository } from './customer-address.repository';
 import { FileInfoRepository } from './file-info.repository';
 import { OrderInfoRepository } from './order-info.repository';
 import { UserRepository } from './user.repository';
+import { Client, Product, buildClient } from 'shopify-buy';
 
 const CONTAINER_NAME = process.env.S3_BUCKET_NAME ?? 'edrop-v2-files';
 
@@ -53,6 +54,8 @@ export class CustomerRepository extends DefaultCrudRepository<
   public readonly user: BelongsToAccessor<User, typeof Customer.prototype.id>;
 
   public readonly s3: AWS.S3;
+
+  public readonly shopify: Client;
 
   constructor(
     @inject('datasources.mysqlDS') dataSource: MysqlDsDataSource,
@@ -105,6 +108,11 @@ export class CustomerRepository extends DefaultCrudRepository<
 
       this.s3 = new AWS.S3();
     }
+
+    this.shopify = buildClient({
+      storefrontAccessToken: process.env.SHOPIFY_TOKEN as string,
+      domain: process.env.SHOPIFY_DOMAIN as string,
+    });
   }
 
   /**
@@ -172,6 +180,35 @@ export class CustomerRepository extends DefaultCrudRepository<
     await userRepository.deleteById(id);
     // May need to delete associated addresses and order infos?
     await this.deleteById(id);
+  }
+
+  async createCart(id: typeof Customer.prototype.id): Promise<OrderInfo> {
+    const allOrders = await this.orderInfos(id).find({where: {orderComplete: false}});
+    if(allOrders.length !== 0) {
+      throw new HttpErrors.BadRequest('Customer already has an active order');
+    }
+    return this.shopify.checkout.create().then((res) => {
+      // console.log(res);
+      const lastSlash = res.webUrl.lastIndexOf('/');
+      const lastQuestionMark = res.webUrl.lastIndexOf('?');
+      const data: Partial<OrderInfo> = {
+        checkoutIdClient: res.id as string,
+        checkoutToken: res.webUrl.slice(lastSlash + 1, lastQuestionMark),
+        checkoutLink: res.webUrl,
+        // @ts-expect-error
+        createdAt: res.createdAt,
+        // @ts-expect-error
+        lastModifiedAt: res.updatedAt,
+        orderComplete: false,
+        status: 'Order in progress',
+        customerId: id,
+        shippingAddressId: 0, // 0 to indicate no address selected yet (pk cannot be 0)
+        billingAddressId: 0,
+      };
+      return data;
+    }).then((data) => {
+      return this.orderInfos(id).create(data);
+    });
   }
 
   async getCustomerCart(

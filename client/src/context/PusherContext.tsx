@@ -1,22 +1,18 @@
 
 import Pusher from 'pusher-js';
 import React, { useEffect, useState } from 'react';
-import { request, customerGetApiToken } from '@/api';
+import { api } from '@/api';
 
 const usePusher = () => {
   const [key, setKey] = useState<string>(''); // Note that key must be initialized before pusher for buildClient to work
   const [pusher, setPusher] = useState<Pusher>(buildClient());
 
   useEffect(() => {
-    request(customerGetApiToken, 'GET', {}, false)
-      .then((res) => {
-        if (res.status === 200) {
-          setKey(res.data.info.key);
-        }
-      })
-      .catch((err) => {
-        // console.error(err);
-      });
+    api.user.getAPIToken().then((res) => {
+      setKey(res.key);
+    }).catch((err) => {
+      // console.error(err);
+    });
   }, [])
 
   function buildClient(): Pusher {

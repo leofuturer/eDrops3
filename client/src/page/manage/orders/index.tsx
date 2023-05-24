@@ -1,8 +1,8 @@
-import { getCustomerOrders } from '@/api/customer';
+import { api } from '@/api';
 import SEO from '@/component/header/seo';
 import ManageRightLayout from '@/component/layout/ManageRightLayout';
 import { OrderList } from '@/component/orders/OrderList';
-import { OrderInfo } from '@/types';
+import { DTO, OrderInfo } from '@/types';
 import { useEffect, useState } from 'react';
 import { useCookies } from 'react-cookie';
 import { metadata } from './metadata';
@@ -10,12 +10,12 @@ import { metadata } from './metadata';
  The order list page for customers
 */
 export function OwnOrders() {
-  const [orderList, setOrderList] = useState<OrderInfo[]>([]);
+  const [orderList, setOrderList] = useState<DTO<OrderInfo>[]>([]);
 
   const [cookies] = useCookies(['userId']);
 
   useEffect(() => {
-    getCustomerOrders(cookies.userId).then((orders) => {
+    api.customer.getOrders(cookies.userId).then((orders) => {
       setOrderList(orders);
     });
   }, []);

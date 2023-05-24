@@ -1,4 +1,4 @@
-import { ChatContextProvider, PusherContextProvider, ShopifyContextProvider } from '@/context/index';
+import { ChatContextProvider, PusherContextProvider } from '@/context';
 import { FlattenedRouteMap } from '@/router/map';
 import React from 'react';
 import { CookiesProvider } from 'react-cookie';
@@ -11,7 +11,6 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
     <CookiesProvider>
       <HelmetProvider>
-        <ShopifyContextProvider>
           <PusherContextProvider>
             <ChatContextProvider>
               <BrowserRouter>
@@ -19,7 +18,6 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
               </BrowserRouter>
             </ChatContextProvider>
           </PusherContextProvider>
-        </ShopifyContextProvider>
       </HelmetProvider>
     </CookiesProvider>
   </React.StrictMode>

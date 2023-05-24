@@ -12,7 +12,7 @@ import {
 } from '@loopback/rest';
 import { CustomerCreateInterceptor } from '../interceptors';
 import { DTO } from '../lib/types/model';
-import { Address, Customer, OrderInfo, User } from '../models';
+import { Address, Customer, User } from '../models';
 import { CustomerRepository, UserRepository } from '../repositories';
 
 export class CustomerController {
@@ -108,20 +108,5 @@ export class CustomerController {
     customer: Customer,
   ): Promise<void> {
     await this.customerRepository.updateById(id, customer);
-  }
-
-  @get('/customers/{id}/cart')
-  @response(200, {
-    description: 'Customer cart',
-    content: {
-      'application/json': {
-        schema: {},
-      },
-    },
-  })
-  async getCustomerCart(
-    @param.path.string('id') id: string,
-  ): Promise<Partial<OrderInfo> | null>{
-    return this.customerRepository.getCustomerCart(id);
   }
 }

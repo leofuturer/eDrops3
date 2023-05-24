@@ -63,7 +63,7 @@ export class CustomerOrderInfoController {
 
   @post('/customers/{id}/orders')
   @response(200, {
-    description: 'Add order to customer cart',
+    description: 'Create new order',
     content: {
       'application/json': {
         schema: {type: 'object', items: getModelSchemaRef(OrderInfo)},
@@ -72,12 +72,22 @@ export class CustomerOrderInfoController {
   })
   async addOrderToCustomerCart(
     @param.path.string('id') id: typeof Customer.prototype.id,
-    @requestBody() orderInfo: OrderInfo,
   ): Promise<OrderInfo> {
-    const allOrders = await this.customerRepository.orderInfos(id).find({where: {orderComplete: false}});
-    if(allOrders.length !== 0) {
-      throw new HttpErrors.BadRequest('Customer already has an active order');
-    }
-    return this.customerRepository.orderInfos(id).create(orderInfo);
+    return this.customerRepository.createCart(id);
+  }
+
+  @get('/customers/{id}/cart')
+  @response(200, {
+    description: 'Customer cart',
+    content: {
+      'application/json': {
+        schema: {},
+      },
+    },
+  })
+  async getCustomerCart(
+    @param.path.string('id') id: string,
+  ): Promise<Partial<OrderInfo> | null>{
+    return this.customerRepository.getCustomerCart(id);
   }
 }

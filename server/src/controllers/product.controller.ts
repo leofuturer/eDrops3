@@ -66,7 +66,7 @@ export class ProductController {
   })
   async returnOneItem(
     @param.path.string('id') productId: string,
-  ): Promise<Product | object> {
+  ): Promise<Product> {
     return this.client.product
       .fetch(productId)
       .then((res: Product) => {
@@ -84,7 +84,7 @@ export class ProductController {
       })
       .catch((err: Error) => {
         console.log(err);
-        return {};
+        return {} as Product;
       });
   }
 }
