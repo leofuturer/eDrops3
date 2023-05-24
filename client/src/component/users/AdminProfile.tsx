@@ -1,25 +1,23 @@
-import { Form, Formik } from 'formik';
-import { useEffect, useState } from 'react';
-import { useCookies } from 'react-cookie';
 import { api } from '@/api';
 import FormGroup from '@/component/form/FormGroup';
+import { Form, Formik } from 'formik';
+import { useEffect, useState } from 'react';
 
-function AdminProfile({ adminId }: { adminId: string) {
+export function AdminProfile({ adminId }: { adminId: string }) {
   const [initialInfo, setInitialInfo] = useState({
     username: '',
     email: '',
     phoneNumber: '',
   });
 
-
   useEffect(() => {
     api.admin.get(adminId).then((admin) => {
-        setInitialInfo({
-          username: admin.user.username,
-          email: admin.user.email,
-          phoneNumber: admin.phoneNumber as string,
-        });
+      setInitialInfo({
+        username: admin.user.username,
+        email: admin.user.email,
+        phoneNumber: admin.phoneNumber as string,
       })
+    })
   }, [])
 
   return (
@@ -27,7 +25,7 @@ function AdminProfile({ adminId }: { adminId: string) {
       initialValues={initialInfo}
       enableReinitialize={true}
       onSubmit={(values) => {
-        request(updateAdminProfile.replace('id', cookies.userId), 'PATCH', values, true)
+        api.admin.update(adminId, values);
       }}>
       <Form className="flex flex-col space-y-2">
         <FormGroup name="username" />

@@ -1,10 +1,28 @@
-import { DTO, FoundryWorker, User } from "@/types";
+import { DTO, FoundryWorker, IncludeUser, User } from "@/types";
 import { Resource } from "./lib/resource";
 import request from "./lib/api";
 
 class WorkerResource extends Resource<FoundryWorker> {
   constructor() {
     super('/workers');
+  }
+
+  /*
+    @override Resource.get
+  */
+  async get(id: string): Promise<DTO<IncludeUser<FoundryWorker>>> {
+    return request<DTO<IncludeUser<FoundryWorker>>>(`${this.baseURL}/${id}`, 'GET', {}).then((res) => {
+      return res.data;
+    });
+  }
+
+  /*
+    @override Resource.getAll
+  */
+  async getAll(): Promise<DTO<IncludeUser<FoundryWorker>>[]> {
+    return request<DTO<IncludeUser<FoundryWorker>>[]>(this.baseURL, 'GET', {}).then((res) => {
+      return res.data;
+    });
   }
 
   /*

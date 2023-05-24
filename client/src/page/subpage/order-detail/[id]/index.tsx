@@ -1,17 +1,17 @@
 import OrderItem from '@/component/orders/OrderItem';
 import { ROUTES } from '@/router/routes';
-import { Address, OrderChip, OrderInfo, OrderProduct } from '@/types';
+import { Address, DTO, OrderChip, OrderInfo, OrderProduct } from '@/types';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { getChipOrders, getOrderInfoById, getProductOrders, request } from '../../../api';
-import MessageLayout from '../../../component/layout/MessageLayout';
+import { api } from '@/api';
+import MessageLayout from '../../../../component/layout/MessageLayout';
 
 
 export function OrderDetail() {
   const [doneLoading, setDoneLoading] = useState(false);
-  const [order, setOrder] = useState<OrderInfo>({} as OrderInfo);
-  const [productOrders, setProductOrders] = useState<OrderProduct[]>([]);
-  const [chipOrders, setChipOrders] = useState<OrderChip[]>([]);
+  const [order, setOrder] = useState<DTO<OrderInfo>>({} as DTO<OrderInfo>);
+  const [productOrders, setProductOrders] = useState<DTO<OrderProduct>[]>([]);
+  const [chipOrders, setChipOrders] = useState<DTO<OrderChip>[]>([]);
   const [totalPrice, setTotalPrice] = useState(0);
 
   const { id: orderId } = useParams();
@@ -22,23 +22,16 @@ export function OrderDetail() {
       navigate(ROUTES.ManageOrders);
       return;
     }
-    request(getOrderInfoById.replace('id', orderId), 'GET', {}, true)
-      .then(res => {
-        setOrder(res.data);
-        console.log(res.data);
+    api.order.get(orderId).then((order) => {
+        setOrder(order);
         return Promise.all([
-          request(
-            getProductOrders.replace('id', res.data.id),
-            'GET',
-            {},
-            true,
-          ),
-          request(getChipOrders.replace('id', res.data.id), 'GET', {}, true),
+          api.order.getProductOrders(parseInt(orderId)),
+          api.order.getChipOrders(parseInt(orderId)),
         ]);
       })
-      .then(([res1, res2]) => {
-        setProductOrders(res1.data);
-        setChipOrders(res2.data);
+      .then(([products, chips]) => {
+        setProductOrders(products);
+        setChipOrders(chips);
         setDoneLoading(true);
       })
       .catch(err => {

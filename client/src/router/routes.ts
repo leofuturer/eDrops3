@@ -53,4 +53,4 @@ export enum ROUTES {
   SubpageOrderChat = '/subpage/order-chat/:id',
 }
 
-export const idRoute = (route: ROUTES, id: string) => route.replace(':id', id);
+export const idRoute = (route: ROUTES, id: string | number) => route.replace(':id', id as string);

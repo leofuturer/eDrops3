@@ -1,16 +1,14 @@
 import { useEffect, useState } from 'react';
 import { useCookies } from 'react-cookie';
 import { useNavigate } from 'react-router-dom';
-import { request } from '../../../api';
-import {
-  deleteAdminById, findAdminByWhere, userBaseDeleteById, userBaseFind
-} from '../../../api';
+import { api } from '@/api';
 import ManageRightLayout from '../../../component/layout/ManageRightLayout';
 import DeleteModal from '../../../component/modal/DeleteModal';
-import { Admin } from '../../../types';
+import { Admin, DTO, IncludeUser } from '@/types';
+import { ROUTES, idRoute } from '@/router/routes';
 
 export function Admins() {
-  const [adminList, setAdminList] = useState<Admin[]>([]);
+  const [adminList, setAdminList] = useState<DTO<IncludeUser<Admin>>[]>([]);
   const [showDelete, setShowDelete] = useState(false);
   const [deleteAdmin, setDeleteAdmin] = useState<Admin>({} as Admin);
 
@@ -19,24 +17,17 @@ export function Admins() {
   const [cookies] = useCookies(['userId'])
 
   function handleAddAdmin() {
-    navigate('/manage/admins/addNewAdmin');
+    navigate(ROUTES.ManageAdminsAdd);
   }
 
   useEffect(() => {
-    request(findAdminByWhere, 'GET', {}, true)
-      .then((res) => {
-        setAdminList(res.data);
-      })
-      .catch((err) => console.log(err));
+    api.admin.getAll().then((admins) => {
+      setAdminList(admins);
+    }).catch((err) => console.log(err));
   }, []);
 
   function handleEditAdmin(admin: Admin) {
-    navigate('/manage/admin/', {
-      state: {
-        adminId: admin.id,
-        adminInfo: admin,
-      },
-    });
+    navigate(idRoute(ROUTES.ManageAdminsUpdate, admin.id as string));
   }
 
   function handleDeleteAdmin(admin: Admin) {
@@ -72,12 +63,12 @@ export function Admins() {
           </tr>
         </thead>
         <tbody>
-          {adminList.map((admin: Admin) => (
+          {adminList.map((admin) => (
             <tr id={`admin${admin.id}`} key={admin.id}>
               <td>{admin.id}</td>
               <td>{admin.phoneNumber}</td>
-              <td>{admin.username}</td>
-              <td>{admin.email}</td>
+              <td>{admin.user.username}</td>
+              <td>{admin.user.email}</td>
               <td>
                 <i className="fa fa-edit cursor-pointer" onClick={() => handleEditAdmin(admin)} />
               </td>

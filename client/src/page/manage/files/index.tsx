@@ -90,7 +90,7 @@ export function Files() {
   }
 
   function handleShop(file: FileInfo) {
-    navigate('/chipfab', { state: { fileInfo: file } });
+    navigate(ROUTES.ChipFab, { state: { fileInfo: file } });
   }
 
   function handleDelete() {

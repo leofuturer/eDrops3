@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react';
 import { useCookies } from 'react-cookie';
-import { request } from '../../../api';
-import { adminDownloadFile, getAllFileInfos } from '../../../api';
+import { api } from '@/api';
 import ManageRightLayout from '../../../component/layout/ManageRightLayout';
-import { FileInfo } from '../../../types';
+import { DTO, FileInfo } from '../../../types';
+import { idRoute } from '@/router/routes';
 
 export function AllFiles() {
-  const [fileList, setFileList] = useState<FileInfo[]>([]);
+  const [fileList, setFileList] = useState<DTO<FileInfo>[]>([]);
 
   const [cookies] = useCookies(['access_token']);
 
@@ -18,15 +18,11 @@ export function AllFiles() {
   }
 
   useEffect(() => {
-    const url = getAllFileInfos;
-    const data = {};
-    request(url, 'GET', data, true)
-      .then((res) => {
-        setFileList(res.data);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    api.file.getAll().then((files) => {
+      setFileList(files);
+    }).catch((err) => {
+      console.log(err);
+    });
   }, []);
 
   return (

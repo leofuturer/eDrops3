@@ -30,32 +30,14 @@ class UserResource extends Resource<User> {
     });
   }
 
-  async signup(username: string, password: string, email: string): Promise<boolean> {
-    const data = {
-      username: username,
-      password: password,
-      email: email,
-    };
-    return false;
-    // request(customer.get, 'POST', data, false)
-    //   .then((res) => {
-    //     return res.status === 200;
-    //   }).catch((err) => {
-    //     // console.error(err);
-    //     if (err.response.status === 401) {
-    //     }
-    //     return false;
-    //   });
-  }
-
-  async credsTaken(username: string, email: string): Promise<boolean> {
-    return request<boolean>(`${this.baseURL}/creds-taken`, 'POST', { username: username, email: email }).then((res) => {
+  async credsTaken(username: string, email: string): Promise<{ usernameTaken: boolean; emailTaken: boolean }> {
+    return request<{ usernameTaken: boolean; emailTaken: boolean }>(`${this.baseURL}/creds-taken`, 'POST', { username: username, email: email }).then((res) => {
       return res.data;
     });
   }
 
-  async verifyEmail(): Promise<void> {
-    request(`${this.baseURL}/verify-email`, 'POST', {});
+  async verifyEmail(email: string): Promise<void> {
+    request(`${this.baseURL}/verify-email`, 'POST', { email: email });
   }
 
   async getAPIToken(): Promise<{
@@ -64,6 +46,14 @@ class UserResource extends Resource<User> {
     return request<{ key: string }>(`${this.baseURL}/api-token`, 'GET', {}).then((res) => {
       return res.data;
     });
+  }
+
+  async forgotPassword(email: string): Promise<void> {
+    request(`${this.baseURL}/forgot-password`, 'POST', { email: email });
+  }
+
+  async changePassword(oldPassword: string, newPassword: string): Promise<void> {
+    request(`${this.baseURL}/change-password`, 'POST', { oldPassword: oldPassword, newPassword: newPassword });
   }
 }
 

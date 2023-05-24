@@ -3,12 +3,12 @@ import { useContext, useEffect, useState } from 'react';
 import { useCookies } from 'react-cookie';
 import { NavLink, useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { Product as ProductType } from 'shopify-buy';
-import Loading from '../../component/ui/Loading';
-import { CartContext } from '../../context/CartContext';
-import { ShopifyContext } from '../../context/ShopifyContext';
+import Loading from '../../../component/ui/Loading';
+import { CartContext } from '../../../context/CartContext';
+import { ShopifyContext } from '../../../context/ShopifyContext';
 import {
   controlSysId10, controlSysId5, getProductType, pcbChipId10, pcbChipId5, productIdsJson, testBoardId10, testBoardId5
-} from '../../lib/constants/products';
+} from '../../../lib/constants/products';
 
 export function Product() {
   const [product, setProduct] = useState<ProductType>({} as ProductType);

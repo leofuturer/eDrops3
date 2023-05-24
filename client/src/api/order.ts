@@ -1,4 +1,4 @@
-import { DTO, OrderInfo, OrderMessage } from "@/types";
+import { DTO, OrderChip, OrderInfo, OrderMessage, OrderProduct } from "@/types";
 import { Resource } from "./lib/resource";
 import request from "./lib/api";
 
@@ -7,12 +7,20 @@ class OrderResource extends Resource<OrderInfo> {
     super('/orders');
   }
 
-  async getMessages(id: string): Promise<DTO<OrderMessage>[]> {
+  async getMessages(id: number): Promise<DTO<OrderMessage>[]> {
     return request<DTO<OrderMessage>[]>(`/orders/${id}/messages`, 'GET', {}).then((res) => res.data);
   }
 
-  async addMessage(id: string, data: OrderMessage): Promise<DTO<OrderMessage>> {
+  async addMessage(id: number, data: DTO<OrderMessage>): Promise<DTO<OrderMessage>> {
     return request<DTO<OrderMessage>>(`/orders/${id}/messages`, 'POST', data).then((res) => res.data);
+  }
+
+  async getProductOrders(id: number): Promise<DTO<OrderProduct>[]> {
+    return request<DTO<OrderProduct>[]>(`/orders/${id}/order-products`, 'GET', {}).then((res) => res.data);
+  }
+
+  async getChipOrders(id: number): Promise<DTO<OrderChip>[]> {
+    return request<DTO<OrderChip>[]>(`/orders/${id}/order-chips`, 'GET', {}).then((res) => res.data);
   }
 }
 
