@@ -89,7 +89,7 @@ export class CustomerController {
     description: 'Customer DELETE success',
   })
   async deleteById(@param.path.number('string') id: string): Promise<void> {
-    await this.customerRepository.deleteById(id);
+    await this.customerRepository.deleteCustomer(id);
   }
 
   @patch('/customers/{id}')

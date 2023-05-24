@@ -36,11 +36,9 @@ export function Admins() {
   }
 
   function handleDelete() {
-    request(`${userBaseFind}?filter={"where": {"email": "${deleteAdmin.email}"}}`, 'GET', {}, true)
-      .then((res) => request(userBaseDeleteById.replace('id', res.data[0].id), 'DELETE', {}, true))
-      .then((res) => request(deleteAdminById.replace('id', deleteAdmin.id), 'DELETE', {}, true))
-      .then((res) => setAdminList(adminList.filter((admin) => admin.id !== deleteAdmin.id)))
-      .catch((err) => console.error(err));
+    api.admin.delete(deleteAdmin.id as string).then(() => {
+      setAdminList(adminList.filter((admin) => admin.id !== deleteAdmin.id))
+    }).catch((err) => console.error(err));
   }
 
   return (

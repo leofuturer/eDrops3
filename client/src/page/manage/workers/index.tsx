@@ -1,15 +1,15 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { request, editFoundryWorker, getAllFoundryWorkers, userBaseDeleteById, userBaseFind } from '@/api';
+import { api } from '@/api';
 import ManageRightLayout from '@/component/layout/ManageRightLayout';
 import DeleteModal from '@/component/modal/DeleteModal';
-import { FoundryWorker } from '@/types';
+import { DTO, FoundryWorker, IncludeUser } from '@/types';
 import { ROUTES, idRoute } from '@/router/routes';
 
 export function FoundryWorkers() {
-  const [workerList, setWorkerList] = useState<FoundryWorker[]>([]);
+  const [workerList, setWorkerList] = useState<DTO<IncludeUser<FoundryWorker>>[]>([]);
   const [showDelete, setShowDelete] = useState(false);
-  const [deleteWorker, setDeleteWorker] = useState<FoundryWorker>({} as FoundryWorker);
+  const [deleteWorker, setDeleteWorker] = useState<DTO<FoundryWorker>>({} as DTO<FoundryWorker>);
 
   const navigate = useNavigate();
 
@@ -17,42 +17,33 @@ export function FoundryWorkers() {
     navigate(ROUTES.ManageWorkersAdd);
   }
 
-  function handleRetrieveChipOrders(worker: FoundryWorker) {
+  function handleRetrieveChipOrders(worker: DTO<FoundryWorker>) {
     navigate(idRoute(ROUTES.ManageWorkersOrders, worker.id as string));
   }
 
-  function handleEditWorker(worker: FoundryWorker) {
+  function handleEditWorker(worker: DTO<FoundryWorker>) {
     navigate(idRoute(ROUTES.ManageWorkersUpdate, worker.id as string));
   }
 
-  function handleDeleteWorker(worker: FoundryWorker) {
+  function handleDeleteWorker(worker: DTO<FoundryWorker>) {
     setShowDelete(true);
     setDeleteWorker(worker);
   }
 
   function handleDelete() {
-    // we need to delete both userBase and worker instances
-    let url = `${userBaseFind}?filter={"where": {"email": "${deleteWorker.id}"}}`;
-    request(url, 'GET', {}, true)
-      .then((res) => request(userBaseDeleteById.replace('id', res.data[0].id), 'DELETE', {}, true))
-      .then((res) => request(editFoundryWorker.replace('id', deleteWorker.id), 'DELETE', {}, true))
-      .then((res) => {
-        // console.log(res);
-        setWorkerList(workerList.filter((worker) => worker.id !== deleteWorker.id));
-      })
-      .catch((err) => {
-        console.error(err);
-      });
+    api.worker.delete(deleteWorker.id as string).then(() => {
+      setWorkerList(workerList.filter((worker) => worker.id !== deleteWorker.id));
+    }).catch((err) => {
+      console.error(err);
+    });
   }
 
   useEffect(() => {
-    request(getAllFoundryWorkers, 'GET', {}, true)
-      .then((res) => {
-        setWorkerList(res.data);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    api.worker.getAll().then((workers) => {
+      setWorkerList(workers);
+    }).catch((err) => {
+      console.log(err);
+    });
   }, []);
 
   return (
@@ -77,11 +68,11 @@ export function FoundryWorkers() {
           </tr>
         </thead>
         <tbody>
-          {workerList.map((worker: Worker) => (
+          {workerList.map((worker: DTO<IncludeUser<FoundryWorker>>) => (
             <tr key={worker.id}>
               <td>{`${worker.firstName} ${worker.lastName}`}</td>
-              <td>{worker.username}</td>
-              <td>{worker.email}</td>
+              <td>{worker.user.username}</td>
+              <td>{worker.user.email}</td>
               <td>{worker.phoneNumber}</td>
               <td>{worker.affiliation}</td>
               <td>

@@ -167,6 +167,13 @@ export class CustomerRepository extends DefaultCrudRepository<
     return customerInstance;
   }
 
+  async deleteCustomer(id: typeof Customer.prototype.id) {
+    const userRepository = await this.userRepositoryGetter();
+    await userRepository.deleteById(id);
+    // May need to delete associated addresses and order infos?
+    await this.deleteById(id);
+  }
+
   async getCustomerCart(
     customerId: string,
   ): Promise<Partial<OrderInfo> | null> {

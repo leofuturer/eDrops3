@@ -141,7 +141,7 @@ export class AdminController {
     description: 'Admin DELETE success',
   })
   async deleteById(@param.path.string('id') id: string): Promise<void> {
-    await this.adminRepository.deleteById(id);
+    await this.adminRepository.deleteAdmin(id);
   }
 
   @get('/admins/chip-orders')
