@@ -1,4 +1,4 @@
-import type { Address, Customer, DTO, FileInfo, OrderInfo, User } from "@/types";
+import type { Address, Count, Customer, DTO, FileInfo, OrderInfo, User } from "@/types";
 import request from "./lib/api";
 import { Resource } from "./lib/resource";
 
@@ -18,6 +18,12 @@ class CustomerResource extends Resource<Customer> {
 
   async getAddresses(id: string): Promise<DTO<Address>[]> {
     return request<DTO<Address>[]>(`${this.baseURL}/${id}/addresses`, 'GET', {}).then((res) => {
+      return res.data;
+    });
+  }
+
+  async deleteAddress(id: string, addressId: number): Promise<Count> {
+    return request<Count>(`${this.baseURL}/${id}/addresses`, 'DELETE', { id: addressId }).then((res) => {
       return res.data;
     });
   }
@@ -54,7 +60,7 @@ class CustomerResource extends Resource<Customer> {
     });
   }
 
-  async downloadFile(id: string, fileId: string): Promise<DTO<FileInfo>> {
+  async downloadFile(id: string, fileId: string): Promise<any> {
     return request<DTO<FileInfo>>(`${this.baseURL}/${id}/files/${fileId}`, 'GET', {}).then((res) => {
       return res.data;
     });

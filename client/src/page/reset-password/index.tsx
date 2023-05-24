@@ -6,6 +6,7 @@ import { userResetPass } from '../../api';
 import FormGroup from '../../component/form/FormGroup';
 import MessageLayout from '../../component/layout/MessageLayout';
 import { ResetPasswordSchema } from '../../schemas';
+import { ROUTES } from '@/router/routes';
 
 export function ResetPassword() {
   const [errorDetected, setErrorDetected] = useState(false);
@@ -60,19 +61,6 @@ export function ResetPassword() {
           </button>
         </Form>
       </Formik>
-      {/* {errorDetected && (
-        <div>
-          <div className="help-text">
-            It appears that the link to reset your password has expired.
-          </div>
-          <div className="link">
-            <NavLink to="/forgetPass">Resend Email for Password Reset or Email Verification</NavLink>
-          </div>
-          <div className="link">
-            <a href="mailto:info@edroplets.org">Contact Us for Help</a>
-          </div>
-        </div>
-      )} */}
       {errorDetected && (
         <div className="flex flex-col items-center">
           <div className="text-center">
@@ -81,7 +69,7 @@ export function ResetPassword() {
             reset link has not expired.
           </div>
           <div className="text-center text-primary_lig">
-            <NavLink to="/forgetPass">Resend Email for Password Reset or Email Verification</NavLink>
+            <NavLink to={ROUTES.ForgotPassword}>Resend Email for Password Reset or Email Verification</NavLink>
           </div>
           <div className="text-center text-primary_lig">
             <a href="mailto:info@edroplets.org">Contact Us for Help</a>
@@ -94,7 +82,7 @@ export function ResetPassword() {
             Your password has successfully been reset.
           </div>
           <div className="text-center text-primary_light">
-            <NavLink to="/login">Login to Your Account</NavLink>
+            <NavLink to={ROUTES.Login}>Login to Your Account</NavLink>
           </div>
         </div>
       )}

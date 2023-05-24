@@ -7,7 +7,12 @@ class UserResource extends Resource<User> {
     super('/users');
   }
 
-  async login(username: string, password: string): Promise<boolean> {
+  async login(username: string, password: string): Promise<{
+    token: string;
+    username: string;
+    userId: string;
+    userType: string;
+  }> {
     const data = (/@/.test(username)) ? {
       email: username,
       password: password,
@@ -15,15 +20,14 @@ class UserResource extends Resource<User> {
       username: username,
       password: password,
     };
-    return request(`${this.baseURL}/login`, 'POST', data)
-      .then((res) => {
-        return res.status === 200;
-      }).catch((err) => {
-        // console.error(err);
-        if (err.response.status === 401) {
-        }
-        return false;
-      });
+    return request<{
+      token: string;
+      username: string;
+      userId: string;
+      userType: string;
+    }>(`${this.baseURL}/login`, 'POST', data).then((res) => {
+      return res.data;
+    });
   }
 
   async signup(username: string, password: string, email: string): Promise<boolean> {
@@ -51,7 +55,15 @@ class UserResource extends Resource<User> {
   }
 
   async verifyEmail(): Promise<void> {
-     request(`${this.baseURL}/verify-email`, 'POST', {});
+    request(`${this.baseURL}/verify-email`, 'POST', {});
+  }
+
+  async getAPIToken(): Promise<{
+    key: string;
+  }> {
+    return request<{ key: string }>(`${this.baseURL}/api-token`, 'GET', {}).then((res) => {
+      return res.data;
+    });
   }
 }
 

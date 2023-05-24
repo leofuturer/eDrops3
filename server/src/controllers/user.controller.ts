@@ -232,7 +232,43 @@ export class UserController {
     return;
     // return this.userBaseRepository.logout(userBase);
   }
-  
+
+  @authenticate('jwt')
+  @get('/users/api-token')
+  @response(200, {
+    description: 'Get API key and domain',
+    content: {
+      'application/json': {
+        schema: {
+          properties: {
+            info: {
+              properties: {
+                // token: {
+                //   type: 'string',
+                // },
+                // domain: {
+                //   type: 'string',
+                // },
+                key: {
+                  type: 'string',
+                }
+              },
+            },
+          },
+        },
+      },
+    },
+  })
+  async getApiToken(): Promise<object> {
+    return {
+      info: {
+        // token: process.env.SHOPIFY_TOKEN as string,
+        // domain: process.env.SHOPIFY_DOMAIN as string,
+        key: process.env.APP_PUSHER_API_KEY as string,
+      },
+    };
+  }
+
   @post('/users/verify-email')
   @response(200, {
     description: 'Resend verification email',

@@ -31,7 +31,7 @@ export function Home() {
       </div>
 
       <div className="flex flex-col space-y-4 md:space-y-10 items-center">
-        <NavLink to="/products" className="border-b-2 border-secondary w-1/4 text-center sm:py-4">
+        <NavLink to={ROUTES.Products} className="border-b-2 border-secondary w-1/4 text-center sm:py-4">
           <h1 className="text-secondary text-lg sm:text-xl md:text-2xl lg:text-4xl xl:text-5xl">Products</h1>
         </NavLink>
         <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-2 sm:gap-4 xl:gap-10 w-3/4 xl:w-2/3">

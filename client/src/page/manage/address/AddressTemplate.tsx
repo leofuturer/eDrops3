@@ -1,9 +1,9 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Address } from '../../../types';
+import { Address, DTO } from '@/types';
 import { ROUTES } from '@/router/routes';
 
-function AddressTemplate({ address, addressNum, onDeletion }: { address: Address, addressNum: number, onDeletion: () => void }) {
+function AddressTemplate({ address, addressNum, onDeletion }: { address: DTO<Address>, addressNum: number, onDeletion: () => void }) {
 
   const navigate = useNavigate();
 

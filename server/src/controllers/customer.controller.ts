@@ -110,45 +110,6 @@ export class CustomerController {
     await this.customerRepository.updateById(id, customer);
   }
 
-  @get('/customers/getApi')
-  @response(200, {
-    description: 'Get API key and domain',
-    content: {
-      'application/json': {
-        schema: {
-          properties: {
-            info: {
-              properties: {
-                token: {
-                  type: 'string',
-                },
-                domain: {
-                  type: 'string',
-                },
-                key: {
-                  type: 'string',
-                }
-              },
-            },
-          },
-        },
-      },
-    },
-  })
-  async getApiToken(): Promise<object> {
-    return {
-      info: {
-        token: (process.env.SHOPIFY_STORE !== 'test'
-          ? process.env.SHOPIFY_TOKEN
-          : process.env.SHOPIFY_TOKEN_TEST) as string,
-        domain: (process.env.SHOPIFY_STORE !== 'test'
-          ? process.env.SHOPIFY_DOMAIN
-          : process.env.SHOPIFY_DOMAIN_TEST) as string,
-        key: (process.env.APP_PUSHER_API_KEY) as string,
-      },
-    };
-  }
-
   @get('/customers/{id}/cart')
   @response(200, {
     description: 'Customer cart',

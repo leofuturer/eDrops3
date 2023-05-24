@@ -3,6 +3,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import Loading from '../../../component/ui/Loading';
 import { ProductOrder } from '../../../types';
+import { ROUTES, idRoute } from '@/router/routes';
 
 function CartProduct({ product, onDelete, onChange }: { product: ProductOrder, onDelete: () => Promise<void>, onChange: (product: ProductOrder, quantity: number) => void }) {
   const [qty, setQty] = useState(product.quantity);
@@ -25,7 +26,7 @@ function CartProduct({ product, onDelete, onChange }: { product: ProductOrder, o
   return (
     <div className="bg-white rounded-md shadow-box p-4 flex flex-row justify-between">
       <div className="flex flex-col">
-        <NavLink to={`/product?id=${product.productIdShopify}`} className="text-primary_light hover:text-primary">
+        <NavLink to={idRoute(ROUTES.Product, product.productIdShopify)} className="text-primary_light hover:text-primary">
           <h3>{product.name}</h3>
         </NavLink>
         <div className="">

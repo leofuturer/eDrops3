@@ -3,12 +3,13 @@ import {
   repository
 } from '@loopback/repository';
 import {
+  HttpErrors,
   get,
-  getModelSchemaRef, HttpErrors, param, post,
+  getModelSchemaRef,
+  param, post,
   requestBody,
   response
 } from '@loopback/rest';
-import { ConfigurationServicePlaceholders } from 'aws-sdk/lib/config_service_placeholders';
 import { Customer, OrderChip, OrderInfo } from '../models';
 import { CustomerRepository, OrderInfoRepository } from '../repositories';
 
