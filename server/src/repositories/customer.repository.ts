@@ -8,20 +8,14 @@ import {
 import { HttpErrors, Request, Response } from '@loopback/rest';
 import AWS from 'aws-sdk';
 import { genSalt, hash } from 'bcryptjs';
-import { createHash } from 'crypto';
 import path from 'path';
 import { MysqlDsDataSource } from '../datasources';
-import {
-  EMAIL_HOSTNAME,
-  EMAIL_PORT,
-  EMAIL_SENDER
-} from '../lib/constants/emailConstants';
 import { calculate } from '../lib/toolbox/calculate';
 import log from '../lib/toolbox/log';
 import { DTO } from '../lib/types/model';
 import {
-  Customer,
   Address,
+  Customer,
   CustomerRelations,
   FileInfo,
   OrderInfo,

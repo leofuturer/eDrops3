@@ -233,7 +233,7 @@ export class UserController {
     // return this.userBaseRepository.logout(userBase);
   }
   
-  @post('/users/resendVerifyEmail')
+  @post('/users/verify-email')
   @response(200, {
     description: 'Resend verification email',
   })

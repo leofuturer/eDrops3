@@ -1,21 +1,21 @@
 import { useContext, useEffect, useState } from 'react';
 import { useCookies } from 'react-cookie';
 import { useNavigate } from 'react-router-dom';
-import { customerAddresses, customerGetProfile, request } from '../../api';
+import { api } from '../../api';
 import MessageLayout from '../../component/layout/MessageLayout';
 import ModalBackground from '../../component/modal/ModalBackground';
 import Loading from '../../component/ui/Loading';
 import { CartContext } from '../../context/CartContext';
-import { Address, Customer } from '../../types';
+import { Address, Customer, DTO } from '@/types';
 import { AddNewAddress } from '../manage/address/new';
 import SingleAddress from './singleAddress';
 import { ROUTES } from '@/router/routes';
 
 export function BeforeCheckout() {
-  const [addressList, setAddressList] = useState<Address[]>([]);
+  const [addressList, setAddressList] = useState<DTO<Address>[]>([]);
   const [selectedAddrIndex, setSelectedAddrIndex] = useState(0);
   const [doneLoading, setDoneLoading] = useState(false);
-  const [customer, setCustomer] = useState<Customer>({} as Customer);
+  const [customer, setCustomer] = useState<DTO<Customer>>({} as Customer);
   const [preparingForCheckout, setPreparingForCheckout] = useState(false);
   const [showAdd, setShowAdd] = useState(false);
 
@@ -26,23 +26,19 @@ export function BeforeCheckout() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    request(customerGetProfile.replace('id', cookies.userId), 'GET', {}, true)
-      .then((res) => {
-        // console.log(res.data);
-        setCustomer(res.data);
-        return request(customerAddresses.replace('id', cookies.userId), 'GET', {}, true)
-      })
-      .then((res) => {
-        // console.log(res.data);
-        setAddressList(res.data);
+    api.customer.get(cookies.userId).then((customer) => {
+      setCustomer(customer);
+      return customer;
+    }).then((customer) => {
+      return api.customer.getAddresses(customer.id as string).then((addresses) => {
+        setAddressList(addresses);
         setSelectedAddrIndex(0);
       })
-      .catch((err) => {
-        console.error(err);
-      })
-      .finally(() => {
-        setDoneLoading(true);
-      });
+    }).catch((err) => {
+      console.error(err);
+    }).finally(() => {
+      setDoneLoading(true);
+    });
   }, []);
 
   function handlePayment() {

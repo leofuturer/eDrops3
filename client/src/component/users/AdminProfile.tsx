@@ -1,25 +1,23 @@
 import { Form, Formik } from 'formik';
 import { useEffect, useState } from 'react';
 import { useCookies } from 'react-cookie';
-import { adminGetProfile, request, updateAdminProfile } from '@/api';
+import { api } from '@/api';
 import FormGroup from '@/component/form/FormGroup';
 
-function AdminProfile() {
+function AdminProfile({ adminId }: { adminId: string) {
   const [initialInfo, setInitialInfo] = useState({
     username: '',
     email: '',
     phoneNumber: '',
   });
 
-  const [cookies] = useCookies(['userId']);
 
   useEffect(() => {
-    request(adminGetProfile.replace('id', cookies.userId), 'GET', {}, true)
-      .then((res) => {
+    api.admin.get(adminId).then((admin) => {
         setInitialInfo({
-          username: res.data.user.username,
-          email: res.data.user.email,
-          phoneNumber: res.data.phoneNumber,
+          username: admin.user.username,
+          email: admin.user.email,
+          phoneNumber: admin.phoneNumber as string,
         });
       })
   }, [])

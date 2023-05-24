@@ -5,10 +5,10 @@ import SEO from '../../component/header/seo';
 import ItemCard from './ItemCard';
 import ItemLoad from './ItemLoad';
 import { metadata } from './metadata';
-import { getProducts } from '@/api/store';
+import { api } from '@/api';
 
 export function Products() {
-  const products = getProducts();
+  const products = api.product.getAll();
 
   return (
     <div className="flex flex-col items-center space-y-10 mb-10">

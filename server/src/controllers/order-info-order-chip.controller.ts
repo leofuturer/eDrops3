@@ -22,7 +22,7 @@ export class OrderInfoOrderChipController {
     protected orderInfoRepository: OrderInfoRepository,
   ) {}
 
-  @get('/orderInfos/{id}/orderChips', {
+  @get('/orders/{id}/order-chips', {
     responses: {
       '200': {
         description: 'Array of OrderInfo has many OrderChip',
@@ -43,7 +43,7 @@ export class OrderInfoOrderChipController {
 
   @authenticate('jwt')
   @intercept(OrderItemCreateInterceptor.BINDING_KEY)
-  @post('/orderInfos/{id}/addOrderChipToCart', {
+  @post('/orders/{id}/order-chips', {
     responses: {
       '200': {
         description: 'Added orderChip to cart',
@@ -110,7 +110,7 @@ export class OrderInfoOrderChipController {
       });
   }
 
-  @patch('/orderInfos/{id}/updateChipLineItemId')
+  @patch('/orders/{id}/order-chips')
   @response(204, {
     description: 'OrderChip LineItemIdShopify PATCH success',
   })

@@ -1,4 +1,4 @@
-import {Getter, inject} from '@loopback/core';
+import { Getter, inject } from '@loopback/core';
 import {
   AnyObject,
   DefaultCrudRepository,
@@ -6,20 +6,19 @@ import {
   repository,
 } from '@loopback/repository';
 import _ from 'lodash';
-import {CustomRequest} from '../controllers/order-info.controller';
-import {MysqlDsDataSource} from '../datasources';
+import Pusher from 'pusher';
+import { CustomRequest } from '../controllers/order-info.controller';
+import { MysqlDsDataSource } from '../datasources';
 import {
   OrderChip,
   OrderInfo,
   OrderInfoRelations,
+  OrderMessage,
   OrderProduct,
 } from '../models';
-import {OrderChipRepository} from './order-chip.repository';
-import {OrderProductRepository} from './order-product.repository';
-import {UserRepository} from './user.repository';
-import crypto from 'crypto';
-import { HttpErrors } from '@loopback/rest';
-import Pusher from 'pusher';
+import { OrderChipRepository } from './order-chip.repository';
+import { OrderProductRepository } from './order-product.repository';
+import { OrderMessageRepository } from './order-message.repository';
 
 export class OrderInfoRepository extends DefaultCrudRepository<
   OrderInfo,
@@ -36,7 +35,12 @@ export class OrderInfoRepository extends DefaultCrudRepository<
     typeof OrderInfo.prototype.id
   >;
 
-  public pusher: Pusher;
+  public readonly orderMessages: HasManyRepositoryFactory<
+    OrderMessage,
+    typeof OrderMessage.prototype.id
+  >;
+
+  public pusher: Pusher; // For notifying client after receiving order completion webhook
 
   constructor(
     @inject('datasources.mysqlDS') dataSource: MysqlDsDataSource,
@@ -44,8 +48,8 @@ export class OrderInfoRepository extends DefaultCrudRepository<
     protected orderProductRepositoryGetter: Getter<OrderProductRepository>,
     @repository.getter('OrderChipRepository')
     protected orderChipRepositoryGetter: Getter<OrderChipRepository>,
-    @repository.getter('UserRepository')
-    private userRepositoryGetter: Getter<UserRepository>,
+    @repository.getter('OrderMessageRepository')
+    protected orderMessageRepositoryGetter: Getter<OrderMessageRepository>,
   ) {
     super(OrderInfo, dataSource);
     this.orderChips = this.createHasManyRepositoryFactoryFor(
@@ -63,6 +67,14 @@ export class OrderInfoRepository extends DefaultCrudRepository<
     this.registerInclusionResolver(
       'orderProducts',
       this.orderProducts.inclusionResolver,
+    );
+    this.orderMessages = this.createHasManyRepositoryFactoryFor(
+      'orderMessages',
+      orderMessageRepositoryGetter,
+    );
+    this.registerInclusionResolver(
+      'orderMessages',
+      this.orderMessages.inclusionResolver,
     );
 
     this.pusher = new Pusher({
