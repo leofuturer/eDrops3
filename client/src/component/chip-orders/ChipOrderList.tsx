@@ -1,5 +1,6 @@
 import { CartContext } from '@/context';
 import { ROLES } from '@/lib/constants/roles';
+import { ROUTES, idRoute } from '@/router/routes';
 import { DTO, OrderChip } from '@/types'
 import React, { useContext } from 'react'
 import { useCookies } from 'react-cookie';
@@ -11,30 +12,22 @@ function ChipOrderList({ chipOrderList }: { chipOrderList: DTO<OrderChip>[] }) {
   function handleDownload(itemId: number) {
     // console.log(e.target.id);
     let url = '';
-    if (cookies.userType === ROLES.Customer) {
-      // for customer, `id` is file ID
-      url = downloadFileById.replace('id', cookies.userId);
-      url += `?access_token=${Cookies.get('access_token')}&fileId=${itemId}`;
-    } else if (cookies.userType === ROLES.Worker) {
-      // for worker, `id` is chipOrder ID (associated with that file)
-      url = workerDownloadFile.replace('id', cookies.userId);
-      url += `?access_token=${Cookies.get('access_token')}&chipOrderId=${itemId}`;
-    } else if (cookies.userType === ROLES.Admin) {
-      // for admin, `id` is file ID
-      url = adminDownloadFile;
-      url += `?access_token=${Cookies.get('access_token')}&fileId=${itemId}`;
-    }
+    // TODO: fix this
+    // if (cookies.userType === ROLES.Customer) {
+    //   // for customer, `id` is file ID
+    //   url = downloadFileById.replace('id', cookies.userId);
+    //   url += `?access_token=${Cookies.get('access_token')}&fileId=${itemId}`;
+    // } else if (cookies.userType === ROLES.Worker) {
+    //   // for worker, `id` is chipOrder ID (associated with that file)
+    //   url = workerDownloadFile.replace('id', cookies.userId);
+    //   url += `?access_token=${Cookies.get('access_token')}&chipOrderId=${itemId}`;
+    // } else if (cookies.userType === ROLES.Admin) {
+    //   // for admin, `id` is file ID
+    //   url = adminDownloadFile;
+    //   url += `?access_token=${Cookies.get('access_token')}&fileId=${itemId}`;
+    // }
 
     window.location.href = url;
-  }
-
-  function handleAssign(orderIndex: number) {
-    // Using the window.open() method to open a new window and display the page based on the passed in redirectUrl
-    const redirectUrl = '/manage/assign-orders';
-    const strWindowFeatures = 'width=1200px, height=900px';
-    const newWindow = window.open(redirectUrl, '_blank', strWindowFeatures);
-    // @ts-expect-error
-    newWindow._order = orderList[orderIndex];
   }
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>, chipOrderId: number) {
@@ -57,8 +50,18 @@ function ChipOrderList({ chipOrderList }: { chipOrderList: DTO<OrderChip>[] }) {
       });
   }
 
+  // TODO: work on option for admin to reassign if needed
+  // function handleAssign(orderIndex: number) {
+  //   // Using the window.open() method to open a new window and display the page based on the passed in redirectUrl
+  //   const redirectUrl = '/manage/assign-orders';
+  //   const strWindowFeatures = 'width=1200px, height=900px';
+  //   const newWindow = window.open(redirectUrl, '_blank', strWindowFeatures);
+  //   // @ts-expect-error
+  //   newWindow._order = orderList[orderIndex];
+  // }
+
   function handleChat(orderId: number) {
-    const redirectUrl = `/subpage/order-chat?id=${orderId}`;
+    const redirectUrl = idRoute(ROUTES.SubpageOrderChat, orderId);
     const strWindowFeatures = 'width=1200px, height=900px';
     const WindowForOrderChat = window.open(redirectUrl, '_blank', strWindowFeatures);
     // @ts-expect-error
@@ -95,42 +98,37 @@ function ChipOrderList({ chipOrderList }: { chipOrderList: DTO<OrderChip>[] }) {
             {cookies.userType !== ROLES.Worker && <td className="">{item?.workerName}</td>}
             {cookies.userType !== ROLES.Worker
               ? <td className="">{item?.status}</td>
-              : (
-                <td className="">
-                  <form
-                    id="edit-order-status-form"
-                    className="edit-order-status-form"
-                    onSubmit={(e) => handleSubmit(e, item?.id)} // TODO: fix form submission
-                  >
-                    <select title="status" className="order-status" name="status" defaultValue={item?.status}>
-                      <option value="Fabrication request received">Fab Req Received</option>
-                      <option value="Project Started">Project Started</option>
-                      <option value="Project Completed">Project Completed</option>
-                      <option value="Item Shipped">Item Shipped</option>
-                    </select>
-                    <input type="submit" />
-                  </form>
-                </td>
-              )
+              : (<td className="">
+                <form
+                  id="edit-order-status-form"
+                  className="edit-order-status-form"
+                  onSubmit={(e) => handleSubmit(e, item?.id)} // TODO: fix form submission
+                >
+                  <select title="status" className="order-status" name="status" defaultValue={item?.status}>
+                    <option value="Fabrication request received">Fab Req Received</option>
+                    <option value="Project Started">Project Started</option>
+                    <option value="Project Completed">Project Completed</option>
+                    <option value="Item Shipped">Item Shipped</option>
+                  </select>
+                  <input type="submit" />
+                </form>
+              </td>)
             }
+            <td className="">{item?.quantity}</td>
             <td className="">
-              {item?.quantity}
-            </td>
-            <td className="">
-              {
-                cookies.userType === ROLES.Worker
-                  ? <i className="fa fa-download cursor-pointer" onClick={() => handleDownload(item?.id)} />
-                  : <i className="fa fa-download cursor-pointer" onClick={() => handleDownload(item?.fileInfoId)} />
+              {cookies.userType === ROLES.Worker
+                ? <i className="fa fa-download cursor-pointer" onClick={() => handleDownload(item?.id)} />
+                : <i className="fa fa-download cursor-pointer" onClick={() => handleDownload(item?.fileInfoId)} />
               }
             </td>
             <td className="">
               <i className="fa fa-commenting cursor-pointer" onClick={() => handleChat(item?.orderInfoId)} />
             </td>
-            {cookies.userType === ROLES.Admin &&
+            {/* {cookies.userType === ROLES.Admin &&
               <td className="">
                 <i className="fa fa-users cursor-pointer" onClick={() => handleAssign(index)} />
               </td>
-            }
+            } */}
           </tr>
         )) : (<tr>
           <td className="p-2" colSpan={9}>
