@@ -29,6 +29,8 @@ export * from './manage/customers/[id]/orders';
 export * from './manage/workers';
 export * from './manage/workers/add';
 export * from './manage/workers/[id]';
+export * from './manage/workers/[id]/files';
+export * from './manage/workers/[id]/orders';
 export * from './not-found';
 export * from './product/[id]';
 export * from './products';

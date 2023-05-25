@@ -2,7 +2,7 @@ import AuthLayout from '@/component/layout/AuthLayout';
 import Layout from '@/component/layout/Layout';
 import ManageLayout from '@/component/layout/ManageLayout';
 import { ROLES } from '@/lib/constants/roles';
-import { AddAdmin, AddCustomer, AddNewAddress, AddWorker, Address, Admins, AllFiles, AllOrders, BeforeCheckout, Cart, ChangePassword, CheckEmail, ChipOrder, CustomerOrders, Customers, EmailUnverified, EmailVerified, FeatureComing, Files, ForgetPass, FoundryWorkers, Home, Login, ManageAdmin, ManageCustomer, ManageWorker, OrderChat, OrderDetail, OwnOrders, PageNotFound, Product, Products, Profile, Register, ResetPassword, UpdateAddress, ChipOrders } from '@/page/index';
+import { AddAdmin, AddCustomer, AddNewAddress, AddWorker, Address, Admins, AllFiles, AllOrders, BeforeCheckout, Cart, ChangePassword, CheckEmail, ChipOrder, CustomerOrders, Customers, EmailUnverified, EmailVerified, FeatureComing, Files, ForgetPass, FoundryWorkers, Home, Login, ManageAdmin, ManageCustomer, ManageWorker, OrderChat, OrderDetail, OwnOrders, PageNotFound, Product, Products, Profile, Register, ResetPassword, UpdateAddress, ChipOrders, WorkerOrders } from '@/page/index';
 import Upload from '@/page/upload';
 import jwt_decode, { JwtPayload } from 'jwt-decode';
 import { useEffect } from 'react';
@@ -59,7 +59,7 @@ export function FlattenedRouteMap() {
                 <Route path={ROUTES.ManageWorkersAdd} element={<AddWorker />} />
                 <Route path={ROUTES.ManageWorkersUpdate} element={<ManageWorker />} />
                 <Route path={ROUTES.ManageWorkersFiles} element={<Files />} />
-                {/* <Route path={ROUTES.ManageWorkersOrders} element={<ChipOrders />} /> */}
+                <Route path={ROUTES.ManageWorkersOrders} element={<WorkerOrders />} />
                 <Route path={ROUTES.ManageAllFiles} element={<AllFiles />} />
                 <Route path={ROUTES.ManageAllOrders} element={<AllOrders />} />
               </>}
