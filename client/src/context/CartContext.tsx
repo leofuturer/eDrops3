@@ -3,7 +3,7 @@ import { useCookies } from 'react-cookie';
 import { useNavigate } from 'react-router-dom';
 import { CustomAttribute, LineItem, LineItemToAdd, Product } from 'shopify-buy';
 import { api } from '@/api';
-import { Address, Customer, DTO, FileInfo, Material, OrderChip, OrderInfo, OrderProduct } from '@/types';
+import { Address, Customer, DTO, FileInfo, OrderChip, OrderInfo, OrderProduct } from '@/types';
 import { PusherContext } from '@/context';
 import { ROUTES } from '@/router/routes';
 

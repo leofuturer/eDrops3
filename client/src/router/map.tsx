@@ -59,7 +59,7 @@ export function FlattenedRouteMap() {
                 <Route path={ROUTES.ManageWorkersAdd} element={<AddWorker />} />
                 <Route path={ROUTES.ManageWorkersUpdate} element={<ManageWorker />} />
                 <Route path={ROUTES.ManageWorkersFiles} element={<Files />} />
-                <Route path={ROUTES.ManageWorkersOrders} element={<ChipOrders />} />
+                {/* <Route path={ROUTES.ManageWorkersOrders} element={<ChipOrders />} /> */}
                 <Route path={ROUTES.ManageAllFiles} element={<AllFiles />} />
                 <Route path={ROUTES.ManageAllOrders} element={<AllOrders />} />
               </>}
@@ -75,7 +75,7 @@ export function FlattenedRouteMap() {
             }
             <Route path={ROUTES.ManageProfile} element={<Profile />} />
             <Route path={ROUTES.ManageChangePassword} element={<ChangePassword />} />
-            <Route path={ROUTES.ManageChipOrders} element={<ChipOrders />} />
+            {/* <Route path={ROUTES.ManageChipOrders} element={<ChipOrders />} /> */}
             <Route path="*" element={<Navigate to={ROUTES.ManageProfile} replace />} />
           </Route>
         </Route>
