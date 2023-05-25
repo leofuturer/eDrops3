@@ -10,7 +10,7 @@ export function AllFiles() {
 
   const [cookies] = useCookies(['access_token']);
 
-  function handleDownload(file: FileInfo) {
+  function handleDownload(file: DTO<FileInfo>) {
     const fileId = file.id;
     const url = `${adminDownloadFile}?access_token=${cookies.access_token}&fileId=${file.id}`;
     // console.log(url);
