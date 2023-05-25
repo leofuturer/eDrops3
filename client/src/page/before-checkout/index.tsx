@@ -15,7 +15,7 @@ export function BeforeCheckout() {
   const [addressList, setAddressList] = useState<DTO<Address>[]>([]);
   const [selectedAddrIndex, setSelectedAddrIndex] = useState(0);
   const [doneLoading, setDoneLoading] = useState(false);
-  const [customer, setCustomer] = useState<DTO<IncludeAddress<Customer>>>({} as Customer);
+  const [customer, setCustomer] = useState<DTO<IncludeAddress<Customer>>>({} as DTO<IncludeAddress<Customer>>);
   const [preparingForCheckout, setPreparingForCheckout] = useState(false);
   const [showAdd, setShowAdd] = useState(false);
 
@@ -39,7 +39,7 @@ export function BeforeCheckout() {
 
   function handlePayment() {
     setPreparingForCheckout(true);
-    cart.checkout(customer, addressList[selectedAddrIndex]).then((res) => {
+    cart.checkout(addressList[selectedAddrIndex]).then((res) => {
       navigate(ROUTES.Login);
     }).catch((err) => {
       console.error(err);

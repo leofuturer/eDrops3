@@ -5,6 +5,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { PusherContext } from '@/context/PusherContext';
 import { api } from '@/api';
 import { DTO, OrderMessage } from '@/types';
+import { ROLES } from '@/lib/constants/roles';
 
 export function ChatBox({ orderId }: { orderId: number }) {
   const pusher = useContext(PusherContext);

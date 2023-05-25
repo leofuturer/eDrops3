@@ -107,18 +107,4 @@ export class FoundryWorkerController {
   ): Promise<void> {
     await this.foundryWorkerRepository.updateById(id, foundryWorker);
   }
-
-  @get('/foundry-workers/getWorkerID')
-  @response(200, {
-    description: 'FoundryWorker GET WORKER ID success',
-  })
-  async getWorkerID(
-    @param.query.string('username') username: string,
-  ): Promise<string> {
-    return this.userRepository
-      .findOne({where: {username}})
-      .then(user => {
-        return user?.id as string;
-      });
-  }
 }

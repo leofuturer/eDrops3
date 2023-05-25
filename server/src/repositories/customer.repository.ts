@@ -183,8 +183,8 @@ export class CustomerRepository extends DefaultCrudRepository<
   }
 
   async createCart(id: typeof Customer.prototype.id): Promise<OrderInfo> {
-    const allOrders = await this.orderInfos(id).find({where: {orderComplete: false}});
-    if(allOrders.length !== 0) {
+    const allOrders = await this.orderInfos(id).find({ where: { orderComplete: false } });
+    if (allOrders.length !== 0) {
       throw new HttpErrors.BadRequest('Customer already has an active order');
     }
     return this.shopify.checkout.create().then((res) => {
@@ -211,7 +211,7 @@ export class CustomerRepository extends DefaultCrudRepository<
     });
   }
 
-  async getCustomerCart(
+  async getCart(
     customerId: string,
   ): Promise<Partial<OrderInfo> | null> {
     return this.orderInfos(customerId)
@@ -230,6 +230,36 @@ export class CustomerRepository extends DefaultCrudRepository<
       })
       .catch(err => {
         throw err;
+      });
+  }
+
+  async checkoutCart(id: typeof Customer.prototype.id, orderId: typeof OrderInfo.prototype.id, address: Address): Promise<OrderInfo> {
+    const orderInfos = await this.orderInfos(id).find({ where: { id: orderId, orderComplete: false } });
+    if (orderInfos.length === 0) {
+      throw new HttpErrors.NotFound('No cart found');
+    }
+    const cart = orderInfos[0];
+
+    const user = await this.user(id);
+    const customer = await this.findById(id);
+    // @ts-expect-error
+    return this.shopify.checkout.updateEmail(cart.checkoutIdClient, user.email)
+      .then((res: any) => {
+        const shippingAddr = {
+          address1: address.street,
+          address2: address.streetLine2,
+          city: address.city,
+          province: address.state,
+          country: address.country,
+          zip: address.zipCode,
+          firstName: customer.firstName,
+          lastName: customer.lastName,
+          phone: customer.phoneNumber,
+        };
+        // @ts-expect-error
+        return shopify.checkout.updateShippingAddress(cart.checkoutIdClient, shippingAddr)
+      }).then((res: any) => {
+        return cart;
       });
   }
 

@@ -87,6 +87,12 @@ class CustomerResource extends Resource<Customer> {
     });
   }
 
+  async checkoutCart(id: string, orderId: number, address: DTO<Address>): Promise<DTO<OrderInfo>> {
+    return request<DTO<OrderInfo>>(`${this.baseURL}/${id}/orders/${orderId}/checkout`, 'POST', address).then((res) => {
+      return res.data;
+    });
+  }
+
   async getFiles(id: string): Promise<DTO<FileInfo>[]> {
     return request<DTO<FileInfo>[]>(`${this.baseURL}/${id}/files`, 'GET', {}).then((res) => {
       return res.data;
