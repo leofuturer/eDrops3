@@ -36,7 +36,7 @@ export function Customers() {
     }).catch((err) => console.error(err));
   }
 
-  function handleEdit(customer: Customer) {
+  function handleEdit(customer: DTO<Customer>) {
     navigate(idRoute(ROUTES.ManageCustomersUpdate, customer.id as string));
   }
 
