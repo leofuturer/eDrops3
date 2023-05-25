@@ -1,4 +1,4 @@
-import type { Address, Count, Customer, DTO, FileInfo, IncludeAddress, IncludeUser, OrderInfo, User, Response } from "@/types";
+import type { Address, Count, Customer, DTO, FileInfo, IncludeAddress, IncludeUser, OrderInfo, User, Response, OrderChip } from "@/types";
 import request from "./lib/api";
 import { Resource } from "./lib/resource";
 
@@ -119,6 +119,18 @@ class CustomerResource extends Resource<Customer> {
     // });
 
     window.location.href = `/api/${this.baseURL}/${id}/files/${fileId}/download`;
+  }
+
+  async deleteFile(id: string, fileId: number): Promise<Count> {
+    return request<Count>(`${this.baseURL}/${id}/files/${fileId}`, 'DELETE', {}).then((res) => {
+      return res.data;
+    });
+  }
+
+  async getChipOrders(id: string): Promise<DTO<OrderChip>[]> {
+    return request<DTO<OrderChip>[]>(`${this.baseURL}/${id}/order-chips`, 'GET', {}).then((res) => {
+      return res.data;
+    });
   }
 }
 

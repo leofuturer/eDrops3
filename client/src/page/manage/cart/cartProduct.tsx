@@ -5,7 +5,7 @@ import Loading from '@/component/ui/Loading';
 import { DTO, OrderProduct } from '@/types';
 import { ROUTES, idRoute } from '@/router/routes';
 
-function CartProduct({ product, onDelete, onChange }: { product: DTO<OrderProduct>, onDelete: () => Promise<void>, onChange: (product: DTO<OrderProduct>, quantity: number) => void }) {
+export function CartProduct({ product, onDelete, onChange }: { product: DTO<OrderProduct>, onDelete: () => Promise<void>, onChange: (product: DTO<OrderProduct>, quantity: number) => void }) {
   const [qty, setQty] = useState(product.quantity);
   const [deleting, setDeleting] = useState(false);
 

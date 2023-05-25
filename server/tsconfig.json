@@ -2,7 +2,6 @@
   "$schema": "http://json.schemastore.org/tsconfig",
   "extends": "@loopback/build/config/tsconfig.common.json",
   "compilerOptions": {
-    "target": "ESNext",
     "experimentalDecorators": true,
     "forceConsistentCasingInFileNames": true,
     "outDir": "dist",

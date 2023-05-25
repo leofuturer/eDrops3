@@ -35,7 +35,8 @@ function ChipOrderList({ chipOrderList }: { chipOrderList: DTO<OrderChip>[] }) {
     // window.location.href = url;
   }
 
-  function handleSubmit(e: React.FormEvent<HTMLFormElement>, chipOrderId: number) {
+  // Worker only
+  function handleStatus(e: React.FormEvent<HTMLFormElement>, chipOrderId: number) {
     e.preventDefault();
     // const dropdown = document.getElementById('status-selection');
     // const selectedStatus = dropdown.options[dropdown.selectedIndex].value;
@@ -44,15 +45,7 @@ function ChipOrderList({ chipOrderList }: { chipOrderList: DTO<OrderChip>[] }) {
     const dropdown = document.getElementById(`status-selection-${chipOrderId}`);
     // @ts-expect-error
     const selectedStatus = dropdown.options[dropdown.selectedIndex].value;
-    const url = editOrderStatus.replace('id', chipOrderId.toString());
-    const data = { status: selectedStatus };
-    request(url, 'PATCH', data, true)
-      .then((res) => {
-        alert('Status updated!');
-      })
-      .catch((err) => {
-        console.error(err);
-      });
+    api.worker.updateChip(cookies.userId, chipOrderId, { status: selectedStatus});
   }
 
   // TODO: work on option for admin to reassign if needed
@@ -105,9 +98,8 @@ function ChipOrderList({ chipOrderList }: { chipOrderList: DTO<OrderChip>[] }) {
               ? <td className="">{item?.status}</td>
               : (<td className="">
                 <form
-                  id="edit-order-status-form"
-                  className="edit-order-status-form"
-                  onSubmit={(e) => handleSubmit(e, item?.id)} // TODO: fix form submission
+                  className=""
+                  onSubmit={(e) => handleStatus(e, item?.id)} // TODO: fix form submission
                 >
                   <select title="status" className="order-status" name="status" defaultValue={item?.status}>
                     <option value="Fabrication request received">Fab Req Received</option>

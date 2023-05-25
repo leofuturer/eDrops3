@@ -2,7 +2,7 @@ import AuthLayout from '@/component/layout/AuthLayout';
 import Layout from '@/component/layout/Layout';
 import ManageLayout from '@/component/layout/ManageLayout';
 import { ROLES } from '@/lib/constants/roles';
-import { AddAdmin, AddCustomer, AddNewAddress, AddWorker, Address, Admins, AllFiles, AllOrders, BeforeCheckout, Cart, ChangePassword, CheckEmail, ChipOrder, CustomerOrders, Customers, EmailUnverified, EmailVerified, FeatureComing, Files, ForgetPass, FoundryWorkers, Home, Login, ManageAdmin, ManageCustomer, ManageWorker, OrderChat, OrderDetail, OwnOrders, PageNotFound, Product, Products, Profile, Register, ResetPassword, UpdateAddress } from '@/page/index';
+import { AddAdmin, AddCustomer, AddNewAddress, AddWorker, Address, Admins, AllFiles, AllOrders, BeforeCheckout, Cart, ChangePassword, CheckEmail, ChipOrder, CustomerOrders, Customers, EmailUnverified, EmailVerified, FeatureComing, Files, ForgetPass, FoundryWorkers, Home, Login, ManageAdmin, ManageCustomer, ManageWorker, OrderChat, OrderDetail, OwnOrders, PageNotFound, Product, Products, Profile, Register, ResetPassword, UpdateAddress, ChipOrders } from '@/page/index';
 import Upload from '@/page/upload';
 import jwt_decode, { JwtPayload } from 'jwt-decode';
 import { useEffect } from 'react';
@@ -75,7 +75,7 @@ export function FlattenedRouteMap() {
             }
             <Route path={ROUTES.ManageProfile} element={<Profile />} />
             <Route path={ROUTES.ManageChangePassword} element={<ChangePassword />} />
-            {/* <Route path={ROUTES.ManageChipOrders} element={<ChipOrders />} /> */}
+            <Route path={ROUTES.ManageChipOrders} element={<ChipOrders />} />
             <Route path="*" element={<Navigate to={ROUTES.ManageProfile} replace />} />
           </Route>
         </Route>
