@@ -20,11 +20,12 @@ import { OrderChipRepository } from './order-chip.repository';
 import { OrderProductRepository } from './order-product.repository';
 import { OrderMessageRepository } from './order-message.repository';
 import { Client, CustomAttribute, LineItem, LineItemToAdd, Product, buildClient } from 'shopify-buy';
-import { DTO, Material } from '../lib/types/model';
+import { DTO } from '../lib/types/model';
 import { FoundryWorkerRepository } from './foundry-worker.repository';
 import { FileInfoRepository } from './file-info.repository';
 import { CustomerRepository } from './customer.repository';
 import { UserRepository } from './user.repository';
+import { Material } from '../lib/types/chip';
 
 export class OrderInfoRepository extends DefaultCrudRepository<
   OrderInfo,
@@ -260,7 +261,7 @@ export class OrderInfoRepository extends DefaultCrudRepository<
 
   async deleteOrderChip(id: typeof OrderInfo.prototype.id, orderChipId: typeof OrderChip.prototype.id): Promise<void> {
     const orderInfo = await this.findById(id);
-    const orderChips = await this.orderChips(id).find({ where: { id: orderChipId }});
+    const orderChips = await this.orderChips(id).find({ where: { id: orderChipId } });
     const orderChip = orderChips[0];
     this.shopify.checkout.removeLineItems(orderInfo.checkoutIdClient, [orderChip.lineItemIdShopify]).then(() => {
       return this.orderChips(id).delete({ id: orderChipId });

@@ -36,7 +36,7 @@ const useCart = () => {
 
   // create cart if it doesn't exist, otherwise get cart info
   useEffect(() => {
-    if (cookies.userId) {
+    if (cookies.userId && !cart.id) {
       fetchCart();
     }
   }, [cookies.userId]);
