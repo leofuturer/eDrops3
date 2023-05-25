@@ -3,6 +3,9 @@ import {ApplicationConfig, EdropsBackendApplication} from './application';
 
 export * from './application';
 
+// Export types for client
+export * from './lib/types';
+
 export async function main(options: ApplicationConfig = {}) {
   const app = new EdropsBackendApplication(options);
   await app.boot();
