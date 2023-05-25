@@ -7,8 +7,10 @@ class FileResource extends Resource<FileInfo>{
     super('/files');
   }
 
-  async download(id: string): Promise<void> {
-    request(`${this.baseURL}/${id}/download`, 'GET', {});
+  async download(id: number): Promise<void> {
+    // request(`${this.baseURL}/${id}/download`, 'GET', {});
+
+    window.location.href = `/api/${this.baseURL}/${id}/download`;
   }
 }
 

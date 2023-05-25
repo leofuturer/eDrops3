@@ -1,6 +1,6 @@
 export * from './before-checkout';
 export * from './check-email';
-export * from './chip-fab';
+export * from './chip-fab/[id]';
 export * from './coming-soon';
 export * from './email-unverified';
 export * from './email-verified';

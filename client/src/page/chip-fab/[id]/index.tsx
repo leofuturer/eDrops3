@@ -1,40 +1,48 @@
 import React, { Suspense, useContext, useEffect, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { Product } from 'shopify-buy'; // TODO: waiting on @types/shopify-buy to be updated
 import Loading from '@/component/ui/Loading';
 import { CartContext } from '@/context/CartContext';
-// import { ShopifyContext } from '@/context/ShopifyContext';
-import { FileInfo } from '@/types';
-import {
-  ewodFabServiceId
-} from '@/lib/constants/products';
+import { DTO, FileInfo } from '@/types';
+import { ewodFabServiceId } from '@/lib/constants/products';
 import { ROUTES } from '@/router/routes';
 import { api } from '@/api';
 import { Material } from '@/types/chip';
-const DXFPreview = React.lazy(() => import('./dxf_preview'));
+import { useCookies } from 'react-cookie';
+const DXFPreview = React.lazy(() => import('../dxf_preview'));
 
 export function ChipOrder() {
   const material: Material[] = [Material.Glass, Material.PCB, Material.Paper];
   const [customAttrs, setCustomAttrs] = useState<{
     material: Material
     wcpa: boolean;
-    fileInfo: FileInfo;
+    fileInfo: DTO<FileInfo>;
   }>({
     material: Material.Glass,
     wcpa: false,
-    fileInfo: {} as FileInfo
+    fileInfo: {} as DTO<FileInfo>
   });
   const [quantity, setQuantity] = useState(1);
   const [addingToCart, setAddingToCart] = useState(false);
   const [product, setProduct] = useState<Product>({} as Product);
 
-  const location = useLocation();
+  const [cookies] = useCookies(['userId']);
   const navigate = useNavigate();
 
   const cart = useContext(CartContext);
 
+  const { id } = useParams();
+
   // make sure file information is passed from all files or file upload page
-  useEffect(() => location.state.fileInfo ? setCustomAttrs(attrs => ({ ...attrs, fileInfo: location.state.fileInfo })) : navigate(ROUTES.ManageFiles), [location]);
+  useEffect(() => {
+    if (!id) {
+      navigate(ROUTES.ManageFiles);
+      return;
+    }
+    api.customer.getFile(cookies.userId, id).then((fileInfo) => {
+      setCustomAttrs(attrs => ({ ...attrs, fileInfo }));
+    });
+  }, [id]);
 
   useEffect(() => {
     api.product.get(ewodFabServiceId) // hard coded for chip order
@@ -67,7 +75,7 @@ export function ChipOrder() {
           {/* DY - replace temporary image above with a preview of the uploaded PDF */}
           <div className="">
             <Suspense fallback={<Loading />}>
-              <DXFPreview fileInfo={location.state.fileInfo} />
+              <DXFPreview fileInfo={customAttrs.fileInfo} />
             </Suspense>
           </div>
           <p className="text-xs text-center">

@@ -77,7 +77,7 @@ const useCart = () => {
       }).catch((err) => console.error(err));
   }
 
-  async function addChip(chip: Product, quantity: number, customAttrs: { material: Material, wcpa: string, fileInfo: FileInfo }): Promise<void> {
+  async function addChip(chip: Product, quantity: number, customAttrs: { material: Material, wcpa: string, fileInfo: DTO<FileInfo> }): Promise<void> {
     if (!cart.checkoutIdClient) await createCart();
     const data: Product & LineItemToAdd = {
       ...chip,

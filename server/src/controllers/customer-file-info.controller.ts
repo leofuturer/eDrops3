@@ -78,6 +78,28 @@ export class CustomerFileInfoController {
     });
   }
 
+  @authenticate('jwt')
+  @get('/customers/{id}/files/{fileId}', {
+    responses: {
+      '200': {
+        description: 'Get a file',
+        content: {
+          'application/json': {
+            schema: { type: 'array', items: getModelSchemaRef(FileInfo) },
+          },
+        },
+      },
+    },
+  })
+  async getById(
+    @param.path.string('id') id: typeof Customer.prototype.id,
+    @param.path.number('fileId') fileId: number,
+  ): Promise<FileInfo> {
+    const filesInfos = await this.customerRepository.fileInfos(id).find({ where: { id: fileId } });
+    return filesInfos[0];
+  }
+
+  @authenticate('jwt')
   @oas.response.file()
   @get('/customers/{id}/files/{fileId}/download', {
     responses: {
