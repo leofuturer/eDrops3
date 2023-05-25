@@ -9,6 +9,7 @@ import { api } from '@/api';
 import DeleteModal from '../modal/DeleteModal';
 
 export function FileList({ fileList }: { fileList: DTO<FileInfo>[] }) {
+  const [displayList, setDisplayList] = useState<DTO<FileInfo>[]>(fileList);
   const [cookies] = useCookies(['userType', 'userId'])
   const [showDelete, setShowDelete] = useState(false);
   const [deleteId, setDeleteId] = useState(0);
@@ -29,35 +30,21 @@ export function FileList({ fileList }: { fileList: DTO<FileInfo>[] }) {
         // for admin, `id` is file ID
         api.file.download(fileId);
     }
-    // let url = '';
-    // if (location.pathname === '/manage/files' && cookies.userType !== ROLES.Admin) {
-    //   // customer downloads a file
-    //   url = `${downloadFileById.replace('id', cookies.userId)}?access_token=${cookies.access_token}&fileId=${id}`;
-    // }
-    // // Admin retrieves files for particular customer
-    // else if (location.pathname === '/manage/admin-retrieve-user-files' && cookies.userType === ROLES.Admin && location.state.isCustomer) {
-    //   url = `${adminDownloadFile}?access_token=${cookies.access_token}&fileId=${id}`;
-    // }
-    // window.location.href = url;
   }
 
+  // Customer only
   function handleShop(fileId: number) {
     navigate(idRoute(ROUTES.ChipFab, fileId));
   }
 
+  // Customer only
   function handleDelete() {
-    const fileId = deleteId;
-    const url = `${customerDeleteFile.replace('id', cookies.userId)}?fileId=${fileId}`;
-    request(url, 'DELETE', {}, true)
-      .then((res) => {
-        setFileList(fileList.filter((file) => file.id !== fileId));
-      })
-      .then((res) => {
-        setShowDelete(false);
-      })
-      .catch((err) => {
-        console.error(err);
-      });
+    api.customer.deleteFile(cookies.userId, deleteId).then((res) => {
+      setDisplayList(displayList.filter((file) => file.id !== deleteId));
+      setShowDelete(false);
+    }).catch((err) => {
+      console.error(err);
+    });
   }
 
   return (
@@ -83,7 +70,7 @@ export function FileList({ fileList }: { fileList: DTO<FileInfo>[] }) {
           </tr>
         </thead>
         <tbody>
-          {fileList ? fileList.map((file, index) => (
+          {displayList ? displayList.map((file, index) => (
             <tr key={file.id}>
               <td className="p-2">{padZeroes(file.uploadTime)}</td>
               <td className="p-2">{file.fileName}</td>

@@ -1,10 +1,10 @@
-import { DTO, FoundryWorker, IncludeUser, User } from "@/types";
+import { DTO, FoundryWorker, IncludeUser, OrderChip, User } from "@/types";
 import { Resource } from "./lib/resource";
 import request from "./lib/api";
 
 class WorkerResource extends Resource<FoundryWorker> {
   constructor() {
-    super('/workers');
+    super('/foundry-workers');
   }
 
   /*
@@ -30,6 +30,16 @@ class WorkerResource extends Resource<FoundryWorker> {
   */
   async create(data: DTO<FoundryWorker & User>): Promise<DTO<FoundryWorker>> {
     return request<DTO<FoundryWorker>>(this.baseURL, 'POST', data).then((res) => {
+      return res.data;
+    });
+  }
+
+  async updateChip(id: string, chipOrderId: number, data: Partial<DTO<OrderChip>>): Promise<void> {
+    request(`${this.baseURL}/${id}/order-chips/${chipOrderId}`, 'PATCH', data);
+  }
+
+  async getChipOrders(id: string): Promise<DTO<OrderChip>[]> {
+    return request<DTO<OrderChip>[]>(`${this.baseURL}/${id}/order-chips`, 'GET', {}).then((res) => {
       return res.data;
     });
   }

@@ -1,6 +1,6 @@
 import { authenticate } from '@loopback/authentication';
 import { inject } from '@loopback/core';
-import { CountSchema, Filter, repository } from '@loopback/repository';
+import { Count, CountSchema, Filter, repository } from '@loopback/repository';
 import {
   ExpressRequestHandler,
   Request,
@@ -132,9 +132,9 @@ export class CustomerFileInfoController {
   async delete(
     @param.path.string('id') id: typeof Customer.prototype.id,
     @param.path.number('fileId') fileId: number,
-  ): Promise<void> {
-    // Soft delete
-    this.customerRepository.fileInfos(id).delete({ id: fileId });
+  ): Promise<Count> {
+    // Should we soft delete?
     // Hard delete
+    return this.customerRepository.fileInfos(id).delete({ id: fileId });
   }
 }

@@ -5,7 +5,7 @@ import Loading from '@/component/ui/Loading';
 import { DTO, OrderChip } from '@/types';
 import { ROUTES } from '@/router/routes';
 
-function CartChip({ chip, onDelete, onChange }: { chip: DTO<OrderChip>, onDelete: () => Promise<void>, onChange: (chip: DTO<OrderChip>, quantity: number) => void }) {
+export function CartChip({ chip, onDelete, onChange }: { chip: DTO<OrderChip>, onDelete: () => Promise<void>, onChange: (chip: DTO<OrderChip>, quantity: number) => void }) {
   const chipFabState = {
     fileInfo: {
       id: chip.fileInfoId,

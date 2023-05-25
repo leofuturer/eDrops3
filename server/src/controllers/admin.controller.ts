@@ -144,7 +144,7 @@ export class AdminController {
     await this.adminRepository.deleteAdmin(id);
   }
 
-  @get('/admins/chip-orders')
+  @get('/admins/order-chips')
   @response(200, {
     description: 'Array of OrderChip model instances',
     content: {

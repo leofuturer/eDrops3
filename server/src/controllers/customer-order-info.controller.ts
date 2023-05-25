@@ -25,7 +25,7 @@ export class CustomerOrderInfoController {
     protected orderInfoRepository: OrderInfoRepository,
   ) {}
 
-  @get('/customers/{id}/chip-orders', {
+  @get('/customers/{id}/order-chips', {
     responses: {
       '200': {
         description: 'Get all chip orders of a customer',
