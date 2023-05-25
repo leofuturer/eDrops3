@@ -29,6 +29,8 @@ services:
     depends_on:
       edrop_mysqldb:
         condition: service_healthy
+      edrop_ngrok:
+        condition: service_healthy
   
   edrop_ngrok:
     # for local dev development, to receive Shopify webhooks
@@ -38,6 +40,12 @@ services:
       - ./deploy/dev/ngrok.env
     ports:
       - 4040:4040 # ngrok web interface
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4040"]
+      interval: 15s
+      timeout: 30s
+      retries: 8
+      start_period: 30s
 
 volumes:
   dockerdbdev:
