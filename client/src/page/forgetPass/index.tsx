@@ -3,6 +3,7 @@ import { useState } from 'react';
 import * as Yup from 'yup';
 import { request } from '../../api';
 import { customerResendVerifyEmail, userForgetPass } from '../../api';
+import { forgotPassword } from '../../api/user';
 import MessageLayout from '../../component/layout/MessageLayout';
 
 function ForgetPass() {
@@ -14,9 +15,8 @@ function ForgetPass() {
     };
     switch (helpType) {
       case 'resetPassword':
-        request(userForgetPass, 'POST', data, false)
-          .then((res) => {
-          }).catch((err) => {
+        forgotPassword(email)
+          .catch((err) => {
             if (import.meta.env.DEV) {
               console.error(err); // Maybe take out as attackers can view console & brute force emails
             }

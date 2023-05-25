@@ -1,8 +1,7 @@
 import { Formik, Form } from 'formik';
 import { useEffect, useState } from 'react';
 import { NavLink, useNavigate, useSearchParams } from 'react-router-dom';
-import { request } from '../../api';
-import { userResetPass } from '../../api';
+import { resetPassword } from '../../api/user';
 import FormGroup from '../../component/form/FormGroup';
 import MessageLayout from '../../component/layout/MessageLayout';
 import { ResetPasswordSchema } from '../../schemas';
@@ -21,11 +20,11 @@ function ResetPassword() {
   }, [searchParams])
 
   function handleReset({ newPassword, confirmNewPassword }: { newPassword: string, confirmNewPassword: string }) {
-    const body = {
-      newPassword: newPassword,
-      accessToken: resetToken,
-    };
-    request(userResetPass, 'POST', body, false)
+    // const body = {
+    //   newPassword: newPassword,
+    //   accessToken: resetToken,
+    // };
+    resetPassword(newPassword, resetToken)
       .then((res) => {
         setPasswordChanged(true);
         setErrorDetected(false);

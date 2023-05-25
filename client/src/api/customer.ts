@@ -38,9 +38,7 @@
 
 // export const findCustomerByWhere = `${ApiRootUrl}/customers`; // not used
 
-// export const credsTaken = `${ApiRootUrl}/users/creds-taken`;
-//      auth.ts
-//          - checks if email or username has been taken
+
 
 // export const customerResendVerifyEmail = `${ApiRootUrl}/customers/resendVerifyEmail`;
 //      (forgetPass) index.tsx

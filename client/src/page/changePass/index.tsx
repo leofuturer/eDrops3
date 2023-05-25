@@ -2,8 +2,7 @@ import { Form, Formik } from 'formik';
 import { useState } from 'react';
 import { useCookies } from 'react-cookie';
 import { useNavigate } from 'react-router-dom';
-import { request } from '../../api';
-import { userChangePass } from '../../api';
+import { changePassword } from '../../api/user';
 import FormGroup from '../../component/form/FormGroup';
 import ManageRightLayout from '../../component/layout/ManageRightLayout';
 import Loading from '../../component/ui/Loading';
@@ -22,12 +21,12 @@ function ChangePassword() {
     confirmNewPassword: string;
   }, { setErrors }: { setErrors: any }) {
     setIsLoading(false);
-    const data = {
-      oldPassword: values.oldPassword,
-      newPassword: values.newPassword,
-    };
+    // const data = {
+    //   oldPassword: values.oldPassword,
+    //   newPassword: values.newPassword,
+    // };
     // check if errors is empty
-    request(userChangePass, 'POST', data, true)
+    changePassword(values.oldPassword, values.newPassword)
       // .then((res) => {
       //   const userToken = Cookies.get('access_token');
       //   Cookies.remove('access_token');
@@ -69,9 +68,9 @@ function ChangePassword() {
         onSubmit={(values, { setErrors }) => handleChangePass(values, { setErrors })}
       >
         <Form className="flex flex-col space-y-2">
-          <FormGroup name="oldPassword" type="password" required autoComplete="current-password"/>
-          <FormGroup name="newPassword" type="password" required autoComplete="new-password"/>
-          <FormGroup name="confirmNewPassword" type="password" required autoComplete="new-password"/>
+          <FormGroup name="oldPassword" type="password" required autoComplete="current-password" />
+          <FormGroup name="newPassword" type="password" required autoComplete="new-password" />
+          <FormGroup name="confirmNewPassword" type="password" required autoComplete="new-password" />
           {isLoading
             ? <Loading />
             : (

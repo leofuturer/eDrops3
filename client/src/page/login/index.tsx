@@ -2,10 +2,7 @@ import { useState } from 'react';
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { useCookies } from 'react-cookie';
 import { Field, Formik, Form, FieldProps } from 'formik';
-import { request } from '../../api';
-import {
-  userLogin
-} from '../../api';
+import { login } from '../../api/user';
 import SEO from '../../component/header/seo';
 import { metadata } from './metadata';
 import { LoginSchema } from '../../schemas';
@@ -27,18 +24,19 @@ function Login() {
       username: usernameOrEmail,
       password: password,
     };
-    request(userLogin, 'POST', data, false)
+
+    login(data)
       .then((res) => {
         // console.log(res);
         // setCookie('base_access_token', res.data.token);
-        setCookie('access_token', res.data.token, { path: '/' });
-        setCookie('userId', res.data.userId, { path: '/' });
-        setCookie('userType', res.data.userType, { path: '/' });
-        setCookie('username', res.data.username, { path: '/' });
+        setCookie('access_token', res.token, { path: '/' });
+        setCookie('userId', res.userId, { path: '/' });
+        setCookie('userType', res.userType, { path: '/' });
+        setCookie('username', res.username, { path: '/' });
         navigate(location.state?.path || '/home');
         setError(false);
       }).catch((err) => {
-        // console.error(err);
+        //console.error(err);
         if (err.response.status === 401) {
           setError(true);
         }

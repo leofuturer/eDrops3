@@ -1,7 +1,5 @@
 // Admin
-// export const AdminLogin = `${ApiRootUrl}/admins/login`; // not used
 
-// export const AdminLogout = `${ApiRootUrl}/admins/logout`; // not used
 
 // export const adminGetProfile = `${ApiRootUrl}/admins/id`;
 //      orderChat.tsx
@@ -53,13 +51,11 @@
 //      (admins) index.tsx
 //          - delete an admin
 
-// export const getApiToken = `${ApiRootUrl}/admins/getApi`;    // not used
 
 // export const returnAllItems = `${ApiRootUrl}/admins/getItems`;
 //      (allitems) index.tsx
 //          - gets a list of all of the items
 
-// export const returnOneItem = `${ApiRootUrl}/admins/getOne`;  // not used
 
 // general uses
 //  getting admin profile info
