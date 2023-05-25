@@ -11,10 +11,9 @@ export function AllFiles() {
   const [cookies] = useCookies(['access_token']);
 
   function handleDownload(file: DTO<FileInfo>) {
-    const fileId = file.id;
-    const url = `${adminDownloadFile}?access_token=${cookies.access_token}&fileId=${file.id}`;
+    api.file.download(file.id as number);
     // console.log(url);
-    window.location.href = url;
+    // window.location.href = url;
   }
 
   useEffect(() => {

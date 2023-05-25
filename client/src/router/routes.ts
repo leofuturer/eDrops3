@@ -14,7 +14,7 @@ export enum ROUTES {
   EmailUnverified = '/email-unverified',
   // Authenticated routes
   Upload = '/upload',
-  ChipFab = '/chip-fab',
+  ChipFab = '/chip-fab/:id',
   BeforeCheckout = '/before-checkout',
   // Manage routes
   // Universal routes

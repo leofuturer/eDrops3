@@ -9,7 +9,7 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "engines": {
-    "node": "14 || 16 || 17 || 18"
+    "node": "16 || 17 || 18"
   },
   "scripts": {
     "build": "lb-tsc",
@@ -39,7 +39,7 @@
     "start": "node -r source-map-support/register .",
     "clean": "lb-clean dist *.tsbuildinfo .eslintcache",
     "rebuild": "npm run clean && npm run build",
-    "endpoints": "ts-node ./src/endpoints.ts"
+    "endpoints": "ts-node ./scripts/endpoints.ts"
   },
   "repository": {
     "type": "git",

@@ -1,33 +1,38 @@
+import { api } from '@/api';
 import { CartContext } from '@/context';
 import { ROLES } from '@/lib/constants/roles';
 import { ROUTES, idRoute } from '@/router/routes';
-import { DTO, OrderChip } from '@/types'
-import React, { useContext } from 'react'
+import { DTO, FoundryWorker, IncludeUser, OrderChip } from '@/types'
+import React, { useContext, useEffect, useState } from 'react'
 import { useCookies } from 'react-cookie';
 
 function ChipOrderList({ chipOrderList }: { chipOrderList: DTO<OrderChip>[] }) {
-  const [cookies] = useCookies(['userType']);
+  const [workerList, setWorkerList] = useState<DTO<IncludeUser<FoundryWorker>>[]>([]);
+  const [cookies] = useCookies(['userType', 'userId']);
   const cart = useContext(CartContext);
 
-  function handleDownload(itemId: number) {
-    // console.log(e.target.id);
-    let url = '';
-    // TODO: fix this
-    // if (cookies.userType === ROLES.Customer) {
-    //   // for customer, `id` is file ID
-    //   url = downloadFileById.replace('id', cookies.userId);
-    //   url += `?access_token=${Cookies.get('access_token')}&fileId=${itemId}`;
-    // } else if (cookies.userType === ROLES.Worker) {
-    //   // for worker, `id` is chipOrder ID (associated with that file)
-    //   url = workerDownloadFile.replace('id', cookies.userId);
-    //   url += `?access_token=${Cookies.get('access_token')}&chipOrderId=${itemId}`;
-    // } else if (cookies.userType === ROLES.Admin) {
-    //   // for admin, `id` is file ID
-    //   url = adminDownloadFile;
-    //   url += `?access_token=${Cookies.get('access_token')}&fileId=${itemId}`;
-    // }
+  useEffect(() => {
+    cookies.userType === ROLES.Admin && api.worker.getAll().then((workers) => {
+      setWorkerList(workers);
+    });
+  }, [])
 
-    window.location.href = url;
+  function handleDownload(fileId: number) {
+    switch (cookies.userType) {
+      case ROLES.Customer:
+        // for customer, `id` is file ID
+        api.customer.downloadFile(cookies.userId, fileId);
+        break;
+      case ROLES.Worker:
+        // for worker, `id` is chipOrder ID (associated with that file)
+        // api.worker.downloadFile(cookies.userId, fileId);
+        break;
+      case ROLES.Admin:
+        // for admin, `id` is file ID
+        api.file.download(fileId);
+    }
+
+    // window.location.href = url;
   }
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>, chipOrderId: number) {
@@ -51,14 +56,14 @@ function ChipOrderList({ chipOrderList }: { chipOrderList: DTO<OrderChip>[] }) {
   }
 
   // TODO: work on option for admin to reassign if needed
-  // function handleAssign(orderIndex: number) {
-  //   // Using the window.open() method to open a new window and display the page based on the passed in redirectUrl
-  //   const redirectUrl = '/manage/assign-orders';
-  //   const strWindowFeatures = 'width=1200px, height=900px';
-  //   const newWindow = window.open(redirectUrl, '_blank', strWindowFeatures);
-  //   // @ts-expect-error
-  //   newWindow._order = orderList[orderIndex];
-  // }
+  function handleAssign(e: React.ChangeEvent<HTMLSelectElement>) {
+    // Using the window.open() method to open a new window and display the page based on the passed in redirectUrl
+    const redirectUrl = '/manage/assign-orders';
+    const strWindowFeatures = 'width=1200px, height=900px';
+    const newWindow = window.open(redirectUrl, '_blank', strWindowFeatures);
+    // @ts-expect-error
+    newWindow._order = orderList[orderIndex];
+  }
 
   function handleChat(orderId: number) {
     const redirectUrl = idRoute(ROUTES.SubpageOrderChat, orderId);
@@ -124,11 +129,18 @@ function ChipOrderList({ chipOrderList }: { chipOrderList: DTO<OrderChip>[] }) {
             <td className="">
               <i className="fa fa-commenting cursor-pointer" onClick={() => handleChat(item?.orderInfoId)} />
             </td>
-            {/* {cookies.userType === ROLES.Admin &&
+            {cookies.userType === ROLES.Admin &&
               <td className="">
-                <i className="fa fa-users cursor-pointer" onClick={() => handleAssign(index)} />
+                <div className="flex flex-row space-x-2">
+                  <i className="fa fa-user-group cursor-pointer" />
+                  <select title="workers" onChange={(e) => handleAssign(e)}>
+                    {workerList.map((worker) => (
+                      <option value={worker?.id}>{worker?.user.username}</option>
+                    ))}
+                  </select>
+                </div>
               </td>
-            } */}
+            }
           </tr>
         )) : (<tr>
           <td className="p-2" colSpan={9}>

@@ -113,10 +113,12 @@ class CustomerResource extends Resource<Customer> {
     });
   }
 
-  async downloadFile(id: string, fileId: string): Promise<Response> {
-    return request<Response>(`${this.baseURL}/${id}/files/${fileId}/download`, 'GET', {}).then((res) => {
-      return res.data;
-    });
+  async downloadFile(id: string, fileId: number): Promise<void> {
+    // return request<Response>(`${this.baseURL}/${id}/files/${fileId}/download`, 'GET', {}).then((res) => {
+    //   return res.data;
+    // });
+
+    window.location.href = `/api/${this.baseURL}/${id}/files/${fileId}/download`;
   }
 }
 
