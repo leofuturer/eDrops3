@@ -2,10 +2,10 @@ import _ from 'lodash';
 import { useCallback, useEffect, useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import Loading from '@/component/ui/Loading';
-import { ProductOrder } from '@/types';
+import { DTO, OrderProduct } from '@/types';
 import { ROUTES, idRoute } from '@/router/routes';
 
-function CartProduct({ product, onDelete, onChange }: { product: ProductOrder, onDelete: () => Promise<void>, onChange: (product: ProductOrder, quantity: number) => void }) {
+function CartProduct({ product, onDelete, onChange }: { product: DTO<OrderProduct>, onDelete: () => Promise<void>, onChange: (product: DTO<OrderProduct>, quantity: number) => void }) {
   const [qty, setQty] = useState(product.quantity);
   const [deleting, setDeleting] = useState(false);
 

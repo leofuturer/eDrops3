@@ -6,6 +6,7 @@ import { api } from '@/api';
 import { Address, Customer, DTO, FileInfo, OrderChip, OrderInfo, OrderProduct } from '@/types';
 import { PusherContext } from '@/context';
 import { ROUTES } from '@/router/routes';
+import { Material } from '@/types/chip';
 
 const useCart = () => {
   const [cart, setCart] = useState<DTO<OrderInfo>>({} as DTO<OrderInfo>);

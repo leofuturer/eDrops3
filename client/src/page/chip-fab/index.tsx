@@ -10,13 +10,8 @@ import {
 } from '@/lib/constants/products';
 import { ROUTES } from '@/router/routes';
 import { api } from '@/api';
+import { Material } from '@/types/chip';
 const DXFPreview = React.lazy(() => import('./dxf_preview'));
-
-enum Material {
-  Glass = 'ITO Glass',
-  PCB = 'PCB',
-  Paper = 'Paper'
-}
 
 export function ChipOrder() {
   const material: Material[] = [Material.Glass, Material.PCB, Material.Paper];

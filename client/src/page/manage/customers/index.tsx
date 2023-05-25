@@ -9,7 +9,7 @@ import { ROUTES, idRoute } from '@/router/routes';
 export function Customers() {
   const [customerList, setCustomerList] = useState<DTO<IncludeUser<Customer>>[]>([]);
   const [showDelete, setShowDelete] = useState(false);
-  const [deleteCustomer, setDeleteCustomer] = useState<Customer>({} as Customer);
+  const [deleteCustomer, setDeleteCustomer] = useState<DTO<Customer>>({} as DTO<Customer>);
 
   const navigate = useNavigate();
 
@@ -17,15 +17,15 @@ export function Customers() {
     navigate(ROUTES.ManageCustomersAdd);
   }
 
-  function handleRetrieveFiles(customer: Customer) {
+  function handleRetrieveFiles(customer: DTO<Customer>) {
     navigate(idRoute(ROUTES.ManageCustomersFiles, customer.id as string));
   }
 
-  function handleRetrieveOrders(customer: Customer) {
+  function handleRetrieveOrders(customer: DTO<Customer>) {
     navigate(idRoute(ROUTES.ManageCustomersOrders, customer.id as string));
   }
 
-  function handleDeleteCustomer(customer: Customer) {
+  function handleDeleteCustomer(customer: DTO<Customer>) {
     setShowDelete(true);
     setDeleteCustomer(customer);
   }
