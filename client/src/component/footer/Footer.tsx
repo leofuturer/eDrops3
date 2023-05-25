@@ -40,7 +40,7 @@ function FooterPage() {
             <p className="text-primary">Digital Microfluidics Control System</p>
             <img
               className="h-10 w-10 aspect-square"
-              src="/img/control-system.png"
+              src="/img/control-system.webp"
               alt="Digital Microfluidics Control System"
             />
           </NavLink>
@@ -48,7 +48,7 @@ function FooterPage() {
             <p className="text-primary">PCB-based Digital Microfluidics Chip</p>
             <img
               className="h-10 w-10 aspect-square"
-              src="/img/pcb_chip.png"
+              src="/img/pcb_chip.webp"
               alt="PCB-based Digital Microfluidics Chip"
             />
           </NavLink>
