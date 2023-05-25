@@ -4,7 +4,7 @@ import { Product } from 'shopify-buy'; // TODO: waiting on @types/shopify-buy to
 import Loading from '@/component/ui/Loading';
 import { CartContext } from '@/context/CartContext';
 // import { ShopifyContext } from '@/context/ShopifyContext';
-import { FileInfo } from '@/types';
+import { FileInfo, Material } from '@/types';
 import {
   ewodFabServiceId
 } from '@/lib/constants/products';
@@ -13,11 +13,6 @@ import { api } from '@/api';
 const DXFPreview = React.lazy(() => import('./dxf_preview'));
 
 export function ChipOrder() {
-  enum Material {
-    Glass = 'ITO Glass',
-    PCB = 'PCB',
-    Paper = 'Paper',
-  }
   const material: Material[] = [Material.Glass, Material.PCB, Material.Paper];
   const [customAttrs, setCustomAttrs] = useState<{
     material: Material

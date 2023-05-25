@@ -1,6 +1,7 @@
-import { DTO, OrderChip, OrderInfo, OrderMessage, OrderProduct } from "@/types";
+import type { DTO, OrderChip, OrderInfo, OrderMessage, OrderProduct } from "@/types";
 import { Resource } from "./lib/resource";
 import request from "./lib/api";
+import type { LineItemToAdd, Product } from "shopify-buy";
 
 class OrderResource extends Resource<OrderInfo> {
   constructor() {
@@ -8,19 +9,43 @@ class OrderResource extends Resource<OrderInfo> {
   }
 
   async getMessages(id: number): Promise<DTO<OrderMessage>[]> {
-    return request<DTO<OrderMessage>[]>(`/orders/${id}/messages`, 'GET', {}).then((res) => res.data);
+    return request<DTO<OrderMessage>[]>(`${this.baseURL}/${id}/messages`, 'GET', {}).then((res) => res.data);
   }
 
   async addMessage(id: number, data: DTO<OrderMessage>): Promise<DTO<OrderMessage>> {
-    return request<DTO<OrderMessage>>(`/orders/${id}/messages`, 'POST', data).then((res) => res.data);
+    return request<DTO<OrderMessage>>(`${this.baseURL}/${id}/messages`, 'POST', data).then((res) => res.data);
+  }
+
+  async addProductOrder(id: number, data: Product & LineItemToAdd): Promise<DTO<OrderProduct>> {
+    return request<DTO<OrderProduct>>(`${this.baseURL}/${id}/order-products`, 'POST', data).then((res) => res.data);
+  }
+
+  async updateProductOrder(id: number, orderProductId: number, data: DTO<OrderChip>): Promise<DTO<OrderChip>> {
+    return request<DTO<OrderChip>>(`${this.baseURL}/${id}/order-products/${orderProductId}`, 'PATCH', data).then((res) => res.data);
+  }
+
+  async deleteProductOrder(id: number, orderProductId: number): Promise<void> {
+    request(`${this.baseURL}/${id}/order-products/${orderProductId}`, 'DELETE', {});
   }
 
   async getProductOrders(id: number): Promise<DTO<OrderProduct>[]> {
-    return request<DTO<OrderProduct>[]>(`/orders/${id}/order-products`, 'GET', {}).then((res) => res.data);
+    return request<DTO<OrderProduct>[]>(`${this.baseURL}/${id}/order-products`, 'GET', {}).then((res) => res.data);
+  }
+
+  async addChipOrder(id: number, data: Product & LineItemToAdd): Promise<DTO<OrderChip>> {
+    return request<DTO<OrderChip>>(`${this.baseURL}/${id}/order-chips`, 'POST', data).then((res) => res.data);
+  }
+
+  async updateChipOrder(id: number, orderChipId: number, data: DTO<OrderChip>): Promise<DTO<OrderChip>> {
+    return request<DTO<OrderChip>>(`${this.baseURL}/${id}/order-chips/${orderChipId}`, 'PATCH', data).then((res) => res.data);
+  }
+
+  async deleteChipOrder(id: number, orderChipId: number): Promise<void> {
+    request(`${this.baseURL}/${id}/order-chips/${orderChipId}`, 'DELETE', {});
   }
 
   async getChipOrders(id: number): Promise<DTO<OrderChip>[]> {
-    return request<DTO<OrderChip>[]>(`/orders/${id}/order-chips`, 'GET', {}).then((res) => res.data);
+    return request<DTO<OrderChip>[]>(`${this.baseURL}/${id}/order-chips`, 'GET', {}).then((res) => res.data);
   }
 }
 

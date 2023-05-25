@@ -4,6 +4,7 @@ import {
   repository
 } from '@loopback/repository';
 import {
+  del,
   get,
   getModelSchemaRef, HttpErrors,
   param,
@@ -15,6 +16,7 @@ import {
 import { OrderItemCreateInterceptor } from '../interceptors';
 import { OrderChip, OrderInfo } from '../models';
 import { OrderInfoRepository } from '../repositories';
+import { LineItemToAdd, Product } from 'shopify-buy';
 
 export class OrderInfoOrderChipController {
   constructor(
@@ -63,52 +65,53 @@ export class OrderInfoOrderChipController {
         },
       },
     })
-    orderChip: Omit<OrderChip, 'id'>,
+    chip: Product & LineItemToAdd,
   ): Promise<void> {
+    this.orderInfoRepository.addOrderChip(id, chip);
     // Increment quantity if product already exists in cart
-    this.orderInfoRepository
-      .orderChips(id)
-      .find({
-        where: {
-          variantIdShopify: orderChip.variantIdShopify,
-          otherDetails: orderChip.otherDetails,
-        },
-      })
-      .then(orderChips => {
-        if (orderChips.length > 1) {
-          throw new HttpErrors.UnprocessableEntity(
-            'More than one entry for product',
-          );
-        } else if (orderChips.length === 0) {
-          this.orderInfoRepository
-            .orderChips(id)
-            .create(orderChip)
-            .then(orderChipInstance => {
-              console.log(
-                `Created orderChip with id ${orderChipInstance.id}, product ${orderChipInstance.name}`,
-              );
-              return orderChipInstance;
-            })
-            .catch(err => {
-              console.error(err);
-            });
-        } else if (orderChips.length === 1) {
-          this.orderInfoRepository.orderChips(id).patch({
-            quantity: orderChips[0].quantity + orderChip.quantity,
-            lastUpdated: orderChips[0].lastUpdated,
-          }, { id: orderChips[0].id })
-            .catch(err => {
-              console.error(err);
-            });
-        } else {
-          throw new HttpErrors.UnprocessableEntity(
-            'Unknown entries for product',
-          );
-        }
-      })
-      .catch(err => {
-        throw new HttpErrors.InternalServerError(err);
-      });
+    // this.orderInfoRepository
+    //   .orderChips(id)
+    //   .find({
+    //     where: {
+    //       variantIdShopify: orderChip.variantIdShopify,
+    //       otherDetails: orderChip.otherDetails,
+    //     },
+    //   })
+    //   .then(orderChips => {
+    //     if (orderChips.length > 1) {
+    //       throw new HttpErrors.UnprocessableEntity(
+    //         'More than one entry for product',
+    //       );
+    //     } else if (orderChips.length === 0) {
+    //       this.orderInfoRepository
+    //         .orderChips(id)
+    //         .create(orderChip)
+    //         .then(orderChipInstance => {
+    //           console.log(
+    //             `Created orderChip with id ${orderChipInstance.id}, product ${orderChipInstance.name}`,
+    //           );
+    //           return orderChipInstance;
+    //         })
+    //         .catch(err => {
+    //           console.error(err);
+    //         });
+    //     } else if (orderChips.length === 1) {
+    //       this.orderInfoRepository.orderChips(id).patch({
+    //         quantity: orderChips[0].quantity + orderChip.quantity,
+    //         lastUpdated: orderChips[0].lastUpdated,
+    //       }, { id: orderChips[0].id })
+    //         .catch(err => {
+    //           console.error(err);
+    //         });
+    //     } else {
+    //       throw new HttpErrors.UnprocessableEntity(
+    //         'Unknown entries for product',
+    //       );
+    //     }
+    //   })
+    //   .catch(err => {
+    //     throw new HttpErrors.InternalServerError(err);
+    //   });
   }
 
   @patch('/orders/{id}/order-chips/{orderChipId}')
@@ -126,66 +129,29 @@ export class OrderInfoOrderChipController {
       },
     })
     orderChip: Partial<OrderChip>,
-  ): Promise<void> {
-    this.orderInfoRepository
-      .orderChips(id)
-      .patch(orderChip, { id: orderChipId })
-      .then(() => {
-        console.log(
-          `Patched orderChip with id ${orderChipId} in order with id ${id}`,
-        );
-      })
-      .catch(err => {
-        console.error(err);
-      });
+  ): Promise<OrderChip> {
+    return this.orderInfoRepository.updateOrderChip(id, orderChipId, orderChip);
+    // this.orderInfoRepository
+    //   .orderChips(id)
+    //   .patch(orderChip, { id: orderChipId })
+    //   .then(() => {
+    //     console.log(
+    //       `Patched orderChip with id ${orderChipId} in order with id ${id}`,
+    //     );
+    //   })
+    //   .catch(err => {
+    //     console.error(err);
+    //   });
   }
 
-  @patch('/orders/{id}/order-chips')
+  @del('/orders/{id}/order-chips/{orderChipId}')
   @response(204, {
-    description: 'OrderChip LineItemIdShopify PATCH success',
+    description: 'OrderChip DELETE success',
   })
-  async patch(
+  async deleteById(
     @param.path.number('id') id: typeof OrderInfo.prototype.id,
-    @requestBody() body: {
-      lineItemIdShopify: string;
-      variantIdShopify: string;
-      otherDetails: string;
-      updatedAt: string;
-    },
+    @param.path.number('orderChipId') orderChipId: typeof OrderChip.prototype.id,
   ): Promise<void> {
-    this.orderInfoRepository
-      .orderChips(id)
-      .find({
-        where: {
-          variantIdShopify: body.variantIdShopify,
-          otherDetails: body.otherDetails,
-        },
-      })
-      .then(orderChips => {
-        if (orderChips.length > 1) {
-          throw new HttpErrors.UnprocessableEntity(
-            'More than one entry for product',
-          );
-        } else if (orderChips.length === 0) {
-          throw new HttpErrors.UnprocessableEntity(
-            'Entry for product does not exist',
-          );
-        } else if (orderChips.length === 1) {
-          this.orderInfoRepository.orderChips(id).patch({
-            lineItemIdShopify: body.lineItemIdShopify,
-            lastUpdated: body.updatedAt,
-          }, { id: orderChips[0].id })
-            .catch(err => {
-              console.error(err);
-            });
-        } else {
-          throw new HttpErrors.UnprocessableEntity(
-            'Unknown entries for product',
-          );
-        }
-      })
-      .catch(err => {
-        throw new HttpErrors.InternalServerError(err);
-      });
+    return this.orderInfoRepository.deleteOrderChip(id, orderChipId);
   }
 }

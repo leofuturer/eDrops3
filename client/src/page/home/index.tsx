@@ -4,6 +4,7 @@ import SEO from '@/component/header/seo';
 import { controlSysId, pcbChipId, testBoardId } from '@/lib/constants/products';
 import { metadata } from './metadata';
 import { ROUTES, idRoute } from '@/router/routes';
+import { ROLES } from '@/lib/constants/roles';
 
 export function Home() {
   const [cookies] = useCookies(['userType']);

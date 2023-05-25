@@ -4,14 +4,18 @@ import {
 } from '@loopback/repository';
 import {
   HttpErrors,
+  Response,
+  RestBindings,
   get,
   getModelSchemaRef,
   param, post,
   requestBody,
   response
 } from '@loopback/rest';
-import { Customer, OrderChip, OrderInfo } from '../models';
+import { Address, Customer, OrderChip, OrderInfo } from '../models';
 import { CustomerRepository, OrderInfoRepository } from '../repositories';
+import { request } from 'http';
+import { inject } from '@loopback/core';
 
 export class CustomerOrderInfoController {
   constructor(
@@ -88,6 +92,34 @@ export class CustomerOrderInfoController {
   async getCustomerCart(
     @param.path.string('id') id: string,
   ): Promise<Partial<OrderInfo> | null>{
-    return this.customerRepository.getCustomerCart(id);
+    return this.customerRepository.getCart(id);
+  }
+
+  @post('/customers/{id}/orders/{orderId}/checkout')
+  @response(200, {
+    description: 'Create new order',
+    content: {
+      'application/json': {
+        schema: {type: 'object', items: getModelSchemaRef(OrderInfo)},
+      },
+    },
+  })
+  async checkoutCart(
+    @param.path.string('id') id: typeof Customer.prototype.id,
+    @param.path.number('orderId') orderId: typeof OrderInfo.prototype.id,
+    @requestBody({
+      content: {
+        'application/json': {
+          schema: getModelSchemaRef(Address, {
+            title: 'NewAddress',
+            exclude: ['id'],
+            partial: true,
+          }),
+        },
+      },
+    })
+    address: Address,
+  ): Promise<OrderInfo> {
+    return this.customerRepository.checkoutCart(id, orderId, address);
   }
 }

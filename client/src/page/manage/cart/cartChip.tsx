@@ -2,10 +2,10 @@ import _ from 'lodash';
 import { useCallback, useEffect, useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import Loading from '@/component/ui/Loading';
-import { ChipOrder } from '@/types';
+import { DTO, OrderChip } from '@/types';
 import { ROUTES } from '@/router/routes';
 
-function CartChip({ chip, onDelete, onChange }: { chip: ChipOrder, onDelete: () => Promise<void>, onChange: (chip: ChipOrder, quantity: number) => void }) {
+function CartChip({ chip, onDelete, onChange }: { chip: DTO<OrderChip>, onDelete: () => Promise<void>, onChange: (chip: DTO<OrderChip>, quantity: number) => void }) {
   const chipFabState = {
     fileInfo: {
       id: chip.fileInfoId,

@@ -10,7 +10,7 @@ import { ROUTES, idRoute } from '@/router/routes';
 export function Admins() {
   const [adminList, setAdminList] = useState<DTO<IncludeUser<Admin>>[]>([]);
   const [showDelete, setShowDelete] = useState(false);
-  const [deleteAdmin, setDeleteAdmin] = useState<Admin>({} as Admin);
+  const [deleteAdmin, setDeleteAdmin] = useState<DTO<Admin>>({} as DTO<Admin>);
 
   const navigate = useNavigate();
 
@@ -26,11 +26,11 @@ export function Admins() {
     }).catch((err) => console.log(err));
   }, []);
 
-  function handleEditAdmin(admin: Admin) {
+  function handleEditAdmin(admin: DTO<Admin>) {
     navigate(idRoute(ROUTES.ManageAdminsUpdate, admin.id as string));
   }
 
-  function handleDeleteAdmin(admin: Admin) {
+  function handleDeleteAdmin(admin: DTO<Admin>) {
     setShowDelete(true);
     setDeleteAdmin(admin);
   }

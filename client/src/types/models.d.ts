@@ -1,4 +1,4 @@
-export type * from '../../../server/src/lib/types/model';
+export * from '../../../server/src/lib/types/model';
 
 import { Admin, Customer, FoundryWorker, User } from '../../../server/src/lib/types/model';
 
