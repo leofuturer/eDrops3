@@ -27,15 +27,22 @@ import { AddressRepository } from './customer-address.repository';
 import { FileInfoRepository } from './file-info.repository';
 import { OrderInfoRepository } from './order-info.repository';
 import { UserRepository } from './user.repository';
+import fetch from 'node-fetch';
 import { Client, Product, buildClient } from 'shopify-buy';
 
 const CONTAINER_NAME = process.env.S3_BUCKET_NAME ?? 'edrop-v2-files';
+
+// https://stackoverflow.com/questions/48433783/referenceerror-fetch-is-not-defined
+// A bit of a weird error
+// @ts-expect-error
+global.fetch = fetch;
 
 export class CustomerRepository extends DefaultCrudRepository<
   Customer,
   typeof Customer.prototype.id,
   CustomerRelations
 > {
+  
   public readonly addresses: HasManyRepositoryFactory<
     Address,
     typeof Customer.prototype.id
