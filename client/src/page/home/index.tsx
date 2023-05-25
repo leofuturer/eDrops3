@@ -38,19 +38,19 @@ export function Home() {
         <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-2 sm:gap-4 xl:gap-10 w-3/4 xl:w-2/3">
           <NavLink to={idRoute(ROUTES.Product, controlSysId)} className="flex flex-col">
             <figure className="scale-90 hover:scale-100 duration-500 ease-in-out">
-              <img src="/img/control-system.png" alt="Digital Microfluidics Control System" className="pointer-events-none" />
+              <img src="/img/control-system.webp" alt="Digital Microfluidics Control System" className="pointer-events-none" />
             </figure>
             <h4 className="text-primary_light text-lg border-t-2 py-8 text-center">Digital Microfluidics Control System</h4>
           </NavLink>
           <NavLink to={idRoute(ROUTES.Product, pcbChipId)} className="flex flex-col">
             <figure className="scale-90 hover:scale-100 duration-500 ease-in-out">
-              <img src="/img/pcb_chip.png" alt="PCB-based Digital Microfluidics Chip" className="pointer-events-none" />
+              <img src="/img/pcb_chip.webp" alt="PCB-based Digital Microfluidics Chip" className="pointer-events-none" />
             </figure>
             <h4 className="text-primary_light text-lg border-t-2 py-8 text-center">PCB-based Digital Microfluidics Chip</h4>
           </NavLink>
           <NavLink to={idRoute(ROUTES.Product, testBoardId)} className="flex flex-col">
             <figure className="scale-90 hover:scale-100 duration-500 ease-in-out">
-              <img src="/img/inspection_board.png" alt="Control System Inspection Board" className="pointer-events-none" />
+              <img src="/img/inspection_board.webp" alt="Control System Inspection Board" className="pointer-events-none" />
             </figure>
             <h4 className="text-primary_light text-lg border-t-2 py-8 text-center">Control System Inspection Board</h4>
           </NavLink>
