@@ -25,12 +25,7 @@ export class NgrokObserver implements LifeCycleObserver {
    */
   async init(): Promise<void> {
     // Add your logic for init
-    // Create webhook
-    if (process.env.NODE_ENV === 'development') {
-      const webhook = await createShopifyWebhook();
-      console.log('Created webhook: ', webhook)
-      this.webhookId = webhook.id;
-    }
+    console.log('ngrok-observer::init')
   }
 
   /**
@@ -38,6 +33,13 @@ export class NgrokObserver implements LifeCycleObserver {
    */
   async start(): Promise<void> {
     // Add your logic for start
+    console.log('ngrok-observer::start')
+    // Create webhook
+    if (process.env.NODE_ENV !== 'production') {
+      const webhook = await createShopifyWebhook();
+      console.log('Created webhook: ', webhook)
+      this.webhookId = webhook.id;
+    }
   }
 
   /**
@@ -45,8 +47,9 @@ export class NgrokObserver implements LifeCycleObserver {
    */
   async stop(): Promise<void> {
     // Add your logic for stop
+    console.log('ngrok-observer::stop')
     // Delete webhook
-    if (process.env.NODE_ENV === 'development'){
+    if (process.env.NODE_ENV !== 'production') {
       console.log('Deleting webhook: ', this.webhookId)
       deleteShopifyWebhook(this.webhookId);
     }

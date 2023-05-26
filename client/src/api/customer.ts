@@ -70,7 +70,7 @@ class CustomerResource extends Resource<Customer> {
   }
 
   async getOrders(id: string, completed: boolean = true): Promise<DTO<OrderInfo>[]> {
-    return request<DTO<OrderInfo>[]>(`${this.baseURL}/${id}/orders`, 'GET', { where: { orderComplete: completed } }).then((res) => {
+    return request<DTO<OrderInfo>[]>(`${this.baseURL}/${id}/orders`, 'GET', { filter: { where: { orderComplete: completed } }}).then((res) => {
       return res.data;
     });
   }

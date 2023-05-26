@@ -18,7 +18,7 @@ export function OwnOrders() {
     api.customer.getOrders(cookies.userId).then((orders) => {
       setOrderList(orders);
     });
-  }, []);
+  }, [cookies.userId]);
 
   return (
     <ManageRightLayout title='Orders'>
