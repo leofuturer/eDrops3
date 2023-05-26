@@ -25,7 +25,7 @@ function ItemCard({ product }: { product: Product }) {
       </p>
       {cart.enabled &&
         <p className="product-price">
-          ${product?.variants && product?.variants[0].price}
+          ${product?.variants && product?.variants[0].price.amount}
         </p>
       }
       <NavLink to={productLink}>

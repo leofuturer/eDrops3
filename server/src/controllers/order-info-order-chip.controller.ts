@@ -1,6 +1,7 @@
 import { authenticate } from '@loopback/authentication';
 import { intercept } from '@loopback/core';
 import {
+  Count,
   repository
 } from '@loopback/repository';
 import {
@@ -16,7 +17,7 @@ import {
 import { OrderItemCreateInterceptor } from '../interceptors';
 import { OrderChip, OrderInfo } from '../models';
 import { OrderInfoRepository } from '../repositories';
-import { LineItemToAdd, Product } from 'shopify-buy';
+import { CheckoutLineItemInput, Product } from 'shopify-buy';
 
 export class OrderInfoOrderChipController {
   constructor(
@@ -65,9 +66,9 @@ export class OrderInfoOrderChipController {
         },
       },
     })
-    chip: Product & LineItemToAdd,
-  ): Promise<void> {
-    this.orderInfoRepository.addOrderChip(id, chip);
+    chip: Product & CheckoutLineItemInput,
+  ): Promise<OrderChip> {
+    return this.orderInfoRepository.addOrderChip(id, chip);
     // Increment quantity if product already exists in cart
     // this.orderInfoRepository
     //   .orderChips(id)
@@ -129,7 +130,7 @@ export class OrderInfoOrderChipController {
       },
     })
     orderChip: Partial<OrderChip>,
-  ): Promise<OrderChip> {
+  ): Promise<Count> {
     return this.orderInfoRepository.updateOrderChip(id, orderChipId, orderChip);
     // this.orderInfoRepository
     //   .orderChips(id)

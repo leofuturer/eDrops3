@@ -1,6 +1,7 @@
 import { Getter, inject } from '@loopback/core';
 import {
   AnyObject,
+  Count,
   DefaultCrudRepository,
   HasManyRepositoryFactory,
   repository,
@@ -19,7 +20,7 @@ import {
 import { OrderChipRepository } from './order-chip.repository';
 import { OrderProductRepository } from './order-product.repository';
 import { OrderMessageRepository } from './order-message.repository';
-import { Client, CustomAttribute, LineItem, LineItemToAdd, Product, buildClient } from 'shopify-buy';
+import { Attribute, AttributeInput, CheckoutLineItem, CheckoutLineItemInput, Product, buildClient } from 'shopify-buy';
 import { DTO } from '../lib/types/model';
 import { FoundryWorkerRepository } from './foundry-worker.repository';
 import { FileInfoRepository } from './file-info.repository';
@@ -48,7 +49,7 @@ export class OrderInfoRepository extends DefaultCrudRepository<
   >;
 
   public readonly pusher: Pusher; // For notifying client after receiving order completion webhook
-  public readonly shopify: Client;
+  public readonly shopify: ShopifyBuy;
 
   constructor(
     @inject('datasources.mysqlDS') dataSource: MysqlDsDataSource,
@@ -104,6 +105,7 @@ export class OrderInfoRepository extends DefaultCrudRepository<
     this.shopify = buildClient({
       domain: process.env.SHOPIFY_DOMAIN as string,
       storefrontAccessToken: process.env.SHOPIFY_TOKEN as string,
+      apiVersion: '2023-04'
     })
   }
 
@@ -117,12 +119,11 @@ export class OrderInfoRepository extends DefaultCrudRepository<
   //   return crypto.timingSafeEqual(Buffer.from(calculatedHmac), Buffer.from(hmacHeader));
   // }
 
-  async addOrderProduct(id: typeof OrderInfo.prototype.id, product: Product & LineItemToAdd): Promise<OrderProduct> {
+  async addOrderProduct(id: typeof OrderInfo.prototype.id, product: Product & CheckoutLineItemInput): Promise<OrderProduct> {
     const { variantId, quantity } = product;
     const orderInfo = await this.findById(id);
     return this.shopify.checkout.addLineItems(orderInfo.checkoutIdClient, [{ variantId, quantity }]).then((res) => {
-      // @ts-expect-error NOTE: Shopify types not updated
-      const lineItemId = res.lineItems.find((item) => item.variant.id === variantId).id;
+      const lineItemId = res.lineItems.find((item) => Buffer.from(item.variant?.id as string).toString('base64') === variantId)?.id;
       // console.log(lineItemId);
       const data: DTO<OrderProduct> = {
         orderInfoId: id,
@@ -131,8 +132,7 @@ export class OrderInfoRepository extends DefaultCrudRepository<
         lineItemIdShopify: lineItemId as string,
         description: product.description,
         quantity,
-        // @ts-expect-error NOTE: Shopify types not updated
-        price: parseFloat(product.variants[0].price.amount),
+        price: product.variants[0].price.amount,
         name: product.title,
       };
       return this.orderProducts(id).find({ where: { productIdShopify: product.id, variantIdShopify: product.variants[0].id } }).then(orderProducts => {
@@ -151,13 +151,11 @@ export class OrderInfoRepository extends DefaultCrudRepository<
     });
   }
 
-  async updateOrderProduct(id: typeof OrderInfo.prototype.id, orderProductId: typeof OrderProduct.prototype.id, orderProduct: Partial<OrderProduct>): Promise<OrderProduct> {
+  async updateOrderProduct(id: typeof OrderInfo.prototype.id, orderProductId: typeof OrderProduct.prototype.id, orderProduct: Partial<OrderProduct>): Promise<Count> {
     const orderInfo = await this.findById(id);
     const lineItemsToUpdate = [{ id: orderProduct.lineItemIdShopify, quantity: orderProduct.quantity }];
     return this.shopify.checkout.updateLineItems(orderInfo.checkoutIdClient, lineItemsToUpdate).then((res) => {
-      return this.orderChips(id).patch(orderProduct, { id: orderProduct })
-    }).then(() => {
-      return this.orderChips(id).find({ where: { id: orderProductId } }).then(orderProducts => orderProducts[0]);
+      return this.orderProducts(id).patch(orderProduct, { id: orderProductId })
     });
   }
 
@@ -170,16 +168,15 @@ export class OrderInfoRepository extends DefaultCrudRepository<
     });
   }
 
-  async addOrderChip(id: typeof OrderInfo.prototype.id, chip: Product & LineItemToAdd): Promise<OrderChip> {
+  async addOrderChip(id: typeof OrderInfo.prototype.id, chip: Product & CheckoutLineItemInput): Promise<OrderChip> {
     // TODO: Maybe check if LineItem variantId is chip or not (same with product above)
     const { variantId, quantity, customAttributes } = chip;
     const orderInfo = await this.findById(id);
-    const flatten = (attrs: CustomAttribute[]) => attrs.reduce((acc, attr) => ({ ...acc, [attr.key]: attr.value }), {})
-    const flattenedAttrs = flatten(customAttributes as CustomAttribute[]);
+    const flatten = (attrs: AttributeInput[]) => attrs.reduce((acc, attr) => ({ ...acc, [attr.key]: attr.value }), {} as Record<string, string>)
+    const flattenedAttrs = flatten(customAttributes as AttributeInput[]);
     return this.shopify.checkout.addLineItems(orderInfo.checkoutIdClient, [{ variantId, quantity, customAttributes }]).then(async (res) => {
-      const matchingAttrs = (item: LineItem) => {
-        // @ts-expect-error NOTE: Shopify types not updated
-        return item.customAttributes.every((attr: { key: string; value: string; }) => attr.key in flattenedAttrs && attr.value === flattenedAttrs[attr.key]);
+      const matchingAttrs = (item: CheckoutLineItem) => {
+        return item.customAttributes.every((attr: Attribute) => attr.key in flattenedAttrs && attr.value === flattenedAttrs[attr.key]);
       }
       const lineItemId = res.lineItems.find((item) => matchingAttrs(item))?.id;
 
@@ -201,8 +198,7 @@ export class OrderInfoRepository extends DefaultCrudRepository<
         name: chip.title,
         description: chip.description,
         quantity: chip.quantity,
-        // @ts-expect-error NOTE: Shopify types not updated
-        price: parseFloat(chip.variants[0].price.amount),
+        price: chip.variants[0].price.amount,
         otherDetails: JSON.stringify(flattenedAttrs),
         process: material,
         coverPlate: wcpa,
@@ -249,13 +245,11 @@ export class OrderInfoRepository extends DefaultCrudRepository<
     });
   }
 
-  async updateOrderChip(id: typeof OrderInfo.prototype.id, orderChipId: typeof OrderChip.prototype.id, orderChip: Partial<OrderChip>): Promise<OrderChip> {
+  async updateOrderChip(id: typeof OrderInfo.prototype.id, orderChipId: typeof OrderChip.prototype.id, orderChip: Partial<OrderChip>): Promise<Count> {
     const orderInfo = await this.findById(id);
     const lineItemsToUpdate = [{ id: orderChip.lineItemIdShopify, quantity: orderChip.quantity }];
     return this.shopify.checkout.updateLineItems(orderInfo.checkoutIdClient, lineItemsToUpdate).then((res) => {
       return this.orderChips(id).patch(orderChip, { id: orderChipId })
-    }).then(() => {
-      return this.orderChips(id).find({ where: { id: orderChipId } }).then(orderChips => orderChips[0]);
     });
   }
 

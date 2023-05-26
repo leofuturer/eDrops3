@@ -112,8 +112,6 @@ export class CustomerOrderInfoController {
         'application/json': {
           schema: getModelSchemaRef(Address, {
             title: 'NewAddress',
-            exclude: ['id'],
-            partial: true,
           }),
         },
       },

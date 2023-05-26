@@ -1,13 +1,14 @@
 import { get, param, response } from "@loopback/rest";
-import { Client, Product, buildClient } from 'shopify-buy';
+import {Product, buildClient } from 'shopify-buy';
 import Products from '../lib/constants/productConstants';
 
 export class ProductController {
-  private client: Client;
+  private client: ShopifyBuy;
   constructor() {
     this.client = buildClient({
       storefrontAccessToken: process.env.SHOPIFY_TOKEN as string,
       domain: process.env.SHOPIFY_DOMAIN as string,
+      apiVersion: '2023-04'
     });
   }
 
@@ -70,7 +71,7 @@ export class ProductController {
     return this.client.product
       .fetch(productId)
       .then((res: Product) => {
-        console.log(res);
+        // console.log(res);
         return {
           ...res,
           id: Buffer.from(res.id as string, 'utf-8').toString('base64'),

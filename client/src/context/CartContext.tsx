@@ -1,15 +1,16 @@
+import { api } from '@/api';
+import { PusherContext } from '@/context';
+import { ROUTES } from '@/router/routes';
+import { Address, DTO, FileInfo, OrderChip, OrderInfo, OrderProduct } from '@/types';
+import { Material } from '@/types/chip';
 import React, { useContext, useEffect, useState } from 'react';
 import { useCookies } from 'react-cookie';
 import { useNavigate } from 'react-router-dom';
-import { CustomAttribute, LineItem, LineItemToAdd, Product } from 'shopify-buy';
-import { api } from '@/api';
-import { Address, Customer, DTO, FileInfo, OrderChip, OrderInfo, OrderProduct } from '@/types';
-import { PusherContext } from '@/context';
-import { ROUTES } from '@/router/routes';
-import { Material } from '@/types/chip';
+import { CheckoutLineItemInput, Product } from 'shopify-buy';
 
 const useCart = () => {
   const [cart, setCart] = useState<DTO<OrderInfo>>({} as DTO<OrderInfo>);
+  const [fetchingCart, setFetchingCart] = useState(false);
   const [productOrders, setProductOrders] = useState<DTO<OrderProduct>[]>([]);
   const [chipOrders, setChipOrders] = useState<DTO<OrderChip>[]>([]);
   const [numItems, setNumItems] = useState(0);
@@ -30,6 +31,7 @@ const useCart = () => {
   }
 
   function fetchCart() {
+    setFetchingCart(true);
     api.customer.getCart(cookies.userId).then((cart) => {
       cart ? setCart(cart) : createCart();
     }).catch((err) => console.error(err));
@@ -37,7 +39,7 @@ const useCart = () => {
 
   // create cart if it doesn't exist, otherwise get cart info
   useEffect(() => {
-    if (cookies.userId && !cart.id) {
+    if (cookies.userId && !cart.id && !fetchingCart) {
       fetchCart();
     }
   }, [cookies.userId]);
@@ -59,10 +61,9 @@ const useCart = () => {
 
   // add to shopify cart, and then add to our own cart
   async function addProduct(product: Product, quantity: number): Promise<void> {
-    if (!cart.checkoutIdClient) await createCart();
     // console.log(product)
     // console.log(cart)
-    const data: Product & LineItemToAdd = {
+    const data: Product & CheckoutLineItemInput = {
       ...product,
       quantity,
       variantId: product.variants[0].id,
@@ -78,8 +79,7 @@ const useCart = () => {
   }
 
   async function addChip(chip: Product, quantity: number, customAttrs: { material: Material, wcpa: string, fileInfo: DTO<FileInfo> }): Promise<void> {
-    if (!cart.checkoutIdClient) await createCart();
-    const data: Product & LineItemToAdd = {
+    const data: Product & CheckoutLineItemInput = {
       ...chip,
       quantity,
       variantId: chip.variants[0].id,
