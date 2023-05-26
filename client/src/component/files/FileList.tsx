@@ -70,7 +70,7 @@ export function FileList({ fileList }: { fileList: DTO<FileInfo>[] }) {
           </tr>
         </thead>
         <tbody>
-          {displayList ? displayList.map((file, index) => (
+          {displayList && displayList.length > 0 ? displayList.map((file, index) => (
             <tr key={file.id}>
               <td className="p-2">{padZeroes(file.uploadTime)}</td>
               <td className="p-2">{file.fileName}</td>
@@ -91,7 +91,7 @@ export function FileList({ fileList }: { fileList: DTO<FileInfo>[] }) {
             </tr>
           )) : (
             <tr>
-              <td className="p-2">No files have been uploaded.</td>
+              <td className="p-2" colSpan={9}>No files have been uploaded.</td>
             </tr>
           )}
         </tbody>
