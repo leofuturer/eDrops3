@@ -98,3 +98,7 @@ export async function deleteShopifyWebhooks(): Promise<void> {
         deleteShopifyWebhook(id)
     }
 }
+
+// getShopifyWebhooks().then(webhooks => {
+//     console.log(webhooks);
+// })

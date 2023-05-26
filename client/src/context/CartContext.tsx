@@ -61,6 +61,7 @@ const useCart = () => {
 
   // add to shopify cart, and then add to our own cart
   async function addProduct(product: Product, quantity: number): Promise<void> {
+    if(!cart.id) fetchCart();
     // console.log(product)
     // console.log(cart)
     const data: Product & CheckoutLineItemInput = {
@@ -79,6 +80,7 @@ const useCart = () => {
   }
 
   async function addChip(chip: Product, quantity: number, customAttrs: { material: Material, wcpa: string, fileInfo: DTO<FileInfo> }): Promise<void> {
+    if(!cart.id) fetchCart();
     const data: Product & CheckoutLineItemInput = {
       ...chip,
       quantity,
