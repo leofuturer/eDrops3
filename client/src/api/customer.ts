@@ -33,21 +33,15 @@ class CustomerResource extends Resource<Customer> {
     });
   }
 
-  async getDefaultAddress(id: string): Promise<DTO<Address>> {
-    return request<DTO<Address>>(`${this.baseURL}/${id}/addresses`, 'GET', { where: { isDefault: true } }).then((res) => {
-      return res.data;
-    });
-  }
-
-  async updateDefaultAddress(id: string, addressId: number, data: Partial<DTO<Address>>): Promise<Count> {
-    return request<Count>(`${this.baseURL}/${id}/addresses/${addressId}`, 'PATCH', data).then((res) => {
-      return res.data;
-    });
-  }
-
   async getAddresses(id: string): Promise<DTO<Address>[]> {
     return request<DTO<Address>[]>(`${this.baseURL}/${id}/addresses`, 'GET', {}).then((res) => {
       return res.data;
+    });
+  }
+
+  async getDefaultAddress(id: string): Promise<DTO<Address> | null> {
+    return request<DTO<Address>[]>(`${this.baseURL}/${id}/addresses`, 'GET', { where: { isDefault: true } }).then((res) => {
+      return res.data.length > 0 ? res.data[0] : null;
     });
   }
 
@@ -64,13 +58,13 @@ class CustomerResource extends Resource<Customer> {
   }
 
   async deleteAddress(id: string, addressId: number): Promise<Count> {
-    return request<Count>(`${this.baseURL}/${id}/addresses`, 'DELETE', { id: addressId }).then((res) => {
+    return request<Count>(`${this.baseURL}/${id}/addresses`, 'DELETE', { where: { id: addressId } }).then((res) => {
       return res.data;
     });
   }
 
   async getOrders(id: string, completed: boolean = true): Promise<DTO<OrderInfo>[]> {
-    return request<DTO<OrderInfo>[]>(`${this.baseURL}/${id}/orders`, 'GET', { filter: { where: { orderComplete: completed } }}).then((res) => {
+    return request<DTO<OrderInfo>[]>(`${this.baseURL}/${id}/orders`, 'GET', { filter: { where: { orderComplete: completed } } }).then((res) => {
       return res.data;
     });
   }

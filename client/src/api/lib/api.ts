@@ -15,11 +15,11 @@ export async function request<T>(url: string, method: HTTPMethod, data: object, 
 	};
 	switch (method) {
 		case "GET":
+		case "DELETE":
 			options.params = data;
 			break;
 		case "PUT":
 		case "POST":
-		case "DELETE":
 		case "PATCH":
 			options.data = data;
 			break;
