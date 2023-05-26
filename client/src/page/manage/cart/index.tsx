@@ -29,14 +29,10 @@ export function Cart() {
             {cart.cart?.orderProducts?.length && cart.cart.orderProducts.map((product, index) => <CartProduct
               key={product.id}
               product={product}
-              onChange={cart.editProductQuantity}
-              onDelete={() => cart.removeProduct(product)}
             />)}
             {cart.cart?.orderChips?.length && cart.cart.orderChips.map((chip, index) => <CartChip
               key={chip.id}
               chip={chip}
-              onChange={cart.editChipQuantity}
-              onDelete={() => cart.removeChip(chip)}
             />)}
           </div>
           <div className="flex flex-col items-end px-4">

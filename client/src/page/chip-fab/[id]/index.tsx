@@ -127,7 +127,6 @@ export function ChipOrder() {
             </p>
           </div>
           <div className="flex">
-            { /* @ts-expect-error */}
             Price: {cart.enabled ? `${product.variants && product.variants[0].price.amount}` : 'Coming soon'}
           </div>
           <div className="flex space-x-2 items-center">
@@ -142,8 +141,7 @@ export function ChipOrder() {
                 onChange={(e) => setQuantity(e.target.valueAsNumber)}
               />
               {cart.enabled &&
-                // @ts-expect-error
-                <span className="flex items-center">X ${product.variants && product.variants[0].price.amount} = ${product.variants && (quantity * parseFloat(product.variants[0]?.price.amount)).toFixed(2)}</span>
+                <span className="flex items-center">X ${product.variants && product.variants[0].price.amount} = ${product.variants && (quantity * product.variants[0]?.price.amount).toFixed(2)}</span>
               }
             </>
           </div>

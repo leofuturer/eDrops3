@@ -28,13 +28,12 @@ import { FileInfoRepository } from './file-info.repository';
 import { OrderInfoRepository } from './order-info.repository';
 import { UserRepository } from './user.repository';
 import fetch from 'node-fetch';
-import { Client, Product, buildClient } from 'shopify-buy';
+import ShopifyBuy, { Product, buildClient } from 'shopify-buy';
 
 const CONTAINER_NAME = process.env.S3_BUCKET_NAME ?? 'edrop-v2-files';
 
 // https://stackoverflow.com/questions/48433783/referenceerror-fetch-is-not-defined
-// A bit of a weird error
-// @ts-expect-error
+// @ts-ignore
 global.fetch = fetch;
 
 export class CustomerRepository extends DefaultCrudRepository<
@@ -62,7 +61,7 @@ export class CustomerRepository extends DefaultCrudRepository<
 
   public readonly s3: AWS.S3;
 
-  public readonly shopify: Client;
+  public readonly shopify: ShopifyBuy;
 
   constructor(
     @inject('datasources.mysqlDS') dataSource: MysqlDsDataSource,
@@ -119,6 +118,7 @@ export class CustomerRepository extends DefaultCrudRepository<
     this.shopify = buildClient({
       storefrontAccessToken: process.env.SHOPIFY_TOKEN as string,
       domain: process.env.SHOPIFY_DOMAIN as string,
+      apiVersion: '2023-04'
     });
   }
 
@@ -176,7 +176,6 @@ export class CustomerRepository extends DefaultCrudRepository<
         .catch(err => {
           // roll back the customer creation
           this.deleteById(customerInstance?.id);
-          console.error(err);
         });
     }
     return customerInstance;
@@ -202,9 +201,7 @@ export class CustomerRepository extends DefaultCrudRepository<
         checkoutIdClient: res.id as string,
         checkoutToken: res.webUrl.slice(lastSlash + 1, lastQuestionMark),
         checkoutLink: res.webUrl,
-        // @ts-expect-error
         createdAt: res.createdAt,
-        // @ts-expect-error
         lastModifiedAt: res.updatedAt,
         orderComplete: false,
         status: 'Order in progress',
@@ -213,7 +210,7 @@ export class CustomerRepository extends DefaultCrudRepository<
         billingAddressId: 0,
       };
       return data;
-    }).then((data) => {
+    }).then((data: Partial<OrderInfo>) => {
       return this.orderInfos(id).create(data);
     });
   }
@@ -225,7 +222,6 @@ export class CustomerRepository extends DefaultCrudRepository<
       .find({ where: { orderComplete: false }, include: ['orderProducts', 'orderChips'] })
       .then(orders => {
         if (orders.length > 1) {
-          log.error(`Error getting customer cart or there's more than one active cart`);
           throw new HttpErrors.NotFound('More than one active cart found');
         } else if (orders.length === 0) {
           log.warning(`No cart found for customer id=${customerId}, need to create one`);
@@ -249,7 +245,6 @@ export class CustomerRepository extends DefaultCrudRepository<
 
     const user = await this.user(id);
     const customer = await this.findById(id);
-    // @ts-expect-error
     return this.shopify.checkout.updateEmail(cart.checkoutIdClient, user.email)
       .then((res: any) => {
         const shippingAddr = {
@@ -263,8 +258,7 @@ export class CustomerRepository extends DefaultCrudRepository<
           lastName: customer.lastName,
           phone: customer.phoneNumber,
         };
-        // @ts-expect-error
-        return shopify.checkout.updateShippingAddress(cart.checkoutIdClient, shippingAddr)
+        return this.shopify.checkout.updateShippingAddress(cart.checkoutIdClient, shippingAddr)
       }).then((res: any) => {
         return cart;
       });

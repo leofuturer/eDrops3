@@ -77,7 +77,6 @@ export function Product() {
           <div className="flex flex-col space-y-2">
             <div className="flex justify-between items-center">
               <div className="text-lg font-bold">
-                {/* @ts-expect-error NOTE: Shopify types not updated*/}
                 Price: {cart.enabled ? `${product?.variants && product?.variants[0].price.amount}` : 'Coming soon'}
               </div>
               <div className="flex space-x-4">

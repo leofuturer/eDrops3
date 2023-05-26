@@ -1,6 +1,7 @@
 import { authenticate } from '@loopback/authentication';
 import { inject, intercept } from '@loopback/core';
 import {
+  Count,
   Filter,
   repository
 } from '@loopback/repository';
@@ -12,7 +13,7 @@ import {
 import { OrderItemCreateInterceptor } from '../interceptors';
 import { OrderInfo, OrderProduct } from '../models';
 import { OrderInfoRepository } from '../repositories';
-import { LineItemToAdd, Product } from 'shopify-buy';
+import { CheckoutLineItemInput, Product } from 'shopify-buy';
 
 export class OrderInfoOrderProductController {
   constructor(
@@ -59,15 +60,13 @@ export class OrderInfoOrderProductController {
     @requestBody({
       content: {
         'application/json': {
-          schema: getModelSchemaRef(OrderProduct, {
-            title: 'NewOrderProductInOrderInfo',
-            exclude: ['id'],
-            optional: ['orderId'],
-          }),
+          schema: {
+            type: 'object',
+          }
         },
       },
     })
-    product: Product & LineItemToAdd,
+    product: Product & CheckoutLineItemInput,
   ): Promise<OrderProduct> {
     return this.orderInfoRepository.addOrderProduct(id, product);
     // this.orderInfoRepository.orderProducts(id).find({ where: { id: product.id } })
@@ -115,7 +114,7 @@ export class OrderInfoOrderProductController {
       },
     })
     orderProduct: Partial<OrderProduct>,
-  ): Promise<OrderProduct> {
+  ): Promise<Count> {
     return this.orderInfoRepository.updateOrderProduct(id, orderProductId, orderProduct);
     // this.orderInfoRepository
     //   .orderProducts(id)

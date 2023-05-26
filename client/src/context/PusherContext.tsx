@@ -5,7 +5,7 @@ import { api } from '@/api';
 
 const usePusher = () => {
   const [key, setKey] = useState<string>(''); // Note that key must be initialized before pusher for buildClient to work
-  const [pusher, setPusher] = useState<Pusher>({} as Pusher);
+  const [pusher, setPusher] = useState<Pusher>(buildClient());
 
   useEffect(() => {
     api.user.getAPIToken().then((res) => {

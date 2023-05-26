@@ -60,6 +60,7 @@ export class OrderItem extends Entity {
 
   @property({
     type: 'string',
+    default: '',
   })
   otherDetails?: string;
 

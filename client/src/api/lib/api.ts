@@ -15,7 +15,9 @@ export async function request<T>(url: string, method: HTTPMethod, data: object, 
 	};
 	switch (method) {
 		case "GET":
-			options.params = JSON.stringify(data);
+			if(Object.keys(data).length > 0) {
+				options.params = JSON.stringify(data);
+			}
 			break;
 		case "PUT":
 		case "POST":

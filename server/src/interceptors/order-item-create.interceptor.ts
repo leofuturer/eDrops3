@@ -63,15 +63,17 @@ export class OrderItemCreateInterceptor implements Provider<Interceptor> {
           return user;
         })
         .then((user: UserProfile) => {
-          this.orderInfoRepository
-            .findById(this.request.body.orderInfoId)
-            .then((orderInfo : OrderInfo) => {
-              if (orderInfo.customerId !== user.id) {
-                throw new HttpErrors.Unauthorized(
-                  'Customer does not have access to resource',
-                );
-              }
-            });
+          // Need to parse orderId from request path
+          // Not sure if we should just move this to the controller to make it easier
+          // this.orderInfoRepository
+          //   .findById(parseInt(this.request.params.id))
+          //   .then((orderInfo : OrderInfo) => {
+          //     if (orderInfo.customerId !== user.id) {
+          //       throw new HttpErrors.Unauthorized(
+          //         'Customer does not have access to resource',
+          //       );
+          //     }
+          //   });
         }).catch(err => {
           throw new HttpErrors.InternalServerError(err);
         });
