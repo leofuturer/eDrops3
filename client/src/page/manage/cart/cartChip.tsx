@@ -1,25 +1,21 @@
 import _ from 'lodash';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useContext, useEffect, useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import Loading from '@/component/ui/Loading';
 import { DTO, OrderChip } from '@/types';
-import { ROUTES } from '@/router/routes';
+import { ROUTES, idRoute } from '@/router/routes';
+import { CartContext } from '@/context';
 
-export function CartChip({ chip, onDelete, onChange }: { chip: DTO<OrderChip>, onDelete: () => Promise<void>, onChange: (chip: DTO<OrderChip>, quantity: number) => void }) {
-  const chipFabState = {
-    fileInfo: {
-      id: chip.fileInfoId,
-      fileName: chip.otherDetails ? JSON.parse(chip.otherDetails).fileName : '',
-    },
-  };
-
+export function CartChip({ chip }: { chip: DTO<OrderChip> }) {
   const [qty, setQty] = useState(chip.quantity);
   const [deleting, setDeleting] = useState(false);
 
+  const cart = useContext(CartContext);
+
   // debounce quantity change useEffect
-  const debouncedChange = useCallback(_.debounce((qty) => {
-    onChange(chip, qty);
-  }, 250), []);
+  const debouncedChange = _.debounce((qty) => {
+    cart.editChipQuantity({...chip, quantity: qty});
+  }, 250);
 
   useEffect(() => {
     debouncedChange(qty);
@@ -27,7 +23,7 @@ export function CartChip({ chip, onDelete, onChange }: { chip: DTO<OrderChip>, o
 
   function handleDelete() {
     setDeleting(true);
-    onDelete().then(() => setDeleting(false));
+    cart.removeChip(chip).then(() => setDeleting(false));
   }
 
   function parseOtherDetails(otherDetails: string) {
@@ -42,7 +38,7 @@ export function CartChip({ chip, onDelete, onChange }: { chip: DTO<OrderChip>, o
   return (
     <div className="bg-white rounded-md shadow-box p-4 flex flex-row justify-between">
       <div className="flex flex-col">
-        <NavLink to={ROUTES.ChipFab} state={chipFabState} className="text-primary_light hover:text-primary">
+        <NavLink to={idRoute(ROUTES.ChipFab, chip.fileInfoId)} className="text-primary_light hover:text-primary">
           <h3>{chip.name}</h3>
         </NavLink>
         <div className="">

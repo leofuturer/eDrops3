@@ -1,18 +1,21 @@
 import _ from 'lodash';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useContext, useEffect, useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import Loading from '@/component/ui/Loading';
 import { DTO, OrderProduct } from '@/types';
 import { ROUTES, idRoute } from '@/router/routes';
+import { CartContext } from '@/context';
 
-export function CartProduct({ product, onDelete, onChange }: { product: DTO<OrderProduct>, onDelete: () => Promise<void>, onChange: (product: DTO<OrderProduct>, quantity: number) => void }) {
+export function CartProduct({ product }: { product: DTO<OrderProduct> }) {
   const [qty, setQty] = useState(product.quantity);
   const [deleting, setDeleting] = useState(false);
 
+  const cart = useContext(CartContext);
+
   // debounce quantity change useEffect
-  const debouncedChange = useCallback(_.debounce((qty) => {
-    onChange(product, qty);
-  }, 250), []);
+  const debouncedChange = _.debounce((qty) => {
+    cart.editProductQuantity({ ...product, quantity: qty });
+  }, 250);
 
   useEffect(() => {
     debouncedChange(qty);
@@ -20,7 +23,7 @@ export function CartProduct({ product, onDelete, onChange }: { product: DTO<Orde
 
   function handleDelete() {
     setDeleting(true);
-    onDelete().then(() => setDeleting(false));
+    cart.removeProduct(product).then(() => setDeleting(false));
   }
 
   return (

@@ -108,11 +108,15 @@ class CustomerResource extends Resource<Customer> {
   }
 
   async downloadFile(id: string, fileId: number): Promise<void> {
-    // return request<Response>(`${this.baseURL}/${id}/files/${fileId}/download`, 'GET', {}).then((res) => {
-    //   return res.data;
-    // });
+    request<string>(`${this.baseURL}/${id}/files/${fileId}/download`, 'GET', {}).then((res) => {
+      const data = res.data as string;
+      console.log(res);
+      // const blob = new Blob([data], { type: 'application/dxf' });
+      // const blobUrl = window.URL.createObjectURL(blob);
+      // window.location.href = blobUrl;
+    });
 
-    window.location.href = `/api/${this.baseURL}/${id}/files/${fileId}/download`;
+    // window.location.href = `/api/customers/${id}/files/${fileId}/download`;
   }
 
   async deleteFile(id: string, fileId: number): Promise<Count> {
