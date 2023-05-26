@@ -24,20 +24,37 @@ export function CustomerProfile({ customerId }: { customerId: string }) {
   useEffect(() => {
     Promise.all([api.customer.get(customerId), api.customer.getDefaultAddress(customerId)])
       .then(([customer, address]) => {
-        setInitialInfo({
-          username: customer.user.username,
-          email: customer.user.email,
-          phoneNumber: customer.phoneNumber as string,
-          firstName: customer.firstName,
-          lastName: customer.lastName,
-          street: address.street,
-          streetLine2: address.streetLine2 as string,
-          city: address.city,
-          state: address.state as string,
-          zipCode: address.zipCode,
-          country: address.country,
-        });
-        setDefaultAddressId(address.id as number);
+        if (!address) {
+          setInitialInfo({
+            username: customer.user.username,
+            email: customer.user.email,
+            phoneNumber: customer.phoneNumber as string,
+            firstName: customer.firstName,
+            lastName: customer.lastName,
+            street: '',
+            streetLine2: '',
+            city: '',
+            state: '',
+            zipCode: '',
+            country: '',
+          });
+        }
+        else {
+          setInitialInfo({
+            username: customer.user.username,
+            email: customer.user.email,
+            phoneNumber: customer.phoneNumber as string,
+            firstName: customer.firstName,
+            lastName: customer.lastName,
+            street: address.street,
+            streetLine2: address.streetLine2 as string,
+            city: address.city,
+            state: address.state as string,
+            zipCode: address.zipCode,
+            country: address.country,
+          });
+          setDefaultAddressId(address.id as number);
+        }
       })
   }, [])
 
@@ -51,7 +68,7 @@ export function CustomerProfile({ customerId }: { customerId: string }) {
           lastName: values.lastName,
           phoneNumber: values.phoneNumber,
         }
-        const addressData: Partial<DTO<Address>> = {
+        const addressData: Omit<DTO<Address>, 'isDefault'> = {
           street: values.street,
           streetLine2: values.streetLine2,
           city: values.city,
@@ -59,7 +76,12 @@ export function CustomerProfile({ customerId }: { customerId: string }) {
           zipCode: values.zipCode,
           country: values.country,
         }
-        Promise.all([api.customer.update(customerId, customerData), api.customer.updateDefaultAddress(customerId, defaultAddressId, addressData)]);
+        api.customer.update(customerId, customerData).then(() => {
+          if(defaultAddressId === -1)
+            api.customer.createAddress(customerId, { ...addressData, isDefault: true})
+          else
+            api.customer.updateAddress(customerId, defaultAddressId, addressData)
+        })
       }}>
       <Form className="flex flex-col space-y-2">
         <FormGroup name="username" disabled />
