@@ -8,8 +8,7 @@ import { ROUTES, idRoute } from '@/router/routes';
 import { api } from '@/api';
 import DeleteModal from '../modal/DeleteModal';
 
-export function FileList({ fileList }: { fileList: DTO<FileInfo>[] }) {
-  const [displayList, setDisplayList] = useState<DTO<FileInfo>[]>(fileList);
+export function FileList({ fileList, handleDelete }: { fileList: DTO<FileInfo>[], handleDelete: (deleteId: number) => void }) {
   const [cookies] = useCookies(['userType', 'userId'])
   const [showDelete, setShowDelete] = useState(false);
   const [deleteId, setDeleteId] = useState(0);
@@ -37,16 +36,6 @@ export function FileList({ fileList }: { fileList: DTO<FileInfo>[] }) {
     navigate(idRoute(ROUTES.ChipFab, fileId));
   }
 
-  // Customer only
-  function handleDelete() {
-    api.customer.deleteFile(cookies.userId, deleteId).then((res) => {
-      setDisplayList(displayList.filter((file) => file.id !== deleteId));
-      setShowDelete(false);
-    }).catch((err) => {
-      console.error(err);
-    });
-  }
-
   return (
     <>
       <table className="table-info">
@@ -70,7 +59,7 @@ export function FileList({ fileList }: { fileList: DTO<FileInfo>[] }) {
           </tr>
         </thead>
         <tbody>
-          {displayList && displayList.length > 0 ? displayList.map((file, index) => (
+          {fileList && fileList.length > 0 ? fileList.map((file, index) => (
             <tr key={file.id}>
               <td className="p-2">{padZeroes(file.uploadTime)}</td>
               <td className="p-2">{file.fileName}</td>
@@ -97,7 +86,7 @@ export function FileList({ fileList }: { fileList: DTO<FileInfo>[] }) {
         </tbody>
       </table>
       {showDelete &&
-        <DeleteModal handleHide={() => setShowDelete(false)} handleDelete={handleDelete} />
+        <DeleteModal handleHide={() => setShowDelete(false)} handleDelete={() => handleDelete(deleteId)} />
       }
     </>
   )
