@@ -15,7 +15,7 @@ export async function request<T>(url: string, method: HTTPMethod, data: object, 
 	};
 	switch (method) {
 		case "GET":
-			options.params = data;
+			options.params = JSON.stringify(data);
 			break;
 		case "PUT":
 		case "POST":
