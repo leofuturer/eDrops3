@@ -10,14 +10,14 @@ function UserMenu({ username, onSignout }: { username: string, onSignout: () => 
   return (
     <Menu as="div" className="relative inline-block text-left">
       {({ open }) => <>
-        <div>
-          <Menu.Button className="hidden md:inline-flex justify-center items-center space-x-2 w-full pl-4 pr-2 py-2 text-base font-medium text-black bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75">
+        <Menu.Button>
+          <div className="hidden md:inline-flex justify-center items-center space-x-2 w-full pl-4 pr-2 py-2 text-base font-medium text-black bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75">
             <p>{username}</p>{open ? <ChevronUpIcon className="w-5 h-5" aria-hidden="true" /> : <ChevronDownIcon className="w-5 h-5" aria-hidden="true" />}
-          </Menu.Button>
-          <Menu.Button className="md:hidden flex justify-center items-center">
+          </div>
+          <div className="md:hidden flex justify-center items-center">
             <i className="fa fa-user w-5" />
-          </Menu.Button>
-        </div>
+          </div>
+        </Menu.Button>
         <Transition
           as={Fragment}
           enter="transition ease-out duration-100"
