@@ -29,7 +29,7 @@ function FooterPage() {
         <p className="px-8 break-words">
           This is a portal site for the EWOD cybermanufacturing ecosystem,
           which is still under construction. We're working hard to
-          building a fully-functional site that can help grow
+          build a fully-functional site that can help grow
           the field of digital microfluidics.
         </p>
       </div>
