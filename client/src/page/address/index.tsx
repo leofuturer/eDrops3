@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useCookies } from 'react-cookie';
 import { useNavigate } from 'react-router-dom';
-import { request, customerAddresses } from '../../api';
+import { customerDeleteAddress, customerGetAddress } from '../../api';
 import SEO from '../../component/header/seo';
 import ManageRightLayout from '../../component/layout/ManageRightLayout';
 import DeleteModal from '../../component/modal/DeleteModal';
@@ -39,12 +39,8 @@ function Address() {
     const where = {
       id: addressId,
     }
-    const url = `${customerAddresses.replace('id', cookies.userId)}?where=${JSON.stringify(where)}`;
-
-    // Use axios to send request
-    request(url, 'DELETE', {}, true)
+    customerDeleteAddress(cookies.userId, addressId)
       .then((res) => {
-        console.log(res);
         setAddressList(addressList.filter((addr) => addr.id !== addressId));
       })
       .catch((err) => {
@@ -53,10 +49,10 @@ function Address() {
   }
 
   useEffect(() => {
-    request(customerAddresses.replace('id', cookies.userId), 'GET', {}, true)
+    customerGetAddress(cookies.userId)
       .then((res) => {
-        // console.log(res.data);
-        setAddressList(res.data);
+        // console.log(res);
+        setAddressList(res);
         setIsLoading(false);
       })
       .catch((err) => {

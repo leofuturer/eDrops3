@@ -2,8 +2,7 @@ import { Field, FieldProps, Form, Formik } from 'formik';
 import { useState } from 'react';
 import * as Yup from 'yup';
 import { request } from '../../api';
-import { customerResendVerifyEmail, userForgetPass } from '../../api';
-import { forgotPassword } from '../../api/user';
+import { customerResendVerifyEmail, forgotPassword } from '../../api';
 import MessageLayout from '../../component/layout/MessageLayout';
 
 function ForgetPass() {

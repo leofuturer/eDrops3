@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { useCookies } from 'react-cookie';
 import { useNavigate } from 'react-router-dom';
 import { LineItem, Product } from 'shopify-buy';
-import { addOrderChipToCart, addOrderProductToCart, customerGetName, getChipOrders, getCustomerCart, getProductOrders, getWorkerId, manipulateCustomerOrders, modifyChipOrders, modifyProductOrders, request } from '../api';
+import { addOrderChipToCart, addOrderProductToCart, customerGet, getChipOrders, getCustomerCart, getProductOrders, getWorkerId, manipulateCustomerOrders, modifyChipOrders, modifyProductOrders, request } from '../api';
 import { ShopifyContext } from '../context/ShopifyContext';
 import { ChipOrder, OrderInfo, ProductOrder } from '../types';
 
@@ -117,7 +117,7 @@ const useCart = () => {
         value: customAttrs.fileInfo.fileName,
       },
     ]
-    const checkAttrs = customAttributes.reduce((acc, attr) => ({...acc, [attr.key]: attr.value }), {})
+    const checkAttrs = customAttributes.reduce((acc, attr) => ({ ...acc, [attr.key]: attr.value }), {})
     const lineItemsToAdd = [{
       variantId,
       quantity,
@@ -146,7 +146,7 @@ const useCart = () => {
             break;
         }
         const workerId = await request(getWorkerId, 'GET', { username: workerUsername }, true).then((res) => res.data);
-        const customerName = await request(customerGetName.replace('id', cookies.userId), 'GET', {}, true).then((res) => `${res.data.firstName} ${res.data.lastName}`);
+        const customerName = await customerGet(cookies.userId).then((res) => `${res.firstName} ${res.lastName}`);
 
         // create our own chip order here...
         const data = {

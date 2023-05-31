@@ -46,7 +46,7 @@ export function customerGetAddress(id: string, isDefault?: boolean): Promise<Add
   })
 }
 
-export function customerAddAddress(id: string, address: Address): Promise<void> {
+export function customerAddAddress(id: string, address: Omit<Address, 'id'>): Promise<void> {
   return new Promise((resolve, reject) => {
     request(customerAddressesByID(id), 'POST', address, true)
       .then((res) => {

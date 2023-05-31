@@ -2,7 +2,7 @@ import { Form, Formik } from 'formik';
 import { useState } from 'react';
 import { useCookies } from 'react-cookie';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { request, customerAddresses, getCustomerCart } from '../../api';
+import { request, customerAddAddress, getCustomerCart } from '../../api';
 import ManageRightLayout from '../../component/layout/ManageRightLayout';
 import FormGroup from '../../component/form/FormGroup';
 import { Address } from '../../types';
@@ -42,7 +42,7 @@ function AddNewAddress({ addOnClick }: { addOnClick?: (addr: Address) => void })
             throw new Error('Error: No cart found');
           }
         })
-        .then(() => request(customerAddresses.replace('id', cookies.userId), 'POST', addressMes, true))
+        .then(() => customerAddAddress(cookies.userId, addressMes))
         .then((res) => {
           // console.log(res);
           navigate('/beforeCheckout', {
@@ -57,7 +57,7 @@ function AddNewAddress({ addOnClick }: { addOnClick?: (addr: Address) => void })
           console.error(error);
         });
     } else {
-      request(customerAddresses.replace('id', cookies.userId), 'POST', addressMes, true)
+      customerAddAddress(cookies.userId, addressMes)
         .then((res) => {
           // console.log(res);
           navigate('/manage/address');

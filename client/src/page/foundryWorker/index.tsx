@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { request } from '../../api';
-import { editFoundryWorker, getAllFoundryWorkers, userBaseDeleteById, userBaseFind } from '../../api';
+import { editFoundryWorker, getAllFoundryWorkers, userDelete } from '../../api';
 import ManageRightLayout from '../../component/layout/ManageRightLayout';
 import DeleteModal from '../../component/modal/DeleteModal';
 import { Worker } from '../../types';
@@ -42,9 +42,7 @@ function FoundryWorker() {
 
   function handleDelete() {
     // we need to delete both userBase and worker instances
-    let url = `${userBaseFind}?filter={"where": {"email": "${deleteWorker.email}"}}`;
-    request(url, 'GET', {}, true)
-      .then((res) => request(userBaseDeleteById.replace('id', res.data[0].id), 'DELETE', {}, true))
+    userDelete(deleteWorker.email)
       .then((res) => request(editFoundryWorker.replace('id', deleteWorker.id), 'DELETE', {}, true))
       .then((res) => {
         // console.log(res);

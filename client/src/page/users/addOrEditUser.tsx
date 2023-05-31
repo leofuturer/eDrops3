@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { ValidationError } from 'yup';
 import { request } from '../../api';
-import { addCustomer, updateCustomerProfile, updateUserBaseProfile, userBaseFind } from '../../api';
+import { addCustomer, updateCustomerProfile, userUpdate } from '../../api';
 import FormGroup from '../../component/form/FormGroup';
 import ManageRightLayout from '../../component/layout/ManageRightLayout';
 import { UserSchema, UserSubmitSchema } from '../../schemas';
@@ -47,8 +47,7 @@ function AddOrEditUser() {
       // edit both customer and userBase instances
       const { customerId } = location.state;
       request(updateCustomerProfile.replace('id', customerId), 'PATCH', userMes, true)
-        .then((res) => request(`${userBaseFind}?filter={"where": {"email": "${userMes.email}"}}`, 'GET', {}, true))
-        .then((res) => request(updateUserBaseProfile.replace('id', res.data[0].id), 'PATCH', userMes, true))
+        .then((res) => userUpdate(userMes.email ? userMes.email : '', userMes))
         .then((res) => navigate('/manage/users'))
         .catch((err) => {
           console.error(err);

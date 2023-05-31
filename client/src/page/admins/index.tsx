@@ -3,7 +3,7 @@ import { useCookies } from 'react-cookie';
 import { useNavigate } from 'react-router-dom';
 import { request } from '../../api';
 import {
-  deleteAdminById, findAdminByWhere, userBaseDeleteById, userBaseFind
+  deleteAdminById, findAdminByWhere, userDelete
 } from '../../api';
 import ManageRightLayout from '../../component/layout/ManageRightLayout';
 import DeleteModal from '../../component/modal/DeleteModal';
@@ -45,8 +45,7 @@ function Admins() {
   }
 
   function handleDelete() {
-    request(`${userBaseFind}?filter={"where": {"email": "${deleteAdmin.email}"}}`, 'GET', {}, true)
-      .then((res) => request(userBaseDeleteById.replace('id', res.data[0].id), 'DELETE', {}, true))
+    userDelete(deleteAdmin.email)
       .then((res) => request(deleteAdminById.replace('id', deleteAdmin.id), 'DELETE', {}, true))
       .then((res) => setAdminList(adminList.filter((admin) => admin.id !== deleteAdmin.id)))
       .catch((err) => console.error(err));

@@ -2,8 +2,7 @@ import { ErrorMessage, Field, Form, Formik, FormikConfig } from 'formik';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ValidationError } from 'yup';
-import { request } from '../../api';
-import { customerSignUp } from '../../api';
+import { signUp } from '../../api/customer';
 import FormGroup from '../../component/form/FormGroup';
 import SEO from '../../component/header/seo';
 import { UserSchema, UserSubmitSchema } from '../../schemas';
@@ -16,7 +15,7 @@ function Register() {
   const navigate = useNavigate();
 
   function handleRegister(customerData: Omit<Address, 'id'> & Omit<Customer, 'id'>) {
-    request(customerSignUp, 'POST', customerData, false)
+    signUp(customerData)
       .then((res) => {
         navigate('/checkEmail');
         setErrorMessage('');

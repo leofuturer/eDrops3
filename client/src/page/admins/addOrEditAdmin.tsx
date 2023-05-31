@@ -1,7 +1,7 @@
 import { Form, Formik } from 'formik';
 import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { addAdmin, request, updateAdminProfile, updateUserBaseProfile, userBaseFind } from '../../api';
+import { addAdmin, request, updateAdminProfile, userUpdate } from '../../api';
 import FormGroup from '../../component/form/FormGroup';
 import ManageRightLayout from '../../component/layout/ManageRightLayout';
 import { AdminEditSchema, AdminSchema, AdminSubmitSchema } from '../../schemas';
@@ -40,9 +40,7 @@ function AddOrEditAdmin() {
       const { adminId } = location.state;
       request(updateAdminProfile.replace('id', adminId), 'PATCH', userMes, true)
         .then((res) =>
-          request(`${userBaseFind}?filter={"where": {"email": "${userMes.email}"}}`, 'GET', {}, true))
-        .then((res) =>
-          request(updateUserBaseProfile.replace('id', res.data[0].id), 'PATCH', userMes, true))
+          userUpdate(userMes.email ? userMes.email : '', userMes))
         .then((res) => {
           navigate('/manage/admins');
         })

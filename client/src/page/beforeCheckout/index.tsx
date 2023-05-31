@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import Cookies from 'js-cookie';
-import { customerGetProfile, customerAddresses, modifyChipOrders } from '../../api';
+import { customerGet, customerGetAddress, modifyChipOrders } from '../../api';
 import { request } from '../../api';
 import SingleAddress from './singleAddress.js';
 import AddNewAddress from '../address/addNewAddress.js';
@@ -39,15 +39,15 @@ function BeforeCheckout() {
       setShopifyCheckoutLink(location.state.shopifyCheckoutLink);
       setCartId(location.state.cartId);
       setShopifyCheckoutId(location.state.shopifyCheckoutId);
-      request(customerGetProfile.replace('id', cookies.userId), 'GET', {}, true)
+      customerGet(cookies.userId)
         .then((res) => {
           // console.log(res.data);
-          setCustomer(res.data);
-          return request(customerAddresses.replace('id', cookies.userId), 'GET', {}, true)
+          setCustomer(res);
+          return customerGetAddress(cookies.userId)
         })
         .then((res) => {
-          // console.log(res.data);
-          setAddressList(res.data);
+          // console.log(res);
+          setAddressList(res);
           setSelectedAddrIndex(0);
         })
         .catch((err) => {
