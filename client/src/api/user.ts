@@ -1,19 +1,13 @@
 import {
   request,
   user,
-  userbyID,
-  userBaseFind,
-  userBaseDeleteById,
-  updateUserBaseProfile,
+  userByID,
   userLogin,
   userForgetPass,
   userChangePass,
   userResetPass,
   userCredsTaken
-} from '../api';
-
-// Overall User
-
+} from '.';
 
 
 // export const userBaseFind = `${ApiRootUrl}/users`;
@@ -32,7 +26,6 @@ import {
    * Given an email string, returns associated user id
    */
 async function userFind(email: string): Promise<string> {
-
   return new Promise((resolve, reject) => {
     request(`${user}?filter={"where": {"email": "${email}"}}`, 'GET', {}, true).then((res) => {
       resolve(res.data[0].id)
@@ -74,7 +67,7 @@ export async function credsTaken(email: string | undefined, username: string | u
 export async function userDelete(email: string): Promise<void> {
   return new Promise((resolve, reject) => {
     userFind(email).then((id) => {
-      request(userbyID(id), 'DELETE', {}, true).then((res) => {
+      request(userByID(id), 'DELETE', {}, true).then((res) => {
         resolve()
       }).catch((err) => {
         console.log(err);
@@ -90,32 +83,30 @@ export async function userDelete(email: string): Promise<void> {
 //      addOrEditUser.tsx
 //          - used for updating foundry worker's base user
 /**
- * Given an email or id, updates the user profile
+ * Given an email, updates the user profile
  */
-export async function userUpdate(mes: { phoneNumber: string, username: string, email: string }, id?: string, email?: string): Promise<void> {
-  if (typeof id != 'undefined') {
-    return new Promise((resolve, reject) => {
-      request(userbyID(id), 'PATCH', mes, true).then((res) => {
+export async function userUpdate(email: string, mes: { phoneNumber: string | undefined, username: string | undefined, email: string | undefined }): Promise<void> {
+  // if (typeof id != 'undefined') {
+  //   return new Promise((resolve, reject) => {
+  //     request(userByID(id), 'PATCH', mes, true).then((res) => {
+  //       resolve()
+  //     }).catch((err) => {
+  //       console.log(err);
+  //       reject(err)
+  //     })
+  //   })
+  // }
+  // else if (typeof email != 'undefined') {
+  return new Promise((resolve, reject) => {
+    userFind(email).then((id) => {
+      request(userByID(id), 'PATCH', mes, true).then((res) => {
         resolve()
       }).catch((err) => {
         console.log(err);
         reject(err)
       })
     })
-  }
-  else if (typeof email != 'undefined') {
-    return new Promise((resolve, reject) => {
-      userFind(email).then((id) => {
-        request(userbyID(id), 'PATCH', mes, true).then((res) => {
-          resolve()
-        }).catch((err) => {
-          console.log(err);
-          reject(err)
-        })
-      })
-    })
-  }
-  return new Promise((resolve, reject) => { reject() })
+  })
 }
 
 // export const userLogin = `${ApiRootUrl}/users/login`;
@@ -130,7 +121,12 @@ export function login(data: {
   email: string; password: string; username?: undefined;
 } | {
   username: string; password: string; email?: undefined;
-}): Promise<any> {
+}): Promise<{
+  token: string;
+  username: string;
+  userId: string;
+  userType: string
+}> {
 
   return new Promise((resolve, reject) => {
     request(userLogin, 'POST', data, false)
@@ -182,8 +178,3 @@ export function resetPassword(password: string, token: string): Promise<void> {
       .catch((err) => { reject(err) })
   })
 }
-
-// General Uses:
-//  Deleting Users (also as admins and Foundry Workers)
-//  Updating Users (also as admins and Foundry Workers)
-//  Also, Forgetting/Resetting/Changing password things

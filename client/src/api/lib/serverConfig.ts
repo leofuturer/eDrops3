@@ -5,10 +5,10 @@ const ApiRootUrl = '/api';
 
 // Overall User
 export const user = `${ApiRootUrl}/users`;
-export const userbyID = (id: string) => `${ApiRootUrl}/users/${id}`; // these should replace the following
-export const userBaseFind = `${ApiRootUrl}/users`;
-export const userBaseDeleteById = `${ApiRootUrl}/users/id`;
-export const updateUserBaseProfile = `${ApiRootUrl}/users/id`;
+export const userByID = (id: string) => `${ApiRootUrl}/users/${id}`; // these should replace the following
+// export const userBaseFind = `${ApiRootUrl}/users`;
+// export const userBaseDeleteById = `${ApiRootUrl}/users/id`;
+// export const updateUserBaseProfile = `${ApiRootUrl}/users/id`;
 
 export const userLogin = `${ApiRootUrl}/users/login`;
 //export const userLogout = `${ApiRootUrl}/users/logout`; // not used
@@ -19,23 +19,26 @@ export const userCredsTaken = `${ApiRootUrl}/users/creds-taken`;
 
 // Customer
 export const customer = `${ApiRootUrl}/customers`;
-export const customerbyID = (id: string) => `${ApiRootUrl}/customers/${id}`;
-
+export const customerByID = (id: string) => `${ApiRootUrl}/customers/${id}`;
 export const customerSignUp = `${ApiRootUrl}/customers`;
-//export const customerLogin = `${ApiRootUrl}/customers/login`; // not used
-//export const customerLogout = `${ApiRootUrl}/customers/logout`; // not used
-export const customerAddresses = `${ApiRootUrl}/customers/id/customerAddresses`;
-export const customerGetProfile = `${ApiRootUrl}/customers/id`;
-export const customerGetName = `${ApiRootUrl}/customers/id?filter={"fields":["firstName","lastName"]}`;
-export const customerDeleteById = `${ApiRootUrl}/customers/id`;
-export const updateCustomerProfile = `${ApiRootUrl}/customers/id`;
-//export const findCustomerByWhere = `${ApiRootUrl}/customers`; // not used
-export const credsTaken = `${ApiRootUrl}/users/creds-taken`;
-export const customerResendVerifyEmail = `${ApiRootUrl}/customers/resendVerifyEmail`;
-export const customerGetApiToken = `${ApiRootUrl}/customers/getApi`;
-// for admins
 export const addCustomer = `${ApiRootUrl}/customers`;
 export const getAllCustomers = `${ApiRootUrl}/customers`;
+export const customerGetProfile = `${ApiRootUrl}/customers/id`;
+export const customerDeleteById = `${ApiRootUrl}/customers/id`;
+export const updateCustomerProfile = `${ApiRootUrl}/customers/id`;
+
+//export const customerLogin = `${ApiRootUrl}/customers/login`; // not used
+//export const customerLogout = `${ApiRootUrl}/customers/logout`; // not used
+export const customerAddressesByID = (id: string) => `${ApiRootUrl}/customers/${id}/customerAddresses`;
+export const customerAddresses = `${ApiRootUrl}/customers/id/customerAddresses`;
+
+export const customerGetName = `${ApiRootUrl}/customers/id?filter={"fields":["firstName","lastName"]}`;
+
+//export const findCustomerByWhere = `${ApiRootUrl}/customers`; // not used
+//export const credsTaken = `${ApiRootUrl}/users/creds-taken`;
+export const customerResendVerifyEmail = `${ApiRootUrl}/customers/resendVerifyEmail`;
+export const customerGetApiToken = `${ApiRootUrl}/customers/getApi`;
+
 
 // Admin
 //export const AdminLogin = `${ApiRootUrl}/admins/login`; // not used
