@@ -65,20 +65,20 @@ export class CustomerOrderInfoController {
     return this.customerRepository.orderInfos(id).find(filter);
   }
 
-  @post('/customers/{id}/orders')
-  @response(200, {
-    description: 'Create new order',
-    content: {
-      'application/json': {
-        schema: {type: 'object', items: getModelSchemaRef(OrderInfo)},
-      },
-    },
-  })
-  async addOrderToCustomerCart(
-    @param.path.string('id') id: typeof Customer.prototype.id,
-  ): Promise<OrderInfo> {
-    return this.customerRepository.createCart(id);
-  }
+  // @post('/customers/{id}/orders')
+  // @response(200, {
+  //   description: 'Create new order',
+  //   content: {
+  //     'application/json': {
+  //       schema: {type: 'object', items: getModelSchemaRef(OrderInfo)},
+  //     },
+  //   },
+  // })
+  // async addOrderToCustomerCart(
+  //   @param.path.string('id') id: typeof Customer.prototype.id,
+  // ): Promise<OrderInfo> {
+  //   return this.customerRepository.createCart(id);
+  // }
 
   @get('/customers/{id}/cart')
   @response(200, {
@@ -91,7 +91,7 @@ export class CustomerOrderInfoController {
   })
   async getCustomerCart(
     @param.path.string('id') id: string,
-  ): Promise<Partial<OrderInfo> | null>{
+  ): Promise<OrderInfo>{
     return this.customerRepository.getCart(id);
   }
 

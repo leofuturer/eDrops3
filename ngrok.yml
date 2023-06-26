@@ -1,0 +1,7 @@
+version: 2
+log_level: debug
+tunnels:
+  shopify:
+    addr: host.docker.internal:3000
+    labels:
+      - edge=edghts_2RiRJtl4lLU86MmwPmPJWpXZVJ9

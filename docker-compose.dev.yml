@@ -29,23 +29,30 @@ services:
     depends_on:
       edrop_mysqldb:
         condition: service_healthy
-      edrop_ngrok:
-        condition: service_healthy
+      # edrop_ngrok:
+      #   condition: service_healthy
   
   edrop_ngrok:
     # for local dev development, to receive Shopify webhooks
-    image: wernight/ngrok:latest
+    image: ngrok/ngrok:latest
+    command:
+      - "start"
+      - "--all"
+      - "--config"
+      - "/etc/ngrok.yml"
+    volumes:
+      - ./ngrok.yml:/etc/ngrok.yml
     container_name: edrop_ngrok
     env_file:
       - ./deploy/dev/ngrok.env
     ports:
       - 4040:4040 # ngrok web interface
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:4040"]
-      interval: 15s
-      timeout: 30s
-      retries: 8
-      start_period: 30s
+    # healthcheck:
+    #   test: ["CMD", "curl", "-f", "http://localhost:4040"]
+    #   interval: 15s
+    #   timeout: 30s
+    #   retries: 8
+    #   start_period: 30s
 
 volumes:
   dockerdbdev:
