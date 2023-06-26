@@ -13,7 +13,7 @@ const useCart = () => {
   const [fetchingCart, setFetchingCart] = useState(false);
   const [productOrders, setProductOrders] = useState<DTO<OrderProduct>[]>([]);
   const [chipOrders, setChipOrders] = useState<DTO<OrderChip>[]>([]);
-  const [numItems, setNumItems] = useState(0);
+  // const [numItems, setNumItems] = useState(0);
   const [totalPrice, setTotalPrice] = useState(0);
   const enabled = true;
 
@@ -22,46 +22,63 @@ const useCart = () => {
   const [cookies] = useCookies(['userId']);
   const navigate = useNavigate();
 
-  async function createCart() {
-    api.customer.createCart(cookies.userId).then((cart) => {
-      setCart(cart)
-    }).catch((err) => {
-      console.error(err);
-    });
-  }
+  // async function createCart() {
+  //   api.customer.createCart(cookies.userId).then((cart) => {
+  //     setCart(cart)
+  //   }).catch((err) => {
+  //     console.error(err);
+  //   });
+  // }
 
   function fetchCart() {
     setFetchingCart(true);
     api.customer.getCart(cookies.userId).then((cart) => {
-      cart ? setCart(cart) : createCart();
-    }).catch((err) => console.error(err));
+      setCart(cart);
+    }).catch((err) => console.error(err))
+      .finally(() => setFetchingCart(false));
   }
 
   // create cart if it doesn't exist, otherwise get cart info
   useEffect(() => {
-    if (cookies.userId && !cart.id && !fetchingCart) {
+    if(cookies.userId && !fetchingCart) {
       fetchCart();
     }
   }, [cookies.userId]);
 
-  // count number of items in cart
   useEffect(() => {
-    const numProducts = cart.orderProducts?.length ? cart.orderProducts.reduce((acc, item) => acc + item.quantity, 0) : 0;
-    const numChips = cart.orderChips ? cart.orderChips.reduce((acc, item) => acc + item.quantity, 0) : 0;
-    setNumItems(numProducts + numChips);
+    if (cart && 'orderProducts' in cart && 'orderChips' in cart) {
+      setProductOrders(cart?.orderProducts);
+      setChipOrders(cart?.orderChips);
+    }
   }, [cart]);
+
+  // count number of items in cart
+  // useEffect(() => {
+  //   if (cart && 'orderProducts' in cart && 'orderChips' in cart) {
+  //     const numProducts = cart.orderProducts?.length ? cart.orderProducts.reduce((acc, item) => acc + item.quantity, 0) : 0;
+  //     const numChips = cart.orderChips ? cart.orderChips.reduce((acc, item) => acc + item.quantity, 0) : 0;
+  //     setNumItems(numProducts + numChips);
+  //   }
+  // }, [cart]);
 
   // calculate total price of cart
   useEffect(() => {
-    const productPrice = cart.orderProducts?.length ? cart.orderProducts.reduce((acc, item) => acc + item.quantity * item.price, 0) : 0;
-    const chipPrice = cart.orderChips ? cart.orderChips.reduce((acc, item) => acc + item.quantity * item.price, 0) : 0;
-    setTotalPrice(productPrice + chipPrice);
+    if (cart && 'orderProducts' in cart && 'orderChips' in cart) {
+      const productPrice = cart.orderProducts?.length ? cart.orderProducts.reduce((acc, item) => acc + item.quantity * item.price, 0) : 0;
+      const chipPrice = cart.orderChips ? cart.orderChips.reduce((acc, item) => acc + item.quantity * item.price, 0) : 0;
+      setTotalPrice(productPrice + chipPrice);
+    }
+  }, [cart]);
+
+  useEffect(() => {
+    console.log(cart);
   }, [cart]);
 
 
   // add to shopify cart, and then add to our own cart
   async function addProduct(product: Product, quantity: number): Promise<void> {
-    if(!cart.id) fetchCart();
+    console.log(cart)
+    if (!cart.id) fetchCart();
     // console.log(product)
     // console.log(cart)
     const data: Product & CheckoutLineItemInput = {
@@ -80,7 +97,7 @@ const useCart = () => {
   }
 
   async function addChip(chip: Product, quantity: number, customAttrs: { material: Material, wcpa: string, fileInfo: DTO<FileInfo> }): Promise<void> {
-    if(!cart.id) fetchCart();
+    if (!cart.id) fetchCart();
     const data: Product & CheckoutLineItemInput = {
       ...chip,
       quantity,
@@ -158,7 +175,7 @@ const useCart = () => {
 
   return {
     enabled,
-    numItems,
+    // numItems,
     totalPrice,
     cart,
     productOrders,

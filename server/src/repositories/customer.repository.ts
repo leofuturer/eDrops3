@@ -41,7 +41,7 @@ export class CustomerRepository extends DefaultCrudRepository<
   typeof Customer.prototype.id,
   CustomerRelations
 > {
-  
+
   public readonly addresses: HasManyRepositoryFactory<
     Address,
     typeof Customer.prototype.id
@@ -188,11 +188,15 @@ export class CustomerRepository extends DefaultCrudRepository<
     await this.deleteById(id);
   }
 
+  // DO NOT USE FROM CONTROLLER
+  // Only used to create cart when getCart cannot find any active cart
   async createCart(id: typeof Customer.prototype.id): Promise<OrderInfo> {
+    // Double check if customer already has an active order
     const allOrders = await this.orderInfos(id).find({ where: { orderComplete: false } });
     if (allOrders.length !== 0) {
       throw new HttpErrors.BadRequest('Customer already has an active order');
     }
+    // Create a new order with Shopify then save it to our database
     return this.shopify.checkout.create().then((res) => {
       // console.log(res);
       const lastSlash = res.webUrl.lastIndexOf('/');
@@ -215,25 +219,42 @@ export class CustomerRepository extends DefaultCrudRepository<
     });
   }
 
-  async getCart(
-    customerId: string,
-  ): Promise<Partial<OrderInfo> | null> {
+  // We want to only use getCart to get the cart 
+  // and create a new cart if necessary
+  // This is so we don't create race conditions
+  // that lead to multiple carts being created
+  async getCart(customerId: string): Promise<OrderInfo> {
+    // Check if there is an active cart
     return this.orderInfos(customerId)
       .find({ where: { orderComplete: false }, include: ['orderProducts', 'orderChips'] })
       .then(orders => {
+        // If there is multiple active carts, consolidate them and return the first one
         if (orders.length > 1) {
-          throw new HttpErrors.NotFound('More than one active cart found');
-        } else if (orders.length === 0) {
-          log.warning(`No cart found for customer id=${customerId}, need to create one`);
-          // throw new HttpErrors.NotFound('No cart found');
-          return null;
+          const primaryOrder = orders[0];
+          const otherOrders = orders.slice(1);
+          let allOrderProducts = primaryOrder.orderProducts ?? [];
+          let allOrderChips = primaryOrder.orderChips ?? [];
+          otherOrders.forEach(order => {
+            allOrderProducts = allOrderProducts.concat(order.orderProducts ?? []);
+            allOrderChips = allOrderChips.concat(order.orderChips ?? []);
+            this.orderInfos(customerId).delete({ id: order.id });
+            // Could potentially remove line items from other orders here
+            // But not necessary as order will just be abandoned
+          });
+          primaryOrder.orderProducts = allOrderProducts;
+          primaryOrder.orderChips = allOrderChips;
+          this.orderInfos(customerId).patch(primaryOrder, { id: primaryOrder.id });
+          return primaryOrder;
         }
+        // If no active cart found, create one and return the new one
+        else if (orders.length === 0) {
+          return this.createCart(customerId);
+        }
+        // Otherwise, return the active cart
         log.info(`Cart already exists, is order info model with id ${orders[0].id}`);
         return orders[0];
       })
-      .catch(err => {
-        throw err;
-      });
+      .catch(err => { throw err; });
   }
 
   async checkoutCart(id: typeof Customer.prototype.id, orderId: typeof OrderInfo.prototype.id, address: Address): Promise<OrderInfo> {

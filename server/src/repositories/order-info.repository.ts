@@ -264,7 +264,7 @@ export class OrderInfoRepository extends DefaultCrudRepository<
 
   async newOrderCreated(body: AnyObject, req: CustomRequest): Promise<void> {
     console.log(
-      `Shopify order creation webhook token: ${req?.headers?.['x-shopify-hmac-sha256']}`,
+      `Shopify order creation webhook token: ${req?.headers?.['X-Shopify-Hmac-Sha256']}`,
     );
     // console.log(body);
     console.log(

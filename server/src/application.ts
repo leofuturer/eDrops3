@@ -20,7 +20,7 @@ import {
 } from './components/jwt-authentication';
 import { clearDb, seedDb } from './lib/seed';
 import { FILE_UPLOAD_SERVICE, STORAGE_DIRECTORY } from './services';
-import { NgrokObserver } from './observers';
+// import { NgrokObserver } from './observers';
 
 export { ApplicationConfig };
 
@@ -36,7 +36,9 @@ export class EdropsBackendApplication extends BootMixin(
 
     // Set up the custom sequence
     // this.sequence(MySequence);
-    this.lifeCycleObserver(NgrokObserver);
+
+    // Doesn't seem to work on Mac (generates XML instead of JSON API response)
+    // this.lifeCycleObserver(NgrokObserver);
 
     // Set up default home page
     this.static('/', path.join(__dirname, '../public'));
