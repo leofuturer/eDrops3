@@ -13,9 +13,9 @@ import {
   HttpErrors,
 } from '@loopback/rest';
 import {SecurityBindings, UserProfile} from '@loopback/security';
-import { compare } from 'bcryptjs';
 import {FoundryWorker, User} from '../models';
 import {FoundryWorkerRepository, UserRepository} from '../repositories';
+import { DTO } from '../lib/types/model';
 
 export class FoundryWorkerController {
   constructor(
@@ -27,7 +27,7 @@ export class FoundryWorkerController {
     public user: UserProfile,
   ) {}
 
-  @post('/foundryWorkers')
+  @post('/foundry-workers')
   @response(200, {
     description: 'FoundryWorker model instance',
     content: {'application/json': {schema: getModelSchemaRef(FoundryWorker)}},
@@ -42,12 +42,12 @@ export class FoundryWorkerController {
         },
       },
     })
-    foundryWorker: Omit<FoundryWorker & User, 'id'>,
+    foundryWorker: DTO<FoundryWorker & User>,
   ): Promise<FoundryWorker> {
     return this.foundryWorkerRepository.createFoundryWorker(foundryWorker);
   }
 
-  @get('/foundryWorkers')
+  @get('/foundry-workers')
   @response(200, {
     description: 'Array of FoundryWorker model instances',
     content: {
@@ -65,7 +65,7 @@ export class FoundryWorkerController {
     return this.foundryWorkerRepository.find(filter);
   }
 
-  @get('/foundryWorkers/{id}')
+  @get('/foundry-workers/{id}')
   @response(200, {
     description: 'FoundryWorker model instance',
     content: {
@@ -82,15 +82,15 @@ export class FoundryWorkerController {
     return this.foundryWorkerRepository.findById(id, { include: ['user'], ...filter });
   }
 
-  @del('/foundryWorkers/{id}')
+  @del('/foundry-workers/{id}')
   @response(204, {
     description: 'FoundryWorker DELETE success',
   })
   async deleteById(@param.path.string('id') id: string): Promise<void> {
-    await this.foundryWorkerRepository.deleteById(id);
+    await this.foundryWorkerRepository.deleteFoundryWorker(id);
   }
 
-  @patch('/foundryWorkers/{id}')
+  @patch('/foundry-workers/{id}')
   @response(204, {
     description: 'FoundryWorker PATCH success',
   })
@@ -106,19 +106,5 @@ export class FoundryWorkerController {
     foundryWorker: FoundryWorker,
   ): Promise<void> {
     await this.foundryWorkerRepository.updateById(id, foundryWorker);
-  }
-
-  @get('/foundryWorkers/getWorkerID')
-  @response(200, {
-    description: 'FoundryWorker GET WORKER ID success',
-  })
-  async getWorkerID(
-    @param.query.string('username') username: string,
-  ): Promise<string> {
-    return this.userRepository
-      .findOne({where: {username}})
-      .then(user => {
-        return user?.id as string;
-      });
   }
 }

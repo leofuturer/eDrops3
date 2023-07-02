@@ -7,7 +7,7 @@ export const defaultUsers: DTO<User>[] = [
     userType: 'customer',
     username: 'community1',
     password: 'edropTest123',
-    email: 'edropswebsite@gmail.com',
+    email: 'edropswebsite+community1@gmail.com',
     emailVerified: true,
   },
   {
@@ -15,7 +15,7 @@ export const defaultUsers: DTO<User>[] = [
     userType: 'customer',
     username: 'community2',
     password: 'edropTest123',
-    email: 'edropswebsite+2@gmail.com',
+    email: 'edropswebsite+community2@gmail.com',
     emailVerified: true,
   },
   {
@@ -23,7 +23,7 @@ export const defaultUsers: DTO<User>[] = [
     userType: 'customer',
     username: 'community3',
     password: 'edropTest123',
-    email: 'edropswebsite+3@gmail.com',
+    email: 'edropswebsite+community3@gmail.com',
     emailVerified: true,
   },
 ];

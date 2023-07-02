@@ -6,13 +6,14 @@ import {
 import {
   get,
   getModelSchemaRef, HttpErrors,
-  param, Response,
+  param, patch, requestBody, Response,
   response,
   RestBindings
 } from '@loopback/rest';
 import { SecurityBindings, UserProfile } from '@loopback/security';
 import { OrderChip } from '../models';
 import { FoundryWorkerRepository, OrderChipRepository, OrderInfoRepository } from '../repositories';
+import { authenticate } from '@loopback/authentication';
 
 export class FoundryWorkerOrderChipController {
   constructor(
@@ -27,7 +28,7 @@ export class FoundryWorkerOrderChipController {
     protected user: UserProfile,
   ) {}
 
-  @get('/foundryWorkers/{id}/orderChips', {
+  @get('/foundry-workers/{id}/order-chips', {
     responses: {
       '200': {
         description: 'Array of FoundryWorker has many OrderChip',
@@ -46,7 +47,41 @@ export class FoundryWorkerOrderChipController {
     return this.foundryWorkerRepository.orderChips(id).find(filter);
   }
 
-  @get('/foundryWorkers/{id}/downloadFile')
+  @authenticate('jwt')
+  @patch('/foundry-workers/{id}/order-chips/{chipOrderId}')
+  @response(204, {
+    description: 'FoundryWorker OrderChip PATCH success',
+  })
+  async updateById(
+    @param.path.string('id') id: string,
+    @param.path.string('chipOrderId') chipOrderId: string,
+    @requestBody({
+      content: {
+        'application/json': {
+          schema: getModelSchemaRef(OrderChip, {partial: true}),
+        },
+      },
+    })
+    orderChip: OrderChip,
+  ): Promise<void> {
+    const chipOrders = await this.foundryWorkerRepository.orderChips(id).find({
+      where: {id: chipOrderId},
+    });
+    if (!chipOrders.length)
+      throw new HttpErrors.NotFound('Chip order not found');
+    const chipOrder = chipOrders[0];
+    // Check auth (need to probably move to interceptor in future)
+    if (chipOrder.foundryWorkerId !== this.user.id)
+      throw new HttpErrors.Forbidden('Unauthorized access to chip order');
+    // Update chip order
+    await this.foundryWorkerRepository.orderChips(id).patch(orderChip, {
+      where: {id: chipOrderId},
+    });
+  }
+
+
+  // TODO: rework this endpoint
+  @get('/foundry-workers/{id}/downloadFile')
   @response(200, {
     description: 'FoundryWorker DOWNLOAD FILE success',
   })

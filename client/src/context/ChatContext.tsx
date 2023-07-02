@@ -1,7 +1,5 @@
 
-import Pusher from 'pusher-js';
-import React, { useEffect, useState } from 'react';
-import { request, customerGetApiToken } from '../api';
+import React, { useState } from 'react';
 
 const useChat = () => {
   const [chats, setChats] = useState<number[]>([]);
