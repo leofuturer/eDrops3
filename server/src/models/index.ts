@@ -1,5 +1,5 @@
 export * from './admin.model';
-export * from './customer-address.model';
+export * from './address.model';
 export * from './customer.model';
 export * from './file-info.model';
 export * from './foundry-worker.model';

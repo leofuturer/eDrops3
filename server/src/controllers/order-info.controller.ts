@@ -12,10 +12,11 @@ import {
 } from '@loopback/rest';
 import { OrderInfo } from '../models';
 import { OrderInfoRepository } from '../repositories';
+import { authenticate } from '@loopback/authentication';
 
 export interface CustomRequest extends Request {
   'headers': {
-    'x-shopify-hmac-sha256': string;
+    'X-Shopify-Hmac-Sha256': string;
     'x-edrop-userbase': string;
   },
   'accessToken': {
@@ -31,7 +32,7 @@ export class OrderInfoController {
   ) {}
 
   // Shopify webhook (not for end users)
-  @post('/orderInfos/newOrderCreated')
+  @post('/orders/order-completed')
   @response(200, {
     description: 'OrderInfo model instance',
     content: {'application/json': {schema: getModelSchemaRef(OrderInfo)}},
@@ -59,7 +60,8 @@ export class OrderInfoController {
     );
   }
 
-  @get('/orderInfos/{id}')
+  @authenticate('jwt')
+  @get('/orders/{id}')
   @response(200, {
     description: 'OrderInfo model instance',
     content: {
@@ -76,7 +78,8 @@ export class OrderInfoController {
     return this.orderInfoRepository.findById(id, filter);
   }
 
-  @get('/orderInfos')
+  @authenticate('jwt')
+  @get('/orders')
   @response(200, {
     description: 'Array of OrderInfo model instances',
     content: {
@@ -91,6 +94,6 @@ export class OrderInfoController {
   async find(
     @param.filter(OrderInfo) filter?: Filter<OrderInfo>,
   ): Promise<OrderInfo[]> {
-    return this.orderInfoRepository.find(filter);
+    return this.orderInfoRepository.find();
   }
 }

@@ -8,20 +8,14 @@ import {
 import { HttpErrors, Request, Response } from '@loopback/rest';
 import AWS from 'aws-sdk';
 import { genSalt, hash } from 'bcryptjs';
-import { createHash } from 'crypto';
 import path from 'path';
 import { MysqlDsDataSource } from '../datasources';
-import {
-  EMAIL_HOSTNAME,
-  EMAIL_PORT,
-  EMAIL_SENDER
-} from '../lib/constants/emailConstants';
 import { calculate } from '../lib/toolbox/calculate';
 import log from '../lib/toolbox/log';
 import { DTO } from '../lib/types/model';
 import {
+  Address,
   Customer,
-  CustomerAddress,
   CustomerRelations,
   FileInfo,
   OrderInfo,
@@ -29,20 +23,27 @@ import {
 } from '../models';
 import { STORAGE_DIRECTORY } from '../services';
 import SendGrid from '../services/send-grid.service';
-import { CustomerAddressRepository } from './customer-address.repository';
+import { AddressRepository } from './customer-address.repository';
 import { FileInfoRepository } from './file-info.repository';
 import { OrderInfoRepository } from './order-info.repository';
 import { UserRepository } from './user.repository';
+import fetch from 'node-fetch';
+import ShopifyBuy, { Product, buildClient } from 'shopify-buy';
 
 const CONTAINER_NAME = process.env.S3_BUCKET_NAME ?? 'edrop-v2-files';
+
+// https://stackoverflow.com/questions/48433783/referenceerror-fetch-is-not-defined
+// @ts-ignore
+global.fetch = fetch;
 
 export class CustomerRepository extends DefaultCrudRepository<
   Customer,
   typeof Customer.prototype.id,
   CustomerRelations
 > {
-  public readonly customerAddresses: HasManyRepositoryFactory<
-    CustomerAddress,
+
+  public readonly addresses: HasManyRepositoryFactory<
+    Address,
     typeof Customer.prototype.id
   >;
 
@@ -60,10 +61,12 @@ export class CustomerRepository extends DefaultCrudRepository<
 
   public readonly s3: AWS.S3;
 
+  public readonly shopify: ShopifyBuy;
+
   constructor(
     @inject('datasources.mysqlDS') dataSource: MysqlDsDataSource,
-    @repository.getter('CustomerAddressRepository')
-    protected customerAddressRepositoryGetter: Getter<CustomerAddressRepository>,
+    @repository.getter('AddressRepository')
+    protected AddressRepositoryGetter: Getter<AddressRepository>,
     @repository.getter('FileInfoRepository')
     protected fileInfoRepositoryGetter: Getter<FileInfoRepository>,
     @repository.getter('OrderInfoRepository')
@@ -93,13 +96,13 @@ export class CustomerRepository extends DefaultCrudRepository<
       'fileInfos',
       this.fileInfos.inclusionResolver,
     );
-    this.customerAddresses = this.createHasManyRepositoryFactoryFor(
-      'customerAddresses',
-      customerAddressRepositoryGetter,
+    this.addresses = this.createHasManyRepositoryFactoryFor(
+      'addresses',
+      AddressRepositoryGetter,
     );
     this.registerInclusionResolver(
-      'customerAddresses',
-      this.customerAddresses.inclusionResolver,
+      'addresses',
+      this.addresses.inclusionResolver,
     );
 
     if (process.env.NODE_ENV === 'production') {
@@ -111,6 +114,12 @@ export class CustomerRepository extends DefaultCrudRepository<
 
       this.s3 = new AWS.S3();
     }
+
+    this.shopify = buildClient({
+      storefrontAccessToken: process.env.SHOPIFY_TOKEN as string,
+      domain: process.env.SHOPIFY_DOMAIN as string,
+      apiVersion: '2023-04'
+    });
   }
 
   /**
@@ -120,7 +129,7 @@ export class CustomerRepository extends DefaultCrudRepository<
    * @returns             Created customer instance
    */
   async createCustomer(
-    customer: DTO<Customer & User & Partial<Omit<CustomerAddress, 'id'>>>,
+    customer: DTO<Customer & User & Partial<Omit<Address, 'id'>>>,
     createAddress = true,
   ): Promise<Customer> {
     const hashedPassword = await hash(customer.password, await genSalt());
@@ -149,7 +158,7 @@ export class CustomerRepository extends DefaultCrudRepository<
       throw new HttpErrors.InternalServerError(err.message);
     });
     if (createAddress) {
-      const customerAddressData: Partial<CustomerAddress> = {
+      const AddressData: Partial<Address> = {
         street: customer.street || 'Not provided during signup',
         streetLine2: customer.streetLine2 || 'Not provided during signup',
         country: customer.country || 'Not provided during signup',
@@ -159,40 +168,138 @@ export class CustomerRepository extends DefaultCrudRepository<
         isDefault: customer.isDefault || true,
       };
       log.info('Customer instance created, now associating address with it');
-      this.customerAddresses(customerInstance.id)
-        .create(customerAddressData)
+      this.addresses(customerInstance.id)
+        .create(AddressData)
         .then(() => {
           userRepository.sendVerificationEmail(userInstance);
         })
         .catch(err => {
           // roll back the customer creation
           this.deleteById(customerInstance?.id);
-          console.error(err);
         });
     }
     return customerInstance;
   }
 
-  async getCustomerCart(
-    customerId: string,
-  ): Promise<Partial<OrderInfo> | null> {
+  async deleteCustomer(id: typeof Customer.prototype.id) {
+    const userRepository = await this.userRepositoryGetter();
+    await userRepository.deleteById(id);
+    // May need to delete associated addresses and order infos?
+    await this.deleteById(id);
+  }
+
+  // DO NOT USE FROM CONTROLLER
+  // Only used to create cart when getCart cannot find any active cart
+  async createCart(id: typeof Customer.prototype.id): Promise<OrderInfo> {
+    // Double check if customer already has an active order
+    const allOrders = await this.orderInfos(id).find({ where: { orderComplete: false } });
+    if (allOrders.length !== 0) {
+      throw new HttpErrors.BadRequest('Customer already has an active order');
+    }
+    // Create a new order with Shopify then save it to our database
+    return this.shopify.checkout.create().then((res) => {
+      // console.log(res);
+      const lastSlash = res.webUrl.lastIndexOf('/');
+      const lastQuestionMark = res.webUrl.lastIndexOf('?');
+      const data: Partial<OrderInfo> = {
+        checkoutIdClient: res.id as string,
+        checkoutToken: res.webUrl.slice(lastSlash + 1, lastQuestionMark),
+        checkoutLink: res.webUrl,
+        createdAt: res.createdAt,
+        lastModifiedAt: res.updatedAt,
+        orderComplete: false,
+        status: 'Order in progress',
+        customerId: id,
+        shippingAddressId: 0, // 0 to indicate no address selected yet (pk cannot be 0)
+        billingAddressId: 0,
+      };
+      return data;
+    }).then((data: Partial<OrderInfo>) => {
+      return this.orderInfos(id).create(data);
+    });
+  }
+
+  // We want to only use getCart to get the cart 
+  // and create a new cart if necessary
+  // This is so we don't create race conditions
+  // that lead to multiple carts being created
+  async getCart(customerId: string): Promise<OrderInfo> {
+    // Check if there is an active cart
     return this.orderInfos(customerId)
       .find({ where: { orderComplete: false }, include: ['orderProducts', 'orderChips'] })
       .then(orders => {
+        // If there is multiple active carts, consolidate them and return the first one
         if (orders.length > 1) {
-          log.error(`Error getting customer cart or there's more than one active cart`);
-          throw new HttpErrors.NotFound('More than one active cart found');
-        } else if (orders.length === 0) {
-          log.warning(`No cart found for customer id=${customerId}, need to create one`);
-          // throw new HttpErrors.NotFound('No cart found');
-          return null;
+          const primaryOrder = orders[0];
+          const otherOrders = orders.slice(1);
+          let allOrderProducts = primaryOrder.orderProducts ?? [];
+          let allOrderChips = primaryOrder.orderChips ?? [];
+          otherOrders.forEach(order => {
+            allOrderProducts = allOrderProducts.concat(order.orderProducts ?? []);
+            allOrderChips = allOrderChips.concat(order.orderChips ?? []);
+            this.orderInfos(customerId).delete({ id: order.id });
+            // Could potentially remove line items from other orders here
+            // But not necessary as order will just be abandoned
+          });
+          primaryOrder.orderProducts = allOrderProducts;
+          primaryOrder.orderChips = allOrderChips;
+          this.orderInfos(customerId).patch(primaryOrder, { id: primaryOrder.id });
+          return primaryOrder;
         }
+        // If no active cart found, create one and return the new one
+        else if (orders.length === 0) {
+          return this.createCart(customerId);
+        }
+        // Otherwise, return the active cart
         log.info(`Cart already exists, is order info model with id ${orders[0].id}`);
         return orders[0];
       })
-      .catch(err => {
-        throw err;
+      .catch(err => { throw err; });
+  }
+
+  async checkoutCart(id: typeof Customer.prototype.id, orderId: typeof OrderInfo.prototype.id, address: Address): Promise<OrderInfo> {
+    const orderInfos = await this.orderInfos(id).find({ where: { id: orderId, orderComplete: false } });
+    if (orderInfos.length === 0) {
+      throw new HttpErrors.NotFound('No cart found');
+    }
+    const cart = orderInfos[0];
+
+    const user = await this.user(id);
+    const customer = await this.findById(id);
+    return this.shopify.checkout.updateEmail(cart.checkoutIdClient, user.email)
+      .then((res: any) => {
+        const shippingAddr = {
+          address1: address.street,
+          address2: address.streetLine2,
+          city: address.city,
+          province: address.state,
+          country: address.country,
+          zip: address.zipCode,
+          firstName: customer.firstName,
+          lastName: customer.lastName,
+          phone: customer.phoneNumber,
+        };
+        return this.shopify.checkout.updateShippingAddress(cart.checkoutIdClient, shippingAddr)
+      }).then((res: any) => {
+        return cart;
       });
+  }
+
+  async uploadFile(request: Request, response: Response, id: typeof Customer.prototype.id): Promise<FileInfo> {
+    const username = await this.user(id).then(user => user.username);
+    return process.env.NODE_ENV !== 'production'
+      ? await this.uploadDisk(
+        request,
+        response,
+        username,
+        id as string,
+      )
+      : await this.uploadS3(
+        request,
+        response,
+        username,
+        id as string,
+      )
   }
 
   async uploadDisk(
@@ -200,7 +307,7 @@ export class CustomerRepository extends DefaultCrudRepository<
     response: Response,
     username: string,
     id: string,
-  ): Promise<object> {
+  ): Promise<FileInfo> {
     const mapper = (f: Express.Multer.File) => ({
       fieldname: f.fieldname,
       originalname: f.originalname,
@@ -238,10 +345,10 @@ export class CustomerRepository extends DefaultCrudRepository<
       },
     );
 
-    const fields = request.body;
+    // const fields = request.body;
     const fileInfo = await this.fileInfos(id).create(fileInfos[0]);
     // return {files, fields};
-    return { fileInfo, fields };
+    return fileInfo;
   }
 
   async uploadS3(
@@ -249,7 +356,7 @@ export class CustomerRepository extends DefaultCrudRepository<
     response: Response,
     username: string,
     id: string,
-  ): Promise<object> {
+  ): Promise<FileInfo> {
     const mapper = (f: Express.MulterS3.File) => ({
       fieldname: f.fieldname,
       originalname: f.originalname,
@@ -294,7 +401,17 @@ export class CustomerRepository extends DefaultCrudRepository<
     const fields = request.body;
     const fileInfo = await this.fileInfos(id).create(fileInfos[0]);
     // return {files, fields};
-    return { fileInfo, fields };
+    return fileInfo;
+  }
+
+  async downloadById(userId: typeof Customer.prototype.id, fileId: typeof FileInfo.prototype.id, response: Response): Promise<Response> {
+    const file = await this.fileInfos(userId).find({ where: { id: fileId } });
+    if (!file[0]) {
+      throw new HttpErrors.NotFound('File not found');
+    }
+    return process.env.NODE_ENV !== 'production' ?
+      this.downloadDisk(file[0].containerFileName, response) :
+      this.downloadS3(file[0].containerFileName, response);
   }
 
   async downloadDisk(filename: string, response: Response): Promise<Response> {

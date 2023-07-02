@@ -1,16 +1,7 @@
 import {
   repository,
 } from '@loopback/repository';
-import {
-  param,
-  get,
-  getModelSchemaRef,
-} from '@loopback/rest';
-import {
-  ProjectFile,
-  Project,
-} from '../models';
-import {ProjectFileRepository} from '../repositories';
+import { ProjectFileRepository } from '../repositories';
 
 export class ProjectFileProjectController {
   constructor(

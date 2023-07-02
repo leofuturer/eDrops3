@@ -62,4 +62,10 @@ export class FoundryWorkerRepository extends DefaultCrudRepository<
     await userRepository.sendVerificationEmail(userInstance);
     return foundryWorkerInstance;
   }
+
+  async deleteFoundryWorker(id: typeof FoundryWorker.prototype.id) {
+    const userRepository = await this.userRepositoryGetter();
+    await userRepository.deleteById(id);
+    await this.deleteById(id);
+  }
 }

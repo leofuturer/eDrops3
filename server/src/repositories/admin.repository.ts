@@ -50,4 +50,10 @@ export class AdminRepository extends DefaultCrudRepository<
     await userRepository.sendVerificationEmail(userInstance);
     return adminInstance;
   }
+
+  async deleteAdmin(id: typeof Admin.prototype.id) {
+    const userRepository = await this.userRepositoryGetter();
+    await userRepository.deleteById(id);
+    await this.deleteById(id);
+  }
 }
