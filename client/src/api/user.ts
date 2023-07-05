@@ -28,6 +28,11 @@ import {
 async function userFind(email: string): Promise<string> {
   return new Promise((resolve, reject) => {
     request(`${user}?filter={"where": {"email": "${email}"}}`, 'GET', {}, true).then((res) => {
+      if (res.data[0] == undefined) {
+        console.log("No user found.")
+        reject("No user found.")
+      }
+
       resolve(res.data[0].id)
     }).catch((err) => {
       console.log(err);
@@ -85,10 +90,10 @@ export async function userDelete(email: string): Promise<void> {
 /**
  * Given an email, updates the user profile
  */
-export async function userUpdate(email: string, mes: { phoneNumber: string | undefined, username: string | undefined, email: string | undefined }): Promise<void> {
+export async function userUpdate(email: string, userData: { phoneNumber: string | undefined, username: string | undefined, email: string | undefined }): Promise<void> {
   // if (typeof id != 'undefined') {
   //   return new Promise((resolve, reject) => {
-  //     request(userByID(id), 'PATCH', mes, true).then((res) => {
+  //     request(userByID(id), 'PATCH', userData, true).then((res) => {
   //       resolve()
   //     }).catch((err) => {
   //       console.log(err);
@@ -99,7 +104,7 @@ export async function userUpdate(email: string, mes: { phoneNumber: string | und
   // else if (typeof email != 'undefined') {
   return new Promise((resolve, reject) => {
     userFind(email).then((id) => {
-      request(userByID(id), 'PATCH', mes, true).then((res) => {
+      request(userByID(id), 'PATCH', userData, true).then((res) => {
         resolve()
       }).catch((err) => {
         console.log(err);

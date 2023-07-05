@@ -1,7 +1,7 @@
 import { Form, Formik } from 'formik';
 import { useEffect, useState } from 'react';
 import { useCookies } from 'react-cookie';
-import { adminGetProfile, request, updateAdminProfile } from '../../api';
+import { adminGet, adminUpdate } from '../../api';
 import FormGroup from '../../component/form/FormGroup';
 
 function AdminProfile() {
@@ -14,12 +14,12 @@ function AdminProfile() {
   const [cookies] = useCookies(['userId']);
 
   useEffect(() => {
-    request(adminGetProfile.replace('id', cookies.userId), 'GET', {}, true)
+    adminGet(cookies.userId)
       .then((res) => {
         setInitialInfo({
-          username: res.data.username,
-          email: res.data.email,
-          phoneNumber: res.data.phoneNumber,
+          username: res.username,
+          email: res.email,
+          phoneNumber: res.phoneNumber,
         });
       })
   }, [])
@@ -29,7 +29,7 @@ function AdminProfile() {
       initialValues={initialInfo}
       enableReinitialize={true}
       onSubmit={(values) => {
-        request(updateAdminProfile.replace('id', cookies.userId), 'PATCH', values, true)
+        adminUpdate(cookies.userId, values)
       }}>
       <Form className="flex flex-col space-y-2">
         <FormGroup name="username" />

@@ -2,16 +2,13 @@ import { Field, FieldProps, Form, Formik } from 'formik';
 import { useState } from 'react';
 import * as Yup from 'yup';
 import { request } from '../../api';
-import { customerResendVerifyEmail, forgotPassword } from '../../api';
+import { resendVerificationEmail, forgotPassword } from '../../api';
 import MessageLayout from '../../component/layout/MessageLayout';
 
 function ForgetPass() {
   const [successMessage, setSuccessMessage] = useState(false);
 
   function handleHelp(email: string, helpType: 'resetPassword' | 'resendEmail') {
-    const data = {
-      email: email,
-    };
     switch (helpType) {
       case 'resetPassword':
         forgotPassword(email)
@@ -25,7 +22,7 @@ function ForgetPass() {
           });
         break;
       case 'resendEmail':
-        request(customerResendVerifyEmail, 'POST', data, false)
+        resendVerificationEmail(email)
           .then((res) => {
           })
           .catch((err) => {

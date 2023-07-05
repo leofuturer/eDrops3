@@ -1,5 +1,5 @@
 
-import { Address, Customer } from './../types';
+import { Address, Customer, Signup } from './../types';
 import { request, customer, customerByID, customerAddressesByID, customerResendVerifyEmail, customerGetApiToken } from '.'
 
 // Customer
@@ -10,7 +10,7 @@ import { request, customer, customerByID, customerAddressesByID, customerResendV
 /**
  * Takes the customer's data from the customer registration page to register a new customer
  */
-export function signUp(customerData: Omit<Address, 'id'> & Omit<Customer, 'id'>): Promise<void> {
+export function signUp(customerData: Omit<Address & Customer, 'id'>): Promise<void> {
   return new Promise((resolve, reject) => {
     request(customer, 'POST', customerData, false)
       .then((res) => {
@@ -101,6 +101,32 @@ export function customerGet(id: string): Promise<Customer> {
   })
 }
 
+export function customerGetAll(): Promise<Customer[]> {
+  return new Promise((resolve, reject) => {
+    request(customer, 'GET', {}, true)
+      .then((res) => {
+        resolve(res.data)
+      })
+      .catch((err) => {
+        reject(err)
+      })
+  })
+}
+
+// export const addCustomer = `${ApiRootUrl}/customers`;
+//      addOrEditUser.tsx
+//          - Add new customer
+export function customerAdd(customerData: Partial<Signup<Customer>>): Promise<Customer> {
+  return new Promise((resolve, reject) => {
+    request(customer, 'POST', customerData, true)
+      .then((res) => {
+        resolve(res.data)
+      })
+      .catch((err) => {
+        reject(err)
+      })
+  })
+}
 
 
 // export const customerDeleteById = `${ApiRootUrl}/customers/id`;
@@ -121,14 +147,14 @@ export function customerDelete(id: string): Promise<void> {
 // export const updateCustomerProfile = `${ApiRootUrl}/customers/id`;
 //      customerProfile.tsx
 //          - Updating profile
-export function customerUpdate(id: string, userMes: Partial<Customer>): Promise<void> {
+export function customerUpdate(id: string, customerData: Partial<Customer>): Promise<void> {
   return new Promise((resolve, reject) => {
-    request(customerByID(id), 'PATCH', userMes, true)
+    request(customerByID(id), 'PATCH', customerData, true)
       .then((res) => {
         resolve()
       })
       .catch((err) => {
-        resolve(err)
+        reject(err)
       })
   })
 }
@@ -168,11 +194,3 @@ export function getApiToken(): Promise<{ token: string, domain: string, key: str
       });
   })
 }
-
-// General uses:
-//  customer signing up
-//  getting information (e.g. addresses, names)
-//  deleting customer (and associated user)
-//  updating profile info
-//  checking username/email uniqueness
-//  forgetting/resetting/changing password

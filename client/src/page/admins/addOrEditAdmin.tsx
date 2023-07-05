@@ -1,7 +1,7 @@
 import { Form, Formik } from 'formik';
 import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { addAdmin, request, updateAdminProfile, userUpdate } from '../../api';
+import { adminAdd, adminUpdate, userUpdate } from '../../api';
 import FormGroup from '../../component/form/FormGroup';
 import ManageRightLayout from '../../component/layout/ManageRightLayout';
 import { AdminEditSchema, AdminSchema, AdminSubmitSchema } from '../../schemas';
@@ -38,7 +38,7 @@ function AddOrEditAdmin() {
     };
     if (location.pathname === '/manage/admins/editAdmin') {
       const { adminId } = location.state;
-      request(updateAdminProfile.replace('id', adminId), 'PATCH', userMes, true)
+      adminUpdate(adminId, userMes)
         .then((res) =>
           userUpdate(userMes.email ? userMes.email : '', userMes))
         .then((res) => {
@@ -48,11 +48,11 @@ function AddOrEditAdmin() {
           console.error(err);
         });
     } else { // add new admin
-      request(addAdmin, 'POST', {
+      adminAdd({
         ...userMes,
         password: admin.password,
         userType: 'admin',
-      }, true).then((res) => {
+      }).then((res) => {
         navigate('/manage/admins');
       }).catch((error) => {
         console.error(error);

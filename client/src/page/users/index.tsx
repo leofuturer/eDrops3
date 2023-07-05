@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { request } from '../../api';
-import { customerDelete, getAllCustomers, userDelete } from '../../api';
+import { customerGetAll, customerDelete, userDelete } from '../../api';
 import ManageRightLayout from '../../component/layout/ManageRightLayout';
 import DeleteModal from '../../component/modal/DeleteModal';
 import { Customer } from '../../types';
@@ -60,9 +59,9 @@ function Users() {
   }
 
   useEffect(() => {
-    request(getAllCustomers, 'GET', {}, true)
+    customerGetAll()
       .then((res) => {
-        setCustomerList(res.data);
+        setCustomerList(res);
       })
       .catch((err) => {
         console.log(err);

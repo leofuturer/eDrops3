@@ -1,18 +1,16 @@
 
 import Pusher from 'pusher-js';
 import React, { useEffect, useState } from 'react';
-import { request, customerGetApiToken } from '../api';
+import { getApiToken } from '../api';
 
 const usePusher = () => {
   const [pusher, setPusher] = useState<Pusher>(buildClient());
   const [key, setKey] = useState<string>('');
 
   useEffect(() => {
-    request(customerGetApiToken, 'GET', {}, false)
+    getApiToken()
       .then((res) => {
-        if (res.status === 200) {
-          setKey(res.data.info.key);
-        }
+        setKey(res.key);
       })
       .catch((err) => {
         // console.error(err);

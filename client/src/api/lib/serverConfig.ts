@@ -31,11 +31,10 @@ export const updateCustomerProfile = `${ApiRootUrl}/customers/id`;
 //export const customerLogout = `${ApiRootUrl}/customers/logout`; // not used
 export const customerAddressesByID = (id: string) => `${ApiRootUrl}/customers/${id}/customerAddresses`;
 export const customerAddresses = `${ApiRootUrl}/customers/id/customerAddresses`;
-
 export const customerGetName = `${ApiRootUrl}/customers/id?filter={"fields":["firstName","lastName"]}`;
 
 //export const findCustomerByWhere = `${ApiRootUrl}/customers`; // not used
-//export const credsTaken = `${ApiRootUrl}/users/creds-taken`;
+//export const credsTaken = `${ApiRootUrl}/users/creds-taken`; // duplicate
 export const customerResendVerifyEmail = `${ApiRootUrl}/customers/resendVerifyEmail`;
 export const customerGetApiToken = `${ApiRootUrl}/customers/getApi`;
 
@@ -43,13 +42,13 @@ export const customerGetApiToken = `${ApiRootUrl}/customers/getApi`;
 // Admin
 //export const AdminLogin = `${ApiRootUrl}/admins/login`; // not used
 //export const AdminLogout = `${ApiRootUrl}/admins/logout`; // not used
+export const admin = `${ApiRootUrl}/admins`;
+export const adminByID = (id: string) => `${ApiRootUrl}/admins/${id}`;
 export const adminGetProfile = `${ApiRootUrl}/admins/id`;
 export const updateAdminProfile = `${ApiRootUrl}/admins/id`;
 export const adminDownloadFile = `${ApiRootUrl}/admins/downloadFile`;
 
-export const addFoundryWorker = `${ApiRootUrl}/foundryWorkers`;
 export const addAdmin = `${ApiRootUrl}/admins`;
-export const getAllFoundryWorkers = `${ApiRootUrl}/foundryWorkers`;
 export const findAdminByWhere = `${ApiRootUrl}/admins`;
 export const deleteAdminById = `${ApiRootUrl}/admins/id`;
 //export const getApiToken = `${ApiRootUrl}/admins/getApi`; // not used
@@ -61,6 +60,8 @@ export const returnAllItems = `${ApiRootUrl}/admins/getItems`;
 //export const FoundryWorkerLogout = `${ApiRootUrl}/foundryWorkers/logout`; // not used
 export const foundryWorkerGetProfile = `${ApiRootUrl}/foundryWorkers/id`;
 export const foundryWorkerGetName = `${ApiRootUrl}/foundryWorkers/id?filter={"fields":["firstName","lastName"]}`;
+export const getAllFoundryWorkers = `${ApiRootUrl}/foundryWorkers`;
+export const addFoundryWorker = `${ApiRootUrl}/foundryWorkers`;
 export const editFoundryWorker = `${ApiRootUrl}/foundryWorkers/id`;
 //export const FoundryWorkerChangeProfile = `${ApiRootUrl}/foundryWorkers/id`; //not used
 export const updateWorkerProfile = `${ApiRootUrl}/foundryWorkers/id`;

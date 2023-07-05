@@ -1,10 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useCookies } from 'react-cookie';
 import { useNavigate } from 'react-router-dom';
-import { request } from '../../api';
-import {
-  deleteAdminById, findAdminByWhere, userDelete
-} from '../../api';
+import { adminDelete, adminGetAll, userDelete } from '../../api';
 import ManageRightLayout from '../../component/layout/ManageRightLayout';
 import DeleteModal from '../../component/modal/DeleteModal';
 import { Admin } from '../../types';
@@ -23,9 +20,9 @@ function Admins() {
   }
 
   useEffect(() => {
-    request(findAdminByWhere, 'GET', {}, true)
+    adminGetAll()
       .then((res) => {
-        setAdminList(res.data);
+        setAdminList(res);
       })
       .catch((err) => console.log(err));
   }, []);
@@ -46,7 +43,7 @@ function Admins() {
 
   function handleDelete() {
     userDelete(deleteAdmin.email)
-      .then((res) => request(deleteAdminById.replace('id', deleteAdmin.id), 'DELETE', {}, true))
+      .then((res) => adminDelete(deleteAdmin.id))
       .then((res) => setAdminList(adminList.filter((admin) => admin.id !== deleteAdmin.id)))
       .catch((err) => console.error(err));
   }

@@ -2,8 +2,7 @@ import { Form, Formik } from 'formik';
 import { useEffect, useState } from 'react';
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { ValidationError } from 'yup';
-import { request } from '../../api';
-import { addCustomer, updateCustomerProfile, userUpdate } from '../../api';
+import { customerAdd, customerUpdate, userUpdate } from '../../api';
 import FormGroup from '../../component/form/FormGroup';
 import ManageRightLayout from '../../component/layout/ManageRightLayout';
 import { UserSchema, UserSubmitSchema } from '../../schemas';
@@ -46,19 +45,19 @@ function AddOrEditUser() {
     if (location.pathname === '/manage/users/edituser') {
       // edit both customer and userBase instances
       const { customerId } = location.state;
-      request(updateCustomerProfile.replace('id', customerId), 'PATCH', userMes, true)
+      customerUpdate(customerId, userMes)
         .then((res) => userUpdate(userMes.email ? userMes.email : '', userMes))
         .then((res) => navigate('/manage/users'))
         .catch((err) => {
           console.error(err);
         });
     } else { // add new customer
-      request(addCustomer, 'POST', {
+      customerAdd({
         ...userMes,
         customerType: 'person',
         password: user.password,
         confirmPassword: user.confirmPassword,
-      }, true).then((res) => {
+      }).then((res) => {
         navigate('/manage/users');
       }).catch((error) => {
         console.error(error);
