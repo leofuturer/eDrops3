@@ -1,5 +1,5 @@
-import { useContext } from 'react';
-import { NavLink, useNavigate } from 'react-router-dom';
+import { Suspense, useContext, useEffect } from 'react';
+import { Await, NavLink, useNavigate } from 'react-router-dom';
 import SEO from '@/component/header/seo';
 import ManageRightLayout from '@/component/layout/ManageRightLayout';
 import { CartContext } from '@/context/CartContext';
@@ -9,6 +9,10 @@ import { metadata } from './metadata';
 import { ROUTES } from '@/router/routes';
 
 export function Cart() {
+  useEffect(() => {
+    cart.fetchCart();
+  }, [])
+
   const cart = useContext(CartContext);
 
   const navigate = useNavigate();
@@ -20,20 +24,22 @@ export function Cart() {
         description=""
         metadata={metadata}
       />
-      {cart.cart?.orderProducts?.length !== 0 || cart.cart?.orderChips?.length !== 0 ?
+      {cart.cart?.orderProducts && cart.cart?.orderProducts?.length !== 0 || cart.cart?.orderChips && cart.cart?.orderChips?.length !== 0 ?
         (<div className="flex flex-col w-full space-y-4 -mt-4">
           <div className="flex flex-row justify-end items-center">
             <button type="button" className="bg-primary rounded-lg text-white px-4 py-2" onClick={() => navigate(ROUTES.BeforeCheckout)}>Checkout</button>
           </div>
           <div className="flex flex-col space-y-4">
-            {cart.cart?.orderProducts?.length && cart.cart.orderProducts.map((product, index) => <CartProduct
-              key={product.id}
-              product={product}
-            />)}
-            {cart.cart?.orderChips?.length && cart.cart.orderChips.map((chip, index) => <CartChip
-              key={chip.id}
-              chip={chip}
-            />)}
+            {cart.cart?.orderProducts?.length && cart.cart.orderProducts.map((product, index) =>
+              <CartProduct
+                key={product.id}
+                product={product}
+              />)}
+            {cart.cart?.orderChips?.length && cart.cart.orderChips.map((chip, index) =>
+              <CartChip
+                key={chip.id}
+                chip={chip}
+              />)}
           </div>
           <div className="flex flex-col items-end px-4">
             <p className="">
