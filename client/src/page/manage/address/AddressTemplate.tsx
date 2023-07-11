@@ -1,13 +1,13 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Address, DTO } from '@/types';
 import { ROUTES } from '@/router/routes';
+import { Address, DTO } from '@/types';
+import { useNavigate } from 'react-router-dom';
 
 function AddressTemplate({ address, addressNum, onDeletion }: { address: DTO<Address>, addressNum: number, onDeletion: () => void }) {
 
   const navigate = useNavigate();
 
   function handleUpdateAddress() {
+    // TODO: eventually pass address ID as path param
     navigate(ROUTES.ManageAddressUpdate, {
       state: {
         addressInfo: address,

@@ -40,7 +40,7 @@ export function BeforeCheckout() {
   function handlePayment() {
     setPreparingForCheckout(true);
     cart.checkout(addressList[selectedAddrIndex]).then((res) => {
-      navigate(ROUTES.Login);
+      navigate(ROUTES.ManageCart);
     }).catch((err) => {
       console.error(err);
     }).finally(() => {

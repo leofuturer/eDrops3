@@ -8,7 +8,7 @@ import SEO from '@/component/header/seo';
 import TwoChoiceModal from '@/component/modal/TwoChoiceModal';
 import { metadata } from './metadata';
 import { DTO, FileInfo } from '@/types';
-import { ROUTES } from '@/router/routes';
+import { ROUTES, idRoute } from '@/router/routes';
 
 function Upload() {
   const [file, setFile] = useState<File | undefined>(undefined);
@@ -112,11 +112,7 @@ function Upload() {
 
   function handleShopping() {
     setShowUpload(false);
-    navigate(ROUTES.ChipFab, {
-      state: {
-        fileInfo: fileInfo,
-      }
-    });
+    navigate(idRoute(ROUTES.ChipFab, fileInfo.id as number));
   }
 
   function handleLibrary() {
