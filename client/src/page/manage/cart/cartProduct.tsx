@@ -23,7 +23,7 @@ export function CartProduct({ product }: { product: DTO<OrderProduct> }) {
 
   function handleDelete() {
     setDeleting(true);
-    cart.removeProduct(product).then(() => setDeleting(false));
+    cart.removeProduct(product).finally(() => setDeleting(false));
   }
 
   return (
@@ -37,7 +37,12 @@ export function CartProduct({ product }: { product: DTO<OrderProduct> }) {
         </div>
         <div className="flex items-center">
           {deleting ? <Loading /> :
-            <button type="button" className="bg-red-700 px-4 py-2 text-white rounded-lg" onClick={handleDelete}>Delete</button>
+            <button
+              type="button"
+              className="bg-red-700 px-4 py-2 text-white rounded-lg"
+              onClick={handleDelete}>
+              Delete
+            </button>
           }
         </div>
       </div>

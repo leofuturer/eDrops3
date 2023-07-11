@@ -163,7 +163,16 @@ const useCart = () => {
     //     setProductOrders(products);
     //   })
     return api.order.deleteProductOrder(cart.id as number, product.id).then(() => {
-      fetchCart();
+      return new Promise<void>((resolve) => {
+        setTimeout(() => {
+          fetchCart();
+          resolve();
+        }, 1000); // this is a sort of interim solution (not very elegant)
+      });
+      // setCart(cart => {
+      //   cart.orderProducts = cart.orderProducts.filter(item => item.id !== product.id);
+      //   return cart;
+      // })
     }).catch((err) => console.error(err));
   }
 
@@ -175,12 +184,18 @@ const useCart = () => {
     //     setChipOrders(chips);
     //   })
     return api.order.deleteChipOrder(cart.id as number, chip.id).then(() => {
-      fetchCart();
+      return new Promise<void>((resolve) => {
+        setTimeout(() => {
+          fetchCart();
+          resolve();
+        }, 1000);
+      });
     }).catch((err) => console.error(err));
   }
 
   function checkout(address: DTO<Address>): Promise<any> {
     pusher.subscribe(`checkout-${cart.checkoutToken}`).bind('checkout-completed', (data: any) => {
+      console.log('checkout completed', data);
       fetchCart();
       pusher.unsubscribe(`checkout-${cart.checkoutToken}`);
     })
