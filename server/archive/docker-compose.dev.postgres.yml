@@ -4,17 +4,17 @@ version: "3.9"
 
 services:  
   db:
-    image: mysql:latest # max version supported by AWS RDS
+    image: postgres:15.3 # max version supported by AWS RDS
     container_name: edroplets_db
     env_file:
-      - ./deploy/dev/mysql.env
+      - ./deploy/dev/postgres.env
     restart: always
     ports:
-      - 3306:3306
+      - 5432:5432
     volumes:
-      - mysqldb:/var/lib/mysql # persistent storage for DB
+      - postgresdb:/var/lib/postgresql/data # persistent storage for DB
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      test: ["CMD", "pg_isready" ,"-U", "edroplets"]
       interval: 5s
       timeout: 5s
       retries: 5
@@ -53,4 +53,4 @@ services:
     #   start_period: 30s
 
 volumes:
-  mysqldb:
+  postgresdb:

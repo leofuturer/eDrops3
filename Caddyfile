@@ -1,65 +1,65 @@
 {
-        # debug
-        email edropswebsite@gmail.com
-        # acme_ca https://acme-staging-v02.api.letsencrypt.org/directory
+	# debug
+	email edropswebsite@gmail.com
+	# acme_ca https://acme-staging-v02.api.letsencrypt.org/directory
 }
 
 www.edroplets.org {
-        tls {
-                dns godaddy {env.GODADDY_TOKEN}
-        }
+	tls {
+		dns godaddy {env.GODADDY_TOKEN}
+	}
 
-        log {
-                output stdout
-        }
-        encode gzip
+	log {
+		output stdout
+	}
+	encode gzip
 
-        @frontendApi {
-                not {
-                        path /api/*
-                }
-        }
+	@frontendApi {
+		not {
+			path /api/*
+		}
+	}
 
-        @try_files {
-                not path /api/*
-                file {
-                        try_files {path} {path}/ /index.html
-                }
-        }
-        rewrite @try_files {http.matchers.file.relative}
+	@try_files {
+		not path /api/*
+		file {
+			try_files {path} {path}/ /index.html
+		}
+	}
+	rewrite @try_files {http.matchers.file.relative}
 
-        handle_path /api/* {
-                reverse_proxy edrop_backend:3000
-        }
+	handle_path /api/* {
+		reverse_proxy edrop_backend:3000
+	}
 
-        root * /usr/share/caddy/www
-        file_server @frontendApi
+	root * /usr/share/caddy/www
+	file_server @frontendApi
 }
 
-# community.edroplets.org {
-#     log {
-#         output stdout
-#     }
-#     encode gzip
+community.edroplets.org {
+	log {
+		output stdout
+	}
+	encode gzip
 
-#     @frontendApi {
-#         not {
-#             path /api/*
-#         }
-#     }
+	@frontendApi {
+		not {
+			path /api/*
+		}
+	}
 
-#     @try_files {
-#         not path /api/*
-#         file {
-#             try_files {path} {path}/ /index.html
-#         }
-#     }
-#     rewrite @try_files {http.matchers.file.relative}
+	@try_files {
+		not path /api/*
+		file {
+			try_files {path} {path}/ /index.html
+		}
+	}
+	rewrite @try_files {http.matchers.file.relative}
 
-#     handle_path /api/* {
-#         reverse_proxy edrop_backend:3000
-#     }
+	handle_path /api/* {
+		reverse_proxy edrop_backend:3000
+	}
 
-#     root * /usr/share/caddy/community
-#     file_server @frontendApi
-# }
+	root * /usr/share/caddy/community
+	file_server @frontendApi
+}
