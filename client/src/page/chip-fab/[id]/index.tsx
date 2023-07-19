@@ -72,7 +72,6 @@ export function ChipOrder() {
     <div className="container flex justify-center py-10" >
       <div className="grid grid-cols-2 md:w-2/3 gap-4">
         <div className="flex flex-col space-y-2">
-          {/* DY - replace temporary image above with a preview of the uploaded PDF */}
           <div className="">
             <Suspense fallback={<Loading />}>
               <DXFPreview fileInfo={customAttrs.fileInfo} />

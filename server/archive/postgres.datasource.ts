@@ -3,17 +3,17 @@ import { juggler } from '@loopback/repository';
 import dotenv from 'dotenv';
 import path from 'path';
 
-dotenv.config({ path: path.resolve(__dirname, '../../../deploy/dev/backend.env') });
+dotenv.config({path: path.resolve(__dirname, '../../../deploy/dev/backend.env')});
 
 const config = {
-  name: 'mysqlDS',
-  connector: 'mysql',
+  name: 'db',
+  connector: 'postgresql',
   debug: false,
-  database: process.env.APP_MYSQL_DATABASE ?? 'edroplets',
-  host: process.env.APP_MYSQL_HOST ?? 'localhost',
-  port: 3306,
-  username: process.env.APP_MYSQL_USERNAME,
-  password: process.env.APP_MYSQL_PASSWORD,
+  database: process.env.APP_POSTGRES_DATABASE ?? 'edroplets',
+  host: process.env.APP_POSTGRES_HOST ?? 'localhost',
+  port: parseInt(process.env.APP_POSTGRES_PORT as string, 10) ?? 5432,
+  username: process.env.APP_POSTGRES_USERNAME,
+  password: process.env.APP_POSTGRES_PASSWORD,
   allowExtendedOperators: true,
 };
 
@@ -24,13 +24,14 @@ const config = {
 @lifeCycleObserver('datasource')
 export class MysqlDsDataSource
   extends juggler.DataSource
-  implements LifeCycleObserver {
-  static dataSourceName = 'mysqlDS';
+  implements LifeCycleObserver
+{
+  static dataSourceName = 'db';
 
   static readonly defaultConfig = config;
 
   constructor(
-    @inject('datasources.config.mysqlDS', { optional: true })
+    @inject('datasources.config.db', {optional: true})
     dsConfig: object = config,
   ) {
     super(dsConfig);
