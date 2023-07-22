@@ -35,18 +35,27 @@ export class CustomerController {
         'application/json': {
           schema: {
             type: 'object',
+            properties: {
+              customer: getModelSchemaRef(Customer, {
+                title: 'NewCustomer',
+                exclude: ['id'],
+                includeRelations: true,
+              }),
+              address: getModelSchemaRef(Address, {
+                title: 'NewAddress',
+                exclude: ['id'],
+              }),
+            },
           },
-          // schema: getModelSchemaRef(Customer, {
-          //   title: 'NewCustomer',
-          //   exclude: ['id'],
-          //   includeRelations: true,
-          // }),
         },
       },
     })
-    customer: DTO<Customer & User & Address>,
+    data: {
+      customer: DTO<Customer & User> 
+      address?: DTO<Address>
+    },
   ): Promise<Customer> {
-    return this.customerRepository.createCustomer(customer);
+    return this.customerRepository.createCustomer(data.customer, data.address);
   }
 
   @get('/customers')
