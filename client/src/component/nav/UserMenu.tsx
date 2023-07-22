@@ -60,7 +60,7 @@ function UserMenu({ username, onSignout }: { username: string, onSignout: () => 
             </Menu.Item>
             <Menu.Item>
               {({ active }) => (
-                <NavLink to={ROUTES.Home} onClick={onSignout}>
+                <NavLink to={ROUTES.Login} onClick={onSignout}>
                   <div className={`flex space-x-2 items-center py-1 px-2 rounded-md ${active ? 'bg-primary_light text-white' : ''}`}>
                     <i className="fa fa-sign-out w-5" />
                     <p>Sign out</p>

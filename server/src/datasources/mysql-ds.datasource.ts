@@ -8,7 +8,7 @@ const config = {
   database: process.env.APP_MYSQL_DATABASE ?? 'edroplets_db',
   host: process.env.APP_MYSQL_HOST ?? 'localhost',
   port: 3306,
-  username: process.env.APP_MYSQL_USERNAME,
+  user: process.env.APP_MYSQL_USERNAME,
   password: process.env.APP_MYSQL_PASSWORD,
   allowExtendedOperators: true,
 };
