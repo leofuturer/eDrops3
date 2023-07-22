@@ -9,6 +9,7 @@ import { HttpErrors, Request, Response } from '@loopback/rest';
 import AWS from 'aws-sdk';
 import { genSalt, hash } from 'bcryptjs';
 import path from 'path';
+import ShopifyBuy, { buildClient } from 'shopify-buy';
 import { MysqlDsDataSource } from '../datasources';
 import { calculate } from '../lib/toolbox/calculate';
 import log from '../lib/toolbox/log';
@@ -27,14 +28,8 @@ import { AddressRepository } from './customer-address.repository';
 import { FileInfoRepository } from './file-info.repository';
 import { OrderInfoRepository } from './order-info.repository';
 import { UserRepository } from './user.repository';
-import fetch from 'node-fetch';
-import ShopifyBuy, { Product, buildClient } from 'shopify-buy';
 
 const CONTAINER_NAME = process.env.S3_BUCKET_NAME ?? 'edrop-v2-files';
-
-// https://stackoverflow.com/questions/48433783/referenceerror-fetch-is-not-defined
-// @ts-ignore
-global.fetch = fetch;
 
 export class CustomerRepository extends DefaultCrudRepository<
   Customer,
@@ -129,8 +124,8 @@ export class CustomerRepository extends DefaultCrudRepository<
    * @returns             Created customer instance
    */
   async createCustomer(
-    customer: DTO<Customer & User & Partial<Omit<Address, 'id'>>>,
-    createAddress = true,
+    customer: DTO<Customer & User>,
+    address?: DTO<Address>
   ): Promise<Customer> {
     const hashedPassword = await hash(customer.password, await genSalt());
     const userData: DTO<User> = {
@@ -157,19 +152,19 @@ export class CustomerRepository extends DefaultCrudRepository<
     const customerInstance = await this.create(customerData).catch(err => {
       throw new HttpErrors.InternalServerError(err.message);
     });
-    if (createAddress) {
-      const AddressData: Partial<Address> = {
-        street: customer.street || 'Not provided during signup',
-        streetLine2: customer.streetLine2 || 'Not provided during signup',
-        country: customer.country || 'Not provided during signup',
-        state: customer.state || 'Not provided during signup',
-        city: customer.city || 'Not provided during signup',
-        zipCode: customer.zipCode || 'Not provided during signup',
-        isDefault: customer.isDefault || true,
-      };
+    if (address) {
+      // const AddressData: Partial<Address> = {
+      //   street: customer.street,
+      //   streetLine2: customer.streetLine2,
+      //   country: customer.country,
+      //   state: customer.state,
+      //   city: customer.city,
+      //   zipCode: customer.zipCode,
+      //   isDefault: customer.isDefault || true,
+      // };
       log.info('Customer instance created, now associating address with it');
       this.addresses(customerInstance.id)
-        .create(AddressData)
+        .create(address)
         .then(() => {
           userRepository.sendVerificationEmail(userInstance);
         })

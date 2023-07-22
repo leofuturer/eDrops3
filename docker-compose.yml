@@ -1,11 +1,9 @@
 version: "3.9"
 
-# https://start.jcolemorrison.com/authorized-resources-and-database-migrations-with-strongloops-loopback/
-
 services:  
-  edrop_backend:
-    image: edrop_backend
-    container_name: edrop_backend
+  backend:
+    image: edroplets_backend
+    container_name: edroplets_backend
     ports:
       - 3000:3000
     restart: on-failure

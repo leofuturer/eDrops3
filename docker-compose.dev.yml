@@ -1,7 +1,5 @@
 version: "3.9"
 
-# https://start.jcolemorrison.com/authorized-resources-and-database-migrations-with-strongloops-loopback/
-
 services:  
   db:
     image: mysql:latest # max version supported by AWS RDS
@@ -12,23 +10,23 @@ services:
     ports:
       - 3306:3306
     volumes:
-      - mysqldb:/var/lib/mysql # persistent storage for DB
+      - dockerdbdev:/var/lib/mysql # persistent storage for DB
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
       interval: 5s
       timeout: 5s
       retries: 5
 
-  # edrop_backend:
-  #   volumes:
-  #     - ./server/storage:/home/node/app/storage # persistent storage for uploaded files
-  #   env_file:
-  #     - ./deploy/dev/backend.env
-  #   depends_on:
-  #     edrop_mysqldb:
-  #       condition: service_healthy
-  #     # edrop_ngrok:
-  #     #   condition: service_healthy
+  backend:
+    volumes:
+      - ./server/storage:/home/node/app/storage # persistent storage for uploaded files
+    env_file:
+      - ./deploy/dev/backend.env
+    depends_on:
+      db:
+        condition: service_healthy
+      # edrop_ngrok:
+      #   condition: service_healthy
   
   ngrok:
     # for local dev development, to receive Shopify webhooks
@@ -53,4 +51,4 @@ services:
     #   start_period: 30s
 
 volumes:
-  mysqldb:
+  dockerdbdev:

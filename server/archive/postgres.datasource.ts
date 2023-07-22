@@ -1,9 +1,5 @@
 import { inject, lifeCycleObserver, LifeCycleObserver } from '@loopback/core';
 import { juggler } from '@loopback/repository';
-import dotenv from 'dotenv';
-import path from 'path';
-
-dotenv.config({path: path.resolve(__dirname, '../../../deploy/dev/backend.env')});
 
 const config = {
   name: 'db',
