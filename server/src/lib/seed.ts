@@ -202,7 +202,7 @@ export async function seedDb(this: EdropsBackendApplication): Promise<void> {
   );
   const customers: Customer[] = await Promise.all(
     defaultCustomers.map(customer =>
-      customerRepo.createCustomer(customer, false),
+      customerRepo.createCustomer(customer),
     ),
   );
 

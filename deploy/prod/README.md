@@ -21,7 +21,7 @@ S3_AWS_DEFAULT_REGION=
   
 APP_EMAIL_HOST=smtp.sendgrid.net  
 APP_EMAIL_PORT=465  
-APP_EMAIL_USERNAME=edropswebsite@gmail.com  
+APP_EMAIL_USERNAME=info@edroplets.org
 APP_EMAIL_API_KEY= 
   
 APP_PUSHER_API_ID=

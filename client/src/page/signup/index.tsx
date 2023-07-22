@@ -45,7 +45,7 @@ export function Register() {
   }
 
   return (
-    <div className="flex items-center justify-center py-20">
+    <div className="flex items-center justify-center py-10">
       <SEO
         title="eDroplets | Register"
         description=""

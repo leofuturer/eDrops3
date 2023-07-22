@@ -17,7 +17,7 @@ export function Home() {
       <div className="grid grid-cols-3 text-black">
         <div className="bg-[url('/img/EWOD-CAD.png')] bg-cover bg-no-repeat bg-center flex flex-col space-y-4 justify-center items-center w-full aspect-[4/3] py-2" >
           <h1 className="text-md sm:text-xl md:text-2xl lg:text-4xl xl:text-5xl font-semibold text-center">DMF<br />CAD</h1>
-          <a href="http://cad.edrops.org" target="_blank" rel="noopener noreferrer" className="text-center py-2 lg:py-6 px-2 md:px-4 xl:px-10 bg-accent w-min md:w-max text-base md:text-lg xl:text-xl font-semibold">
+          <a href="http://cad.edroplets.org" target="_blank" rel="noopener noreferrer" className="text-center py-2 lg:py-6 px-2 md:px-4 xl:px-10 bg-accent w-min md:w-max text-base md:text-lg xl:text-xl font-semibold">
             DESIGN CHIP
           </a>
         </div>

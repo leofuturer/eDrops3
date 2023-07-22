@@ -8,13 +8,9 @@ import {
   requestBody,
   response
 } from '@loopback/rest';
-import dotenv from 'dotenv';
-import path from 'path';
 import Pusher from 'pusher';
 import { OrderMessage } from '../models';
 import { OrderInfoRepository } from '../repositories';
-
-dotenv.config({ path: path.resolve(__dirname, '../../../deploy/backend.env') });
 
 const pusher = new Pusher({
   appId: process.env.APP_PUSHER_API_ID as string,
