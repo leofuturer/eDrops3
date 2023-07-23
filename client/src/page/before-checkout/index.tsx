@@ -13,7 +13,7 @@ import SingleAddress from './singleAddress';
 
 export function BeforeCheckout() {
   const [addressList, setAddressList] = useState<DTO<Address>[]>([]);
-  const [selectedAddrIndex, setSelectedAddrIndex] = useState(0);
+  const [selectedAddrIndex, setSelectedAddrIndex] = useState(-1);
   const [doneLoading, setDoneLoading] = useState(false);
   const [customer, setCustomer] = useState<DTO<IncludeAddress<Customer>>>({} as DTO<IncludeAddress<Customer>>);
   const [preparingForCheckout, setPreparingForCheckout] = useState(false);
@@ -28,8 +28,15 @@ export function BeforeCheckout() {
   useEffect(() => {
     api.customer.get(cookies.userId).then((customer) => {
       setCustomer(customer);
-      setAddressList(customer.addresses);
-      setSelectedAddrIndex(0);
+      if ('addresses' in customer) {
+        setAddressList(customer.addresses);
+        for (let i = 0; i < customer.addresses.length; i++) {
+          if (customer.addresses[i].isDefault) {
+            setSelectedAddrIndex(i);
+            break;
+          }
+        }
+      }
     }).catch((err) => {
       console.error(err);
     }).finally(() => {
@@ -67,7 +74,7 @@ export function BeforeCheckout() {
               </div>}
           </div>
           <div className="grid grid-cols-2 w-full gap-4">
-            {addressList.map((address, index) => (
+            {addressList?.length > 0 && addressList.map((address, index) => (
               <SingleAddress
                 key={index}
                 selected={index === selectedAddrIndex}
@@ -85,7 +92,7 @@ export function BeforeCheckout() {
             <div className="p-4 flex justify-end">
               <i className="fa fa-xmark cursor-pointer text-gray-400 hover:text-gray-600" onClick={() => setShowAdd(false)} />
             </div>
-            <div className="px-8">
+            <div className="px-8 py-4">
               <AddAddress userId={cookies.userId} onAdd={(addr) => {
                 setShowAdd(false)
                 setAddressList([...addressList, addr])

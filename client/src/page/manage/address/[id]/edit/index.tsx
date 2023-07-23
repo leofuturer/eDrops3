@@ -1,29 +1,34 @@
-import { Formik, Form } from 'formik';
-import { useEffect, useState } from 'react';
-import { useCookies } from 'react-cookie';
-import { useLocation, useNavigate } from 'react-router-dom';
 import { api } from '@/api';
 import FormGroup from '@/component/form/FormGroup';
 import ManageRightLayout from '@/component/layout/ManageRightLayout';
-import { AddressSchema } from '@/schemas/shopify';
-import { Address } from '@/types';
 import { ROUTES } from '@/router/routes';
+import { AddressSchema } from '@/schemas/shopify';
+import { Address, DTO } from '@/types';
+import { Form, Formik } from 'formik';
+import { useEffect, useState } from 'react';
+import { useCookies } from 'react-cookie';
+import { useNavigate, useParams } from 'react-router-dom';
 
 export function UpdateAddress() {
-  const [initialInfo, setInitialInfo] = useState<Address>({} as Address);
-  const location = useLocation();
+  const [initialInfo, setInitialInfo] = useState<DTO<Address>>({} as DTO<Address>);
   const navigate = useNavigate();
+  const { id } = useParams();
 
   const [cookies] = useCookies(['userId'])
 
   useEffect(() => {
-    const { addressInfo } = location.state;
-    setInitialInfo(addressInfo);
-  }, []);
+    const addressId = parseInt(id as string, 10);
+    if (Number.isNaN(addressId)) navigate(ROUTES.ManageAddress);
+    api.customer.getAddress(cookies.userId, addressId).then((addressInfo) => {
+      setInitialInfo(addressInfo);
+    }).catch((error) => {
+      console.error(error);
+      navigate(ROUTES.ManageAddress)
+    });
+  }, [id]);
 
-  function handleUpdateAddress(address: Address) {
-    const { addressId } = location.state;
-    api.customer.updateAddress(cookies.userId, addressId, address).then(() => {
+  function handleUpdateAddress(address: DTO<Address>) {
+    api.customer.updateAddress(cookies.userId, address.id as number, address).then(() => {
       navigate(ROUTES.ManageAddress);
     }).catch((error) => {
       console.error(error);

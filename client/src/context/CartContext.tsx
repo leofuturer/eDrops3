@@ -71,13 +71,12 @@ const useCart = () => {
     }
   }, [cart]);
 
-  useEffect(() => {
-    console.log(cart);
-  }, [cart]);
+  // useEffect(() => {
+  //   console.log(cart);
+  // }, [cart]);
 
   // add to shopify cart, and then add to our own cart
   async function addProduct(product: Product, quantity: number): Promise<void> {
-    console.log(cart)
     if (!cart.id) fetchCart();
     // console.log(product)
     // console.log(cart)
@@ -193,9 +192,9 @@ const useCart = () => {
     }).catch((err) => console.error(err));
   }
 
-  function checkout(address: DTO<Address>): Promise<any> {
+  function checkout(address?: DTO<Address>): Promise<any> {
     pusher.subscribe(`checkout-${cart.checkoutToken}`).bind('checkout-completed', (data: any) => {
-      console.log('checkout completed', data);
+      // console.log('checkout completed', data);
       fetchCart();
       pusher.unsubscribe(`checkout-${cart.checkoutToken}`);
     })

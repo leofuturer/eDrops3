@@ -19,12 +19,8 @@ export function Address() {
 
   const [cookies] = useCookies(['userId'])
 
-  function handleAddNewAddress() {
-    navigate(ROUTES.ManageAddressNew);
-  }
-
-  function handleUpdateAddress() {
-    navigate(ROUTES.ManageAddressUpdate);
+  function handleAddAddress() {
+    navigate(ROUTES.ManageAddressAdd);
   }
 
   function handleDeleteAddress(addrIndex: number) {
@@ -32,50 +28,57 @@ export function Address() {
     setShowDelete(true);
   }
 
+  function handleSetDefault(addrIndex: number) {
+    const address = addressList[addrIndex];
+    const addressId = address.id;
+
+
+  }
+
   function handleDelete() {
     const address = addressList[addrIndex];
     const addressId = address.id;
 
     api.customer.deleteAddress(cookies.userId, addressId as number).then((res) => {
-      console.log(res);
+      // console.log(res);
       setAddressList(addressList.filter((addr) => addr.id !== addressId));
     }).catch((err) => {
-      console.log(err);
+      console.error(err);
     });
   }
 
   useEffect(() => {
     api.customer.getAddresses(cookies.userId).then((addresses) => {
-        // console.log(res.data);
-        setAddressList(addresses);
-        setIsLoading(false);
-      })
+      // console.log(res.data);
+      setAddressList(addresses);
+      setIsLoading(false);
+    })
       .catch((err) => {
-        console.log(err);
+        console.error(err);
       });
   }, []);
 
   return (
     <ManageRightLayout title="Address Book">
-      <div className="flex justify-end -mt-8 py-4">
-        <button type="button"
-          className="bg-green-500 rounded-lg text-white px-4 py-2 text-lg flex space-x-2 items-center"
-          onClick={handleAddNewAddress}>
-          <i className="fa fa-plus" /><p>Add New</p>
-        </button>
-      </div>
       {isLoading
         ? <Loading />
         : (
-          <div className="grid grid-cols-2 w-full gap-4">
+          <div className="grid grid-cols-2 auto-rows-fr min-h-min w-full gap-4">
             {addressList.map((oneAddress, index) => (
               <AddressTemplate
                 key={index}
                 address={oneAddress}
-                addressNum={index + 1}
-                onDeletion={() => handleDeleteAddress(index)}
+                handleDelete={() => handleDeleteAddress(index)}
+                handleSetDefault={() => handleSetDefault(index)}
               />
             ))}
+            <div className="flex flex-col space-y-2 py-10 justify-center items-center rounded-md shadow-lg shadow-primary_light/25 border-primary_light/25 border-[1px] border-dashed text-sm cursor-pointer"
+              onClick={handleAddAddress}>
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+              </svg>
+              <p className="text-lg">Add Address</p>
+            </div>
           </div>
         )}
       {showDelete &&

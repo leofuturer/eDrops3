@@ -66,8 +66,8 @@ export function FlattenedRouteMap() {
             {/* Pages for customers */
               cookies.userType === ROLES.Customer && <>
                 <Route path={ROUTES.ManageAddress} element={<Address />} />
-                <Route path={ROUTES.ManageAddressNew} element={<AddNewAddress />} />
-                <Route path={ROUTES.ManageAddressUpdate} element={<UpdateAddress />} />
+                <Route path={ROUTES.ManageAddressAdd} element={<AddNewAddress />} />
+                <Route path={ROUTES.ManageAddressEdit} element={<UpdateAddress />} />
                 <Route path={ROUTES.ManageFiles} element={<Files />} />
                 <Route path={ROUTES.ManageOrders} element={<OwnOrders />} />
                 <Route path={ROUTES.ManageCart} element={<Cart />} />

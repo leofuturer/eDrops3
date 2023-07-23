@@ -33,6 +33,12 @@ class CustomerResource extends Resource<Customer> {
     });
   }
 
+  async getAddress(id: string, addressId: number): Promise<DTO<Address>> {
+    return request<DTO<Address>>(`${this.baseURL}/${id}/addresses/${addressId}`, 'GET', {}).then((res) => {
+      return res.data;
+    });
+  }
+
   async getAddresses(id: string): Promise<DTO<Address>[]> {
     return request<DTO<Address>[]>(`${this.baseURL}/${id}/addresses`, 'GET', {}).then((res) => {
       return res.data;
@@ -81,8 +87,8 @@ class CustomerResource extends Resource<Customer> {
     });
   }
 
-  async checkoutCart(id: string, orderId: number, address: DTO<Address>): Promise<DTO<OrderInfo>> {
-    return request<DTO<OrderInfo>>(`${this.baseURL}/${id}/orders/${orderId}/checkout`, 'POST', address).then((res) => {
+  async checkoutCart(id: string, orderId: number, address?: DTO<Address>): Promise<DTO<OrderInfo>> {
+    return request<DTO<OrderInfo>>(`${this.baseURL}/${id}/orders/${orderId}/checkout`, 'POST', address ?? {}).then((res) => {
       return res.data;
     });
   }

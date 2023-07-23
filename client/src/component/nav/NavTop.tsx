@@ -36,20 +36,20 @@ function NavTop() {
         <div className="hidden md:flex flex-row items-center h-full space-x-8 text-xl pt-2">
           {cookies.access_token ? <>
             {cookies.userType === "customer" && <>
-              <NavLink to={ROUTES.ManageCart} className="hover:text-accent hidden xl:flex"><i className="fa fa-shopping-cart" />
+              <NavLink to={ROUTES.ManageCart} className="hover:text-accent hidden lg:flex"><i className="fa fa-shopping-cart" />
                 {cart.numItems > 0 &&
                   <div className="relative">
                     <span className="absolute -top-4 -right-4 h-5 w-5 text-sm text-white flex items-center justify-center bg-red-600 rounded-xl">{cart.numItems}</span>
                   </div>}
               </NavLink>
-              <NavLink to={ROUTES.Upload}className="hover:text-accent hidden xl:flex"><i className="fa fa-upload" /></NavLink>
-              <NavLink to={ROUTES.ManageFiles}className="hover:text-accent hidden xl:flex"><i className="fa fa-database" /></NavLink>
+              <NavLink to={ROUTES.Upload}className="hover:text-accent hidden lg:flex"><i className="fa fa-upload" /></NavLink>
+              <NavLink to={ROUTES.ManageFiles}className="hover:text-accent hidden lg:flex"><i className="fa fa-database" /></NavLink>
             </>}
             {cookies.userType === "admin" && <>
-              <NavLink to={ROUTES.ManageFiles}className="hover:text-accent hidden xl:flex"><i className="fa fa-database" /></NavLink>
+              <NavLink to={ROUTES.ManageFiles}className="hover:text-accent hidden lg:flex"><i className="fa fa-database" /></NavLink>
             </>}
             {cookies.userType === "worker" && <>
-              <NavLink to={ROUTES.ManageOrders}className="hover:text-accent hidden xl:flex"><i className="fa fa-database" /></NavLink>
+              <NavLink to={ROUTES.ManageOrders}className="hover:text-accent hidden lg:flex"><i className="fa fa-database" /></NavLink>
             </>}
             <UserMenu username={cookies.username} onSignout={signout} />
           </> :
@@ -68,7 +68,7 @@ function NavTop() {
       </div>
       {showDropNav &&
         <div className="flex flex-col bg-primary md:hidden text-white text-center px-4 space-y-2 py-2">
-          <NavLink to={ROUTES.Home} className="hover:text-accent text-2xl">Home</NavLink>
+          {/* <NavLink to={ROUTES.Home} className="hover:text-accent text-2xl">Home</NavLink> */}
           <NavLink to={ROUTES.Products}className="hover:text-accent text-2xl">Products</NavLink>
           <NavLink to={ROUTES.ComingSoon}className="hover:text-accent text-2xl">Community</NavLink>
         </div>

@@ -252,7 +252,7 @@ export class CustomerRepository extends DefaultCrudRepository<
       .catch(err => { throw err; });
   }
 
-  async checkoutCart(id: typeof Customer.prototype.id, orderId: typeof OrderInfo.prototype.id, address: Address): Promise<OrderInfo> {
+  async checkoutCart(id: typeof Customer.prototype.id, orderId: typeof OrderInfo.prototype.id, address?: DTO<Address>): Promise<OrderInfo> {
     const orderInfos = await this.orderInfos(id).find({ where: { id: orderId, orderComplete: false } });
     if (orderInfos.length === 0) {
       throw new HttpErrors.NotFound('No cart found');
@@ -262,20 +262,22 @@ export class CustomerRepository extends DefaultCrudRepository<
     const user = await this.user(id);
     const customer = await this.findById(id);
     return this.shopify.checkout.updateEmail(cart.checkoutIdClient, user.email)
-      .then((res: any) => {
-        const shippingAddr = {
-          address1: address.street,
-          address2: address.streetLine2,
-          city: address.city,
-          province: address.state,
-          country: address.country,
-          zip: address.zipCode,
-          firstName: customer.firstName,
-          lastName: customer.lastName,
-          phone: customer.phoneNumber,
-        };
-        return this.shopify.checkout.updateShippingAddress(cart.checkoutIdClient, shippingAddr)
-      }).then((res: any) => {
+      .then((res) => {
+        if (address) {
+          const shippingAddr = {
+            address1: address.street,
+            address2: address.streetLine2,
+            city: address.city,
+            province: address.state,
+            country: address.country,
+            zip: address.zipCode,
+            firstName: customer.firstName,
+            lastName: customer.lastName,
+            phone: customer.phoneNumber,
+          };
+          return this.shopify.checkout.updateShippingAddress(cart.checkoutIdClient, shippingAddr)
+        }
+      }).then((res) => {
         return cart;
       });
   }
