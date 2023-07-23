@@ -16,6 +16,7 @@ import { Address, Customer, OrderChip, OrderInfo } from '../models';
 import { CustomerRepository, OrderInfoRepository } from '../repositories';
 import { request } from 'http';
 import { inject } from '@loopback/core';
+import { DTO } from '../lib/types';
 
 export class CustomerOrderInfoController {
   constructor(
@@ -116,7 +117,7 @@ export class CustomerOrderInfoController {
         },
       },
     })
-    address: Address,
+    address?: DTO<Address>,
   ): Promise<OrderInfo> {
     return this.customerRepository.checkoutCart(id, orderId, address);
   }

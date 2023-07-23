@@ -43,8 +43,8 @@ export enum ROUTES {
   ManageAssignOrders = '/manage/assign-orders', // Not sure if this is needed
   // Customer routes
   ManageAddress = '/manage/address',
-  ManageAddressNew = '/manage/address/new',
-  ManageAddressUpdate = '/manage/address/update',
+  ManageAddressAdd = '/manage/address/add',
+  ManageAddressEdit = '/manage/address/:id/edit',
   ManageCart = '/manage/cart',
   ManageFiles = '/manage/files',
   ManageOrders = '/manage/orders',

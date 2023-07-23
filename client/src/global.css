@@ -41,4 +41,8 @@ body {
   .table-fixed td {
     @apply border p-2;
   }
+
+  .animated-underline {
+    @apply after:h-0.5 after:max-w-0 after:bg-primary_light/75 after:block after:hover:max-w-full after:transition-all after:duration-100
+  }
 }
