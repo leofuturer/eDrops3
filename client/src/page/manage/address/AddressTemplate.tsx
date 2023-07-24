@@ -30,7 +30,7 @@ function AddressTemplate({ address, handleDelete, handleSetDefault}: { address: 
         <NavLink to={idRoute(ROUTES.ManageAddressEdit, address.id as number)} className="animated-underline">
           Edit
         </NavLink>
-        <p className="cursor-pointer animated-underline" onClick={handleDelete}>
+      <p className="cursor-pointer animated-underline" onClick={handleDelete}>
           Remove
         </p>
         {!address.isDefault &&
