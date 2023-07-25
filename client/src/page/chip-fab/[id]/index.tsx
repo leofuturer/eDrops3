@@ -9,7 +9,7 @@ import { ROUTES } from '@/router/routes';
 import { api } from '@/api';
 import { Material } from '@/types/chip';
 import { useCookies } from 'react-cookie';
-const DXFPreview = React.lazy(() => import('../dxf_preview'));
+const DXFPreview = React.lazy(() => import('./DXFPreview'));
 
 export function ChipOrder() {
   const material: Material[] = [Material.Glass, Material.PCB, Material.Paper];
