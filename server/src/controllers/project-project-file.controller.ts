@@ -36,7 +36,7 @@ export class ProjectProjectFileController {
     @inject(STORAGE_DIRECTORY) private storageDirectory: string,
   ) {}
 
-  @get('/projects/{id}/projectFiles', {
+  @get('/projects/{id}/project-files', {
     responses: {
       '200': {
         description: 'Array of Project has many ProjectFile',
@@ -55,7 +55,7 @@ export class ProjectProjectFileController {
     return this.projectRepository.projectFiles(id).find(filter);
   }
 
-  @post('/users/{id}/projectFiles', {
+  @post('/users/{id}/project-files', {
     responses: {
       '200': {
         description: 'Project model instance',
@@ -97,7 +97,7 @@ export class ProjectProjectFileController {
   }
 
   @oas.response.file()
-  @get('/users/{id}/projectFiles/{fileId}', {
+  @get('/users/{id}/project-files/{fileId}', {
     responses: {
       '200': {
         description: 'Download a file',
@@ -124,7 +124,7 @@ export class ProjectProjectFileController {
       : this.projectFileRepository.downloadFileS3(filename, response);
   }
 
-  @patch('/users/{id}/projectFiles/{fileId}', {
+  @patch('/users/{id}/project-files/{fileId}', {
     responses: {
       '200': {
         description: 'Project.ProjectFile PATCH success count',
@@ -147,7 +147,7 @@ export class ProjectProjectFileController {
     return this.projectFileRepository.updateById(fileId, projectFile);
   }
 
-  @del('/users/{id}/projectFiles/{fileId}', {
+  @del('/users/{id}/project-files/{fileId}', {
     responses: {
       '200': {
         description: 'Project.ProjectFile DELETE success count',

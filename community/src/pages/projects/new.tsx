@@ -1,17 +1,15 @@
 import {
 	LinkIcon,
 	PaperClipIcon,
-	PhotoIcon,
-	VideoCameraIcon,
-	XMarkIcon,
+	XMarkIcon
 } from "@heroicons/react/24/solid";
 import { AxiosError } from "axios";
 import Cookies from "js-cookie";
-import React, { useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ProjectFile } from "../../../../server/src/models";
 import API from "../../api/api";
-import { downloadFile } from "../../api/file";
+import { downloadFile } from "../../api/file-old";
 import { addProjectLink, linkProjectFile } from "../../api/project";
 import { userProjects } from "../../api/serverConfig";
 import AddLink from "../../components/project/AddLink";

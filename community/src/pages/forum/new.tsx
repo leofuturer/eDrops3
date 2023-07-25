@@ -8,8 +8,7 @@ import { AxiosError } from "axios";
 import Cookies from "js-cookie";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import API from "../../api/api";
-import { userPosts } from "../../api/serverConfig";
+import { api } from "@/api";
 import { PostType, ProjectType } from "../../lib/types";
 
 function NewForum() {
