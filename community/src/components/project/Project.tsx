@@ -11,7 +11,7 @@ import Cookies from "js-cookie";
 import { useEffect, useState } from "react";
 import { Link, NavLink, useNavigate, useParams } from "react-router-dom";
 import API from "../../api/api";
-import { downloadFile } from "../../api/file";
+import { downloadFile } from "../../api/file-old";
 import { checkReact, react } from "../../api/react";
 import { project, projectComments } from "../../api/serverConfig";
 import { timeAgo } from "../../lib/time";

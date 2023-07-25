@@ -48,6 +48,10 @@ export const WorkerSchema = Yup.object().shape({
   affiliation: Yup.string().required('Affiliation can\'t be blank'),
   firstName: firstNameSchema,
   lastName: lastNameSchema,
+  email: emailSchema,
+  username: usernameSchema,
+  password: passwordSchema,
+  confirmPassword: confirmPasswordSchema,
 });
 
 export const WorkerSubmitSchema = WorkerSchema.test('credentialsTaken', 'Username or email already taken', async ({ email, username }, ctx) =>
