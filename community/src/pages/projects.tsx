@@ -1,13 +1,13 @@
-import React, { useState, useEffect, useMemo } from "react";
-import ProjectPreview from "../components/project/ProjectPreview";
+import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
+import { PlusIcon } from "@heroicons/react/24/solid";
+import { debounce } from "lodash";
+import React, { useEffect, useMemo, useState } from "react";
+import { NavLink } from "react-router-dom";
 import API from "../api/api";
 import { projects } from "../api/serverConfig";
-import { ProjectType } from "../lib/types";
-import { debounce } from "lodash";
-import { SearchIcon } from "@heroicons/react/outline";
-import { PlusIcon } from "@heroicons/react/solid";
-import { NavLink } from "react-router-dom";
 import ProfilePreview from "../components/profile/ProfilePreview";
+import ProjectPreview from "../components/project/ProjectPreview";
+import { ProjectType } from "../lib/types";
 
 function Projects() {
 	const [projectList, setProjectList] = useState<ProjectType[]>([]);
@@ -81,7 +81,7 @@ function Projects() {
 							onChange={debounceSearch}
 							className="w-full h-full rounded-2xl p-2"
 						/>
-						<SearchIcon className="absolute top-4 right-4 h-4 w-4 text-slate-400" />
+						<MagnifyingGlassIcon className="absolute top-4 right-4 h-4 w-4 text-slate-400" />
 					</div>
 					<div className="w-1/5 h-full">
 						<NavLink to="/projects/new">

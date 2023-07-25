@@ -1,11 +1,11 @@
 import {
-	AnnotationIcon,
 	BookmarkIcon,
-	ChatAlt2Icon,
+	ChatBubbleBottomCenterTextIcon,
+	ChatBubbleLeftRightIcon,
 	ChevronLeftIcon,
 	ChevronRightIcon,
-	ThumbUpIcon,
-} from "@heroicons/react/outline";
+	HandThumbUpIcon
+} from "@heroicons/react/24/outline";
 import { AxiosError } from "axios";
 import Cookies from "js-cookie";
 import { useEffect, useState } from "react";
@@ -234,7 +234,7 @@ function Project() {
 								className="flex flex-row space-x-2 cursor-pointer"
 								onClick={handleLike}
 							>
-								<ThumbUpIcon
+								<HandThumbUpIcon
 									className={`w-6 h-6 cursor-pointer ${
 										liked ? "fill-black" : ""
 									}`}
@@ -253,13 +253,13 @@ function Project() {
 								className="flex flex-row space-x-2 cursor-pointer"
 								onClick={() => setExpanded(!expanded)}
 							>
-								<AnnotationIcon className="w-6 h-6" />
+								<ChatBubbleBottomCenterTextIcon className="w-6 h-6" />
 								<p className="text-md">Comment</p>
 							</div>
 						</div>
 						<div className="flex flex-row space-x-2 border-b-2 border-black pb-2">
 							<h3 className="text-xl">Comments</h3>
-							<ChatAlt2Icon className="w-6 h-6" />
+							<ChatBubbleLeftRightIcon className="w-6 h-6" />
 							<p className="text-md">
 								{currentProject?.comments}
 							</p>

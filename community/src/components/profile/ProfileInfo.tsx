@@ -1,4 +1,4 @@
-import { UserCircleIcon } from "@heroicons/react/solid";
+import { UserCircleIcon } from "@heroicons/react/24/solid";
 import Cookies from "js-cookie";
 import { useState } from "react";
 import { follow } from "../../api/react";

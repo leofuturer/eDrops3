@@ -1,4 +1,4 @@
-import { PlusIcon, SearchIcon } from "@heroicons/react/solid";
+import { PlusIcon, MagnifyingGlassIcon } from "@heroicons/react/24/solid";
 import { debounce } from "lodash";
 import React, { useState, useEffect, useMemo } from "react";
 import { NavLink } from "react-router-dom";
@@ -77,7 +77,7 @@ function Forum() {
 							onChange={debounceSearch}
 							className="w-full h-full rounded-2xl p-2"
 						/>
-						<SearchIcon className="absolute top-4 right-4 h-4 w-4 text-slate-400" />
+						<MagnifyingGlassIcon className="absolute top-4 right-4 h-4 w-4 text-slate-400" />
 					</div>
 					<div className="w-1/5 h-full">
 						<NavLink to="/forum/new">

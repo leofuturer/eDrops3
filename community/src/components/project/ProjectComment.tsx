@@ -6,8 +6,8 @@ import {
 import API from "../../api/api";
 import { CommentType, ProjectType } from "../../lib/types";
 import { AxiosError } from "axios";
-import { ChevronRightIcon, ThumbUpIcon } from "@heroicons/react/outline";
-import { ReplyIcon } from "@heroicons/react/solid";
+import { ChevronRightIcon, HandThumbUpIcon } from "@heroicons/react/24/outline";
+import { ArrowUturnLeftIcon } from "@heroicons/react/24/solid";
 import { timeAgo } from "../../lib/time";
 import { Link, useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
@@ -86,11 +86,11 @@ function ProjectComment({comment} : {comment: CommentType}) {
 				<p>{comment.content}</p>
 				<div className="flex flex-row space-x-4">
 					<div className="flex flex-row space-x-2">
-						<ThumbUpIcon className="w-5 h-5" />
+						<HandThumbUpIcon className="w-5 h-5" />
 						<p>{comment.likes}</p>
 					</div>
 					<div className="flex flex-row space-x-2">
-						<ReplyIcon className="w-5 h-5" />
+						<ArrowUturnLeftIcon className="w-5 h-5" />
 						<button
 							type="button"
 							onClick={() => setExpanded(!expanded)}

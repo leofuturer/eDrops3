@@ -1,10 +1,10 @@
 import {
 	LinkIcon,
 	PaperClipIcon,
-	PhotographIcon,
+	PhotoIcon,
 	VideoCameraIcon,
-	XIcon,
-} from "@heroicons/react/solid";
+	XMarkIcon,
+} from "@heroicons/react/24/solid";
 import { AxiosError } from "axios";
 import Cookies from "js-cookie";
 import React, { useState } from "react";
@@ -129,7 +129,7 @@ function NewProject() {
 								<PaperClipIcon className="h-6 w-6" />
 								<p>{file.fileName}</p>
 							</div>
-							<XIcon
+							<XMarkIcon
 								className="h-6 w-6 cursor-pointer"
 								onClick={() =>
 									setFiles(files.filter((f) => f !== file))
@@ -153,7 +153,7 @@ function NewProject() {
 									{link}
 								</a>
 							</div>
-							<XIcon
+							<XMarkIcon
 								className="h-6 w-6 cursor-pointer"
 								onClick={() =>
 									setLinks(links.filter((l) => l !== link))
@@ -168,7 +168,7 @@ function NewProject() {
 						className="bg-slate-400 text-black rounded-lg shadow-lg flex flex-row space-x-2 justify-center items-center p-4"
 						onClick={handleImage}
 					>
-						<PhotographIcon className="h-6 w-6" />
+						<PhotoIcon className="h-6 w-6" />
 						<p>Image</p>
 					</button>
 					<button

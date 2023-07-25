@@ -1,9 +1,9 @@
 import {
 	LinkIcon,
 	PaperClipIcon,
-	PhotographIcon,
+	PhotoIcon,
 	VideoCameraIcon,
-} from "@heroicons/react/solid";
+} from "@heroicons/react/24/solid";
 import { AxiosError } from "axios";
 import Cookies from "js-cookie";
 import React, { useState } from "react";
@@ -65,7 +65,7 @@ function NewForum() {
 					type="button"
 					className="bg-slate-400 text-black rounded-lg shadow-lg flex flex-row space-x-2 justify-center items-center p-4"
 				>
-					<PhotographIcon className="h-6 w-6" />
+					<PhotoIcon className="h-6 w-6" />
 					<p>Image</p>
 				</button>
 				<button

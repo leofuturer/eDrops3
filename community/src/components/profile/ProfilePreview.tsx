@@ -3,7 +3,7 @@ import API from "../../api/api";
 import React, { useEffect, useState } from "react";
 import { UserProfileType } from "../../lib/types";
 import { users } from "../../api/serverConfig";
-import { UserCircleIcon } from "@heroicons/react/solid";
+import { UserCircleIcon } from "@heroicons/react/24/solid";
 import _ from "lodash";
 import { NavLink } from "react-router-dom";
 
