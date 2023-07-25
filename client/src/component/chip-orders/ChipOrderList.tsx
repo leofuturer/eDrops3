@@ -3,6 +3,7 @@ import { CartContext } from '@/context';
 import { ROLES } from '@/lib/constants/roles';
 import { ROUTES, idRoute } from '@/router/routes';
 import { DTO, FoundryWorker, IncludeUser, OrderChip } from '@/types'
+import { ArrowDownTrayIcon, ChatBubbleOvalLeftEllipsisIcon, UsersIcon } from '@heroicons/react/24/solid';
 import React, { useContext, useEffect, useState } from 'react'
 import { useCookies } from 'react-cookie';
 
@@ -114,17 +115,17 @@ function ChipOrderList({ chipOrderList }: { chipOrderList: DTO<OrderChip>[] }) {
             <td className="">{item?.quantity}</td>
             <td className="">
               {cookies.userType === ROLES.Worker
-                ? <i className="fa fa-download cursor-pointer" onClick={() => handleDownload(item?.id)} />
-                : <i className="fa fa-download cursor-pointer" onClick={() => handleDownload(item?.fileInfoId)} />
+                ? <ArrowDownTrayIcon className="w-5 cursor-pointer mx-auto" onClick={() => handleDownload(item?.id)} />
+                : <ArrowDownTrayIcon className="w-5 cursor-pointer mx-auto" onClick={() => handleDownload(item?.fileInfoId)} />
               }
             </td>
             <td className="">
-              <i className="fa fa-commenting cursor-pointer" onClick={() => handleChat(item?.orderInfoId)} />
+              <ChatBubbleOvalLeftEllipsisIcon className="w-5 cursor-pointer mx-auto" onClick={() => handleChat(item?.orderInfoId)} />
             </td>
             {cookies.userType === ROLES.Admin &&
               <td className="">
                 <div className="flex flex-row space-x-2">
-                  <i className="fa fa-user-group cursor-pointer" />
+                  <UsersIcon className="w-5 cursor-pointer mx-auto" />
                   <select title="workers" onChange={(e) => handleAssign(e)}>
                     {workerList.map((worker) => (
                       <option value={worker?.id}>{worker?.user.username}</option>

@@ -58,11 +58,14 @@ export class OrderInfoOrderChipController {
     @requestBody({
       content: {
         'application/json': {
-          schema: getModelSchemaRef(OrderChip, {
-            title: 'NewOrderChipInOrderInfo',
-            exclude: ['id'],
-            partial: true,
-          }),
+          schema: {
+            type: 'object', // TODO: revisit how we can combine these two schemas
+          }
+          // schema: getModelSchemaRef(OrderChip, {
+          //   title: 'NewOrderChipInOrderInfo',
+          //   exclude: ['id'],
+          //   partial: true,
+          // }),
         },
       },
     })

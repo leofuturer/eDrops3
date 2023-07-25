@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import { ROUTES, idRoute } from '@/router/routes';
 import { api } from '@/api';
 import DeleteModal from '../modal/DeleteModal';
+import { ArrowDownTrayIcon, ShoppingCartIcon, TrashIcon } from '@heroicons/react/24/solid';
 
 export function FileList({ fileList, handleDelete }: { fileList: DTO<FileInfo>[], handleDelete: (deleteId: number) => void }) {
   const [cookies] = useCookies(['userType', 'userId'])
@@ -41,19 +42,19 @@ export function FileList({ fileList, handleDelete }: { fileList: DTO<FileInfo>[]
       <table className="table-info">
         <thead className="">
           <tr className="border-b-2">
-            <th className="p-2">Upload Time</th>
-            <th className="p-2">File Name</th>
+            <th className="">Upload Time</th>
+            <th className="">File Name</th>
             {
               cookies.userType !== ROLES.Customer &&
               <th>Uploader</th>
             }
-            <th className="p-2">Size</th>
-            <th className="p-2">Download</th>
+            <th className="">Size</th>
+            <th className="">Download</th>
             {
               cookies.userType === ROLES.Customer
               && <>
-                <th className="p-2">Foundry Service</th>
-                <th className="p-2">Delete</th>
+                <th className="">Foundry Service</th>
+                <th className="">Delete</th>
               </>
             }
           </tr>
@@ -61,26 +62,26 @@ export function FileList({ fileList, handleDelete }: { fileList: DTO<FileInfo>[]
         <tbody>
           {fileList && fileList.length > 0 ? fileList.map((file, index) => (
             <tr key={file.id}>
-              <td className="p-2">{padZeroes(file.uploadTime)}</td>
-              <td className="p-2">{file.fileName}</td>
-              {cookies.userType !== ROLES.Customer && <td className="p-2">{file.uploader}</td>}
-              <td className="p-2">{file.fileSize}</td>
-              <td className="p-2">
-                <i className="fa fa-download cursor-pointer" onClick={() => handleDownload(file.id as number)} />
+              <td className="">{padZeroes(file.uploadTime)}</td>
+              <td className="">{file.fileName}</td>
+              {cookies.userType !== ROLES.Customer && <td className="">{file.uploader}</td>}
+              <td className="">{file.fileSize}</td>
+              <td className="">
+                <ArrowDownTrayIcon className="w-5 cursor-pointer mx-auto" onClick={() => handleDownload(file.id as number)} />
               </td>
               {cookies.userType === ROLES.Customer &&
                 <>
-                  <td className="p-2">
-                    <i className="fa fa-cart-plus cursor-pointer" onClick={() => handleShop(file.id as number)} />
+                  <td className="">
+                    <ShoppingCartIcon className="w-5 cursor-pointer mx-auto" onClick={() => handleShop(file.id as number)} />
                   </td>
-                  <td className="p-2">
-                    <i className="fa fa-trash cursor-pointer" onClick={() => { setDeleteId(file.id as number); setShowDelete(true) }} />
+                  <td className="">
+                    <TrashIcon className="w-5 cursor-pointer mx-auto" onClick={() => { setDeleteId(file.id as number); setShowDelete(true) }} />
                   </td>
                 </>}
             </tr>
           )) : (
             <tr>
-              <td className="p-2" colSpan={9}>No files have been uploaded.</td>
+              <td className="" colSpan={9}>No files have been uploaded.</td>
             </tr>
           )}
         </tbody>
