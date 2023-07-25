@@ -13,10 +13,8 @@ module.exports = {
   },
   plugins: [
     'react',
-    'cypress'
+    'cypress',
   ],
   rules: {
-    'max-len': ['error', { code: 130 }],
-    'linebreak-style': ['off'],
   },
 };
