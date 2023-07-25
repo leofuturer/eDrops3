@@ -1,5 +1,5 @@
-import { PaperClipIcon } from "@heroicons/react/outline";
-import { XIcon } from "@heroicons/react/solid";
+import { PaperClipIcon } from "@heroicons/react/24/outline";
+import { XMarkIcon } from "@heroicons/react/24/solid";
 import { AxiosError } from "axios";
 import Cookies from "js-cookie";
 import React, { useCallback, useState } from "react";
@@ -72,7 +72,7 @@ function FileUpload({
 				title="Remove file"
 				onClick={() => removeFile(file)}
 			>
-				<XIcon className="h-4 w-4" />
+				<XMarkIcon className="h-4 w-4" />
 			</button>
 		</li>
 	));

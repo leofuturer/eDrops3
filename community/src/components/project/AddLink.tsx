@@ -1,5 +1,5 @@
-import { LinkIcon, PaperClipIcon, PlusIcon } from "@heroicons/react/outline";
-import { XIcon } from "@heroicons/react/solid";
+import { LinkIcon, PaperClipIcon, PlusIcon } from "@heroicons/react/24/outline";
+import { XMarkIcon } from "@heroicons/react/24/solid";
 import Cookies from "js-cookie";
 import React, { useCallback, useState } from "react";
 import { useDropzone, FileWithPath, FileError } from "react-dropzone";
@@ -49,6 +49,7 @@ function AddLink({
 				<div className="flex flex-row space-x-2 w-2/3">
 					<label className="flex flex-col justify-center items-center w-full">
 						<input
+							title="Input link"
 							type="text"
 							name="link"
 							className="focus:outline-none p-2 w-full"
@@ -82,7 +83,7 @@ function AddLink({
 							>
 								{link}
 							</a>
-							<XIcon
+							<XMarkIcon
 								className="h-6 w-6 cursor-pointer"
 								onClick={() =>
 									setLinks(links.filter((l) => l !== link))

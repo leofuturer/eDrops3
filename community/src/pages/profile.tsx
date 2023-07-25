@@ -1,26 +1,24 @@
-import Cookies from "js-cookie";
-import React, { useEffect, useState } from "react";
-import { NavLink, useParams } from "react-router-dom";
 import {
-	users,
+	ChevronDownIcon,
+	PencilIcon,
+	ArrowDownOnSquareIcon
+} from "@heroicons/react/24/solid";
+import Cookies from "js-cookie";
+import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import API from "../api/api";
+import {
 	userPosts,
 	userProjects,
 	userSavedPosts,
 	userSavedProjects,
+	users,
 } from "../api/serverConfig";
-import API from "../api/api";
-import {
-	ChevronDownIcon,
-	ChevronUpIcon,
-	PencilIcon,
-	SaveIcon,
-	UserCircleIcon,
-} from "@heroicons/react/solid";
-import ProfileInfo from "../components/profile/ProfileInfo";
-import ProfileEdit from "../components/profile/ProfileEdit";
-import { PostType, ProjectType, UserProfileType } from "../lib/types";
-import ProjectPreview from "../components/project/ProjectPreview";
 import PostPreview from "../components/forum/PostPreview";
+import ProfileEdit from "../components/profile/ProfileEdit";
+import ProfileInfo from "../components/profile/ProfileInfo";
+import ProjectPreview from "../components/project/ProjectPreview";
+import { PostType, ProjectType, UserProfileType } from "../lib/types";
 
 function Profile(): JSX.Element {
 	const [user, setUser] = useState<UserProfileType>({} as UserProfileType);
@@ -85,7 +83,7 @@ function Profile(): JSX.Element {
 						onClick={() => setEdit(!edit)}
 					>
 						{edit ? (
-							<SaveIcon className="h-6 w-6" />
+							<ArrowDownOnSquareIcon className="h-6 w-6" />
 						) : (
 							<PencilIcon className="h-6 w-6" />
 						)}

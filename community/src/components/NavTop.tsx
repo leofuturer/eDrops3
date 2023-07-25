@@ -1,23 +1,22 @@
-import React, { useEffect, useState } from "react";
-import logo from "../../static/img/edrop_logo_inverted.png";
-import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import {
-	ChatAlt2Icon,
-	FolderOpenIcon,
-	LoginIcon,
-	LogoutIcon,
-	UserAddIcon,
-	UserIcon,
-} from "@heroicons/react/solid";
-import {
-	ChatAlt2Icon as ChatAlt2IconOutline,
+	ArrowLeftOnRectangleIcon as ArrowLeftOnRectangleIconOutline,
+	ArrowRightOnRectangleIcon as ArrowRightOnRectangleIconOutline,
+	ChatBubbleLeftRightIcon as ChatBubbleLeftRightIconOutline,
 	FolderOpenIcon as FolderOpenIconOutline,
-	LoginIcon as LoginIconOutline,
-	LogoutIcon as LogoutIconOutline,
-	UserAddIcon as UserAddIconOutline,
 	UserIcon as UserIconOutline,
-} from "@heroicons/react/outline";
+	UserPlusIcon as UserPlusIconOutline,
+} from "@heroicons/react/24/outline";
+import {
+	ArrowLeftCircleIcon,
+	ChatBubbleLeftRightIcon,
+	FolderOpenIcon,
+	UserIcon,
+	UserPlusIcon
+} from "@heroicons/react/24/solid";
 import Cookies from "js-cookie";
+import { useEffect, useState } from "react";
+import { NavLink, useLocation, useNavigate } from "react-router-dom";
+import logo from "../../static/img/edrop_logo_inverted.png";
 import { signout } from "../api/auth";
 
 function NavTop() {
@@ -66,7 +65,7 @@ function NavTop() {
 					</NavLink>
 					<NavLink to="/forum">
 						<div className="flex flex-col items-center">
-							{path === "/forum" ? <ChatAlt2Icon className="h-6 w-6" /> : <ChatAlt2IconOutline className="h-6 w-6" />}
+							{path === "/forum" ? <ChatBubbleLeftRightIcon className="h-6 w-6" /> : <ChatBubbleLeftRightIconOutline className="h-6 w-6" />}
 							<h1>Forum</h1>
 						</div>
 					</NavLink>
@@ -74,13 +73,13 @@ function NavTop() {
 						<>
 							<NavLink to="/signup">
 								<div className="flex flex-col items-center">
-									{path === "/signup" ?<UserAddIcon className="h-6 w-6" /> : <UserAddIconOutline className="h-6 w-6" />}
+									{path === "/signup" ?<UserPlusIcon className="h-6 w-6" /> : <UserPlusIconOutline className="h-6 w-6" />}
 									<h1>Sign up</h1>
 								</div>
 							</NavLink>
 							<NavLink to="/login">
 								<div className="flex flex-col items-center">
-                  {path === "/login" ? <LoginIcon className="h-6 w-6" /> : <LoginIconOutline className="h-6 w-6" />}
+                  {path === "/login" ? <ArrowLeftCircleIcon className="h-6 w-6" /> : <ArrowLeftOnRectangleIconOutline className="h-6 w-6" />}
 									<h1>Sign in</h1>
 								</div>
 							</NavLink>
@@ -95,7 +94,7 @@ function NavTop() {
 							</NavLink>
 							<button type="button" onClick={handleLogout}>
 								<div className="flex flex-col items-center">
-                  <LogoutIconOutline className="h-6 w-6" />
+                  <ArrowRightOnRectangleIconOutline className="h-6 w-6" />
 									<h1>Sign out</h1>
 								</div>
 							</button>
