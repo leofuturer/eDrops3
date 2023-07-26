@@ -31,7 +31,7 @@ export function CartChip({ chip }: { chip: DTO<OrderChip> }) {
     return <>
       <p>Material: {details?.material}</p>
       <p>With Cover Plate Assembled: {details?.wcpa}</p>
-      <p>File Name: {details?.fileInfo.fileName}</p>
+      <p>File Name: {details?.fileName}</p>
     </>
   }
 

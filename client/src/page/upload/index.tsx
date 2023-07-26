@@ -172,9 +172,8 @@ function Upload() {
         description=""
         metadata={metadata}
       />
-      <div className="w-2/3 text-center flex flex-col items-center space-y-4 py-20">
+      <div className="w-2/3 text-center flex flex-col items-center space-y-4 py-10">
         <h1 className="text-4xl">File Upload</h1>
-        <h3 className="text-2xl">We accept DXF file as mask file</h3>
         {/* <div className="grid grid-cols-2 justify-items-center gap-8 w-full">
           <div className="flex flex-col space-y-2 w-full max-w-sm">
             <h4 className="text-lg">Visibility</h4>
@@ -208,15 +207,17 @@ function Upload() {
             : (
               <div className="">
                 <p className="text-xl">
-                  Drag and drop DXF file here, or click to select file.
+                  Drag and drop file here, or click to select file
                 </p>
+                <p className="text-sm text-gray-500">File types accepted: .dxf</p>
                 {file && <p>{file.name}</p>}
               </div>
             )}
         </div>
-        <button type="button" className="bg-secondary rounded-md py-4 px-8 text-white text-xl w-max" onClick={onFileUpload} >
-          Upload File
-        </button>
+        {file !== undefined &&
+          <button type="button" className="bg-secondary rounded-md py-4 px-8 text-white text-xl w-max" onClick={onFileUpload} >
+            Upload File
+          </button>}
       </div>
       {showUpload && <TwoChoiceModal
         content="The file has been uploaded to your library successfully!"
@@ -226,7 +227,7 @@ function Upload() {
         handleNegative={handleLibrary} />
       }
       {showConfirm && <TwoChoiceModal
-        content="Duplicate file name! Would you like to upload another file or continue uploading this file? (It would be advisable to change the file name to avoid confusion)."
+        content="Duplicate file name. Would you like to upload another file or continue uploading this file? (It would be advisable to change the file name to avoid confusion)."
         affirmativeText="Upload this file"
         negativeText="Change file"
         handleAffirmative={handleRename}
