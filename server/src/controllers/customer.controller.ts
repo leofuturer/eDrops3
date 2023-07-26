@@ -73,7 +73,7 @@ export class CustomerController {
   async find(
     @param.filter(Customer) filter?: Filter<Customer>,
   ): Promise<Customer[]> {
-    return this.customerRepository.find(filter);
+    return this.customerRepository.find({ include: ['user', 'addresses'], ...filter });
   }
 
   @get('/customers/{id}')

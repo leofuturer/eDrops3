@@ -14,6 +14,7 @@ function ChipOrderList({ chipOrderList }: { chipOrderList: DTO<OrderChip>[] }) {
 
   useEffect(() => {
     cookies.userType === ROLES.Admin && api.worker.getAll().then((workers) => {
+      console.log(workers);
       setWorkerList(workers);
     });
   }, [])

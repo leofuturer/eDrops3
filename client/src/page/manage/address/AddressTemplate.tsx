@@ -1,6 +1,7 @@
 import { USState, stateAbbreviation } from '@/lib/address';
 import { ROUTES, idRoute } from '@/router/routes';
 import { Address, DTO } from '@/types';
+import { CubeIcon } from '@heroicons/react/24/solid';
 import { NavLink, useNavigate } from 'react-router-dom';
 
 function AddressTemplate({ address, handleDelete, handleSetDefault}: { address: DTO<Address>, handleDelete: () => void, handleSetDefault: () => void }) {
@@ -10,7 +11,7 @@ function AddressTemplate({ address, handleDelete, handleSetDefault}: { address: 
         {address.isDefault ? (
             <div className="flex justify-between items-center">
               <p>Default Shipping</p>
-              <i className="fa fa-cube fa-inline" />
+              <CubeIcon className="w-5" />
             </div>
         ) : (
           <>

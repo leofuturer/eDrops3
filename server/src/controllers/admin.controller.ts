@@ -68,7 +68,7 @@ export class AdminController {
     },
   })
   async find(@param.filter(Admin) filter?: Filter<Admin>): Promise<Admin[]> {
-    return this.adminRepository.find(filter);
+    return this.adminRepository.find({ include: ['user'], ...filter });
   }
 
   @patch('/admins')

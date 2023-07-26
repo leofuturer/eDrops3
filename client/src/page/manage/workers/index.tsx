@@ -5,6 +5,7 @@ import ManageRightLayout from '@/component/layout/ManageRightLayout';
 import DeleteModal from '@/component/modal/DeleteModal';
 import { DTO, FoundryWorker, IncludeUser } from '@/types';
 import { ROUTES, idRoute } from '@/router/routes';
+import { CpuChipIcon, PencilSquareIcon, TrashIcon } from '@heroicons/react/24/solid';
 
 export function FoundryWorkers() {
   const [workerList, setWorkerList] = useState<DTO<IncludeUser<FoundryWorker>>[]>([]);
@@ -76,13 +77,13 @@ export function FoundryWorkers() {
               <td>{worker.phoneNumber}</td>
               <td>{worker.affiliation}</td>
               <td>
-                <i className="fa fa-microchip cursor-pointer" onClick={() => handleRetrieveChipOrders(worker)} />
+                <CpuChipIcon className="w-5 cursor-pointer" onClick={() => handleRetrieveChipOrders(worker)} />
               </td>
               <td>
-                <i className="fa fa-edit cursor-pointer" onClick={() => handleEditWorker(worker)} />
+                <PencilSquareIcon className="w-5 cursor-pointer" onClick={() => handleEditWorker(worker)} />
               </td>
               <td>
-                <i className="fa fa-trash cursor-pointer" onClick={() => handleDeleteWorker(worker)} />
+                <TrashIcon className="w-5 cursor-pointer" onClick={() => handleDeleteWorker(worker)} />
               </td>
             </tr>
           ))}
