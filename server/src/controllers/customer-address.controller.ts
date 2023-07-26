@@ -47,6 +47,24 @@ export class CustomerAddressController {
     return this.customerRepository.addresses(id).find(filter);
   }
 
+  /* Take an existing address and set it as default */
+  @authenticate('jwt')
+  @post('/customers/{id}/addresses/{addressId}/default', {
+    responses: {
+      '200': {
+        description: 'Customer.Address model instance',
+        content: { 'application/json': { schema: getModelSchemaRef(Address) } },
+      },
+    },
+  })
+  async setDefaultAddress(
+    @param.path.string('id') id: typeof Customer.prototype.id,
+    @param.path.string('addressId') addressId: typeof Address.prototype.id,
+  ): Promise<Address> {
+    // Check if the user has any addresses saved
+    return this.customerRepository.setDefaultAddress(id, addressId);
+  }
+
   /*
     Goal: 
     Customer should always have 1 default address.
@@ -81,25 +99,13 @@ export class CustomerAddressController {
       },
     }) address: Omit<Address, 'id'>,
   ): Promise<Address> {
-    // Check if the user has any addresses saved
-    const hasDefaultAddresses: boolean = await this.customerRepository.addresses(id).find({
-      where: { isDefault: true }
-    }).then(addresses => addresses.length > 0);
-    if (!hasDefaultAddresses) {
-      // If the user has no default addresses saved, set the new address as default
-      address.isDefault = true;
-    }
-    else {
-      // If the address specifies that it should be set as default, remove default from all other addresses
-      if (address.isDefault) {
-        const currentDefaults: Address[] = await this.customerRepository.addresses(id).find({ where: { isDefault: true } });
-        await Promise.all(currentDefaults.map(async (d) => {
-          d.isDefault = false;
-          return this.customerRepository.addresses(id).patch(d, { id: d.id });
-        }));
-      }
-    }
-    return this.customerRepository.addresses(id).create(address);
+    // Create address instance
+    const addressInstance = await this.customerRepository.addresses(id).create(address);
+    // Check if there are any default addresses saved
+    const hasDefaultAddresses = await this.customerRepository.addresses(id).find({ where: { isDefault: true } }).then(addresses => addresses.length > 0);
+    return address.isDefault || !hasDefaultAddresses ?
+      this.customerRepository.setDefaultAddress(id, addressInstance.id) :
+      addressInstance;
   }
 
   @authenticate('jwt')
@@ -142,6 +148,9 @@ export class CustomerAddressController {
     return this.customerRepository.addresses(id).patch(address, { id: addressId });
   }
 
+  /* Delete an address 
+    If it is the default address, set the next address as default
+  */
   @authenticate('jwt')
   @del('/customers/{id}/addresses', {
     responses: {
@@ -155,6 +164,16 @@ export class CustomerAddressController {
     @param.path.string('id') id: typeof Customer.prototype.id,
     @param.query.object('where', getWhereSchemaFor(Address)) where?: Where<Address>,
   ): Promise<Count> {
-    return this.customerRepository.addresses(id).delete(where);
+    return await this.customerRepository.addresses(id).delete(where).then(async (count) => {
+      // If the deleted address was the default address, set the next address as default
+      const hasDefaultAddresses = await this.customerRepository.addresses(id).find({ where: { isDefault: true } }).then(addresses => addresses.length > 0);
+      if (!hasDefaultAddresses) {
+        const nextAddress = await this.customerRepository.addresses(id).find().then(addresses => addresses[0]);
+        if (nextAddress) {
+          await this.customerRepository.setDefaultAddress(id, nextAddress.id);
+        }
+      }
+      return count;
+    });
   }
 }

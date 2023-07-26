@@ -15,7 +15,7 @@ function AddAddress({ userId, onAdd }: { userId: string, onAdd?: (addr: DTO<Addr
       state: address.state,
       country: address.country,
       zipCode: address.zipCode,
-      isDefault: false,
+      isDefault: address.isDefault,
     };
     api.customer.createAddress(userId, addressData).then((address) => {
       onAdd && onAdd(address);

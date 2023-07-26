@@ -11,9 +11,10 @@ import { ROUTES } from '@/router/routes';
 
 export function Address() {
   const [addressList, setAddressList] = useState<DTO<AddressType>[]>([]);
+  const [defaultAddress, setDefaultAddress] = useState<DTO<AddressType>>({} as DTO<AddressType>);
   const [isLoading, setIsLoading] = useState(true);
   const [showDelete, setShowDelete] = useState(false);
-  const [addrIndex, setAddrIndex] = useState(0);
+  const [deleteAddress, setDeleteAddress] = useState<DTO<AddressType>>({} as DTO<AddressType>);
 
   const navigate = useNavigate();
 
@@ -23,24 +24,41 @@ export function Address() {
     navigate(ROUTES.ManageAddressAdd);
   }
 
-  function handleDeleteAddress(addrIndex: number) {
-    setAddrIndex(addrIndex);
+  function handleDeleteAddress(address: DTO<AddressType>) {
+    setDeleteAddress(address);
     setShowDelete(true);
   }
 
-  function handleSetDefault(addrIndex: number) {
-    const address = addressList[addrIndex];
+  function handleSetDefault(address: DTO<AddressType>) {
     const addressId = address.id;
 
-
+    api.customer.setDefaultAddress(cookies.userId, addressId as number).then((res) => {
+      // console.log(res);
+      setAddressList(addressList.map((addr) => {
+        if (addr.id === addressId) {
+          return { ...addr, isDefault: true };
+        } else {
+          return { ...addr, isDefault: false };
+        }
+      }));
+    })
   }
 
+  useEffect(() => {
+    const defaultAddr = addressList.find((addr) => addr.isDefault);
+    if (defaultAddr) {
+      setDefaultAddress(defaultAddr);
+    }
+  }, [addressList])
+
   function handleDelete() {
-    const address = addressList[addrIndex];
-    const addressId = address.id;
+    const addressId = deleteAddress.id;
 
     api.customer.deleteAddress(cookies.userId, addressId as number).then((res) => {
       // console.log(res);
+      if(deleteAddress.isDefault) {
+        setDefaultAddress({} as DTO<AddressType>);
+      }
       setAddressList(addressList.filter((addr) => addr.id !== addressId));
     }).catch((err) => {
       console.error(err);
@@ -64,14 +82,22 @@ export function Address() {
         ? <Loading />
         : (
           <div className="grid grid-cols-2 auto-rows-fr min-h-min w-full gap-4">
-            {addressList.map((oneAddress, index) => (
+            {Object.keys(defaultAddress).length > 0 &&
               <AddressTemplate
-                key={index}
-                address={oneAddress}
-                handleDelete={() => handleDeleteAddress(index)}
-                handleSetDefault={() => handleSetDefault(index)}
+                address={defaultAddress}
+                handleDelete={() => handleDeleteAddress(defaultAddress)}
+                handleSetDefault={() => handleDeleteAddress(defaultAddress)}
               />
-            ))}
+            }
+            {addressList.map((addr, index) =>
+              (defaultAddress.id ? addr.id !== defaultAddress.id : true) && (
+                <AddressTemplate
+                  key={index}
+                  address={addr}
+                  handleDelete={() => handleDeleteAddress(addr)}
+                  handleSetDefault={() => handleSetDefault(addr)}
+                />
+              ))}
             <div className="flex flex-col space-y-2 py-10 justify-center items-center rounded-md shadow-lg shadow-primary_light/25 border-primary_light/25 border-[1px] border-dashed text-sm cursor-pointer"
               onClick={handleAddAddress}>
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">

@@ -183,6 +183,23 @@ export class CustomerRepository extends DefaultCrudRepository<
     await this.deleteById(id);
   }
 
+  async setDefaultAddress(id: typeof Customer.prototype.id, addressId: typeof Address.prototype.id): Promise<Address> {
+    const defaultAddresses = await this.addresses(id).find({
+      where: { isDefault: true }
+    });
+    if (defaultAddresses.length > 0) {
+      // Remove default from all other addresses
+      await Promise.all(defaultAddresses.map(async (d) => {
+        d.isDefault = false;
+        return this.addresses(id).patch(d, { id: d.id });
+      }));
+    }
+    const addressToChange = await this.addresses(id).find({ where: { id: addressId } }).then(addresses => addresses[0]);
+    addressToChange.isDefault = true;
+    await this.addresses(id).patch(addressToChange, { id: addressToChange.id });
+    return addressToChange;
+  }
+
   // DO NOT USE FROM CONTROLLER
   // Only used to create cart when getCart cannot find any active cart
   async createCart(id: typeof Customer.prototype.id): Promise<OrderInfo> {
