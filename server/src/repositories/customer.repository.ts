@@ -9,7 +9,7 @@ import { HttpErrors, Request, Response } from '@loopback/rest';
 import AWS from 'aws-sdk';
 import { genSalt, hash } from 'bcryptjs';
 import path from 'path';
-import ShopifyBuy, { buildClient } from 'shopify-buy';
+import ShopifyBuy, { buildClient, MailingAddressInput } from 'shopify-buy';
 import { MysqlDsDataSource } from '../datasources';
 import { calculate } from '../lib/toolbox/calculate';
 import log from '../lib/toolbox/log';
@@ -278,10 +278,10 @@ export class CustomerRepository extends DefaultCrudRepository<
 
     const user = await this.user(id);
     const customer = await this.findById(id);
-    return this.shopify.checkout.updateEmail(cart.checkoutIdClient, user.email)
+    await this.shopify.checkout.updateEmail(cart.checkoutIdClient, user.email)
       .then((res) => {
         if (address) {
-          const shippingAddr = {
+          const shippingAddr: MailingAddressInput = {
             address1: address.street,
             address2: address.streetLine2,
             city: address.city,
@@ -294,9 +294,9 @@ export class CustomerRepository extends DefaultCrudRepository<
           };
           return this.shopify.checkout.updateShippingAddress(cart.checkoutIdClient, shippingAddr)
         }
-      }).then((res) => {
-        return cart;
+        return res;
       });
+    return cart;
   }
 
   async uploadFile(request: Request, response: Response, id: typeof Customer.prototype.id): Promise<FileInfo> {

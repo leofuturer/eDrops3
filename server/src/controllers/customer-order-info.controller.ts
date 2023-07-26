@@ -113,6 +113,7 @@ export class CustomerOrderInfoController {
         'application/json': {
           schema: getModelSchemaRef(Address, {
             title: 'NewAddress',
+            partial: true,
           }),
         },
       },
