@@ -51,6 +51,12 @@ class CustomerResource extends Resource<Customer> {
     });
   }
 
+  async setDefaultAddress(id: string, addressId: typeof Address.prototype.id): Promise<DTO<Address>> {
+    return request<DTO<Address>>(`${this.baseURL}/${id}/addresses/${addressId}/default`, 'POST', {}).then((res) => {
+      return res.data;
+    });
+  }
+
   async createAddress(id: string, data: DTO<Address>): Promise<DTO<Address>> {
     return request<DTO<Address>>(`${this.baseURL}/${id}/addresses`, 'POST', data).then((res) => {
       return res.data;
