@@ -110,7 +110,7 @@ const useCart = () => {
         value: customAttrs.material,
       },
       {
-        key: 'withCoverPlateAssembled',
+        key: 'wcpa',
         value: customAttrs.wcpa,
       },
       {
