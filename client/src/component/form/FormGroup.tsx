@@ -32,7 +32,7 @@ function FormGroup({ name, displayName, required = false, type = "text", autoCom
                     setShowConfirmPassword(false);
                   }} 
                   disabled={disabled}/>
-                {showConfirmPassword ? <EyeIcon className="w-4 absolute right-1 text-gray-600 cursor-pointer" onClick={() => setShowConfirmPassword(!showConfirmPassword)} /> : <EyeSlashIcon className="w-4 absolute right-1 text-gray-600 cursor-pointer" onClick={() => setShowConfirmPassword(!showConfirmPassword)} />}
+                {showConfirmPassword ? <EyeSlashIcon className="w-4 absolute right-1 text-gray-600 cursor-pointer" onClick={() => setShowConfirmPassword(!showConfirmPassword)} /> : <EyeIcon className="w-4 absolute right-1 text-gray-600 cursor-pointer" onClick={() => setShowConfirmPassword(!showConfirmPassword)} />}
               </div>
             ) : (
             <input
