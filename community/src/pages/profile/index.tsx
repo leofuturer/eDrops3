@@ -6,21 +6,21 @@ import {
 import Cookies from "js-cookie";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import API from "../api/api";
+import { api } from "@/api";
 import {
 	userPosts,
 	userProjects,
 	userSavedPosts,
 	userSavedProjects,
 	users,
-} from "../api/serverConfig";
-import PostPreview from "../components/forum/PostPreview";
-import ProfileEdit from "../components/profile/ProfileEdit";
-import ProfileInfo from "../components/profile/ProfileInfo";
-import ProjectPreview from "../components/project/ProjectPreview";
+} from "@/api/serverConfig";
+import PostPreview from "@/components/forum/PostPreview";
+import ProfileEdit from "@/components/profile/ProfileEdit";
+import ProfileInfo from "@/components/profile/ProfileInfo";
+import ProjectPreview from "@/components/project/ProjectPreview";
 import { PostType, ProjectType, UserProfileType } from "../lib/types";
 
-function Profile(): JSX.Element {
+export function Profile(): JSX.Element {
 	const [user, setUser] = useState<UserProfileType>({} as UserProfileType);
 	const [feedData, setFeedData] = useState<PostType[] | ProjectType[]>([]);
 	const [feed, setFeed] = useState<"Projects" | "Questions">("Projects");
@@ -33,7 +33,7 @@ function Profile(): JSX.Element {
 	// If looking for a specific user (e.g. /profile/:id) then set the userId to the id, otherwise set it to the current user
 	useEffect(() => {
 		const userId = id ? id : Cookies.get("userId");
-		API.Request(`${users}/${userId}`, "GET", {}, false).then((res) => {
+		request(`${users}/${userId}`, "GET", {}, false).then((res) => {
 			setUser(res.data);
 		});
 	}, [id]);
@@ -51,7 +51,7 @@ function Profile(): JSX.Element {
 	};
 	// Get feed data from API
 	useEffect(() => {
-		API.Request(
+		request(
 			FEED[feed][feedType].replace("id", Cookies.get("userId") as string),
 			"GET",
 			{},

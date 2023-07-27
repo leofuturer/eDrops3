@@ -1,25 +1,24 @@
-import { useState, useEffect } from "react";
-import ProjectCard from "../components/project/ProjectCard";
-import ProjectPreview from "../components/project/ProjectPreviewCompact";
-import { PostType, ProjectType } from "../lib/types";
-import API from "../api/api";
-import { featuredPosts, featuredProjects } from "../api/serverConfig";
-import PostCard from "../components/forum/PostCard";
+import { featuredPosts, featuredProjects } from "@/api/serverConfig";
+import PostCard from "@/components/forum/PostCard";
+import ProjectCard from "@/components/project/ProjectCard";
+import { useEffect, useState } from "react";
+import { PostType, ProjectType } from "@/lib/types";
+import request from "@/api/lib/api";
 
-function Home() {
+export function Home() {
 	const [featuredProjectList, setFeaturedProjectList] = useState<ProjectType[]>([]);
 	const [featuredPostList, setFeaturedPostList] = useState<PostType[]>([]);
 
 	// useEffect for featured projects
 	useEffect(() => {
-		API.Request(featuredProjects, 'GET', {}, false).then((res) => {
+		request(featuredProjects, 'GET', {}).then((res) => {
 			setFeaturedProjectList(res.data);
 		});
 	}, []);
 
 	// useEffect for featured posts
 	useEffect(() => {
-		API.Request(featuredPosts, 'GET', {}, false).then((res) => {
+		request(featuredPosts, 'GET', {}).then((res) => {
 			setFeaturedPostList(res.data);
 		});
 	}, []);

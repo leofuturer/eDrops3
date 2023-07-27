@@ -1,14 +1,13 @@
-import { PlusIcon, MagnifyingGlassIcon } from "@heroicons/react/24/solid";
+import { posts } from "@/api/serverConfig";
+import PostPreview from "@/components/forum/PostPreview";
+import ProfilePreview from "@/components/profile/ProfilePreview";
+import { MagnifyingGlassIcon, PlusIcon } from "@heroicons/react/24/solid";
 import { debounce } from "lodash";
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { NavLink } from "react-router-dom";
-import API from "../api/api";
-import { posts } from "../api/serverConfig";
-import PostPreview from "../components/forum/PostPreview";
-import ProfilePreview from "../components/profile/ProfilePreview";
 import { PostType } from "../lib/types";
 
-function Forum() {
+export function Forum() {
 	const [postList, setPostList] = useState<PostType[]>([]);
 	const [sortedPosts, setSortedPosts] = useState<PostType[]>([]);
 	const [search, setSearch] = useState("");
@@ -39,7 +38,7 @@ function Forum() {
 				},
 			};
 		}
-		API.Request(posts, "GET", filter, false).then((res) => {
+		request(posts, "GET", filter, false).then((res) => {
 			setPostList(res.data);
 		});
 	}, [search]);

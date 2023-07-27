@@ -1,15 +1,15 @@
+import { projects } from "@/api/serverConfig";
+import ProfilePreview from "@/components/profile/ProfilePreview";
+import ProjectPreview from "@/components/project/ProjectPreview";
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import { PlusIcon } from "@heroicons/react/24/solid";
 import { debounce } from "lodash";
 import React, { useEffect, useMemo, useState } from "react";
 import { NavLink } from "react-router-dom";
-import API from "../api/api";
-import { projects } from "../api/serverConfig";
-import ProfilePreview from "../components/profile/ProfilePreview";
-import ProjectPreview from "../components/project/ProjectPreview";
-import { ProjectType } from "../lib/types";
+import { ProjectType } from "@/lib/types";
+import request from "@/api/lib/api";
 
-function Projects() {
+export function Projects() {
 	const [projectList, setProjectList] = useState<ProjectType[]>([]);
 	const [sortedProjects, setSortedProjects] = useState<ProjectType[]>([]);
 	const [search, setSearch] = useState("");
@@ -41,7 +41,7 @@ function Projects() {
 				},
 			};
 		}
-		API.Request(projects, "GET", filter, false).then((res) => {
+		request(projects, "GET", filter).then((res) => {
 			setProjectList(res.data);
 		});
 	}, [search]);

@@ -5,7 +5,7 @@ import {
 	userSavedPosts,
 	userSavedProjects,
 } from "./serverConfig";
-import API from "./api";
+import { api } from "@/api";
 
 // Object containing endpoints for reacts
 const ENDPOINTS = {
@@ -33,12 +33,12 @@ export async function react(
 	itemId: number
 ): Promise<boolean> {
 	const URL = `${ENDPOINTS[type][action].replace("id", userId)}/${itemId}`;
-	return API.Request(URL, "GET", {}, true).then(async (res) => {
+	return request(URL, "GET", {}, true).then(async (res) => {
 		if (res.data) {
-			const res_1 = await API.Request(URL, "DELETE", {}, true);
+			const res_1 = await request(URL, "DELETE", {}, true);
 			return false;
 		} else {
-			const res_2 = await API.Request(URL, "POST", {}, true);
+			const res_2 = await request(URL, "POST", {}, true);
 			return true;
 		}
 	});
@@ -59,7 +59,7 @@ export async function checkReact(
 	itemId: number
 ): Promise<boolean> {
 	const URL = `${ENDPOINTS[type][action].replace("id", userId)}/${itemId}`;
-	return API.Request(URL, "GET", {}, true).then(async (res) => {
+	return request(URL, "GET", {}, true).then(async (res) => {
 		if (res.data) {
 			return true;
 		} else {
@@ -80,12 +80,12 @@ export async function follow(
 	const URL = `${userFollowers
 		.replace("id", userId)
 		.replace("followerId", followerId)}`;
-	return API.Request(URL, "GET", {}, true).then(async (res) => {
+	return request(URL, "GET", {}, true).then(async (res) => {
 		if (res.data) {
-			const res_1 = await API.Request(URL, "DELETE", {}, true);
+			const res_1 = await request(URL, "DELETE", {}, true);
 			return false;
 		} else {
-			const res_2 = await API.Request(URL, "POST", {}, true);
+			const res_2 = await request(URL, "POST", {}, true);
 			return true;
 		}
 	});

@@ -17,7 +17,7 @@ import Cookies from "js-cookie";
 import { useEffect, useState } from "react";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import logo from "../../static/img/edrop_logo_inverted.png";
-import { signout } from "../api/auth";
+import { api } from "@/api";
 
 function NavTop() {
 	const navigate = useNavigate();
@@ -34,7 +34,7 @@ function NavTop() {
 	}, [Cookies.get("username")]);
 
 	function handleLogout() {
-		signout().then(() => navigate("/home"));
+		// signout().then(() => navigate("/home"));
 	}
 
 	return (

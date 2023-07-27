@@ -10,9 +10,9 @@ import { AxiosError } from "axios";
 import Cookies from "js-cookie";
 import { useCallback, useEffect, useState } from "react";
 import { Link, NavLink, useNavigate, useParams } from "react-router-dom";
-import API from "../../api/api";
-import { checkReact, react } from "../../api/react";
-import { post, postComments } from "../../api/serverConfig";
+import { api } from "@/api";
+import { checkReact, react } from "@/api/react";
+import { post, postComments } from "@/api/serverConfig";
 import { timeAgo } from "../../lib/time";
 import { CommentType, PostType } from "../../lib/types";
 import PostComment from "./PostComment";
@@ -32,7 +32,7 @@ function Post() {
 
 	// Fetch current post and set loading to false after fetch
 	useEffect(() => {
-		API.Request(post.replace("id", id as string), "GET", {}, false).then(
+		request(post.replace("id", id as string), "GET", {}, false).then(
 			(res) => {
 				setCurrentPost(res.data);
 				setLoading(false);
@@ -42,7 +42,7 @@ function Post() {
 
 	// Fetch comments and sort based on time
 	useEffect(() => {
-		API.Request(
+		request(
 			postComments.replace("id", id as string),
 			"GET",
 			{},
@@ -131,7 +131,7 @@ function Post() {
 			userId: Cookies.get("userId") as string,
 			top: true,
 		};
-		API.Request(
+		request(
 			postComments.replace("id", id ?? ""),
 			"POST",
 			newPostComment,

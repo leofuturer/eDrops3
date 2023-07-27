@@ -1,38 +1,40 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { signup } from "../api/auth";
-import { SignupInfo } from "../lib/types";
+import { Form, useNavigate } from "react-router-dom";
+import { api } from "@/api";
+// import { SignupInfo } from "../lib/types";
+import { Address, Customer, DTO, User } from "@/api/lib/models";
+import { Formik } from "formik";
+import { UserSchema, UserSubmitSchema } from "@/schemas";
+import { ValidationError } from "yup";
 
-function Signup() {
+export function Signup() {
 	const navigate = useNavigate();
 	const [errors, setErrors] = useState<string[] | null>(null);
 
-	const [formData, setFormData] = useState<SignupInfo>({
+	const [initialInfo, setInitialInfo] = useState({
 		username: "",
 		email: "",
 		password: "",
 		confirmPassword: "",
 	});
 
-	const handleLogin = (e: React.FormEvent) => {
-		e.preventDefault();
-		signup(formData)
+	const handleRegister = (userData: DTO<User>) => {
+		api.user.create(userData)
 			.then((res) => {
-        setErrors([]);
 				// console.log(res);
 				navigate("/home")
 			})
-			.catch((err: Error & {[key: string]: string[]}) => {
+			.catch((err: Error & { [key: string]: string[] }) => {
 				if (err.message) {
 					setErrors([err.message]);
 				}
-        else {
-          const allErrors = [];
-          for(const key in err) {
-            allErrors.push(...err[key]);
-          }
-          setErrors(allErrors);
-        }
+				else {
+					const allErrors = [];
+					for (const key in err) {
+						allErrors.push(...err[key]);
+					}
+					setErrors(allErrors);
+				}
 			});
 	};
 
@@ -40,7 +42,27 @@ function Signup() {
 		<div className="w-full h-full flex flex-col justify-center items-center">
 			<div className="flex flex-col items-center border-2 shadow-xl rounded-md p-4 w-1/2 justify-evenly">
 				<h1 className="text-lg">Signup</h1>
-				<form
+				<Formik
+					validationSchema={UserSchema}
+					initialValues={initialInfo}
+					onSubmit={(values, actions) => UserSubmitSchema.validate(values, { abortEarly: false }).then(() => {
+						handleRegister({ ...values });
+					}).catch(
+						(err) => {
+							const errors = err.inner.reduce((acc: object, curr: ValidationError) => {
+								return {
+									...acc,
+									[curr.path as string]: curr.message,
+								};
+							}, {});
+							actions.setErrors(errors);
+						}
+					)}
+				>
+					<Form className="flex flex-col space-y-2">
+					</Form>
+				</Formik>
+				{/* <form
 					className="flex flex-col items-center justify-center space-y-4"
 					onSubmit={(e) => handleLogin(e)}
 				>
@@ -122,7 +144,7 @@ function Signup() {
 							))}
 						</ul>
 					</div>
-				</form>
+				</form> */}
 			</div>
 		</div>
 	);

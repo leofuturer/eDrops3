@@ -1,7 +1,7 @@
 import { PencilIcon, UserCircleIcon } from '@heroicons/react/24/solid';
-import { UserProfileType } from "../../lib/types";
+import type { DTO, UserProfile } from "@/api/lib/models";
 
-function ProfileEdit({ user }: { user: UserProfileType }) {
+function ProfileEdit({ user }: { user: DTO<UserProfile> }) {
 	return (
 		<>
 			{user?.image ? (

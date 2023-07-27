@@ -7,16 +7,16 @@ import { AxiosError } from "axios";
 import Cookies from "js-cookie";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ProjectFile } from "../../../../server/src/models";
-import API from "../../api/api";
-import { downloadFile } from "../../api/file-old";
-import { addProjectLink, linkProjectFile } from "../../api/project";
-import { userProjects } from "../../api/serverConfig";
-import AddLink from "../../components/project/AddLink";
-import FileUpload from "../../components/project/FileUpload";
-import { ProjectType } from "../../lib/types";
+import { ProjectFile } from "../../../../../server/src/models";
+import { api } from "@/api";
+import { downloadFile } from "@/api/project-file";
+import { userProjects } from "@/api/serverConfig";
+import AddLink from "../../../components/project/AddLink";
+import FileUpload from "../../../components/project/FileUpload";
+import { ProjectType } from "../../../lib/types";
+import { request } from "@/api/lib/api";
 
-function NewProject() {
+export function NewProject() {
 	const [title, setTitle] = useState("");
 	const [content, setContent] = useState("");
 	const [modalType, setModalType] = useState<"link" | "file">("file");
@@ -37,28 +37,26 @@ function NewProject() {
 			// dislikes: 0,
 		};
 		// console.log(data);
-		API.Request(
+		request(
 			userProjects.replace("id", Cookies.get("userId") as string),
 			"POST",
 			data,
-			true
-		)
-			.then(async (res) => {
-				// console.log(res);
-				// Link ProjectFile instances to Project
-				const projectId = res.data.id;
-				const filePromises = files.map((file) => {
-					linkProjectFile(projectId, file.id as number);
-				});
-				await Promise.all(filePromises);
-				// Add links to Project using ProjectLink
-				const linkPromises = links.map((link) => {
-					addProjectLink(projectId, link);
-				});
-				await Promise.all(linkPromises);
-				// Navigate to project page
-				navigate(`/project/${res.data.id}`);
-			})
+		).then(async (res) => {
+			// console.log(res);
+			// Link ProjectFile instances to Project
+			const projectId = res.data.id;
+			const filePromises = files.map((file) => {
+				api.project.linkProjectFile(Cookies.get("userId") as string, projectId, file.id as number);
+			});
+			await Promise.all(filePromises);
+			// Add links to Project using ProjectLink
+			const linkPromises = links.map((link) => {
+				api.project.addProjectLink(projectId, link);
+			});
+			await Promise.all(linkPromises);
+			// Navigate to project page
+			navigate(`/project/${res.data.id}`);
+		})
 			.catch((err: AxiosError) => {
 				if (err.response?.status === 401) {
 					navigate("/login");
@@ -67,9 +65,9 @@ function NewProject() {
 			});
 	}
 
-	function handleImage() {}
+	function handleImage() { }
 
-	function handleVideo() {}
+	function handleVideo() { }
 
 	// Since the project hasn't been created yet, we should upload the files, then link them to the project after creation?
 	function handleFile() {

@@ -2,8 +2,8 @@ import { useEffect, useState } from "react";
 import {
 	projectCommentComments,
 	projectComments,
-} from "../../api/serverConfig";
-import API from "../../api/api";
+} from "@/api/serverConfig";
+import { api } from "@/api";
 import { CommentType, ProjectType } from "../../lib/types";
 import { AxiosError } from "axios";
 import { ChevronRightIcon, HandThumbUpIcon } from "@heroicons/react/24/outline";
@@ -22,7 +22,7 @@ function ProjectComment({comment} : {comment: CommentType}) {
 
 	// Get all comments under this comment
 	useEffect(() => {
-		API.Request(
+		request(
 			projectCommentComments.replace(
 				"id",
 				comment.id ? comment.id.toString() : ""
@@ -50,7 +50,7 @@ function ProjectComment({comment} : {comment: CommentType}) {
 			userId: Cookies.get("userId") as string,
 			top: false,
 		};
-		API.Request(
+		request(
 			projectCommentComments.replace(
 				"id",
 				comment.id ? comment.id.toString() : ""

@@ -11,7 +11,7 @@ import { useNavigate } from "react-router-dom";
 import { api } from "@/api";
 import { PostType, ProjectType } from "../../lib/types";
 
-function NewForum() {
+export function NewForum() {
 	const [title, setTitle] = useState("");
 	const [content, setContent] = useState("");
 
@@ -27,7 +27,7 @@ function NewForum() {
 			// dislikes: 0,
 		};
 		// console.log(data);
-		API.Request(
+		request(
 			userPosts.replace("id", Cookies.get("userId") as string),
 			"POST",
 			data,
