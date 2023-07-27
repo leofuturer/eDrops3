@@ -124,8 +124,7 @@ export class CustomerRepository extends DefaultCrudRepository<
    * @returns             Created customer instance
    */
   async createCustomer(
-    customer: DTO<Customer & User>,
-    address?: DTO<Address>
+    customer: DTO<Customer & User & Partial<Omit<Address, 'id'>>>,
   ): Promise<Customer> {
     const hashedPassword = await hash(customer.password, await genSalt());
     const userData: DTO<User> = {
@@ -152,27 +151,27 @@ export class CustomerRepository extends DefaultCrudRepository<
     const customerInstance = await this.create(customerData).catch(err => {
       throw new HttpErrors.InternalServerError(err.message);
     });
-    if (address) {
-      // const AddressData: Partial<Address> = {
-      //   street: customer.street,
-      //   streetLine2: customer.streetLine2,
-      //   country: customer.country,
-      //   state: customer.state,
-      //   city: customer.city,
-      //   zipCode: customer.zipCode,
-      //   isDefault: customer.isDefault || true,
-      // };
+    if (customer.country && customer.state && customer.city && customer.street && customer.zipCode) {
+      const addressData: DTO<Address> = {
+        street: customer.street,
+        ...(customer.streetLine2 && { streetLine2: customer.streetLine2 }),
+        country: customer.country,
+        state: customer.state,
+        city: customer.city,
+        zipCode: customer.zipCode,
+        isDefault: customer.isDefault || true,
+      };
       log.info('Customer instance created, now associating address with it');
       this.addresses(customerInstance.id)
-        .create(address)
-        .then(() => {
-          userRepository.sendVerificationEmail(userInstance);
-        })
+        .create(addressData)
         .catch(err => {
           // roll back the customer creation
           this.deleteById(customerInstance?.id);
+          userRepository.deleteById(userInstance?.id);
+          throw new HttpErrors.InternalServerError(err.message);
         });
     }
+    await userRepository.sendVerificationEmail(userInstance);
     return customerInstance;
   }
 
