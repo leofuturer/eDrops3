@@ -1,5 +1,5 @@
 import { projectFiles } from "./serverConfig";
-import API from "../api/api";
+import { api } from "@/api";
 import { ProjectFile } from "../../../server/src/models";
 
 // Upload files to the server, and return the file names (uuids) on the server
@@ -16,7 +16,7 @@ export async function uploadFiles(
 	});
 	// console.log(files);
 	// formData.append("fields", JSON.stringify(fields));
-	return API.Request(projectFiles.replace('id', userId), "POST", formData, true, headers, true)
+	return request(projectFiles.replace('id', userId), "POST", formData, true, headers, true)
 		.then((res) => {
 			// console.log(res);
 			return res.data.fileInfo;
@@ -63,7 +63,7 @@ export function downloadFile(
 ): void {
 	// @ts-ignore
 	window.location = `${projectFiles.replace('id', userId)}/${fileId}`
-// 	return API.Request(`${projectFiles.replace('id', userId)}/${fileId}`, "GET", {}, true)
+// 	return request(`${projectFiles.replace('id', userId)}/${fileId}`, "GET", {}, true)
 // 		.then((res) => {
 // 			console.log(res);
 // 			return res.data;

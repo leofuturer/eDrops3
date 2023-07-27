@@ -4,8 +4,8 @@ import { AxiosError } from "axios";
 import Cookies from "js-cookie";
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import API from "../../api/api";
-import { postCommentComments } from "../../api/serverConfig";
+import { api } from "@/api";
+import { postCommentComments } from "@/api/serverConfig";
 import { timeAgo } from "../../lib/time";
 import { CommentType } from "../../lib/types";
 
@@ -19,7 +19,7 @@ function PostComment({ comment } : {comment: CommentType }) {
 
 	// Get all comments under this comment
 	useEffect(() => {
-		API.Request(
+		request(
 			postCommentComments.replace(
 				"id",
 				comment.id ? comment.id.toString() : ""
@@ -47,7 +47,7 @@ function PostComment({ comment } : {comment: CommentType }) {
 			userId: Cookies.get("userId") as string,
 			top: false,
 		};
-		API.Request(
+		request(
 			postCommentComments.replace(
 				"id",
 				comment.id ? comment.id.toString() : ""

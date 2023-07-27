@@ -1,8 +1,8 @@
 import Cookies from "js-cookie";
-import API from "../../api/api";
+import { api } from "@/api";
 import React, { useEffect, useState } from "react";
 import { UserProfileType } from "../../lib/types";
-import { users } from "../../api/serverConfig";
+import { users } from "@/api/serverConfig";
 import { UserCircleIcon } from "@heroicons/react/24/solid";
 import _ from "lodash";
 import { NavLink } from "react-router-dom";
@@ -14,7 +14,7 @@ function ProfilePreview() {
 	useEffect(() => {
 		const userId = Cookies.get("userId");
 		if (userId) {
-			API.Request(`${users}/${userId}`, "GET", {}, false).then(
+			request(`${users}/${userId}`, "GET", {}, false).then(
 				(res) => {
 					setUser(res.data);
 				}

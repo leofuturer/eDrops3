@@ -14,11 +14,12 @@ import { api } from "@/api";
 import { downloadFile } from "@/api/project-file";
 import { checkReact, react } from "@/api/react";
 import { project, projectComments } from "@/api/serverConfig";
-import { timeAgo } from "../../lib/time";
-import { CommentType, ProjectType } from "../../lib/types";
-import ProjectComment from "./ProjectComment";
+import { timeAgo } from "@/lib/time";
+import { CommentType, ProjectType } from "@/lib/types";
+import ProjectComment from "@/components/project/ProjectComment";
+import request from "@/api/lib/api";
 
-function Project() {
+export function Project() {
 	const { id } = useParams();
 	const navigate = useNavigate();
 	const [loading, setLoading] = useState(true);
@@ -35,7 +36,7 @@ function Project() {
 
 	// Fetch current project and set loading to false after fetch
 	useEffect(() => {
-		request(project.replace("id", id as string), "GET", {}, false).then(
+		request(project.replace("id", id as string), "GET", {}).then(
 			(res) => {
 				// console.log(res);
 				setCurrentProject(res.data);
@@ -49,8 +50,7 @@ function Project() {
 		request(
 			projectComments.replace("id", id as string),
 			"GET",
-			{},
-			false
+			{}
 		).then((res) => {
 			const comments: CommentType[] = res.data;
 			const sortedComments = comments.sort((a, b) =>
@@ -138,7 +138,6 @@ function Project() {
 			projectComments.replace("id", id ?? ""),
 			"POST",
 			newPostComment,
-			true
 		)
 			.then((res) => {
 				setNewComment("");

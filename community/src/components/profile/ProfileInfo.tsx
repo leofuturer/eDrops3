@@ -1,10 +1,10 @@
 import { UserCircleIcon } from "@heroicons/react/24/solid";
 import Cookies from "js-cookie";
 import { useState } from "react";
-import { follow } from "../../api/react";
-import { UserProfileType } from "../../lib/types";
+import { follow } from "@/api/react";
+import { DTO, UserProfile } from "@/api/lib/models";
 
-function ProfileInfo({ user }: { user: UserProfileType }) {
+function ProfileInfo({ user }: { user: DTO<UserProfile> }) {
 	const [following, setFollowing] = useState<boolean>(false);
 
 	function handleFollow() {
