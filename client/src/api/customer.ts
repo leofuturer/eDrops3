@@ -105,7 +105,7 @@ class CustomerResource extends Resource<Customer> {
     });
   }
 
-  async getFile(id: string, fileId: string): Promise<DTO<FileInfo>> {
+  async getFile(id: string, fileId: number): Promise<DTO<FileInfo>> {
     return request<DTO<FileInfo>>(`${this.baseURL}/${id}/files/${fileId}`, 'GET', {}).then((res) => {
       return res.data;
     });
@@ -119,17 +119,26 @@ class CustomerResource extends Resource<Customer> {
     });
   }
 
-  async downloadFile(id: string, fileId: number): Promise<string> {
-    return request<string>(`${this.baseURL}/${id}/files/${fileId}/download`, 'GET', {}).then((res) => {
+  async downloadFile(id: string, fileId: number, save: boolean = false): Promise<string> {
+    return request<string>(`${this.baseURL}/${id}/files/${fileId}/download`, 'GET', {}).then(async(res) => {
       const data = res.data as string;
       // console.log(res);
+      if (save) {
+        const file = await this.getFile(id, fileId);
+        const blob = new File([data], file.fileName, { type: 'application/dxf' })
+        const blobUrl = URL.createObjectURL(blob);
+        const ref = document.createElement('a')
+        ref.href = blobUrl;
+        ref.target = '_blank';
+        ref.download = file.fileName;
+        console.log(ref)
+        document.body.appendChild(ref);
+        ref.click();
+        document.body.removeChild(ref);
+        URL.revokeObjectURL(blobUrl);
+      }
       return data;
-      // const blob = new Blob([data], { type: 'application/dxf' });
-      // const blobUrl = window.URL.createObjectURL(blob);
-      // window.location.href = blobUrl;
     });
-
-    // window.location.href = `/api/customers/${id}/files/${fileId}/download`;
   }
 
   async deleteFile(id: string, fileId: number): Promise<Count> {

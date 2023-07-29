@@ -20,7 +20,7 @@ export function FileList({ fileList, handleDelete }: { fileList: DTO<FileInfo>[]
     switch (cookies.userType) {
       case ROLES.Customer:
         // for customer, `id` is file ID
-        api.customer.downloadFile(cookies.userId, fileId);
+        api.customer.downloadFile(cookies.userId, fileId, true);
         break;
       case ROLES.Worker:
         // for worker, `id` is chipOrder ID (associated with that file)
