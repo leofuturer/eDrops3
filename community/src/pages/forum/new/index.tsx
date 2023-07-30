@@ -10,6 +10,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { api } from "@/api";
 import { PostType, ProjectType } from "../../lib/types";
+import { request } from "@edroplets/api";
 
 export function NewForum() {
 	const [title, setTitle] = useState("");
@@ -31,7 +32,6 @@ export function NewForum() {
 			userPosts.replace("id", Cookies.get("userId") as string),
 			"POST",
 			data,
-			true
 		)
 			.then((res) => navigate(`/forum/${res.data.id}`))
 			.catch((err: AxiosError) => {

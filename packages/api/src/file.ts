@@ -1,4 +1,4 @@
-import { FileInfo } from "@/types";
+import { FileInfo } from "./types";
 import { Resource } from "./lib/resource";
 import request from "./lib/api";
 

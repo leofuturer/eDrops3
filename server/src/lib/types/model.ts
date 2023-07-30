@@ -5,4 +5,4 @@ export type DTO<T extends Entity> = Omit<T, keyof Entity>;
 
 export type { Entity, Count, Filter, Where, FilterExcludingWhere, Request, Response };
 
-export type * from '../../models';
+export * from '../../models';

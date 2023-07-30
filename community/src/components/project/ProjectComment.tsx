@@ -11,6 +11,7 @@ import { ArrowUturnLeftIcon } from "@heroicons/react/24/solid";
 import { timeAgo } from "../../lib/time";
 import { Link, useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
+import { request } from "@/api/lib/api";
 
 function ProjectComment({comment} : {comment: CommentType}) {
 	const navigate = useNavigate();
@@ -29,7 +30,6 @@ function ProjectComment({comment} : {comment: CommentType}) {
 			),
 			"GET",
 			{},
-			false
 		)
 			.then((res) => {
 				// console.log(res);
@@ -57,7 +57,6 @@ function ProjectComment({comment} : {comment: CommentType}) {
 			),
 			"POST",
 			newProjectComment,
-			true
 		)
 			.then((res) => {
 				setNewComment("");

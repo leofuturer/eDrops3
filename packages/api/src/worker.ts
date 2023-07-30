@@ -1,4 +1,4 @@
-import type { DTO, FoundryWorker, IncludeUser, OrderChip, User } from "./lib/models";
+import type { DTO, FoundryWorker, IncludeUser, OrderChip, User } from "./types/models";
 import { Resource } from "./lib/resource";
 import request from "./lib/api";
 

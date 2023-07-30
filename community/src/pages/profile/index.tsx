@@ -19,6 +19,7 @@ import ProfileEdit from "@/components/profile/ProfileEdit";
 import ProfileInfo from "@/components/profile/ProfileInfo";
 import ProjectPreview from "@/components/project/ProjectPreview";
 import { PostType, ProjectType, UserProfileType } from "../lib/types";
+import { request } from "@/api/lib/api";
 
 export function Profile(): JSX.Element {
 	const [user, setUser] = useState<UserProfileType>({} as UserProfileType);
@@ -33,7 +34,7 @@ export function Profile(): JSX.Element {
 	// If looking for a specific user (e.g. /profile/:id) then set the userId to the id, otherwise set it to the current user
 	useEffect(() => {
 		const userId = id ? id : Cookies.get("userId");
-		request(`${users}/${userId}`, "GET", {}, false).then((res) => {
+		request(`${users}/${userId}`, "GET", {}).then((res) => {
 			setUser(res.data);
 		});
 	}, [id]);

@@ -16,6 +16,7 @@ import { post, postComments } from "@/api/serverConfig";
 import { timeAgo } from "../../lib/time";
 import { CommentType, PostType } from "../../lib/types";
 import PostComment from "./PostComment";
+import { request } from "@/api/lib/api";
 
 function Post() {
 	const { id } = useParams();
@@ -168,9 +169,8 @@ function Post() {
 									{currentPost?.title}
 								</h1>
 								<BookmarkIcon
-									className={`w-10 h-10 cursor-pointer ${
-										saved ? "fill-black" : ""
-									}`}
+									className={`w-10 h-10 cursor-pointer ${saved ? "fill-black" : ""
+										}`}
 									onClick={handleSave}
 								/>
 							</div>
@@ -189,9 +189,8 @@ function Post() {
 								onClick={handleLike}
 							>
 								<HandThumbUpIcon
-									className={`w-6 h-6 cursor-pointer ${
-										liked ? "fill-black" : ""
-									}`}
+									className={`w-6 h-6 cursor-pointer ${liked ? "fill-black" : ""
+										}`}
 								/>
 								<p className="text-md">{currentPost?.likes}</p>
 							</div>
@@ -216,9 +215,8 @@ function Post() {
 						</div>
 						{expanded && (
 							<div
-								className={`bg-white p-2 pl-4 flex flex-col space-y-2 ${
-									expanded ? "transition-all" : ""
-								} ease-in-out duration-500`}
+								className={`bg-white p-2 pl-4 flex flex-col space-y-2 ${expanded ? "transition-all" : ""
+									} ease-in-out duration-500`}
 							>
 								<textarea
 									title="reply"

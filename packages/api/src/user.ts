@@ -1,4 +1,4 @@
-import type { User } from "./lib/models";
+import type { DTO, FileInfo, Project, ProjectFile, User } from "./types/models";
 import request from "./lib/api";
 import { Resource } from "./lib/resource";
 
@@ -58,6 +58,14 @@ class UserResource extends Resource<User> {
 
   async changePassword(oldPassword: string, newPassword: string): Promise<void> {
     request(`${this.baseURL}/change-password`, 'POST', { oldPassword: oldPassword, newPassword: newPassword });
+  }
+
+  async uploadProjectFile(id: string, formData: FormData): Promise<DTO<ProjectFile>> {
+    return request<DTO<ProjectFile>>(`${this.baseURL}/${id}/project-files`, 'POST', formData, {
+      'Content-Type': 'multipart/form-data'
+    }).then((res) => {
+      return res.data;
+    });
   }
 }
 

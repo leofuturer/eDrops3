@@ -1,13 +1,22 @@
 import { projectFiles } from "./serverConfig";
-import { api } from "@/api";
-import { ProjectFile } from "../../../server/src/models";
+import { request } from "./lib/api";
+import { DTO, ProjectFile } from "./types";
+import { Resource } from "./lib/resource";
+
+class ProjectFileResource extends Resource<ProjectFile> {
+	constructor() {
+		super("/project-files");
+	}
+}
+
+export const projectFile = new ProjectFileResource();
 
 // Upload files to the server, and return the file names (uuids) on the server
 export async function uploadFiles(
 	userId: string,
 	files: File[],
 	// fields: object = { isPublic: "public" },
-): Promise<ProjectFile[]> {
+): Promise<DTO<ProjectFile>[]> {
 	const headers = { "Content-Type": "multipart/form-data" };
 	const formData = new FormData();
 	files.forEach((file) => {
@@ -16,10 +25,10 @@ export async function uploadFiles(
 	});
 	// console.log(files);
 	// formData.append("fields", JSON.stringify(fields));
-	return request(projectFiles.replace('id', userId), "POST", formData, true, headers, true)
+	return request<DTO<ProjectFile>[]>(projectFiles.replace('id', userId), "POST", formData, headers)
 		.then((res) => {
 			// console.log(res);
-			return res.data.fileInfo;
+			return res.data;
 			// const promises : Promise<object>[] = [];
 			// res.data.forEach((e) => {
 			// 	promises.push(

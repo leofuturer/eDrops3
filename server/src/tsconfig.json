@@ -1,0 +1,21 @@
+{
+  "$schema": "http://json.schemastore.org/tsconfig",
+  "extends": "@loopback/build/config/tsconfig.common.json",
+  "compilerOptions": {
+    "experimentalDecorators": true,
+    "forceConsistentCasingInFileNames": true,
+    "outDir": "../../packages/api/dist",
+    "rootDirs": ["../../packages/api/src", "."],
+    "emitDeclarationOnly": true,
+    "composite": true,
+    "types": [
+      "node",
+      "@types/node",
+      "@types/mocha"
+    ]
+  },
+  "include": [
+    "./models",
+    "./lib/types"
+  ]
+}

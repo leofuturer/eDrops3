@@ -1,7 +1,7 @@
 /**
  * Backend API entry points
  */
-const ApiRootUrl = "/api";
+const ApiRootUrl = "";
 
 export const posts = `${ApiRootUrl}/posts`;
 export const post = `${ApiRootUrl}/posts/id`;

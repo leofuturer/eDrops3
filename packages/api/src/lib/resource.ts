@@ -1,5 +1,5 @@
 import { request } from "./api";
-import type { Count, DTO, Entity } from "./models";
+import type { Count, DTO, Entity } from "../types/models";
 
 export interface ResourceInterface<T> {
   baseURL: string;
