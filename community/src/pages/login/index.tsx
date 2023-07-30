@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { api } from "@/api";
+import { api } from "@edroplets/api";
 import { useNavigate } from "react-router-dom";
 
 export function Login() {
@@ -10,7 +10,7 @@ export function Login() {
 
 	const handleLogin = (e: React.FormEvent) => {
 		e.preventDefault();
-		login(username, password).then(() => navigate("/home"));
+		api.user.login(username, password).then(() => navigate("/home"));
 	};
 
 	return (

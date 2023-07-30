@@ -5,11 +5,12 @@ import { MagnifyingGlassIcon, PlusIcon } from "@heroicons/react/24/solid";
 import { debounce } from "lodash";
 import React, { useEffect, useMemo, useState } from "react";
 import { NavLink } from "react-router-dom";
-import { PostType } from "../lib/types";
+import { Post } from "@/api/lib/models";
+import { request } from "@/api/lib/api";
 
 export function Forum() {
-	const [postList, setPostList] = useState<PostType[]>([]);
-	const [sortedPosts, setSortedPosts] = useState<PostType[]>([]);
+	const [postList, setPostList] = useState<Post[]>([]);
+	const [sortedPosts, setSortedPosts] = useState<Post[]>([]);
 	const [search, setSearch] = useState("");
 	const [feedType, setFeedType] = useState<"Featured" | "New">("Featured");
 
@@ -38,13 +39,13 @@ export function Forum() {
 				},
 			};
 		}
-		request(posts, "GET", filter, false).then((res) => {
+		request(posts, "GET", filter).then((res) => {
 			setPostList(res.data);
 		});
 	}, [search]);
 
 	useEffect(() => {
-		const sortedPosts = ([] as PostType[]).concat(postList)
+		const sortedPosts = ([] as Post[]).concat(postList)
 		if (feedType === "Featured") {
 			sortedPosts.sort((a, b) => (a.likes < b.likes ? 1 : -1));
 		} else if (feedType === "New") {

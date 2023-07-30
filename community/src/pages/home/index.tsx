@@ -2,23 +2,23 @@ import { featuredPosts, featuredProjects } from "@/api/serverConfig";
 import PostCard from "@/components/forum/PostCard";
 import ProjectCard from "@/components/project/ProjectCard";
 import { useEffect, useState } from "react";
-import { PostType, ProjectType } from "@/lib/types";
+import { Post, Project } from "@/api/lib/models";
 import request from "@/api/lib/api";
 
 export function Home() {
-	const [featuredProjectList, setFeaturedProjectList] = useState<ProjectType[]>([]);
-	const [featuredPostList, setFeaturedPostList] = useState<PostType[]>([]);
+	const [featuredProjectList, setFeaturedProjectList] = useState<Project[]>([]);
+	const [featuredPostList, setFeaturedPostList] = useState<Post[]>([]);
 
 	// useEffect for featured projects
 	useEffect(() => {
-		request(featuredProjects, 'GET', {}).then((res) => {
+		request<Project[]>(featuredProjects, 'GET', {}).then((res) => {
 			setFeaturedProjectList(res.data);
 		});
 	}, []);
 
 	// useEffect for featured posts
 	useEffect(() => {
-		request(featuredPosts, 'GET', {}).then((res) => {
+		request<Post[]>(featuredPosts, 'GET', {}).then((res) => {
 			setFeaturedPostList(res.data);
 		});
 	}, []);

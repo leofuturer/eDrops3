@@ -16,7 +16,7 @@ import { post, postComments } from "@/api/serverConfig";
 import { timeAgo } from "@/lib/time";
 import { CommentType, PostType } from "@/lib/types";
 import PostComment from "@/components/forum/PostComment";
-import request from "@/api/lib/api";
+import {request} from "@edroplets/api";
 
 export function Post() {
 	const { id } = useParams();

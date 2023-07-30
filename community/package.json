@@ -13,6 +13,7 @@
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "dependencies": {
+    "@edroplets/api": "file:../packages/api",
     "@heroicons/react": "^2.0.18",
     "@tailwindcss/line-clamp": "^0.4.0",
     "axios": "^1.4.0",

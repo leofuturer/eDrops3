@@ -1,5 +1,5 @@
 import request from "./lib/api";
-import type { Project } from "./lib/models";
+import type { Project } from "./types";
 import { Resource } from "./lib/resource";
 
 class ProjectResource extends Resource<Project> {

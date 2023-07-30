@@ -1,6 +1,6 @@
-export type * from '/@server/lib/types/index'
+export * from './model'
 
-import type { Address, Admin, Customer, DTO, FoundryWorker, User } from '/@server/lib/types/index';
+import type { Address, Admin, Customer, DTO, FoundryWorker, User } from './model';
 
 export type IncludeUser<T extends Admin | Customer | FoundryWorker> = T & {
   user: DTO<User>;

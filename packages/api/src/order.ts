@@ -1,4 +1,4 @@
-import type { Count, DTO, OrderChip, OrderInfo, OrderMessage, OrderProduct } from "./lib/models";
+import type { Count, DTO, OrderChip, OrderInfo, OrderMessage, OrderProduct } from "./types";
 import { Resource } from "./lib/resource";
 import request from "./lib/api";
 import type { CheckoutLineItemInput, Product } from "shopify-buy";
