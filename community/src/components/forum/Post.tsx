@@ -10,13 +10,13 @@ import { AxiosError } from "axios";
 import Cookies from "js-cookie";
 import { useCallback, useEffect, useState } from "react";
 import { Link, NavLink, useNavigate, useParams } from "react-router-dom";
-import { api } from "@/api";
-import { checkReact, react } from "@/api/react";
-import { post, postComments } from "@/api/serverConfig";
+import { api } from "@edroplets/api";
+import { checkReact, react } from "@edroplets/api/react";
+import { post, postComments } from "@edroplets/api/serverConfig";
 import { timeAgo } from "../../lib/time";
 import { CommentType, PostType } from "../../lib/types";
 import PostComment from "./PostComment";
-import { request } from "@/api/lib/api";
+import { request } from "@edroplets/api/lib/api";
 
 function Post() {
 	const { id } = useParams();
@@ -33,7 +33,11 @@ function Post() {
 
 	// Fetch current post and set loading to false after fetch
 	useEffect(() => {
-		request(post.replace("id", id as string), "GET", {}, false).then(
+		if (!id) {
+			navigate("/forum")
+			return;
+		}
+		api.post.get(id).then(
 			(res) => {
 				setCurrentPost(res.data);
 				setLoading(false);
@@ -43,12 +47,11 @@ function Post() {
 
 	// Fetch comments and sort based on time
 	useEffect(() => {
-		request(
-			postComments.replace("id", id as string),
-			"GET",
-			{},
-			false
-		).then((res) => {
+		if (!id) {
+			navigate("/forum")
+			return;
+		}
+		api.post.getPostComments(id).then((res) => {
 			// console.log("Top-level comments", res.data);
 			const comments: CommentType[] = res.data;
 			const sortedComments = comments.sort((a, b) =>

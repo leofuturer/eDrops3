@@ -1,9 +1,6 @@
-import { featuredPosts, featuredProjects } from "@/api/serverConfig";
 import PostCard from "@/components/forum/PostCard";
 import ProjectCard from "@/components/project/ProjectCard";
 import { useEffect, useState } from "react";
-import { Post, Project } from "@/api/lib/models";
-import request from "@/api/lib/api";
 
 export function Home() {
 	const [featuredProjectList, setFeaturedProjectList] = useState<Project[]>([]);

@@ -1,4 +1,3 @@
-import { projects } from "@/api/serverConfig";
 import ProfilePreview from "@/components/profile/ProfilePreview";
 import ProjectPreview from "@/components/project/ProjectPreview";
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
@@ -7,7 +6,6 @@ import { debounce } from "lodash";
 import React, { useEffect, useMemo, useState } from "react";
 import { NavLink } from "react-router-dom";
 import { ProjectType } from "@/lib/types";
-import request from "@/api/lib/api";
 
 export function Projects() {
 	const [projectList, setProjectList] = useState<ProjectType[]>([]);

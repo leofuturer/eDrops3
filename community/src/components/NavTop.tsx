@@ -17,7 +17,7 @@ import Cookies from "js-cookie";
 import { useEffect, useState } from "react";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import logo from "../../static/img/edrop_logo_inverted.png";
-import { api } from "@/api";
+import { api } from "@edroplets/api";
 
 function NavTop() {
 	const navigate = useNavigate();

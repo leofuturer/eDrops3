@@ -2,8 +2,8 @@ import { useEffect, useState } from "react";
 import {
 	projectCommentComments,
 	projectComments,
-} from "@/api/serverConfig";
-import { api } from "@/api";
+} from "@edroplets/api/serverConfig";
+import { api } from "@edroplets/api";
 import { CommentType, ProjectType } from "../../lib/types";
 import { AxiosError } from "axios";
 import { ChevronRightIcon, HandThumbUpIcon } from "@heroicons/react/24/outline";
@@ -11,7 +11,7 @@ import { ArrowUturnLeftIcon } from "@heroicons/react/24/solid";
 import { timeAgo } from "../../lib/time";
 import { Link, useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
-import { request } from "@/api/lib/api";
+import { request } from "@edroplets/api/lib/api";
 
 function ProjectComment({comment} : {comment: CommentType}) {
 	const navigate = useNavigate();

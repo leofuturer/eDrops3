@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { Form, useNavigate } from "react-router-dom";
-import { api } from "@/api";
+import { api } from "@edroplets/api";
 // import { SignupInfo } from "../lib/types";
-import { Address, Customer, DTO, User } from "@/api/lib/models";
+import { Address, Customer, DTO, User } from "@edroplets/api/lib/models";
 import { Formik } from "formik";
 import { UserSchema, UserSubmitSchema } from "@/schemas";
 import { ValidationError } from "yup";

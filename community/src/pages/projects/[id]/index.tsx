@@ -10,22 +10,15 @@ import { AxiosError } from "axios";
 import Cookies from "js-cookie";
 import { useEffect, useState } from "react";
 import { Link, NavLink, useNavigate, useParams } from "react-router-dom";
-import { api } from "@/api";
-import { downloadFile } from "@/api/project-file";
-import { checkReact, react } from "@/api/react";
-import { project, projectComments } from "@/api/serverConfig";
-import { timeAgo } from "@/lib/time";
-import { CommentType, ProjectType } from "@/lib/types";
-import ProjectComment from "@/components/project/ProjectComment";
-import request from "@/api/lib/api";
+import { api } from "@edroplets/api";
 
 export function Project() {
 	const { id } = useParams();
 	const navigate = useNavigate();
 	const [loading, setLoading] = useState(true);
 
-	const [currentProject, setCurrentProject] = useState<ProjectType>(
-		{} as ProjectType
+	const [currentProject, setCurrentProject] = useState<Project>(
+		{} as Project
 	);
 	const [saved, setSaved] = useState<boolean>(false);
 	const [liked, setLiked] = useState<boolean>(false);

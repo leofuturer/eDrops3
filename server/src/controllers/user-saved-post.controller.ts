@@ -18,7 +18,7 @@ export class UserSavedPostController {
   ) {}
 
   @authenticate('jwt')
-  @get('/users/{id}/savedPosts', {
+  @get('/users/{id}/saved-posts', {
     responses: {
       '200': {
         description: 'Get all user saved posts',
@@ -39,7 +39,7 @@ export class UserSavedPostController {
   }
 
   @authenticate('jwt')
-  @get('/users/{id}/savedPosts/{postId}', {
+  @get('/users/{id}/saved-posts/{postId}', {
     responses: {
       '200': {
         description: 'Check if a post is saved',
@@ -60,7 +60,7 @@ export class UserSavedPostController {
   }
 
   @authenticate('jwt')
-  @post('/users/{id}/savedPosts/{postId}', {
+  @post('/users/{id}/saved-posts/{postId}', {
     responses: {
       '200': {
         description: 'Save a post',
@@ -75,7 +75,7 @@ export class UserSavedPostController {
   }
 
   @authenticate('jwt')
-  @del('/users/{id}/savedPosts/{postId}', {
+  @del('/users/{id}/saved-posts/{postId}', {
     responses: {
       '200': {
         description: 'Unsave a post',

@@ -8,13 +8,10 @@ import Cookies from "js-cookie";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ProjectFile } from "../../../../../server/src/models";
-import { api } from "@/api";
-import { downloadFile } from "@/api/project-file";
-import { userProjects } from "@/api/serverConfig";
+import { api } from "@edroplets/api";
 import AddLink from "../../../components/project/AddLink";
 import FileUpload from "../../../components/project/FileUpload";
 import { ProjectType } from "../../../lib/types";
-import { request } from "@/api/lib/api";
 
 export function NewProject() {
 	const [title, setTitle] = useState("");

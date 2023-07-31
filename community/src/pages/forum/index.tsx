@@ -1,12 +1,9 @@
-import { posts } from "@/api/serverConfig";
 import PostPreview from "@/components/forum/PostPreview";
 import ProfilePreview from "@/components/profile/ProfilePreview";
 import { MagnifyingGlassIcon, PlusIcon } from "@heroicons/react/24/solid";
 import { debounce } from "lodash";
 import React, { useEffect, useMemo, useState } from "react";
 import { NavLink } from "react-router-dom";
-import { Post } from "@/api/lib/models";
-import { request } from "@/api/lib/api";
 
 export function Forum() {
 	const [postList, setPostList] = useState<Post[]>([]);

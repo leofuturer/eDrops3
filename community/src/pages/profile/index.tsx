@@ -6,20 +6,11 @@ import {
 import Cookies from "js-cookie";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { api } from "@/api";
-import {
-	userPosts,
-	userProjects,
-	userSavedPosts,
-	userSavedProjects,
-	users,
-} from "@/api/serverConfig";
+import { api } from "@edroplets/api";
 import PostPreview from "@/components/forum/PostPreview";
 import ProfileEdit from "@/components/profile/ProfileEdit";
 import ProfileInfo from "@/components/profile/ProfileInfo";
 import ProjectPreview from "@/components/project/ProjectPreview";
-import { PostType, ProjectType, UserProfileType } from "../lib/types";
-import { request } from "@/api/lib/api";
 
 export function Profile(): JSX.Element {
 	const [user, setUser] = useState<UserProfileType>({} as UserProfileType);

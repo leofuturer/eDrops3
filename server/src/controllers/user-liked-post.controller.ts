@@ -11,7 +11,7 @@ export class UserLikedPostController {
   ) {}
 
   @authenticate('jwt')
-  @get('/users/{id}/likedPosts', {
+  @get('/users/{id}/liked-posts', {
     responses: {
       '200': {
         description: 'Get all user liked posts',
@@ -34,7 +34,7 @@ export class UserLikedPostController {
   }
 
   @authenticate('jwt')
-  @get('/users/{id}/likedPosts/{postId}', {
+  @get('/users/{id}/liked-posts/{postId}', {
     responses: {
       '200': {
         description: 'Check if a post is liked',
@@ -57,7 +57,7 @@ export class UserLikedPostController {
   }
 
   @authenticate('jwt')
-  @post('/users/{id}/likedPosts/{postId}', {
+  @post('/users/{id}/liked-posts/{postId}', {
     responses: {
       '200': {
         description: 'Like a post',
@@ -81,7 +81,7 @@ export class UserLikedPostController {
   }
 
   @authenticate('jwt')
-  @del('/users/{id}/likedPosts/{postId}', {
+  @del('/users/{id}/liked-posts/{postId}', {
     responses: {
       '200': {
         description: 'Unlike a post',

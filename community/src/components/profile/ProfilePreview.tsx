@@ -1,8 +1,7 @@
 import Cookies from "js-cookie";
-import { api } from "@/api";
+import { api } from "@edroplets/api";
 import React, { useEffect, useState } from "react";
 import { UserProfileType } from "../../lib/types";
-import { users } from "@/api/serverConfig";
 import { UserCircleIcon } from "@heroicons/react/24/solid";
 import _ from "lodash";
 import { NavLink } from "react-router-dom";
