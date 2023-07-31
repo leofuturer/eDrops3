@@ -12,7 +12,7 @@ export class UserLikedProjectController {
   ) {}
 
   @authenticate('jwt')
-  @get('/users/{id}/likedProjects', {
+  @get('/users/{id}/liked-projects', {
     responses: {
       '200': {
         description: 'Get all user liked projects',
@@ -35,7 +35,7 @@ export class UserLikedProjectController {
   }
 
   @authenticate('jwt')
-  @get('/users/{id}/likedProjects/{projectId}', {
+  @get('/users/{id}/liked-projects/{projectId}', {
     responses: {
       '200': {
         description: 'Check if a project is liked',
@@ -58,7 +58,7 @@ export class UserLikedProjectController {
   }
 
   @authenticate('jwt')
-  @post('/users/{id}/likedProjects/{projectId}', {
+  @post('/users/{id}/liked-projects/{projectId}', {
     responses: {
       '200': {
         description: 'Like a project',
@@ -85,7 +85,7 @@ export class UserLikedProjectController {
   }
 
   @authenticate('jwt')
-  @del('/users/{id}/likedProjects/{projectId}', {
+  @del('/users/{id}/liked-projects/{projectId}', {
     responses: {
       '200': {
         description: 'Unlike a project',

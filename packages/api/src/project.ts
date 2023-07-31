@@ -1,5 +1,5 @@
 import request from "./lib/api";
-import type { Project } from "./types";
+import type { Project, ProjectFile, ProjectLink } from "./types";
 import { Resource } from "./lib/resource";
 
 class ProjectResource extends Resource<Project> {
@@ -20,6 +20,23 @@ class ProjectResource extends Resource<Project> {
       return res.data;
     });
   }
+
+  async getFeatured() {
+    return request<Project[]>(`${this.baseURL}/featured`, "GET", {});
+  }
+
+  async getProjectFiles(id: string) {
+    return request<ProjectFile[]>(`${this.baseURL}/${id}/project-files`, "GET", {});
+  }
+
+  async getProjectLinks(id: string) {
+    return request<ProjectLink[]>(`${this.baseURL}/${id}/project-links`, "GET", {});
+  }
+
+  async getProjectComments(id: string) {
+    return request<Project[]>(`${this.baseURL}/${id}/project-comments`, "GET", {});
+  }
+
 }
 
 export const project = new ProjectResource();

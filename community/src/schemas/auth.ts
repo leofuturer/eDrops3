@@ -1,5 +1,5 @@
 import * as Yup from 'yup';
-import { api } from '../api';
+import { api } from '@edroplets/api';
 import { confirmPasswordSchema, customerTypeSchema, emailSchema, firstNameSchema, lastNameSchema, passwordSchema, phoneNumberSchema, usernameSchema } from './lib/user';
 
 // TODO: ensure yup objects conform to our types (e.g. Customer)

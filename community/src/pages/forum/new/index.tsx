@@ -8,7 +8,7 @@ import { AxiosError } from "axios";
 import Cookies from "js-cookie";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { api } from "@/api";
+import { api } from "@edroplets/api";
 import { PostType, ProjectType } from "../../lib/types";
 import { request } from "@edroplets/api";
 

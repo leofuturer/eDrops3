@@ -6,7 +6,6 @@ import React, { useCallback, useState } from "react";
 import { useDropzone, FileWithPath, FileError } from "react-dropzone";
 import { useNavigate } from "react-router-dom";
 import { ProjectFile } from "../../../../server/src/models";
-import { uploadFiles } from "@/api/project-file";
 
 function FileUpload({
 	handleClose,

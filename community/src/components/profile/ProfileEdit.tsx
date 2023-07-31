@@ -1,5 +1,5 @@
 import { PencilIcon, UserCircleIcon } from '@heroicons/react/24/solid';
-import type { DTO, UserProfile } from "@/api/lib/models";
+import { api, DTO, UserProfile } from "@edroplets/api";
 
 function ProfileEdit({ user }: { user: DTO<UserProfile> }) {
 	return (
