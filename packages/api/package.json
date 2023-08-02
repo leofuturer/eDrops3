@@ -15,6 +15,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@loopback/repository": "^6.1.1",
     "@types/js-cookie": "^3.0.3",
     "@types/shopify-buy": "^2.17.1",
     "typescript": "^5.1.6"

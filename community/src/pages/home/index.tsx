@@ -1,6 +1,7 @@
 import PostCard from "@/components/forum/PostCard";
 import ProjectCard from "@/components/project/ProjectCard";
 import { useEffect, useState } from "react";
+import { Post, Project, api } from "@edroplets/api";
 
 export function Home() {
 	const [featuredProjectList, setFeaturedProjectList] = useState<Project[]>([]);
@@ -8,14 +9,14 @@ export function Home() {
 
 	// useEffect for featured projects
 	useEffect(() => {
-		request<Project[]>(featuredProjects, 'GET', {}).then((res) => {
+		api.project.getFeatured().then((res) => {
 			setFeaturedProjectList(res.data);
 		});
 	}, []);
 
 	// useEffect for featured posts
 	useEffect(() => {
-		request<Post[]>(featuredPosts, 'GET', {}).then((res) => {
+		api.post.getFeatured().then((res) => {
 			setFeaturedPostList(res.data);
 		});
 	}, []);
