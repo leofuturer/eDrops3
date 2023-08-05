@@ -31,15 +31,15 @@ function ProfilePreview() {
 					: "bg-slate-800 text-white"
 					} shadow-2xl rounded-2xl flex flex-col items-center p-4`}
 			>
-				{user?.image ? (
+				{/* {user?.image ? (
 					<img
 						src={user.image}
 						alt="profile"
 						className="w-32 h-32 rounded-full"
 					/>
-				) : (
+				) : ( */}
 					<UserCircleIcon className="w-32 h-32 opacity-50" />
-				)}
+				{/* )} */}
 				{isUser ? (
 					<div className="flex flex-col space-y-2 items-center w-full">
 						<h1 className="text-lg">{user?.username}</h1>

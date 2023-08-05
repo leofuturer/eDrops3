@@ -23,7 +23,7 @@ function PostComment({ comment } : {comment: CommentType }) {
 		api.postComment.getPostComments(comment.id as number)
 			.then((res) => {
 				// console.log('Not top-level comments', res.data);
-				setComments(res.data);
+				setComments(res);
 			})
 			.catch((err: AxiosError) => {
 				// console.log(err);
