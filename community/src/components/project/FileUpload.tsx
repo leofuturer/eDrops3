@@ -1,11 +1,11 @@
+import { ProjectFile, api } from "@edroplets/api";
 import { PaperClipIcon } from "@heroicons/react/24/outline";
 import { XMarkIcon } from "@heroicons/react/24/solid";
 import { AxiosError } from "axios";
-import Cookies from "js-cookie";
-import React, { useCallback, useState } from "react";
-import { useDropzone, FileWithPath, FileError } from "react-dropzone";
+import { useState } from "react";
+import { useCookies } from "react-cookie";
+import { FileWithPath, useDropzone } from "react-dropzone";
 import { useNavigate } from "react-router-dom";
-import { ProjectFile } from "../../../../server/src/models";
 
 function FileUpload({
 	handleClose,
@@ -15,6 +15,7 @@ function FileUpload({
 	addFiles: (files: ProjectFile[]) => void;
 }) {
 	const navigate = useNavigate();
+	const [cookies] = useCookies(["userId"]);
 
 	const [files, setFiles] = useState<FileWithPath[]>([]);
 	const { acceptedFiles, fileRejections, getRootProps, getInputProps } =
@@ -40,11 +41,11 @@ function FileUpload({
 	async function handleNext() {
 		// console.log(files);
 		if (files) {
-			const uploadedFiles = await uploadFiles(
-				Cookies.get("userId") as string,
-				files
-			)
-				.then((files) => {
+			const formData = new FormData();
+			files.forEach((file) => {
+				formData.append("community", file);
+			});
+			api.user.uploadProjectFiles(cookies.userId, formData).then((files) => {
 					addFiles(files);
 					return files;
 				})
