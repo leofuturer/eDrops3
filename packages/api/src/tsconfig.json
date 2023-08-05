@@ -2,14 +2,14 @@
 {
   "compilerOptions": {
     "target": "ESNext",
-    "module": "ESNext",
     "moduleResolution": "node",
+    "module": "ESNext",
     "lib": ["ESNext", "dom"],
     "declaration": true,
     "declarationMap": true,
     "sourceMap": true,
     "outDir": "../dist",
-    "rootDir": ".",
+    "rootDirs": [".", "../../../server/src"],
     "strict": true,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
@@ -17,9 +17,6 @@
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "baseUrl": ".",
-    "paths": {
-      "@/*": ["./*"]
-    },
   },
   "references": [
     {

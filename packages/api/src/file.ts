@@ -1,6 +1,6 @@
-import { FileInfo } from "./types";
+import { FileInfo } from "./lib/types";
 import { Resource } from "./lib/resource";
-import request from "./lib/api";
+import { request } from "./lib/api";
 
 class FileResource extends Resource<FileInfo>{
   constructor() {

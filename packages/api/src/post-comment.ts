@@ -1,6 +1,6 @@
 import { request } from "./lib/api";
 import { Resource } from "./lib/resource";
-import { PostComment } from "./types";
+import { PostComment } from "./lib/types";
 
 class PostCommentResource extends Resource<PostComment> {
   constructor() {

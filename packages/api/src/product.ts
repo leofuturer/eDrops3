@@ -1,5 +1,5 @@
 import type { Product } from "shopify-buy";
-import request from "./lib/api";
+import { request } from "./lib/api";
 import { ResourceInterface } from "./lib/resource";
 
 class ProductResource implements Omit<ResourceInterface<Product>, 'create' | 'replace' | 'update' | 'delete'>{

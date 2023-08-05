@@ -1,5 +1,5 @@
 import { request } from "./api";
-import type { Count, DTO, Entity } from "../types/models";
+import type { Count, DTO } from "./types/index";
 
 export interface ResourceInterface<T> {
   baseURL: string;
@@ -11,7 +11,7 @@ export interface ResourceInterface<T> {
   delete(id: string | number): Promise<void>;
 }
 
-export class Resource<T extends Entity> implements ResourceInterface<DTO<T>> {
+export class Resource<T extends object> implements ResourceInterface<DTO<T>> {
   public baseURL: string;
   constructor(baseURL: string) { this.baseURL = baseURL; }
 

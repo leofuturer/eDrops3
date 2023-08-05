@@ -1,5 +1,5 @@
 import request from "./lib/api";
-import type { Project, ProjectFile, ProjectLink } from "./types";
+import type { Project, ProjectFile, ProjectLink } from "./lib/types";
 import { Resource } from "./lib/resource";
 
 class ProjectResource extends Resource<Project> {

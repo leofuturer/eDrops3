@@ -1,5 +1,5 @@
-import type { Address, Count, Customer, DTO, FileInfo, IncludeAddress, IncludeUser, OrderInfo, User, Response, OrderChip } from "./types";
-import request from "./lib/api";
+import type { Address, Count, Customer, DTO, FileInfo, IncludeAddress, IncludeUser, OrderInfo, User, OrderChip } from "./lib/types";
+import { request } from "./lib/api";
 import { Resource } from "./lib/resource";
 
 class CustomerResource extends Resource<Customer> {
@@ -120,7 +120,7 @@ class CustomerResource extends Resource<Customer> {
   }
 
   async downloadFile(id: string, fileId: number, save: boolean = false): Promise<string> {
-    return request<string>(`${this.baseURL}/${id}/files/${fileId}/download`, 'GET', {}).then(async(res) => {
+    return request<string>(`${this.baseURL}/${id}/files/${fileId}/download`, 'GET', {}).then(async (res) => {
       const data = res.data as string;
       // console.log(res);
       if (save) {

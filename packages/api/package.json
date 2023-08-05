@@ -4,10 +4,13 @@
   "description": "",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "clean": "rimraf dist",
-    "build": "npm run clean && tsc --build tsconfig.json"
+    "prebuild": "npm run clean",
+    "build": "tsc --build tsconfig.json",
+    "postbuild": "node postbuild.cjs"
   },
   "files": [
     "dist"
@@ -16,8 +19,17 @@
   "license": "ISC",
   "devDependencies": {
     "@loopback/repository": "^6.1.1",
+    "@rollup/plugin-commonjs": "^25.0.3",
+    "@rollup/plugin-json": "^6.0.0",
+    "@rollup/plugin-node-resolve": "^15.1.0",
+    "@rollup/plugin-typescript": "^11.1.2",
     "@types/js-cookie": "^3.0.3",
+    "@types/json-schema": "^7.0.12",
+    "@types/node": "^20.4.7",
     "@types/shopify-buy": "^2.17.1",
+    "esbuild": "^0.18.17",
+    "rollup": "^3.27.0",
+    "rollup-plugin-dts": "^5.3.1",
     "typescript": "^5.1.6"
   },
   "dependencies": {

@@ -1,6 +1,6 @@
-import type { Admin, DTO, IncludeUser, OrderChip, User } from "./types";
+import type { Admin, DTO, IncludeUser, OrderChip, User } from "./lib/types";
 import { Resource } from "./lib/resource";
-import request from "./lib/api";
+import { request } from "./lib/api";
 
 class AdminResource extends Resource<Admin> {
   constructor() {

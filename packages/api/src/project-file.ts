@@ -1,6 +1,6 @@
 import { projectFiles } from "./serverConfig";
 import { request } from "./lib/api";
-import { DTO, ProjectFile } from "./types";
+import { DTO, ProjectFile } from "./lib/types";
 import { Resource } from "./lib/resource";
 
 class ProjectFileResource extends Resource<ProjectFile> {
