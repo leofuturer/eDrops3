@@ -1,8 +1,7 @@
-import { api } from '@/api';
+import { api, DTO, FoundryWorker, IncludeUser, OrderChip } from '@edroplets/api';
 import { CartContext } from '@/context';
 import { ROLES } from '@/lib/constants/roles';
 import { ROUTES, idRoute } from '@/router/routes';
-import { DTO, FoundryWorker, IncludeUser, OrderChip } from '@/types'
 import { ArrowDownTrayIcon, ChatBubbleOvalLeftEllipsisIcon, UsersIcon } from '@heroicons/react/24/solid';
 import React, { useContext, useEffect, useState } from 'react'
 import { useCookies } from 'react-cookie';
@@ -47,7 +46,7 @@ function ChipOrderList({ chipOrderList }: { chipOrderList: DTO<OrderChip>[] }) {
     const dropdown = document.getElementById(`status-selection-${chipOrderId}`);
     // @ts-expect-error
     const selectedStatus = dropdown.options[dropdown.selectedIndex].value;
-    api.worker.updateChip(cookies.userId, chipOrderId, { status: selectedStatus});
+    api.worker.updateChip(cookies.userId, chipOrderId, { status: selectedStatus });
   }
 
   // TODO: work on option for admin to reassign if needed

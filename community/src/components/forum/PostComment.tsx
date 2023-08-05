@@ -1,12 +1,12 @@
 import { ChevronRightIcon, HandThumbUpIcon } from "@heroicons/react/24/outline";
 import { ArrowUturnLeftIcon } from "@heroicons/react/24/solid";
 import { AxiosError } from "axios";
-import Cookies from "js-cookie";
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { api } from "@edroplets/api";
 import { timeAgo } from "../../lib/time";
-import { CommentType } from "../../lib/types";
+import { PostComment as CommentType } from "@edroplets/api";
+import { useCookies } from "react-cookie";
 
 function PostComment({ comment } : {comment: CommentType }) {
 	const navigate = useNavigate();
@@ -15,6 +15,8 @@ function PostComment({ comment } : {comment: CommentType }) {
 	const [expanded, setExpanded] = useState<boolean>(false);
 
 	const [newComment, setNewComment] = useState<string>("");
+
+	const [cookies] = useCookies(["userId"]);
 
 	// Get all comments under this comment
 	useEffect(() => {
@@ -29,24 +31,17 @@ function PostComment({ comment } : {comment: CommentType }) {
 	}, [comment.id, newComment]);
 
 	function handleReply() {
+		if(!comment.id || !cookies.userId) return;
 		const newPostComment = {
 			content: newComment,
 			author: "",
 			datetime: new Date(),
 			likes: 0,
 			postId: comment.postId,
-			userId: Cookies.get("userId") as string,
+			userId: cookies.userId,
 			top: false,
 		};
-		request(
-			postCommentComments.replace(
-				"id",
-				comment.id ? comment.id.toString() : ""
-			),
-			"POST",
-			newPostComment,
-			true
-		)
+		api.postComment.createPostComment(comment.id, newPostComment)
 			.then((res) => {
 				setNewComment("");
 				// @ts-ignore

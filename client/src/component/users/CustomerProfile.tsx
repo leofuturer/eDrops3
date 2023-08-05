@@ -1,6 +1,5 @@
-import { api } from '@/api';
+import { api, Address, Customer, DTO} from '@edroplets/api';
 import FormGroup from '@/component/form/FormGroup';
-import { Address, Customer, DTO } from '@/types';
 import { Form, Formik } from 'formik';
 import { useEffect, useState } from 'react';
 

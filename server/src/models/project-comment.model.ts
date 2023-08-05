@@ -58,7 +58,7 @@ export class ProjectComment extends Entity {
   @hasMany(() => ProjectComment, {
     through: {model: () => ProjectCommentLink, keyFrom: 'parentId', keyTo: 'childId'},
   })
-  projectComments: ProjectComment[];
+  projectComments?: ProjectComment[];
 
   constructor(data?: Partial<ProjectComment>) {
     super(data);

@@ -1,7 +1,6 @@
-import { api } from '@/api';
+import { api, Address, DTO, FileInfo, OrderChip, OrderInfo, OrderProduct } from '@edroplets/api';
 import { PusherContext } from '@/context';
 import { ROUTES } from '@/router/routes';
-import { Address, DTO, FileInfo, OrderChip, OrderInfo, OrderProduct } from '@/types';
 import { Material } from '@/types/chip';
 import React, { useContext, useEffect, useState } from 'react';
 import { useCookies } from 'react-cookie';

@@ -1,4 +1,4 @@
-import { api } from '@/api';
+import { api } from '@edroplets/api';
 import FormGroup from '@/component/form/FormGroup';
 import { Form, Formik } from 'formik';
 import { useEffect, useState } from 'react';

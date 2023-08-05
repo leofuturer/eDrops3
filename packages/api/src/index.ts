@@ -10,6 +10,7 @@ import { projectComment } from "./project-comment";
 import { user } from "./user";
 import { worker } from "./worker";
 export { request } from "./lib/api";
+export type * from "./lib/types";
 
 type APIEndpoints = {
   product: typeof product;

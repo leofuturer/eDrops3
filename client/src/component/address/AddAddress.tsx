@@ -1,8 +1,7 @@
-import { api } from '@/api';
+import { api, Address, DTO } from '@edroplets/api';
 import FormGroup from '@/component/form/FormGroup';
 import ManageRightLayout from '@/component/layout/ManageRightLayout';
-import { AddressSchema } from '@/schemas/shopify';
-import { Address, DTO } from '@/types';
+import { AddressSchema } from '@edroplets/schemas';
 import { ErrorMessage, Field, FieldProps, Form, Formik } from 'formik';
 
 function AddAddress({ userId, onAdd }: { userId: string, onAdd?: (addr: DTO<Address>) => void }) {

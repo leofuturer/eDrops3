@@ -1,7 +1,7 @@
 import { Field, FieldProps, Form, Formik } from 'formik';
 import { useState } from 'react';
 import * as Yup from 'yup';
-import { api } from '@/api';
+import { api } from '@edroplets/api';
 import MessageLayout from '@/component/layout/MessageLayout';
 
 export function ForgetPass() {

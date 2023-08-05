@@ -1,6 +1,7 @@
 import type { Address, Count, Customer, DTO, FileInfo, IncludeAddress, IncludeUser, OrderInfo, User, OrderChip } from "./lib/types";
 import { request } from "./lib/api";
 import { Resource } from "./lib/resource";
+import { download } from "./lib/download";
 
 class CustomerResource extends Resource<Customer> {
   constructor() {
@@ -124,18 +125,7 @@ class CustomerResource extends Resource<Customer> {
       const data = res.data as string;
       // console.log(res);
       if (save) {
-        const file = await this.getFile(id, fileId);
-        const blob = new File([data], file.fileName, { type: 'application/dxf' })
-        const blobUrl = URL.createObjectURL(blob);
-        const ref = document.createElement('a')
-        ref.href = blobUrl;
-        ref.target = '_blank';
-        ref.download = file.fileName;
-        console.log(ref)
-        document.body.appendChild(ref);
-        ref.click();
-        document.body.removeChild(ref);
-        URL.revokeObjectURL(blobUrl);
+        download(res);
       }
       return data;
     });

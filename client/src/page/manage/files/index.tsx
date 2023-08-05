@@ -1,8 +1,7 @@
-import { api } from '@/api';
+import { api, FileInfo, DTO } from '@edroplets/api';
 import FileList from '@/component/files/FileList';
 import SEO from '@/component/header/seo';
 import ManageRightLayout from '@/component/layout/ManageRightLayout';
-import { DTO, FileInfo } from '@/types';
 import { useEffect, useState } from 'react';
 import { useCookies } from 'react-cookie';
 import { metadata } from './metadata';

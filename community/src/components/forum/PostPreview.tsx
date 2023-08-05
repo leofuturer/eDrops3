@@ -1,8 +1,8 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
-import { PostType, ProjectType } from "../../lib/types";
+import { Post, Project } from "@edroplets/api";
 
-function PostPreview({ post }: { post: PostType }) {
+function PostPreview({ post }: { post: Post }) {
 	return (
 		<NavLink
 			to={`/forum/${post.id}`}

@@ -14,7 +14,7 @@ export const UserSchema = Yup.object().shape({
   customerType: customerTypeSchema,
 });
 
-export const UserSubmitSchema = UserSchema.test('credentialsTaken', 'Username or email already taken', async ({ email, username }, ctx) =>
+export const UserSubmitSchema = UserSchema.test('credentialsTaken', 'Username or email already taken', ({ email, username }, ctx) =>
   api.user.credsTaken(username as string, email as string).then((data) => {
     if (data.emailTaken) return ctx.createError({ path: 'email', message: 'Email already taken' })
     if (data.usernameTaken) return ctx.createError({ path: 'username', message: 'Username already taken' })
@@ -35,7 +35,7 @@ export const AdminEditSchema = Yup.object().shape({
   username: usernameSchema,
 });
 
-export const AdminSubmitSchema = AdminSchema.test('credentialsTaken', 'Username or email already taken', async ({ email, username }, ctx) =>
+export const AdminSubmitSchema = AdminSchema.test('credentialsTaken', 'Username or email already taken', ({ email, username }, ctx) =>
   api.user.credsTaken(username as string, email as string).then((data) => {
     if (data.emailTaken) return ctx.createError({ path: 'email', message: 'Email already taken' })
     if (data.usernameTaken) return ctx.createError({ path: 'username', message: 'Username already taken' })
@@ -54,8 +54,8 @@ export const WorkerSchema = Yup.object().shape({
   confirmPassword: confirmPasswordSchema,
 });
 
-export const WorkerSubmitSchema = WorkerSchema.test('credentialsTaken', 'Username or email already taken', async ({ email, username }, ctx) =>
-  api.user.credsTaken(username as string, email as string).then((data) => {
+export const WorkerSubmitSchema = WorkerSchema.test('credentialsTaken', 'Username or email already taken', ({ email, username }, ctx) =>
+  api.user.credsTaken(username, email).then((data) => {
     if (data.emailTaken) return ctx.createError({ path: 'email', message: 'Email already taken' })
     if (data.usernameTaken) return ctx.createError({ path: 'username', message: 'Username already taken' })
     return true

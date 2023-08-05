@@ -1,5 +1,5 @@
 import { NavLink } from "react-router-dom";
-import { ProjectType } from "../../lib/types";
+import { Project as ProjectType } from "@edroplets/api";
 
 function ProjectCard({ project }: { project: ProjectType }) {
 	return (

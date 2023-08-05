@@ -1,6 +1,6 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
-import { ProjectType } from "../../lib/types";
+import { Project as ProjectType } from "@edroplets/api";
 
 function ProjectPreview({ project }: { project: ProjectType }) {
 	return (

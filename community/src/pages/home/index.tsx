@@ -10,14 +10,14 @@ export function Home() {
 	// useEffect for featured projects
 	useEffect(() => {
 		api.project.getFeatured().then((res) => {
-			setFeaturedProjectList(res.data);
+			setFeaturedProjectList(res);
 		});
 	}, []);
 
 	// useEffect for featured posts
 	useEffect(() => {
 		api.post.getFeatured().then((res) => {
-			setFeaturedPostList(res.data);
+			setFeaturedPostList(res);
 		});
 	}, []);
 

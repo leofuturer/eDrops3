@@ -4,7 +4,7 @@ import Cookies from "js-cookie";
 import React, { useCallback, useState } from "react";
 import { useDropzone, FileWithPath, FileError } from "react-dropzone";
 import { ProjectFile } from "../../../../server/src/models";
-import { uploadFiles } from "@edroplets/api/project-file";
+import { api } from "@edroplets/api";
 import { validateURL } from "../../lib/url";
 
 function AddLink({

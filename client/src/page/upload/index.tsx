@@ -1,14 +1,12 @@
-import { useEffect, useState } from 'react';
-import { redirect, useNavigate } from 'react-router-dom';
-
-import { useCookies } from 'react-cookie';
-import { FileRejection, useDropzone } from 'react-dropzone';
-import { api } from '@/api';
 import SEO from '@/component/header/seo';
 import TwoChoiceModal from '@/component/modal/TwoChoiceModal';
-import { metadata } from './metadata';
-import { DTO, FileInfo } from '@/types';
 import { ROUTES, idRoute } from '@/router/routes';
+import { DTO, FileInfo, api } from '@edroplets/api';
+import { useEffect, useState } from 'react';
+import { useCookies } from 'react-cookie';
+import { FileRejection, useDropzone } from 'react-dropzone';
+import { redirect, useNavigate } from 'react-router-dom';
+import { metadata } from './metadata';
 
 function Upload() {
   const [file, setFile] = useState<File | undefined>(undefined);

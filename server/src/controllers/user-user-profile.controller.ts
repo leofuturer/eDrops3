@@ -26,7 +26,7 @@ export class UserUserProfileController {
     @repository(UserRepository) protected userRepository: UserRepository,
   ) { }
 
-  @get('/users/{id}/userProfile', {
+  @get('/users/{id}/user-profile', {
     responses: {
       '200': {
         description: 'User has one UserProfile',
@@ -45,7 +45,7 @@ export class UserUserProfileController {
     return this.userRepository.userProfile(id).get(filter);
   }
 
-  @post('/users/{id}/userProfile', {
+  @post('/users/{id}/user-profile', {
     responses: {
       '200': {
         description: 'User model instance',
@@ -70,7 +70,7 @@ export class UserUserProfileController {
     return this.userRepository.userProfile(id).create(userProfile);
   }
 
-  @patch('/users/{id}/userProfile', {
+  @patch('/users/{id}/user-profile', {
     responses: {
       '200': {
         description: 'User.UserProfile PATCH success count',
@@ -93,7 +93,7 @@ export class UserUserProfileController {
     return this.userRepository.userProfile(id).patch(userProfile, where);
   }
 
-  @del('/users/{id}/userProfile', {
+  @del('/users/{id}/user-profile', {
     responses: {
       '200': {
         description: 'User.UserProfile DELETE success count',

@@ -8,32 +8,32 @@ import { AxiosError } from "axios";
 import Cookies from "js-cookie";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { api } from "@edroplets/api";
-import { PostType, ProjectType } from "../../lib/types";
+import { api, Post as PostType, Project as ProjectType } from "@edroplets/api";
 import { request } from "@edroplets/api";
+import { useCookies } from "react-cookie";
 
 export function NewForum() {
 	const [title, setTitle] = useState("");
 	const [content, setContent] = useState("");
 
+	const [cookies] = useCookies(["userId"]);
+
 	const navigate = useNavigate();
 
 	function handlePost() {
-		const data: Partial<PostType> = {
+		if (!cookies.userId) { navigate("/login"); return; }
+		const data: PostType = {
 			title,
 			content,
 			author: "",
 			datetime: new Date(),
 			likes: 0,
+			comments: 0
 			// dislikes: 0,
 		};
 		// console.log(data);
-		request(
-			userPosts.replace("id", Cookies.get("userId") as string),
-			"POST",
-			data,
-		)
-			.then((res) => navigate(`/forum/${res.data.id}`))
+		api.user.createPost(cookies.userId, data)
+			.then((res) => navigate(`/forum/${res.id}`))
 			.catch((err: AxiosError) => {
 				if (err.response?.status === 401) {
 					navigate("/login");

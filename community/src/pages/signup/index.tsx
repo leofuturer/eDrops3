@@ -1,10 +1,10 @@
 import React, { useState } from "react";
-import { Form, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { api } from "@edroplets/api";
 // import { SignupInfo } from "../lib/types";
-import { Address, Customer, DTO, User } from "@edroplets/api/lib/models";
-import { Formik } from "formik";
-import { UserSchema, UserSubmitSchema } from "@/schemas";
+import { Address, Customer, DTO, User } from "@edroplets/api";
+import { Formik, Form, Field } from "formik";
+import { UserSchema, UserSubmitSchema } from "@edroplets/schemas";
 import { ValidationError } from "yup";
 
 export function Signup() {
@@ -60,6 +60,10 @@ export function Signup() {
 					)}
 				>
 					<Form className="flex flex-col space-y-2">
+						<Field name="email" type="email" placeholder="Email" className="w-full h-8 p-2 border-2 rounded-md" />
+						<Field name="username" type="text" placeholder="Username" className="w-full h-8 p-2 border-2 rounded-md" />
+						<Field name="password" type="password" placeholder="Password" className="w-full h-8 p-2 border-2 rounded-md" />
+						<Field name="confirmPassword" type="password" placeholder="Confirm Password" className="w-full h-8 p-2 border-2 rounded-md" />
 					</Form>
 				</Formik>
 				{/* <form
