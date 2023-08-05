@@ -1,6 +1,6 @@
-import type { DTO, FoundryWorker, IncludeUser, OrderChip, User } from "./types/models";
+import type { DTO, FoundryWorker, IncludeUser, OrderChip, User } from "./lib/types";
 import { Resource } from "./lib/resource";
-import request from "./lib/api";
+import { request } from "./lib/api";
 
 class WorkerResource extends Resource<FoundryWorker> {
   constructor() {

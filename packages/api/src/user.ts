@@ -1,4 +1,4 @@
-import type { DTO, FileInfo, Post, Project, ProjectFile, User } from "./types/models";
+import type { DTO, FileInfo, Post, Project, ProjectFile, User } from "./lib/types";
 import request from "./lib/api";
 import { Resource } from "./lib/resource";
 

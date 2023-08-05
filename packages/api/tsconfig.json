@@ -10,7 +10,8 @@
       "path": "./src",
     },
     {
-      "path": "../../server/src"
+      "path": "../../server/src",
+      "prepend": true
     }
   ]
 }

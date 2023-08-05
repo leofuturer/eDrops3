@@ -1,4 +1,4 @@
-import { Post } from "./types";
+import { Post } from "./lib/types";
 import { Resource } from "./lib/resource";
 import { request } from "./lib/api";
 

@@ -38,5 +38,3 @@ export const api: APIEndpoints = {
   post,
   postComment,
 };
-
-export * from "./types/models";

@@ -5,17 +5,20 @@
     "experimentalDecorators": true,
     "forceConsistentCasingInFileNames": true,
     "outDir": "../../packages/api/dist",
-    "rootDirs": ["../../packages/api/src", "."],
+    "rootDir": ".",
+    "declaration": true,
+    "declarationMap": true,
     "emitDeclarationOnly": true,
     "composite": true,
     "types": [
       "node",
       "@types/node",
-      "@types/mocha"
+      "@types/mocha",
+      "@loopback/repository"
     ]
   },
   "include": [
     "./models",
-    "./lib/types"
+    "./lib/types/index.ts"
   ]
 }
