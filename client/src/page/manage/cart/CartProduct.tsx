@@ -2,7 +2,7 @@ import _ from 'lodash';
 import { useCallback, useContext, useEffect, useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import Loading from '@/component/ui/Loading';
-import { DTO, OrderProduct } from '@/types';
+import { DTO, OrderProduct } from '@edroplets/api';
 import { ROUTES, idRoute } from '@/router/routes';
 import { CartContext } from '@/context';
 

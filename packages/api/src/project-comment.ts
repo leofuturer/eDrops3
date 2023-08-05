@@ -7,8 +7,16 @@ class ProjectCommentResource extends Resource<ProjectComment> {
     super("/project-comments");
   }
 
-  async getProjectComments(id: string) {
-    return request<ProjectComment[]>(`${this.baseURL}/${id}/project-comments`, "GET", {});
+  async getProjectComments(id: typeof ProjectComment.prototype.id) {
+    return request<ProjectComment[]>(`${this.baseURL}/${id}/project-comments`, "GET", {}).then(
+      (res) => res.data
+    );
+  }
+
+  async createProjectComment(id: typeof ProjectComment.prototype.id, data: ProjectComment) {
+    return request<ProjectComment>(`${this.baseURL}/${id}/project-comments`, "POST", data).then(
+      (res) => res.data
+    );
   }
 }
 

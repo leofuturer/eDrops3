@@ -1,7 +1,7 @@
 import { ROUTES, idRoute } from '@/router/routes';
 import { useContext } from 'react';
 import { CartContext } from '@/context/CartContext';
-import { DTO, OrderInfo } from '@/types';
+import { DTO, OrderInfo } from '@edroplets/api';
 import { SERVICE_EMAIL } from '@/lib/constants/misc';
 import { useCookies } from 'react-cookie';
 import { ROLES } from '@/lib/constants/roles';

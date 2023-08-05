@@ -1,8 +1,7 @@
-import { api } from '@/api';
+import { api, DTO, OrderInfo } from '@edroplets/api';
 import SEO from '@/component/header/seo';
 import ManageRightLayout from '@/component/layout/ManageRightLayout';
 import { OrderList } from '@/component/orders/OrderList';
-import { DTO, OrderInfo } from '@/types';
 import { useEffect, useState } from 'react';
 import { useCookies } from 'react-cookie';
 import { metadata } from './metadata';

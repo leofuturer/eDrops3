@@ -4,6 +4,7 @@ import { MagnifyingGlassIcon, PlusIcon } from "@heroicons/react/24/solid";
 import { debounce } from "lodash";
 import React, { useEffect, useMemo, useState } from "react";
 import { NavLink } from "react-router-dom";
+import { api, Post } from "@edroplets/api";
 
 export function Forum() {
 	const [postList, setPostList] = useState<Post[]>([]);
@@ -36,8 +37,8 @@ export function Forum() {
 				},
 			};
 		}
-		request(posts, "GET", filter).then((res) => {
-			setPostList(res.data);
+		api.post.getAll().then((res) => {
+			setPostList(res);
 		});
 	}, [search]);
 
@@ -103,19 +104,17 @@ export function Forum() {
 			<div className="flex flex-col px-10 mt-20">
 				<div className="flex flex-col sticky top-20 space-y-4">
 					<div
-						className={`py-2 px-4 justify-center items-center rounded-3xl ${
-							feedType === "Featured"
+						className={`py-2 px-4 justify-center items-center rounded-3xl ${feedType === "Featured"
 								? "bg-sky-800 text-white"
 								: ""
-						}`}
+							}`}
 						onClick={() => setFeedType("Featured")}
 					>
 						<p className="text-2xl text-center">Featured</p>
 					</div>
 					<div
-						className={`py-2 px-4 justify-center items-center rounded-3xl ${
-							feedType === "New" ? "bg-sky-800 text-white" : ""
-						}`}
+						className={`py-2 px-4 justify-center items-center rounded-3xl ${feedType === "New" ? "bg-sky-800 text-white" : ""
+							}`}
 						onClick={() => setFeedType("New")}
 					>
 						<p className="text-2xl text-center">New</p>

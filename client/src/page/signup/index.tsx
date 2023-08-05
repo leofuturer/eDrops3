@@ -2,11 +2,10 @@ import { ErrorMessage, Field, Form, Formik, FormikConfig } from 'formik';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ValidationError } from 'yup';
-import { api } from '@/api';
+import { api, Address, Customer, User, DTO } from '@edroplets/api';
 import FormGroup from '@/component/form/FormGroup';
 import SEO from '@/component/header/seo';
-import { UserSchema, UserSubmitSchema } from '@/schemas';
-import { Address, Customer, User, DTO } from '@/types';
+import { UserSchema, UserSubmitSchema } from '@edroplets/schemas';
 import { metadata } from './metadata';
 import { ROUTES } from '@/router/routes';
 

@@ -5,7 +5,7 @@ import { PlusIcon } from "@heroicons/react/24/solid";
 import { debounce } from "lodash";
 import React, { useEffect, useMemo, useState } from "react";
 import { NavLink } from "react-router-dom";
-import { ProjectType } from "@/lib/types";
+import { api, Project as ProjectType} from "@edroplets/api";
 
 export function Projects() {
 	const [projectList, setProjectList] = useState<ProjectType[]>([]);
@@ -39,8 +39,8 @@ export function Projects() {
 				},
 			};
 		}
-		request(projects, "GET", filter).then((res) => {
-			setProjectList(res.data);
+		api.project.getAll().then((res) => {
+			setProjectList(res);
 		});
 	}, [search]);
 

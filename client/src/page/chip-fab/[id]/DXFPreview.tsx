@@ -1,7 +1,7 @@
 import { Helper, config } from 'dxf';
 import { useEffect, useState } from 'react';
 import { useCookies } from 'react-cookie';
-import { api } from '@/api';
+import { api } from '@edroplets/api';
 
 function DXFPreview({ fileInfo }: { fileInfo: any }) {
   const [svg, setSvg] = useState('');

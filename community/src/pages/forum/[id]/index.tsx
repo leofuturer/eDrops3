@@ -10,11 +10,11 @@ import { AxiosError } from "axios";
 import Cookies from "js-cookie";
 import { useCallback, useEffect, useState } from "react";
 import { Link, NavLink, useNavigate, useParams } from "react-router-dom";
-import { api } from "@edroplets/api";
+import { api, Post as PostType, PostComment as CommentType } from "@edroplets/api";
 import { timeAgo } from "@/lib/time";
-import { CommentType, PostType } from "@/lib/types";
 import PostComment from "@/components/forum/PostComment";
-import {request} from "@edroplets/api";
+import { request } from "@edroplets/api";
+import { useCookies } from "react-cookie";
 
 export function Post() {
 	const { id } = useParams();
@@ -29,99 +29,86 @@ export function Post() {
 	const [newComment, setNewComment] = useState<string>("");
 	const [comments, setComments] = useState<CommentType[]>([]);
 
+	const [cookies] = useCookies(["userId"]);
+
 	// Fetch current post and set loading to false after fetch
 	useEffect(() => {
-		request(post.replace("id", id as string), "GET", {}).then(
-			(res) => {
-				setCurrentPost(res.data);
+		if (id) {
+			api.post.get(id).then((res) => {
+				setCurrentPost(res);
 				setLoading(false);
-			}
-		);
+			});
+		}
+		else {
+			navigate("/forum");
+		}
 	}, [id]);
 
 	// Fetch comments and sort based on time
 	useEffect(() => {
-		request(
-			postComments.replace("id", id as string),
-			"GET",
-			{},
-		).then((res) => {
-			// console.log("Top-level comments", res.data);
-			const comments: CommentType[] = res.data;
-			const sortedComments = comments.sort((a, b) =>
-				a.datetime < b.datetime ? 1 : -1
-			);
-			setComments(sortedComments);
-		});
+		if (id) {
+			api.post.getPostComments(parseInt(id)).then((comments) => {
+				// console.log("Top-level comments", res.data);
+				const sortedComments = comments.sort((a, b) =>
+					a.datetime < b.datetime ? 1 : -1
+				);
+				setComments(sortedComments);
+			});
+		}
 	}, [id, newComment]);
 
 	// Check if post is saved initially
 	useEffect(() => {
-		if (currentPost.id) {
-			checkReact(
-				"Post",
-				"Save",
-				Cookies.get("userId") as string,
-				currentPost.id
-			).then((res: boolean) => {
-				setSaved(res);
+		if (currentPost.id && cookies.userId) {
+			api.user.getSavedPost(cookies.userId, currentPost.id).then((res) => {
+				setSaved(!!res);
 			});
 		}
-	}, [currentPost]);
+	}, [currentPost, cookies.userId]);
 
 	// Check if post is liked initially
 	useEffect(() => {
-		if (currentPost.id) {
-			checkReact(
-				"Post",
-				"Like",
-				Cookies.get("userId") as string,
-				currentPost.id
-			).then((res: boolean) => {
-				setLiked(res);
+		if (currentPost.id && cookies.userId) {
+			api.user.getLikedPost(cookies.userId, currentPost.id).then((res) => {
+				setLiked(!!res);
 			});
 		}
-	}, [currentPost]);
+	}, [currentPost, cookies.userId]);
 
 	function handleSave() {
-		react(
-			"Post",
-			"Save",
-			Cookies.get("userId") as string,
-			currentPost.id as number
-		)
-			.then((res: boolean) => setSaved(res))
-			.catch((err: AxiosError) => {
-				if (err.response?.status === 401) {
-					navigate("/login");
-				}
-				// console.log(err);
-			});
+		if (cookies.userId) {
+			api.user.savePost(cookies.userId, currentPost.id as number)
+				.then((res) => setSaved(res))
+				.catch((err: AxiosError) => {
+					if (err.response?.status === 401) {
+						navigate("/login");
+					}
+					// console.log(err);
+				});
+		}
 	}
 
 	function handleLike() {
-		react(
-			"Post",
-			"Like",
-			Cookies.get("userId") as string,
-			currentPost.id as number
-		)
-			.then((res: boolean) => {
-				setLiked(res);
-				currentPost.likes = res
-					? currentPost.likes + 1
-					: currentPost.likes - 1;
-			})
-			.catch((err: AxiosError) => {
-				if (err.response?.status === 401) {
-					navigate("/login");
-				}
-				// console.log(err);
-			});
+		if (cookies.userId) {
+			api.user.likePost(cookies.userId, currentPost.id as number)
+				.then((res) => {
+					setLiked(res);
+					currentPost.likes = res
+						? currentPost.likes + 1
+						: currentPost.likes - 1;
+				})
+				.catch((err: AxiosError) => {
+					if (err.response?.status === 401) {
+						navigate("/login");
+					}
+					// console.log(err);
+				});
+		}
 	}
 
 	function handleComment() {
-		const newPostComment = {
+		if(!id) return;
+		const newPostComment: CommentType = {
 			content: newComment,
 			author: "",
 			datetime: new Date(),
@@ -129,12 +116,7 @@ export function Post() {
 			userId: Cookies.get("userId") as string,
 			top: true,
 		};
-		request(
-			postComments.replace("id", id ?? ""),
-			"POST",
-			newPostComment,
-			true
-		)
+		api.post.addPostComment(parseInt(id), newPostComment)
 			.then((res) => {
 				setNewComment("");
 				currentPost.comments = currentPost.comments + 1;
@@ -166,9 +148,8 @@ export function Post() {
 									{currentPost?.title}
 								</h1>
 								<BookmarkIcon
-									className={`w-10 h-10 cursor-pointer ${
-										saved ? "fill-black" : ""
-									}`}
+									className={`w-10 h-10 cursor-pointer ${saved ? "fill-black" : ""
+										}`}
 									onClick={handleSave}
 								/>
 							</div>
@@ -187,9 +168,8 @@ export function Post() {
 								onClick={handleLike}
 							>
 								<HandThumbUpIcon
-									className={`w-6 h-6 cursor-pointer ${
-										liked ? "fill-black" : ""
-									}`}
+									className={`w-6 h-6 cursor-pointer ${liked ? "fill-black" : ""
+										}`}
 								/>
 								<p className="text-md">{currentPost?.likes}</p>
 							</div>
@@ -214,9 +194,8 @@ export function Post() {
 						</div>
 						{expanded && (
 							<div
-								className={`bg-white p-2 pl-4 flex flex-col space-y-2 ${
-									expanded ? "transition-all" : ""
-								} ease-in-out duration-500`}
+								className={`bg-white p-2 pl-4 flex flex-col space-y-2 ${expanded ? "transition-all" : ""
+									} ease-in-out duration-500`}
 							>
 								<textarea
 									title="reply"

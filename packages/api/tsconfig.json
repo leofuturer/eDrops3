@@ -7,11 +7,10 @@
   },
   "references": [
     {
-      "path": "./src",
+      "path": "./src/tsconfig.build.json",
     },
     {
-      "path": "../../server/src",
-      "prepend": true
+      "path": "../../server/src/tsconfig.build.json",
     }
   ]
 }

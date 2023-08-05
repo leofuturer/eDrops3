@@ -1,10 +1,9 @@
-import { api } from '@/api';
+import { api, Address, Customer, DTO, User } from '@edroplets/api';
 import FormGroup from '@/component/form/FormGroup';
 import ManageRightLayout from '@/component/layout/ManageRightLayout';
 import { formatPhoneNumber } from '@/lib/phone';
 import { ROUTES } from '@/router/routes';
-import { UserSchema, UserSubmitSchema } from '@/schemas';
-import { Address, Customer, DTO, User } from '@/types';
+import { UserSchema, UserSubmitSchema } from '@edroplets/schemas';
 import { Form, Formik } from 'formik';
 import { useState } from 'react';
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';

@@ -1,11 +1,10 @@
 import { Form, Formik } from 'formik';
 import { useEffect, useState } from 'react';
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
-import { api } from '@/api';
+import { api,Admin, User, DTO } from '@edroplets/api';
 import FormGroup from '@/component/form/FormGroup';
 import ManageRightLayout from '@/component/layout/ManageRightLayout';
-import { AdminEditSchema, AdminSchema, AdminSubmitSchema } from '@/schemas';
-import { Admin, User, DTO } from '@/types';
+import { AdminEditSchema, AdminSchema, AdminSubmitSchema } from '@edroplets/schemas';
 import { formatPhoneNumber } from '@/lib/phone';
 import { ValidationError } from 'yup';
 import { ROUTES } from '@/router/routes';

@@ -1,9 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { api } from '@/api';
+import { api, Customer, IncludeUser, DTO } from '@edroplets/api';
 import ManageRightLayout from '@/component/layout/ManageRightLayout';
 import DeleteModal from '@/component/modal/DeleteModal';
-import { Customer, IncludeUser, DTO } from '@/types';
 import { ROUTES, idRoute } from '@/router/routes';
 import { BanknotesIcon, CircleStackIcon, CurrencyDollarIcon, PencilSquareIcon, TrashIcon } from '@heroicons/react/24/solid';
 

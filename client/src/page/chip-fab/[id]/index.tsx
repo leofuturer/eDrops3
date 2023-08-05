@@ -3,10 +3,9 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { Product } from 'shopify-buy'; // TODO: waiting on @types/shopify-buy to be updated
 import Loading from '@/component/ui/Loading';
 import { CartContext } from '@/context/CartContext';
-import { DTO, FileInfo } from '@/types';
 import { ewodFabServiceId } from '@/lib/constants/products';
 import { ROUTES } from '@/router/routes';
-import { api } from '@/api';
+import { api, DTO, FileInfo } from '@edroplets/api';
 import { Material } from '@/types/chip';
 import { useCookies } from 'react-cookie';
 const DXFPreview = React.lazy(() => import('./DXFPreview'));

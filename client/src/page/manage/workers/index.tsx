@@ -1,9 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { api } from '@/api';
+import { api, DTO, FoundryWorker, IncludeUser } from '@edroplets/api';
 import ManageRightLayout from '@/component/layout/ManageRightLayout';
 import DeleteModal from '@/component/modal/DeleteModal';
-import { DTO, FoundryWorker, IncludeUser } from '@/types';
 import { ROUTES, idRoute } from '@/router/routes';
 import { CpuChipIcon, PencilSquareIcon, TrashIcon } from '@heroicons/react/24/solid';
 

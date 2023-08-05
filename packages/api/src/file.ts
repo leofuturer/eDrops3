@@ -1,6 +1,7 @@
 import { FileInfo } from "./lib/types";
 import { Resource } from "./lib/resource";
 import { request } from "./lib/api";
+import { download } from "./lib/download";
 
 class FileResource extends Resource<FileInfo>{
   constructor() {
@@ -8,9 +9,9 @@ class FileResource extends Resource<FileInfo>{
   }
 
   async download(id: number): Promise<void> {
-    // request(`${this.baseURL}/${id}/download`, 'GET', {});
-
-    window.location.href = `/api/${this.baseURL}/${id}/download`;
+    request<string>(`${this.baseURL}/${id}/download`, 'GET', {}).then((res) => {
+      download(res);
+    })
   }
 }
 

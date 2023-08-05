@@ -10,13 +10,10 @@ import { AxiosError } from "axios";
 import Cookies from "js-cookie";
 import { useEffect, useState } from "react";
 import { Link, NavLink, useNavigate, useParams } from "react-router-dom";
-import { api } from "@edroplets/api";
-import { downloadFile } from "@edroplets/api/project-file";
-import { checkReact, react } from "@edroplets/api/react";
-import { project, projectComments } from "@edroplets/api/serverConfig";
 import { timeAgo } from "../../lib/time";
-import { CommentType, ProjectType } from "../../lib/types";
+import { api, ProjectComment as CommentType, Project as ProjectType } from "@edroplets/api";
 import ProjectComment from "./ProjectComment";
+import { useCookies } from "react-cookie";
 
 function Project() {
 	const { id } = useParams();
@@ -33,26 +30,22 @@ function Project() {
 	const [newComment, setNewComment] = useState<string>("");
 	const [comments, setComments] = useState<CommentType[]>([]);
 
+	const [cookies] = useCookies(["userId"]);
+
 	// Fetch current project and set loading to false after fetch
 	useEffect(() => {
-		request(project.replace("id", id as string), "GET", {}, false).then(
-			(res) => {
-				// console.log(res);
-				setCurrentProject(res.data);
-				setLoading(false);
-			}
-		);
+		if (!id) { navigate("/projects"); return; }
+		api.project.get(id).then((res) => {
+			// console.log(res);
+			setCurrentProject(res);
+			setLoading(false);
+		});
 	}, [id]);
 
 	// Fetch comments and sort based on time
 	useEffect(() => {
-		request(
-			projectComments.replace("id", id as string),
-			"GET",
-			{},
-			false
-		).then((res) => {
-			const comments: CommentType[] = res.data;
+		if (!id) { navigate("/projects"); return; }
+		api.project.getProjectComments(parseInt(id)).then((comments) => {
 			const sortedComments = comments.sort((a, b) =>
 				a.datetime < b.datetime ? 1 : -1
 			);
@@ -62,40 +55,26 @@ function Project() {
 
 	// Check if project is saved initially
 	useEffect(() => {
-		if (currentProject.id) {
-			checkReact(
-				"Project",
-				"Save",
-				Cookies.get("userId") as string,
-				currentProject.id
-			).then((res: boolean) => {
-				setSaved(res);
+		if (currentProject.id && cookies.userId) {
+			api.user.getSavedProject(cookies.userId, currentProject.id).then((res) => {
+				setSaved(!!res);
 			});
 		}
-	}, [currentProject]);
+	}, [currentProject, cookies.userId]);
 
 	// Check if project is liked initially
 	useEffect(() => {
-		if (currentProject.id) {
-			checkReact(
-				"Project",
-				"Like",
-				Cookies.get("userId") as string,
-				currentProject.id
-			).then((res: boolean) => {
-				setLiked(res);
+		if (currentProject.id && cookies.userId) {
+			api.user.getLikedProject(cookies.userId, currentProject.id).then((res) => {
+				setLiked(!!res);
 			});
 		}
-	}, [currentProject]);
+	}, [currentProject, cookies.userId]);
 
 	function handleSave() {
-		react(
-			"Project",
-			"Save",
-			Cookies.get("userId") as string,
-			currentProject.id as number
-		)
-			.then((res: boolean) => setSaved(res))
+		if (!cookies.userId) { navigate("/login"); return; }
+		api.user.saveProject(cookies.userId, currentProject.id as number)
+			.then((res) => setSaved(res))
 			.catch((err: AxiosError) => {
 				if (err.message === "No access token found") {
 					navigate("/login");
@@ -105,13 +84,9 @@ function Project() {
 	}
 
 	function handleLike() {
-		react(
-			"Project",
-			"Like",
-			Cookies.get("userId") as string,
-			currentProject.id as number
-		)
-			.then((res: boolean) => {
+		if (!cookies.userId) { navigate("/login"); return; }
+		api.user.likeProject(cookies.userId, currentProject.id as number)
+			.then((res) => {
 				setLiked(res);
 				currentProject.likes = res
 					? currentProject.likes + 1
@@ -126,20 +101,15 @@ function Project() {
 	}
 
 	function handleComment() {
-		const newPostComment = {
+		const newProjectComment: CommentType = {
 			content: newComment,
 			author: "",
 			datetime: new Date(),
 			likes: 0,
-			userId: Cookies.get("userId") as string,
+			userId: cookies.userId,
 			top: true,
 		};
-		request(
-			projectComments.replace("id", id ?? ""),
-			"POST",
-			newPostComment,
-			true
-		)
+		api.project.addProjectComment(currentProject.id, newProjectComment)
 			.then((res) => {
 				setNewComment("");
 				currentProject.comments = currentProject.comments + 1;
@@ -154,7 +124,7 @@ function Project() {
 	}
 
 	function handleDownload(fileId: number) {
-		downloadFile(Cookies.get("userId") as string, fileId);
+		api.user.downloadProjectFile(cookies.userId, fileId);
 	}
 
 	const projectFiles = currentProject?.projectFiles?.map((projectFile) => {
@@ -198,9 +168,8 @@ function Project() {
 									{currentProject?.title}
 								</h1>
 								<BookmarkIcon
-									className={`w-10 h-10 cursor-pointer ${
-										saved ? "fill-black" : ""
-									}`}
+									className={`w-10 h-10 cursor-pointer ${saved ? "fill-black" : ""
+										}`}
 									onClick={handleSave}
 								/>
 							</div>
@@ -235,9 +204,8 @@ function Project() {
 								onClick={handleLike}
 							>
 								<HandThumbUpIcon
-									className={`w-6 h-6 cursor-pointer ${
-										liked ? "fill-black" : ""
-									}`}
+									className={`w-6 h-6 cursor-pointer ${liked ? "fill-black" : ""
+										}`}
 								/>
 								<p className="text-md">
 									{currentProject?.likes}
@@ -266,9 +234,8 @@ function Project() {
 						</div>
 						{expanded && (
 							<div
-								className={`bg-white p-2 pl-4 flex flex-col space-y-2 ${
-									expanded ? "transition-all" : ""
-								} ease-in-out duration-500`}
+								className={`bg-white p-2 pl-4 flex flex-col space-y-2 ${expanded ? "transition-all" : ""
+									} ease-in-out duration-500`}
 							>
 								<textarea
 									title="reply"

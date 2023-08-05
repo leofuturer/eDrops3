@@ -1,9 +1,8 @@
-import { api } from '@/api';
+import { api, Address, DTO } from '@edroplets/api';
 import FormGroup from '@/component/form/FormGroup';
 import ManageRightLayout from '@/component/layout/ManageRightLayout';
 import { ROUTES } from '@/router/routes';
-import { AddressSchema } from '@/schemas/shopify';
-import { Address, DTO } from '@/types';
+import { AddressSchema } from '@edroplets/schemas';
 import { Form, Formik } from 'formik';
 import { useEffect, useState } from 'react';
 import { useCookies } from 'react-cookie';

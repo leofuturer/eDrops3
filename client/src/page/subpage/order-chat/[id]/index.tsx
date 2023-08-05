@@ -3,8 +3,7 @@ import { useContext, useEffect, useState } from 'react';
 import { useCookies } from 'react-cookie';
 import { useNavigate, useParams } from 'react-router-dom';
 import { PusherContext } from '@/context/PusherContext';
-import { api } from '@/api';
-import { DTO, OrderMessage } from '@/types';
+import { api, DTO, OrderMessage  } from '@edroplets/api';
 import { ROLES } from '@/lib/constants/roles';
 
 export function ChatBox({ orderId }: { orderId: number }) {

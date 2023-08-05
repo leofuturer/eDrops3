@@ -1,9 +1,8 @@
-import { api } from '@/api';
+import { api, DTO, OrderChip } from '@edroplets/api';
 import ChipOrderList from '@/component/chip-orders/ChipOrderList';
 import SEO from '@/component/header/seo';
 import ManageRightLayout from '@/component/layout/ManageRightLayout';
 import { ROLES } from '@/lib/constants/roles';
-import { DTO, OrderChip } from '@/types';
 import { useEffect, useState } from 'react';
 import { useCookies } from 'react-cookie';
 import { metadata } from '../orders/metadata';

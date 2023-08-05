@@ -1,3 +1,6 @@
+import AddLink from "@/components/project/AddLink";
+import FileUpload from "@/components/project/FileUpload";
+import { Project, ProjectFile, api } from "@edroplets/api";
 import {
 	LinkIcon,
 	PaperClipIcon,
@@ -6,12 +9,8 @@ import {
 import { AxiosError } from "axios";
 import Cookies from "js-cookie";
 import { useState } from "react";
+import { useCookies } from "react-cookie";
 import { useNavigate } from "react-router-dom";
-import { ProjectFile } from "../../../../../server/src/models";
-import { api } from "@edroplets/api";
-import AddLink from "../../../components/project/AddLink";
-import FileUpload from "../../../components/project/FileUpload";
-import { ProjectType } from "../../../lib/types";
 
 export function NewProject() {
 	const [title, setTitle] = useState("");
@@ -20,11 +19,12 @@ export function NewProject() {
 	const [showModal, setShowModal] = useState(false);
 	const [files, setFiles] = useState<ProjectFile[]>([]);
 	const [links, setLinks] = useState<string[]>([]);
+	const [cookies] = useCookies(["userId"]);
 
 	const navigate = useNavigate();
 
 	function handlePost() {
-		const data: Partial<ProjectType> = {
+		const data: Project = {
 			title,
 			content,
 			author: "",
@@ -34,25 +34,21 @@ export function NewProject() {
 			// dislikes: 0,
 		};
 		// console.log(data);
-		request(
-			userProjects.replace("id", Cookies.get("userId") as string),
-			"POST",
-			data,
-		).then(async (res) => {
+		api.user.createProject(Cookies.get("userId") as string, data).then(async (res) => {
 			// console.log(res);
 			// Link ProjectFile instances to Project
-			const projectId = res.data.id;
+			const projectId = res.id;
 			const filePromises = files.map((file) => {
-				api.project.linkProjectFile(Cookies.get("userId") as string, projectId, file.id as number);
+				api.project.linkProjectFile(Cookies.get("userId") as string, projectId as number, file.id as number);
 			});
 			await Promise.all(filePromises);
 			// Add links to Project using ProjectLink
 			const linkPromises = links.map((link) => {
-				api.project.addProjectLink(projectId, link);
+				api.project.addProjectLink(projectId as number, link);
 			});
 			await Promise.all(linkPromises);
 			// Navigate to project page
-			navigate(`/project/${res.data.id}`);
+			navigate(`/project/${res.id}`);
 		})
 			.catch((err: AxiosError) => {
 				if (err.response?.status === 401) {
@@ -88,7 +84,7 @@ export function NewProject() {
 	}
 
 	function handleDownload(file: ProjectFile) {
-		downloadFile(Cookies.get("userId") as string, file.id as number);
+		api.user.downloadProjectFile(cookies.userId, file.id as number);
 	}
 
 	return (

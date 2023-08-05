@@ -1,11 +1,10 @@
 import { ROLES } from '@/lib/constants/roles';
 import { useCookies } from 'react-cookie';
-import { DTO, FileInfo } from '@/types';
 import { padZeroes } from '@/lib/time';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ROUTES, idRoute } from '@/router/routes';
-import { api } from '@/api';
+import { api, DTO, FileInfo } from '@edroplets/api';
 import DeleteModal from '../modal/DeleteModal';
 import { ArrowDownTrayIcon, ShoppingCartIcon, TrashIcon } from '@heroicons/react/24/solid';
 
