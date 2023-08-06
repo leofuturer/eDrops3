@@ -20,7 +20,7 @@ class OrderResource extends Resource<OrderInfo> {
     return request<DTO<OrderProduct>>(`${this.baseURL}/${id}/order-products`, 'POST', data).then((res) => res.data);
   }
 
-  async updateProductOrder(id: number, orderProductId: number, data: DTO<OrderChip>): Promise<Count> {
+  async updateProductOrder(id: number, orderProductId: number, data: DTO<OrderProduct>): Promise<Count> {
     return request<Count>(`${this.baseURL}/${id}/order-products/${orderProductId}`, 'PATCH', data).then((res) => res.data);
   }
 

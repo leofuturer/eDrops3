@@ -38,7 +38,7 @@ export function ChipOrder() {
       navigate(ROUTES.ManageFiles);
       return;
     }
-    api.customer.getFile(cookies.userId, id).then((fileInfo) => {
+    api.customer.getFile(cookies.userId, parseInt(id)).then((fileInfo) => {
       setCustomAttrs(attrs => ({ ...attrs, fileInfo }));
     });
   }, [id]);
