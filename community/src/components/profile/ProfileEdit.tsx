@@ -1,7 +1,7 @@
 import { PencilIcon, UserCircleIcon } from '@heroicons/react/24/solid';
-import { api, DTO, UserProfile } from "@edroplets/api";
+import { api, DTO, User } from "@edroplets/api";
 
-function ProfileEdit({ user }: { user: DTO<UserProfile> }) {
+function ProfileEdit({ user }: { user: DTO<User> }) {
 	return (
 		<>
 			{/* {user?.image ? (
@@ -18,9 +18,9 @@ function ProfileEdit({ user }: { user: DTO<UserProfile> }) {
 					</div>
 				</div>
 			{/* )} */}
-			{/* <h1 className="text-lg">{user?.username}</h1>
+			<h1 className="text-lg">{user?.username}</h1>
 			<h2 className="text-md opacity-50">{user?.email}</h2>
-			<p className="">{user?.description}</p> */}
+			{/* <p className="">{user?.description}</p> */}
 		</>
 	);
 }
