@@ -6,7 +6,7 @@ import {
 import Cookies from "js-cookie";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { Post, Project, UserProfile, api } from "@edroplets/api";
+import { Post, Project, User, UserProfile, api } from "@edroplets/api";
 import PostPreview from "@/components/forum/PostPreview";
 import ProfileEdit from "@/components/profile/ProfileEdit";
 import ProfileInfo from "@/components/profile/ProfileInfo";
@@ -14,7 +14,7 @@ import ProjectPreview from "@/components/project/ProjectPreview";
 import { useCookies } from "react-cookie";
 
 export function Profile(): JSX.Element {
-	const [user, setUser] = useState<UserProfile>({} as UserProfile);
+	const [user, setUser] = useState<User>({} as User);
 	const [feedData, setFeedData] = useState<Post[] | Project[]>([]);
 	const [feed, setFeed] = useState<"Projects" | "Questions">("Projects");
 	const [feedType, setFeedType] = useState<"Activity" | "Saved">("Activity");
@@ -29,7 +29,7 @@ export function Profile(): JSX.Element {
 	// If looking for a specific user (e.g. /profile/:id) then set the userId to the id, otherwise set it to the current user
 	useEffect(() => {
 		const userId = id ? id : cookies.userId;
-		api.user.getUserProfile(userId).then((res) => {
+		api.user.get(userId).then((res) => {
 			setUser(res);
 		});
 	}, [id]);

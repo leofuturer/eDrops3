@@ -1,10 +1,11 @@
-import { api, DTO, UserProfile } from "@edroplets/api";
+import { api, DTO, User, UserProfile } from "@edroplets/api";
 import { UserCircleIcon } from "@heroicons/react/24/solid";
 import Cookies from "js-cookie";
+import _ from "lodash";
 import { useState } from "react";
 import { useCookies } from "react-cookie";
 
-function ProfileInfo({ user }: { user: DTO<UserProfile> }) {
+function ProfileInfo({ user }: { user: DTO<User> }) {
 	const [following, setFollowing] = useState<boolean>(false);
 
 	const [cookies] = useCookies(["userId"]);
@@ -18,19 +19,19 @@ function ProfileInfo({ user }: { user: DTO<UserProfile> }) {
 
 	return (
 		<>
-			{user?.image ? (
+			{/* {user?.image ? (
 				<img
 					src={user.image}
 					alt="profile"
 					className="w-32 h-32 rounded-full"
 				/>
-			) : (
+			) : ( */}
 				<UserCircleIcon className="w-32 h-32 text-slate-400" />
-			)}
+			{/* )} */}
 			<h1 className="text-lg">{user?.username}</h1>
 			<h2 className="text-md opacity-50">{user?.email}</h2>
-			<p className="">{user?.description}</p>
-			{user?.id !== cookies.userId && (
+			{/* <p className="">{user?.description}</p> */}
+			{!_.isEmpty(user) && user?.id !== cookies.userId && (
 				<button
 					type="button"
 					className={`${following

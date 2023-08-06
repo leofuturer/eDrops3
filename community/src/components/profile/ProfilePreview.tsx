@@ -1,28 +1,33 @@
 import React, { useEffect, useState } from "react";
-import { api, UserProfile } from "@edroplets/api";
+import { api, User, UserProfile } from "@edroplets/api";
 import { UserCircleIcon } from "@heroicons/react/24/solid";
 import _ from "lodash";
 import { NavLink } from "react-router-dom";
 import { useCookies } from "react-cookie";
+import ProfilePreviewLoad from "./ProfilePreviewLoad";
 
 function ProfilePreview() {
-	const [user, setUser] = useState<UserProfile>({} as UserProfile);
+	const [user, setUser] = useState<User>({} as User);
+	const [loading, setLoading] = useState(true);
 	const [isUser, setIsUser] = useState(false);
 
 	const [cookies] = useCookies(["userId"]);
 
 	useEffect(() => {
 		if (cookies.userId) {
-			api.user.getUserProfile(cookies.userId).then((res) => {
+			api.user.get(cookies.userId).then((res) => {
 				setUser(res);
+				setLoading(false);
 			});
 		}
 	}, [cookies.userId]);
 
 	useEffect(() => {
-		console.log(user);
+		// console.log(user);
 		setIsUser(!_.isEmpty(user));
 	}, [user]);
+
+	if (loading) return <ProfilePreviewLoad />
 
 	return (
 		<div className="flex flex-col mt-20 px-10">
@@ -45,9 +50,9 @@ function ProfilePreview() {
 					<div className="flex flex-col space-y-2 items-center w-full">
 						<h1 className="text-lg">{user?.username}</h1>
 						<h2 className="text-md opacity-50">
-							{user?.email}
+							{/* {user?.email} */}
 						</h2>
-						<p className="">{user?.bio}</p>
+						{/* <p className="">{user?.bio}</p> */}
 					</div>
 				) : (
 					<div className="flex flex-col space-y-2 items-center w-full">
