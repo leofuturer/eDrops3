@@ -136,7 +136,7 @@ const useCart = () => {
     //     // console.log(res);
     //     setProductOrders(products);
     //   })
-    return api.order.updateProductOrder(cart.id as number, product.id, product).then(() => {
+    return api.order.updateProductOrder(cart.id as number, product.id as number, product).then(() => {
       fetchCart();
     }).catch((err) => console.error(err));
   }
@@ -148,7 +148,7 @@ const useCart = () => {
     //     // console.log(res);
     //     setChipOrders(chips);
     //   })
-    return api.order.updateChipOrder(cart.id as number, chip.id, chip).then(() => {
+    return api.order.updateChipOrder(cart.id as number, chip.id as number, chip).then(() => {
       fetchCart();
     }).catch((err) => console.error(err));
   }
@@ -160,7 +160,7 @@ const useCart = () => {
     //     // console.log(res);
     //     setProductOrders(products);
     //   })
-    return api.order.deleteProductOrder(cart.id as number, product.id).then(() => {
+    return api.order.deleteProductOrder(cart.id as number, product.id as number).then(() => {
       return new Promise<void>((resolve) => {
         setTimeout(() => {
           fetchCart();
@@ -181,7 +181,7 @@ const useCart = () => {
     //     // console.log(res);
     //     setChipOrders(chips);
     //   })
-    return api.order.deleteChipOrder(cart.id as number, chip.id).then(() => {
+    return api.order.deleteChipOrder(cart.id as number, chip.id as number).then(() => {
       return new Promise<void>((resolve) => {
         setTimeout(() => {
           fetchCart();

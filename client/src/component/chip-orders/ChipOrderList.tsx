@@ -100,7 +100,7 @@ function ChipOrderList({ chipOrderList }: { chipOrderList: DTO<OrderChip>[] }) {
               : (<td className="">
                 <form
                   className=""
-                  onSubmit={(e) => handleStatus(e, item?.id)} // TODO: fix form submission
+                  onSubmit={(e) => handleStatus(e, item?.id as number)} // TODO: fix form submission
                 >
                   <select title="status" className="order-status" name="status" defaultValue={item?.status}>
                     <option value="Fabrication request received">Fab Req Received</option>
@@ -115,12 +115,12 @@ function ChipOrderList({ chipOrderList }: { chipOrderList: DTO<OrderChip>[] }) {
             <td className="">{item?.quantity}</td>
             <td className="">
               {cookies.userType === ROLES.Worker
-                ? <ArrowDownTrayIcon className="w-5 cursor-pointer mx-auto" onClick={() => handleDownload(item?.id)} />
+                ? <ArrowDownTrayIcon className="w-5 cursor-pointer mx-auto" onClick={() => handleDownload(item?.id as number)} />
                 : <ArrowDownTrayIcon className="w-5 cursor-pointer mx-auto" onClick={() => handleDownload(item?.fileInfoId)} />
               }
             </td>
             <td className="">
-              <ChatBubbleOvalLeftEllipsisIcon className="w-5 cursor-pointer mx-auto" onClick={() => handleChat(item?.orderInfoId)} />
+              <ChatBubbleOvalLeftEllipsisIcon className="w-5 cursor-pointer mx-auto" onClick={() => handleChat(item?.orderInfoId as number)} />
             </td>
             {cookies.userType === ROLES.Admin &&
               <td className="">
