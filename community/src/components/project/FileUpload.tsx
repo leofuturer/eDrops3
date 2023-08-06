@@ -39,6 +39,7 @@ function FileUpload({
 	}
 
 	async function handleNext() {
+		if(!cookies.userId) {navigate("/login"); return;}
 		// console.log(files);
 		if (files) {
 			const formData = new FormData();

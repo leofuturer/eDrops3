@@ -20,6 +20,7 @@ function ProfilePreview() {
 	}, [cookies.userId]);
 
 	useEffect(() => {
+		console.log(user);
 		setIsUser(!_.isEmpty(user));
 	}, [user]);
 
@@ -46,7 +47,7 @@ function ProfilePreview() {
 						<h2 className="text-md opacity-50">
 							{user?.email}
 						</h2>
-						<p className="">{user?.description}</p>
+						<p className="">{user?.bio}</p>
 					</div>
 				) : (
 					<div className="flex flex-col space-y-2 items-center w-full">

@@ -18,6 +18,7 @@ import { useEffect, useState } from "react";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import logo from "../../static/img/edrop_logo_inverted.png";
 import { api } from "@edroplets/api";
+import { useCookies } from "react-cookie";
 
 function NavTop() {
 	const navigate = useNavigate();
@@ -25,16 +26,23 @@ function NavTop() {
 	const [notLoggedIn, setNotLoggedIn] = useState(true);
   const [path, setPath] = useState("");
 
+	const [cookies, setCookie, removeCookie] = useCookies(["userId", "userType", "username", "access_token"]);
+
   useEffect(() => {
     setPath(location.pathname);
   }, [location]);
 
 	useEffect(() => {
-		setNotLoggedIn(Cookies.get("username") ? false : true);
-	}, [Cookies.get("username")]);
+		setNotLoggedIn(!cookies.userId);
+	}, [cookies.userId]);
 
 	function handleLogout() {
 		// signout().then(() => navigate("/home"));
+		removeCookie("userId", { path: "/" });
+		removeCookie("userType", { path: "/" });
+		removeCookie("username", { path: "/" });
+		removeCookie("access_token", { path: "/" });
+		navigate("/login");
 	}
 
 	return (
@@ -89,7 +97,7 @@ function NavTop() {
 							<NavLink to="/profile">
 								<div className="flex flex-col items-center">
                   {path === "/profile" ? <UserIcon className="h-6 w-6" /> : <UserIconOutline className="h-6 w-6" />}
-									<h1>{Cookies.get("username")}</h1>
+									<h1>{cookies.username}</h1>
 								</div>
 							</NavLink>
 							<button type="button" onClick={handleLogout}>

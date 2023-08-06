@@ -113,7 +113,7 @@ export function Post() {
 			author: "",
 			datetime: new Date(),
 			likes: 0,
-			userId: Cookies.get("userId") as string,
+			userId: cookies.userId,
 			top: true,
 		};
 		api.post.addPostComment(parseInt(id), newPostComment)

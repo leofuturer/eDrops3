@@ -8,7 +8,7 @@ import {
 } from "@heroicons/react/24/solid";
 import { AxiosError } from "axios";
 import Cookies from "js-cookie";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
 import { useNavigate } from "react-router-dom";
 
@@ -23,6 +23,12 @@ export function NewProject() {
 
 	const navigate = useNavigate();
 
+	useEffect(() => {
+		if (!cookies.userId) {
+			navigate("/login");
+		}
+	}, [cookies.userId]);
+
 	function handlePost() {
 		const data: Project = {
 			title,
@@ -34,12 +40,12 @@ export function NewProject() {
 			// dislikes: 0,
 		};
 		// console.log(data);
-		api.user.createProject(Cookies.get("userId") as string, data).then(async (res) => {
+		api.user.createProject(cookies.userId as string, data).then(async (res) => {
 			// console.log(res);
 			// Link ProjectFile instances to Project
 			const projectId = res.id;
 			const filePromises = files.map((file) => {
-				api.project.linkProjectFile(Cookies.get("userId") as string, projectId as number, file.id as number);
+				api.project.linkProjectFile(cookies.userId as string, projectId as number, file.id as number);
 			});
 			await Promise.all(filePromises);
 			// Add links to Project using ProjectLink

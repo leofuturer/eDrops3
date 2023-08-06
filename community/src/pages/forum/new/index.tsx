@@ -6,7 +6,7 @@ import {
 } from "@heroicons/react/24/solid";
 import { AxiosError } from "axios";
 import Cookies from "js-cookie";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { api, Post as PostType, Project as ProjectType } from "@edroplets/api";
 import { request } from "@edroplets/api";
@@ -19,6 +19,10 @@ export function NewForum() {
 	const [cookies] = useCookies(["userId"]);
 
 	const navigate = useNavigate();
+
+	useEffect(() => {
+		if (!cookies.userId) { navigate("/login"); }
+	}, [cookies.userId]);
 
 	function handlePost() {
 		if (!cookies.userId) { navigate("/login"); return; }
