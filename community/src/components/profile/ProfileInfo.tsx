@@ -30,7 +30,7 @@ function ProfileInfo({ user }: { user: DTO<UserProfile> }) {
 			<h1 className="text-lg">{user?.username}</h1>
 			<h2 className="text-md opacity-50">{user?.email}</h2>
 			<p className="">{user?.description}</p>
-			{user?.id !== Cookies.get("userId") && (
+			{user?.id !== cookies.userId && (
 				<button
 					type="button"
 					className={`${following

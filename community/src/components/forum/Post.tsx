@@ -79,7 +79,7 @@ function Post() {
 	}, [currentPost, cookies.userId]);
 
 	function handleSave() {
-		api.user.savePost(Cookies.get("userId") as string, currentPost.id as number)
+		api.user.savePost(cookies.userId, currentPost.id as number)
 			.then((res) => setSaved(res))
 			.catch((err: AxiosError) => {
 				if (err.response?.status === 401) {

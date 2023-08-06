@@ -445,7 +445,7 @@ export class UserController {
     @requestBody() body: { username: string; email: string },
   ): Promise<{ usernameTaken: boolean; emailTaken: boolean }> {
     if (!body.username && !body.email) {
-      throw new HttpErrors.NotFound('Missing username and/or email keys');
+      throw new HttpErrors.BadRequest('Missing username and/or email keys');
     }
 
     const usernameTaken = await this.userRepository

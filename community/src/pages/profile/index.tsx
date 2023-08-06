@@ -84,7 +84,7 @@ export function Profile(): JSX.Element {
 	return (
 		<section className="grid grid-cols-3 min-h-full bg-slate-200">
 			<div className="sticky top-[80px] h-[calc(100vh-80px)] flex flex-col bg-white shadow-2xl items-center justify-center">
-				{user.id === Cookies.get("userId") && (
+				{user.id === cookies.userId && (
 					<div
 						className="absolute top-4 right-4 cursor-pointer"
 						onClick={() => setEdit(!edit)}
@@ -96,7 +96,7 @@ export function Profile(): JSX.Element {
 						)}
 					</div>
 				)}
-				{edit && user.id === Cookies.get("userId") ? (
+				{edit && user.id === cookies.userId ? (
 					<ProfileEdit user={user} />
 				) : (
 					<ProfileInfo user={user} />
