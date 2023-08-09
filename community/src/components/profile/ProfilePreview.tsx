@@ -17,8 +17,12 @@ function ProfilePreview() {
 		if (cookies.userId) {
 			api.user.get(cookies.userId).then((res) => {
 				setUser(res);
+			}).finally(() => {
 				setLoading(false);
 			});
+		}
+		else {
+			setLoading(false);
 		}
 	}, [cookies.userId]);
 

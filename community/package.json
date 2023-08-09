@@ -15,6 +15,7 @@
   "dependencies": {
     "@edroplets/api": "file:../packages/api",
     "@edroplets/schemas": "file:../packages/schemas",
+    "@edroplets/ui": "file:../packages/ui",
     "@heroicons/react": "^2.0.18",
     "axios": "^1.4.0",
     "formik": "^2.4.2",

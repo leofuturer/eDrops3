@@ -16,7 +16,6 @@ import {
 import Cookies from "js-cookie";
 import { useEffect, useState } from "react";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
-import logo from "../../static/img/edrop_logo_inverted.png";
 import { api } from "@edroplets/api";
 import { useCookies } from "react-cookie";
 
@@ -55,7 +54,7 @@ function NavTop() {
 					>
 						<h1 className="text-2xl">eDroplets Community</h1>
 						<img
-							src={logo}
+							src="/static/img/edroplets-logo-inverted.png"
 							alt="eDroplets Logo"
 							className="max-h-[50px]"
 						/>
