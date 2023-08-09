@@ -15,14 +15,14 @@ export class Resource<T extends object> implements ResourceInterface<DTO<T>> {
   public baseURL: string;
   constructor(baseURL: string) { this.baseURL = baseURL; }
 
-  async get(id: string | number): Promise<DTO<T>> {
-    return request<DTO<T>>(`${this.baseURL}/${id}`, 'GET', {}).then((res) => {
+  async get(id: string | number, params: object = {}): Promise<DTO<T>> {
+    return request<DTO<T>>(`${this.baseURL}/${id}`, 'GET', params).then((res) => {
       return res.data;
     });
   }
 
-  async getAll(): Promise<DTO<T>[]> {
-    return request<DTO<T>[]>(this.baseURL, 'GET', {}).then((res) => {
+  async getAll(params: object = {}): Promise<DTO<T>[]> {
+    return request<DTO<T>[]>(this.baseURL, 'GET', params).then((res) => {
       return res.data;
     });
   }

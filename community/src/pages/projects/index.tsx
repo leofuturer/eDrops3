@@ -39,7 +39,7 @@ export function Projects() {
 				},
 			};
 		}
-		api.project.getAll().then((res) => {
+		api.project.getAll({filter}).then((res) => {
 			setProjectList(res);
 		});
 	}, [search]);

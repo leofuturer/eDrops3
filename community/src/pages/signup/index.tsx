@@ -3,9 +3,10 @@ import { useNavigate } from "react-router-dom";
 import { api } from "@edroplets/api";
 // import { SignupInfo } from "../lib/types";
 import { Address, Customer, DTO, User } from "@edroplets/api";
-import { Formik, Form, Field } from "formik";
+import { Formik, Form, Field, FieldProps } from "formik";
 import { UserSchema, UserSubmitSchema } from "@edroplets/schemas";
 import { ValidationError } from "yup";
+import { FormInput } from "@/components/ui/FormInput";
 
 export function Signup() {
 	const navigate = useNavigate();
@@ -40,8 +41,10 @@ export function Signup() {
 
 	return (
 		<div className="w-full h-full flex flex-col justify-center items-center">
-			<div className="flex flex-col items-center border-2 shadow-xl rounded-md p-4 w-1/2 justify-evenly">
-				<h1 className="text-lg">Signup</h1>
+			<div className="flex flex-col items-center border-2 shadow-xl rounded-md pt-4 pb-10 w-2/3">
+				<div className="max-w-xs">
+					<img src="/static/img/edroplets-banner.png" alt="eDroplets Logo" className="" />
+				</div>
 				<Formik
 					validationSchema={UserSchema}
 					initialValues={initialInfo}
@@ -59,11 +62,12 @@ export function Signup() {
 						}
 					)}
 				>
-					<Form className="flex flex-col space-y-2">
-						<Field name="email" type="email" placeholder="Email" className="w-full h-8 p-2 border-2 rounded-md" />
-						<Field name="username" type="text" placeholder="Username" className="w-full h-8 p-2 border-2 rounded-md" />
-						<Field name="password" type="password" placeholder="Password" className="w-full h-8 p-2 border-2 rounded-md" />
-						<Field name="confirmPassword" type="password" placeholder="Confirm Password" className="w-full h-8 p-2 border-2 rounded-md" />
+					<Form className="flex flex-col items-center justify-center space-y-4 w-2/3" >
+						<FormInput name="email" displayName="Email" autoComplete="email" />
+						<FormInput name="username" displayName="Username" autoComplete="username" />
+						<FormInput name="password" displayName="Password" type="password" autoComplete="new-password" />
+						<FormInput name="confirmPassword" displayName="Confirm Password" type="password" autoComplete="new-password" />
+						<button type="submit" className="w-full h-16 bg-primary text-white text-lg rounded-md mt-8">Sign Up</button>
 					</Form>
 				</Formik>
 				{/* <form

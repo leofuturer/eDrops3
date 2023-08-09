@@ -37,7 +37,7 @@ export function Forum() {
 				},
 			};
 		}
-		api.post.getAll().then((res) => {
+		api.post.getAll({filter}).then((res) => {
 			setPostList(res);
 		});
 	}, [search]);
