@@ -8,7 +8,7 @@ function Layout() {
 	const stickyNav = stickyNavPaths.includes(pathname);
 
 	return (
-		<main className="w-full h-screen flex flex-col">
+		<main className="w-screen min-h-screen flex flex-col">
 			<div className={`z-50 ${stickyNav ? "sticky top-0" : ""}`}>
 				<NavTop />
 			</div>
