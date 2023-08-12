@@ -43,7 +43,7 @@ export function Signup() {
 		<div className="w-full h-full flex flex-col justify-center items-center px-8">
 			<div className="flex flex-col items-center sm:border-2 sm:shadow-xl rounded-md pt-4 pb-10 px-4 w-full sm:w-2/3">
 				<div className="max-w-xs">
-					<img src="/static/img/edroplets-banner.png" alt="eDroplets Logo" className="" />
+					<img src="/img/edroplets-banner.png" alt="eDroplets Logo" className="" />
 				</div>
 				<Formik
 					validationSchema={UserSchema}

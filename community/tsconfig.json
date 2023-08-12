@@ -25,10 +25,7 @@
     "paths": {
       "@/*": [
         "./src/*"
-      ],
-      "/@server/*": [
-        "../server/src/*"
-      ],
+      ]
     }
   },
   "include": [

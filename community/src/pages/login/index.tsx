@@ -31,7 +31,7 @@ export function Login() {
 		<div className="w-full h-full flex flex-col justify-center items-center">
 			<div className="flex flex-col items-center outline outline-1 outline-gray-300 shadow-xl rounded-md pt-4 pb-10 w-2/3 bg-white">
 				<div className="max-w-xs">
-					<img src="/static/img/edroplets-banner.png" alt="eDroplets Logo" className="" />
+					<img src="/img/edroplets-banner.png" alt="eDroplets Logo" className="" />
 				</div>
 				<Formik
 					initialValues={initialValues}
