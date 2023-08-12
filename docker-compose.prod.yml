@@ -13,7 +13,7 @@ services:
       dockerfile: Dockerfile
     env_file:
       - ./deploy/prod/caddy.env
-    container_name: edrop_caddy
+    container_name: edroplets_caddy
     restart: unless-stopped
     ports:
       - 80:80

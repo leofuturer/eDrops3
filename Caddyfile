@@ -63,3 +63,15 @@ community.edroplets.org {
 	root * /usr/share/caddy/community
 	file_server @frontendApi
 }
+
+edroplets.org {
+        redir https://www.edroplets.org{uri} permanent
+}
+
+www.edrops.org {
+        redir https://www.edroplets.org{uri} permanent
+}
+
+edrops.org {
+        redir https://www.edroplets.org{uri} permanent
+}
