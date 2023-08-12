@@ -29,7 +29,7 @@ www.edroplets.org {
 	rewrite @try_files {http.matchers.file.relative}
 
 	handle_path /api/* {
-		reverse_proxy edrop_backend:3000
+		reverse_proxy edroplets_backend:3000
 	}
 
 	root * /usr/share/caddy/www
@@ -57,7 +57,7 @@ community.edroplets.org {
 	rewrite @try_files {http.matchers.file.relative}
 
 	handle_path /api/* {
-		reverse_proxy edrop_backend:3000
+		reverse_proxy edroplets_backend:3000
 	}
 
 	root * /usr/share/caddy/community
