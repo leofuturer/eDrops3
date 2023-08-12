@@ -4,6 +4,8 @@ services:
   backend:
     env_file:
       - ./deploy/prod/backend.env
+    environment:
+      - PROD_RESET_DATABASE=$PROD_RESET_DATABASE
     depends_on:
       - caddy
   
