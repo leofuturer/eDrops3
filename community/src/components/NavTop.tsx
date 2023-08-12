@@ -54,7 +54,7 @@ function NavTop() {
 					>
 						<h1 className="text-2xl">eDroplets Community</h1>
 						<img
-							src="/static/img/edroplets-logo-inverted.png"
+							src="/img/edroplets-logo-inverted.png"
 							alt="eDroplets Logo"
 							className="max-h-[50px]"
 						/>
