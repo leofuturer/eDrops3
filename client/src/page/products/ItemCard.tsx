@@ -9,7 +9,7 @@ function ItemCard({ product }: { product: Product }) {
   const productLink = idRoute(ROUTES.Product, product.id as string);
 
   return (
-    <div className="border-md shadow-box p-4 flex flex-col items-center space-y-2">
+    <div data-cy="product" className="border-md shadow-box p-4 flex flex-col items-center space-y-2">
       <NavLink to={productLink} className="text-center w-2/3">
         <h4 className="text-lg text-primary_light hover:text-primary">{product?.title}</h4>
       </NavLink>

@@ -14,18 +14,18 @@ export function Home() {
       <SEO title="eDroplets | Home"
         description=""
         metadata={metadata} />
-      <div className="grid grid-cols-3 text-black">
-        <div className="bg-[url('/img/EWOD-CAD.png')] bg-cover bg-no-repeat bg-center flex flex-col space-y-4 justify-center items-center w-full aspect-[4/3] py-2" >
+      <div data-cy="grid" className="grid grid-cols-3 text-black">
+        <div data-cy="page" className="bg-[url('/img/EWOD-CAD.png')] bg-cover bg-no-repeat bg-center flex flex-col space-y-4 justify-center items-center w-full aspect-[4/3] py-2" >
           <h1 className="text-md sm:text-xl md:text-2xl lg:text-4xl xl:text-5xl font-semibold text-center">DMF<br />CAD</h1>
           <a href="http://cad.edrops.org" target="_blank" rel="noopener noreferrer" className="text-center py-2 lg:py-6 px-2 md:px-4 xl:px-10 bg-accent w-min md:w-max text-base md:text-lg xl:text-xl font-semibold">
             DESIGN CHIP
           </a>
         </div>
-        <div className="bg-[url('/img/EWOD-chip-compressed.png')] bg-cover bg-no-repeat bg-center flex flex-col space-y-4 justify-center items-center w-full aspect-[4/3] py-2">
+        <div data-cy="page" className="bg-[url('/img/EWOD-chip-compressed.png')] bg-cover bg-no-repeat bg-center flex flex-col space-y-4 justify-center items-center w-full aspect-[4/3] py-2">
           <h1 className="text-md sm:text-xl md:text-2xl lg:text-4xl xl:text-5xl font-semibold text-center">Foundry<br />Service</h1>
           <NavLink to={cookies.userType === ROLES.Customer ? "/upload" : "/login"} className="text-center py-2 lg:py-6 px-2 md:px-4 xl:px-10 bg-accent w-min md:w-max text-base md:text-lg xl:text-xl font-semibold">UPLOAD FILE</NavLink>
         </div>
-        <div className="bg-[url('/img/control-system-compressed.png')] bg-cover bg-no-repeat bg-center flex flex-col space-y-4 justify-center items-center w-full aspect-[4/3] py-2">
+        <div data-cy="page" className="bg-[url('/img/control-system-compressed.png')] bg-cover bg-no-repeat bg-center flex flex-col space-y-4 justify-center items-center w-full aspect-[4/3] py-2">
           <h1 className="text-md sm:text-xl md:text-2xl lg:text-4xl xl:text-5xl font-semibold text-center">DMF<br />Control System</h1>
           <NavLink to={idRoute(ROUTES.Product, controlSysId)} className="text-center py-2 lg:py-6 px-2 md:px-4 xl:px-10 bg-accent w-min md:w-max text-base md:text-lg xl:text-xl font-semibold">VIEW DETAILS</NavLink>
         </div>
@@ -35,20 +35,20 @@ export function Home() {
         <NavLink to={ROUTES.Products} className="border-b-2 border-secondary w-1/4 text-center sm:py-4">
           <h1 className="text-secondary text-lg sm:text-xl md:text-2xl lg:text-4xl xl:text-5xl">Products</h1>
         </NavLink>
-        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-2 sm:gap-4 xl:gap-10 w-3/4 xl:w-2/3">
-          <NavLink to={idRoute(ROUTES.Product, controlSysId)} className="flex flex-col">
+        <div data-cy="products" className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-2 sm:gap-4 xl:gap-10 w-3/4 xl:w-2/3">
+          <NavLink to={idRoute(ROUTES.Product, controlSysId)} data-cy="product" className="flex flex-col">
             <figure className="scale-90 hover:scale-100 duration-500 ease-in-out">
               <img src="/img/control-system.webp" alt="Digital Microfluidics Control System" className="pointer-events-none" />
             </figure>
             <h4 className="text-primary_light text-lg border-t-2 py-8 text-center">Digital Microfluidics Control System</h4>
           </NavLink>
-          <NavLink to={idRoute(ROUTES.Product, pcbChipId)} className="flex flex-col">
+          <NavLink to={idRoute(ROUTES.Product, pcbChipId)} data-cy="product" className="flex flex-col">
             <figure className="scale-90 hover:scale-100 duration-500 ease-in-out">
               <img src="/img/pcb_chip.webp" alt="PCB-based Digital Microfluidics Chip" className="pointer-events-none" />
             </figure>
             <h4 className="text-primary_light text-lg border-t-2 py-8 text-center">PCB-based Digital Microfluidics Chip</h4>
           </NavLink>
-          <NavLink to={idRoute(ROUTES.Product, testBoardId)} className="flex flex-col">
+          <NavLink to={idRoute(ROUTES.Product, testBoardId)} data-cy="product" className="flex flex-col">
             <figure className="scale-90 hover:scale-100 duration-500 ease-in-out">
               <img src="/img/inspection_board.webp" alt="Control System Inspection Board" className="pointer-events-none" />
             </figure>

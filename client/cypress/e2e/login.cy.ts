@@ -4,38 +4,38 @@ describe('Login page tests', () => {
   });
 
   it('Check if inputs exist', () => {
-    cy.get('input[name=usernameOrEmail]').should('be.visible');
-    cy.get('input[name=password]').should('be.visible');
+    cy.get('[data-cy="usernameOrEmail"]').should('be.visible');
+    cy.get('[data-cy="password"]').should('be.visible');
   });
 
   it('Login with valid credentials', () => {
-    cy.get('input[name=usernameOrEmail]').type('customerA');
-    cy.get('input[name=password]').type('edropTest123');
-    cy.get('button[type=submit]').click();
+    cy.get('[data-cy="usernameOrEmail"]').type('customerA');
+    cy.get('[data-cy="password"]').type('edropTest123');
+    cy.get('[data-cy="submit"]').click();
 
     cy.url().should('include', '/home');
   });
 
   it('Login with invalid credentials', () => {
-    cy.get('input[name=usernameOrEmail]').type('abcdef');
-    cy.get('input[name=password]').type('notPassword');
-    cy.get('button[type=submit]').click();
+    cy.get('[data-cy="usernameOrEmail"]').type('abcdef');
+    cy.get('[data-cy="password"]').type('notPassword');
+    cy.get('[data-cy="submit"]').click();
 
-    cy.get('p.text-red-600').should('be.visible');
-    cy.get('p.text-red-600').should('contain', 'Login error. Please check login credentials and ensure email is verified.');
+    cy.get('[data-cy="invalidCreds"]').should('be.visible');
+    cy.get('[data-cy="invalidCreds"]').should('contain', 'Login error. Please check login credentials and ensure email is verified.');
 
     cy.url().should('include', '/login');
   });
 
-  // it('Forgot password redirect', () => {
-  //   cy.get('a[href*="/forgetPass"]').click();
+  it('Forgot password redirect', () => {
+    cy.get('[data-cy="forgotPass"]').click();
 
-  //   cy.url().should('include', '/forgetPass');
-  // });
+    cy.url().should('include', '/forgot-password');
+  });
 
-  // it('Signup redirect', () => {
-  //   cy.get('a[href*="/register"]').click();
+  it('Signup redirect', () => {
+    cy.get('[data-cy="register"]').click();
 
-  //   cy.url().should('include', '/register');
-  // });
+    cy.url().should('include', '/signup');
+  });
 });

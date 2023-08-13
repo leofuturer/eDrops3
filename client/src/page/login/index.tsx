@@ -44,7 +44,7 @@ export function Login() {
       />
       <div className="flex flex-col shadow-box-sm rounded-lg py-4 px-20 space-y-2">
         <h3 className="text-secondary text-2xl text-center font-bold border-b-2 pb-2 border-secondary">Login</h3>
-        <p className="text-sm text-center">Don't have an account? <NavLink to={ROUTES.Signup} className="text-primary_light hover:text-primary">Register now</NavLink></p>
+        <p className="text-sm text-center">Don't have an account? <NavLink to={ROUTES.Signup} data-cy="register" className="text-primary_light hover:text-primary">Register now</NavLink></p>
         <Formik
           initialValues={{
             usernameOrEmail: '',
@@ -62,6 +62,7 @@ export function Login() {
                 meta,
               }: FieldProps) => (
                 <input
+                  data-cy="usernameOrEmail"
                   type="text"
                   className={`w-full outline outline-1 outline-gray-400 rounded shadow-inner focus:shadow-box-sm px-2 py-1 ${meta.touched && meta.error ? 'outline-red-700 focus:shadow-red-700' : 'outline-gray-400 focus:shadow-primary_light focus:outline-primary_light'}`}
                   placeholder="Username or Email"
@@ -70,13 +71,16 @@ export function Login() {
                 />
               )}
             </Field>
-            <Field name="password" >
+            <Field
+              name="password"
+            >
               {({
                 field,
                 meta,
               }: FieldProps) => (
                 <div className="relative flex items-center">
                   <input
+                    data-cy="password"
                     type={showPassword ? 'text' : 'password'}
                     className={`w-full outline outline-1 outline-gray-400 rounded shadow-inner focus:shadow-box-sm px-2 py-1 ${meta.touched && meta.error ? 'outline-red-700 focus:shadow-red-700' : 'outline-gray-400 focus:shadow-primary_light focus:outline-primary_light'}`}
                     placeholder="Password"
@@ -87,11 +91,11 @@ export function Login() {
                 </div>
               )}
             </Field>
-            <button type="submit" className="bg-secondary text-white rounded-lg px-4 py-2 w-full">Login</button>
+            <button data-cy="submit" type="submit" className="bg-secondary text-white rounded-lg px-4 py-2 w-full">Login</button>
           </Form>
         </Formik>
-        <p className="text-red-600 text-center">{error && "Login error. Please check login credentials and ensure email is verified."}</p>
-        <NavLink to={ROUTES.ForgotPassword} className="text-center text-primary_light hover:text-primary text-sm">Forgot Password?</NavLink>
+        <p data-cy="invalidCreds" className="text-red-600 text-center">{error && "Login error. Please check login credentials and ensure email is verified."}</p>
+        <NavLink to={ROUTES.ForgotPassword} data-cy="forgotPass" className="text-center text-primary_light hover:text-primary text-sm">Forgot Password?</NavLink>
         <p className="text-center text-sm">If you experience trouble logging in to your account, please <a href="mailto:info@edroplets.org">contact us.</a></p>
       </div>
     </div >
