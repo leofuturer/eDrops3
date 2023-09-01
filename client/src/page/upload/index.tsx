@@ -200,7 +200,7 @@ function Upload() {
         <div {...getRootProps({
           className: 'border-2 border-dashed border-black cursor-pointer w-full px-10 py-24',
         })}>
-          <input {...getInputProps()} />
+          <input data-cy="file-select" {...getInputProps()} />
           {progress > 0 ? (
             <div className="progressContainer">
               <h3>{progress < 101 ? 'Uploading...' : 'Completed!'}</h3>
@@ -218,7 +218,7 @@ function Upload() {
               </div>
             )}
         </div>
-        <button type="button" className="bg-secondary rounded-md py-4 px-8 text-white text-xl w-max" onClick={onFileUpload} >
+        <button data-cy="file-upload" type="button" className="bg-secondary rounded-md py-4 px-8 text-white text-xl w-max" onClick={onFileUpload} >
           Upload File
         </button>
       </div>

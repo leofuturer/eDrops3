@@ -24,12 +24,12 @@ function ItemCard({ product }: { product: Product }) {
         {product?.description}
       </p>
       {cart.enabled &&
-        <p className="product-price">
+        <p data-cy="product-price" className="product-price">
           ${product?.variants && product?.variants[0].price.amount}
         </p>
       }
-      <NavLink to={productLink}>
-        <button type="button" className="bg-primary_light text-white px-4 py-2 rounded-md hover:bg-primary">Details</button>
+      <NavLink data-cy="product-link" to={productLink}>
+        <button data-cy="product-details" type="button" className="bg-primary_light text-white px-4 py-2 rounded-md hover:bg-primary">Details</button>
       </NavLink>
     </div>
   );

@@ -10,14 +10,14 @@ function TwoChoiceModal({ title = "eDroplets", content, affirmativeText, negativ
   const negative = useCallback(() => {
     handleNegative();
   }, [handleNegative]);
-  
+
   return (
     <ModalBackground>
       <div className="flex flex-col bg-white rounded-lg shadow-box w-1/3 divide-y">
         <div className="p-4">
           <div className="">{title}</div>
         </div>
-        <div className="p-4">
+        <div data-cy="two-choice-modal-content" className="p-4">
           {content}
         </div>
         <div className="p-4 flex justify-end space-x-4">

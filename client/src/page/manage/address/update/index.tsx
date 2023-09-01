@@ -45,7 +45,7 @@ export function UpdateAddress() {
           <FormGroup type="text" name="state" displayName="State or Province" required autoComplete="address-level1" />
           <FormGroup type="text" name="zipCode" displayName="Zip or Postal Code" required autoComplete="postal-code" />
           <FormGroup type="text" name="country" required autoComplete="country-name" />
-          <button type="submit" className="bg-green-500 text-white px-4 py-2 rounded-lg w-max">Update Address</button>
+          <button data-cy="address-update-save" type="submit" className="bg-green-500 text-white px-4 py-2 rounded-lg w-max">Update Address</button>
         </Form>
       </Formik>
     </ManageRightLayout >

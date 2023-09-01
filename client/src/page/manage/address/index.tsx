@@ -46,10 +46,10 @@ export function Address() {
 
   useEffect(() => {
     api.customer.getAddresses(cookies.userId).then((addresses) => {
-        // console.log(res.data);
-        setAddressList(addresses);
-        setIsLoading(false);
-      })
+      // console.log(res.data);
+      setAddressList(addresses);
+      setIsLoading(false);
+    })
       .catch((err) => {
         console.log(err);
       });
@@ -58,7 +58,7 @@ export function Address() {
   return (
     <ManageRightLayout title="Address Book">
       <div className="flex justify-end -mt-8 py-4">
-        <button type="button"
+        <button data-cy="address-add" type="button"
           className="bg-green-500 rounded-lg text-white px-4 py-2 text-lg flex space-x-2 items-center"
           onClick={handleAddNewAddress}>
           <i className="fa fa-plus" /><p>Add New</p>

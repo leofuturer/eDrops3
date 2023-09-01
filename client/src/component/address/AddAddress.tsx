@@ -46,7 +46,7 @@ function AddAddress({ userId, onAdd }: { userId: string, onAdd?: (addr: DTO<Addr
         <FormGroup type="text" name="state" displayName="State or Province" required autoComplete="address-level1" />
         <FormGroup type="text" name="zipCode" displayName="Zip or Postal Code" required autoComplete="postal-code" />
         <FormGroup type="text" name="country" required autoComplete="country-name" />
-        <button type="submit" className="w-max bg-green-600 text-white rounded-md px-4 py-2">Add Address</button>
+        <button data-cy="address-add-save" type="submit" className="w-max bg-green-600 text-white rounded-md px-4 py-2">Add Address</button>
       </Form>
     </Formik>
   );

@@ -23,7 +23,7 @@ function DeleteModal({ title = "Confirm Delete", content = "Are you sure you wan
         </div>
         <div className="p-4 flex justify-end space-x-4">
           <button type="button" className="rounded-md px-4 py-2" onClick={hide}>Cancel</button>
-          <button type="button" className="bg-red-700 text-white rounded-md px-4 py-2 " onClick={onDelete}>Delete</button>
+          <button data-cy="delete-modal-confirm" type="button" className="bg-red-700 text-white rounded-md px-4 py-2 " onClick={onDelete}>Delete</button>
         </div>
       </div>
     </ModalBackground >

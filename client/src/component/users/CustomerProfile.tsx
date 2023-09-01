@@ -77,8 +77,8 @@ export function CustomerProfile({ customerId }: { customerId: string }) {
           country: values.country,
         }
         api.customer.update(customerId, customerData).then(() => {
-          if(defaultAddressId === -1)
-            api.customer.createAddress(customerId, { ...addressData, isDefault: true})
+          if (defaultAddressId === -1)
+            api.customer.createAddress(customerId, { ...addressData, isDefault: true })
           else
             api.customer.updateAddress(customerId, defaultAddressId, addressData)
         })
@@ -95,7 +95,7 @@ export function CustomerProfile({ customerId }: { customerId: string }) {
         <FormGroup name="state" />
         <FormGroup name="zipCode" />
         <FormGroup name="country" />
-        <button type="submit" className="w-max bg-green-600 text-white rounded-md px-4 py-2">Save</button>
+        <button data-cy="profile-save" type="submit" className="w-max bg-green-600 text-white rounded-md px-4 py-2">Save</button>
       </Form>
     </Formik>
   )

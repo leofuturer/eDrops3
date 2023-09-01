@@ -17,17 +17,17 @@ function AddressTemplate({ address, addressNum, onDeletion }: { address: DTO<Add
   }
 
   return (
-    <div className="flex flex-col bg-white rounded-lg p-4 shadow-box space-y-2">
+    <div data-cy="address" className="flex flex-col bg-white rounded-lg p-4 shadow-box space-y-2">
       <div className="flex flex-row justify-between items-center h-10">
         <h3 className="text-xl">Address {addressNum}</h3>
         {address.isDefault && (
           <div className="text-sm">
             <div className="flex justify-between items-center space-x-2">
-              <span className="">Default Shipping</span>
+              <span data-cy="default-address" className="">Default Shipping</span>
               <i className="fa fa-cube fa-inline" />
             </div>
             <div className="flex justify-between items-center space-x-2">
-              <span className="">Default Billing</span>
+              <span data-cy="default-address" className="">Default Billing</span>
               <i className="fa fa-credit-card fa-inline" />
             </div>
           </div>
@@ -43,6 +43,7 @@ function AddressTemplate({ address, addressNum, onDeletion }: { address: DTO<Add
       </div>
       <div className="flex flex-row space-x-4">
         <button
+          data-cy="address-update"
           type="button"
           className="bg-primary_light hover:bg-primary text-white rounded-md px-4 py-1 flex space-x-2 items-center"
           onClick={handleUpdateAddress}
@@ -51,7 +52,7 @@ function AddressTemplate({ address, addressNum, onDeletion }: { address: DTO<Add
           <p className="">Update</p>
         </button>
         {!address.isDefault &&
-          <button type="button" className="bg-red-700 text-white rounded-md px-4 py-1 flex space-x-2 items-center">
+          <button data-cy="address-delete" type="button" className="bg-red-700 text-white rounded-md px-4 py-1 flex space-x-2 items-center">
             <i className="fa fa-trash" />
             <p className="" onClick={onDeletion}>Delete</p>
           </button>
