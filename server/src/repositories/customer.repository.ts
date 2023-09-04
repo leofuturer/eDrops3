@@ -125,6 +125,7 @@ export class CustomerRepository extends DefaultCrudRepository<
    */
   async createCustomer(
     customer: DTO<Customer & User & Partial<Omit<Address, 'id'>>>,
+    baseURL: string = process.env.EMAIL_HOSTNAME as string,
   ): Promise<Customer> {
     const hashedPassword = await hash(customer.password, await genSalt());
     const userData: DTO<User> = {
@@ -171,7 +172,7 @@ export class CustomerRepository extends DefaultCrudRepository<
           throw new HttpErrors.InternalServerError(err.message);
         });
     }
-    await userRepository.sendVerificationEmail(userInstance);
+    await userRepository.sendVerificationEmail(userInstance, baseURL);
     return customerInstance;
   }
 

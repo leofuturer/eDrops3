@@ -8,3 +8,6 @@ export * from './projects/index';
 export * from './projects/new/index';
 export * from './projects/[id]/index';
 export * from './signup/index';
+export * from './check-email/index';
+export * from './email-verified/index';
+export * from './email-unverified/index';

@@ -11,6 +11,8 @@ import {
   requestBody,
   response,
   HttpErrors,
+  RestBindings,
+  Request,
 } from '@loopback/rest';
 import { SecurityBindings, UserProfile } from '@loopback/security';
 import { FoundryWorker, User } from '../models';
@@ -25,6 +27,7 @@ export class FoundryWorkerController {
     public userRepository: UserRepository,
     @inject(SecurityBindings.USER, { optional: true })
     public user: UserProfile,
+    @inject(RestBindings.Http.REQUEST) public request: Request,
   ) { }
 
   @post('/foundry-workers')
@@ -44,7 +47,7 @@ export class FoundryWorkerController {
     })
     foundryWorker: DTO<FoundryWorker & User>,
   ): Promise<FoundryWorker> {
-    return this.foundryWorkerRepository.createFoundryWorker(foundryWorker);
+    return this.foundryWorkerRepository.createFoundryWorker(foundryWorker, this.request.headers.origin);
   }
 
   @get('/foundry-workers')

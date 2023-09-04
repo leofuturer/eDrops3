@@ -32,7 +32,7 @@ function NavTop() {
           </NavLink>
           <NavLink to={ROUTES.Home} className="hover:text-accent hidden xl:flex pt-2">Home</NavLink>
           <NavLink to={ROUTES.Products} className="hover:text-accent hidden md:flex pt-2">Products</NavLink>
-          <NavLink to={ROUTES.ComingSoon} className="hover:text-accent hidden md:flex pt-2">Community</NavLink>
+          <a href="https://community.edroplets.org" className="hover:text-accent hidden md:flex pt-2">Community</a>
         </div>
         <div className="hidden md:flex flex-row items-center h-full space-x-8 text-xl pt-2">
           {cookies.access_token ? <>

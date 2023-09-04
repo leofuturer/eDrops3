@@ -31,6 +31,7 @@ export class FoundryWorkerRepository extends DefaultCrudRepository<
 
   async createFoundryWorker(
     foundryWorker: DTO<FoundryWorker & User>,
+    baseURL: string = process.env.EMAIL_HOSTNAME as string,
   ) : Promise<FoundryWorker> {
     const hashedPassword = await hash(foundryWorker.password, await genSalt())
     const userData: Partial<User> = {
@@ -59,7 +60,7 @@ export class FoundryWorkerRepository extends DefaultCrudRepository<
       userId: userInstance.id,
     }
     const foundryWorkerInstance = await this.create(foundryWorkerData);
-    await userRepository.sendVerificationEmail(userInstance);
+    await userRepository.sendVerificationEmail(userInstance, baseURL);
     return foundryWorkerInstance;
   }
 

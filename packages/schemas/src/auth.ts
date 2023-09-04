@@ -3,16 +3,12 @@ import { api } from '@edroplets/api';
 import { confirmPasswordSchema, customerTypeSchema, emailSchema, firstNameSchema, lastNameSchema, passwordSchema, phoneNumberSchema, usernameSchema } from './lib/user';
 
 // TODO: ensure yup objects conform to our types (e.g. Customer)
-export const UserSchema = Yup.object().shape({
+export const UserSchema = Yup.object({
   email: emailSchema,
   username: usernameSchema,
   password: passwordSchema,
   confirmPassword: confirmPasswordSchema,
-  phoneNumber: phoneNumberSchema,
-  firstName: firstNameSchema,
-  lastName: lastNameSchema,
-  customerType: customerTypeSchema,
-});
+})
 
 export const UserSubmitSchema = UserSchema.test('credentialsTaken', 'Username or email already taken', ({ email, username }, ctx) =>
   api.user.credsTaken(username as string, email as string).then((data) => {
@@ -21,6 +17,21 @@ export const UserSubmitSchema = UserSchema.test('credentialsTaken', 'Username or
     return true
   })
 ); // https://github.com/jaredpalmer/formik/issues/2146#issuecomment-720639988
+
+export const CustomerSchema = UserSchema.shape({
+  firstName: firstNameSchema,
+  lastName: lastNameSchema,
+  phoneNumber: phoneNumberSchema,
+  customerType: customerTypeSchema,
+});
+
+export const CustomerSubmitSchema = CustomerSchema.test('credentialsTaken', 'Username or email already taken', ({ email, username }, ctx) =>
+  api.user.credsTaken(username as string, email as string).then((data) => {
+    if (data.emailTaken) return ctx.createError({ path: 'email', message: 'Email already taken' })
+    if (data.usernameTaken) return ctx.createError({ path: 'username', message: 'Username already taken' })
+    return true
+  })
+);
 
 export const AdminSchema = Yup.object().shape({
   phoneNumber: phoneNumberSchema,

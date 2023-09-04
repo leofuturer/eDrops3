@@ -26,7 +26,7 @@ export class AdminRepository extends DefaultCrudRepository<
     this.registerInclusionResolver('user', this.user.inclusionResolver);
   }
 
-  async createAdmin(admin: DTO<Admin & User>): Promise<Admin> {
+  async createAdmin(admin: DTO<Admin & User>, baseURL: string = process.env.EMAIL_HOSTNAME as string): Promise<Admin> {
     // Create user first
     const hashedPassword = await hash(admin.password, await genSalt());
     const userData: Partial<User> = {
@@ -47,7 +47,7 @@ export class AdminRepository extends DefaultCrudRepository<
       userId: userInstance.id,
     };
     const adminInstance = await this.create(adminData);
-    await userRepository.sendVerificationEmail(userInstance);
+    await userRepository.sendVerificationEmail(userInstance, baseURL);
     return adminInstance;
   }
 

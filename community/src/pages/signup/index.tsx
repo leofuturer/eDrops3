@@ -23,7 +23,7 @@ export function Signup() {
 		api.user.create(userData)
 			.then((res) => {
 				// console.log(res);
-				navigate("/home")
+				navigate("/check-email")
 			})
 			.catch((err: Error & { [key: string]: string[] }) => {
 				if (err.message) {
@@ -49,18 +49,17 @@ export function Signup() {
 					validationSchema={UserSchema}
 					initialValues={initialInfo}
 					onSubmit={(values, actions) => UserSubmitSchema.validate(values, { abortEarly: false }).then(() => {
-						handleRegister({ ...values });
-					}).catch(
-						(err) => {
-							const errors = err.inner.reduce((acc: object, curr: ValidationError) => {
-								return {
-									...acc,
-									[curr.path as string]: curr.message,
-								};
-							}, {});
-							actions.setErrors(errors);
-						}
-					)}
+						const { confirmPassword, ...userData } = values;
+						handleRegister(userData);
+					}).catch((err) => {
+						const errors = err.inner.reduce((acc: object, curr: ValidationError) => {
+							return {
+								...acc,
+								[curr.path as string]: curr.message,
+							};
+						}, {});
+						actions.setErrors(errors);
+					})}
 				>
 					<Form className="flex flex-col items-center justify-center space-y-4 w-full md:w-2/3" >
 						<FormInput name="email" displayName="Email" autoComplete="email" />
