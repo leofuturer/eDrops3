@@ -23,8 +23,7 @@ export function FormInput({ name, displayName, type = "text", autoComplete = "of
             <p className="bg-transparent text-gray-500 text-sm absolute w-max h-min left-2 top-4 opacity-0 peer-focus:opacity-100 peer-focus:-translate-y-3 peer-focus:transition-all peer-focus:duration-300 peer-autofill:opacity-100 peer-autofill:-translate-y-3 peer-autofill:transition-all peer-autofill:duration-100 -z-10 peer-focus:z-10 peer-autofill:z-10 select-none">{displayName}</p>
           </div>
         )
-      }
-      }
+      }}
     </Field>
   )
 }

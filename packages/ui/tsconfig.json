@@ -8,7 +8,7 @@
     "declarationMap": true,
     "sourceMap": true,
     "outDir": "./dist",
-    "rootDirs": [".", "../../../server/src"],
+    "rootDir": ".",
     "strict": true,
     "forceConsistentCasingInFileNames": true,
     "baseUrl": ".",

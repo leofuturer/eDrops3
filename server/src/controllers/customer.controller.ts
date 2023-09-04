@@ -1,6 +1,8 @@
-import { intercept } from '@loopback/core';
+import { inject, intercept } from '@loopback/core';
 import { Filter, FilterExcludingWhere, repository } from '@loopback/repository';
 import {
+  Request,
+  RestBindings,
   del,
   get,
   getModelSchemaRef,
@@ -21,6 +23,7 @@ export class CustomerController {
     public customerRepository: CustomerRepository,
     @repository(UserRepository)
     public userRepository: UserRepository,
+    @inject(RestBindings.Http.REQUEST) public request: Request,
   ) { }
 
   @intercept(CustomerCreateInterceptor.BINDING_KEY)
@@ -41,7 +44,7 @@ export class CustomerController {
     })
     customer: DTO<Customer & User & Address>,
   ): Promise<Customer> {
-    return this.customerRepository.createCustomer(customer);
+    return this.customerRepository.createCustomer(customer, this.request.headers.origin);
   }
 
   @get('/customers')

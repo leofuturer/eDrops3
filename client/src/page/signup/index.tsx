@@ -5,7 +5,7 @@ import { ValidationError } from 'yup';
 import { api, Address, Customer, User, DTO } from '@edroplets/api';
 import FormGroup from '@/component/form/FormGroup';
 import SEO from '@/component/header/seo';
-import { UserSchema, UserSubmitSchema } from '@edroplets/schemas';
+import { CustomerSchema, CustomerSubmitSchema } from '@edroplets/schemas';
 import { metadata } from './metadata';
 import { ROUTES } from '@/router/routes';
 
@@ -53,9 +53,9 @@ export function Register() {
       <div className="flex flex-col shadow-box-sm rounded-lg py-4 w-1/2 px-20 space-y-2">
         <h3 className="text-secondary text-2xl text-center font-bold border-b-2 pb-2 border-secondary">Sign Up</h3>
         <Formik
-          validationSchema={UserSchema}
+          validationSchema={CustomerSchema}
           initialValues={initialInfo}
-          onSubmit={(values, actions) => UserSubmitSchema.validate(values, { abortEarly: false }).then(() => {
+          onSubmit={(values, actions) => CustomerSubmitSchema.validate(values, { abortEarly: false }).then(() => {
             handleRegister({ ...values } as DTO<Customer & User & Address>)
           }).catch(
             (err) => {

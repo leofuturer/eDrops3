@@ -171,7 +171,7 @@ export class UserRepository extends DefaultCrudRepository<
     );
   }
 
-  async createUser(user: DTO<User>) {
+  async createUser(user: DTO<User>, baseURL: string = process.env.EMAIL_HOSTNAME as string) {
     const hashedPassword = await hash(user.password, await genSalt());
     const userData: Partial<User> = {
       id: user.id,
@@ -182,7 +182,9 @@ export class UserRepository extends DefaultCrudRepository<
       emailVerified: user.emailVerified,
       verificationToken: user.verificationToken,
     };
-    return this.create(userData);
+    const userInstance = await this.create(userData);
+    await this.sendVerificationEmail(userInstance, baseURL);
+    return userInstance;
   }
 
   async createVerificationToken(userId: string): Promise<string> {
@@ -195,7 +197,7 @@ export class UserRepository extends DefaultCrudRepository<
     }).then(() => verificationTokenHash);
   }
 
-  async sendVerificationEmail(user: User): Promise<void> {
+  async sendVerificationEmail(user: User, baseURL: string = process.env.EMAIL_HOST as string): Promise<void> {
     const verificationTokenHash = await this.createVerificationToken(
       user.id as string,
     );
@@ -204,10 +206,10 @@ export class UserRepository extends DefaultCrudRepository<
     // this.verifyEmail(user.id as string, verificationTokenHash);
     // exit(0);
 
-    const baseURL =
-      process.env.NODE_ENV === 'production'
-        ? `https://${EMAIL_HOSTNAME}`
-        : `http://${EMAIL_HOSTNAME}:${EMAIL_PORT}`;
+    // const baseURL =
+    //   process.env.NODE_ENV === 'production'
+    //     ? `https://${EMAIL_HOSTNAME}`
+    //     : `http://${EMAIL_HOSTNAME}:${EMAIL_PORT}`;
 
     const sendGridOptions = {
       personalizations: [

@@ -6,7 +6,9 @@
     "node": ">=18.0.0"
   },
   "scripts": {
+    "predev": "npm run prebuild",
     "dev": "vite dev --config ./vite.config.ts",
+    "prebuild": "npm run build -workspaces --prefix ..",
     "build": "npm run clean && tsc && vite build",
     "clean": "rimraf dist",
     "preview": "vite preview",
