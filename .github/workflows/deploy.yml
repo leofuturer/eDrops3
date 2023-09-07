@@ -43,6 +43,7 @@ jobs:
                 END
             - name: Build all local packages
               run: |
+                npm ci
                 npm run packages:build
             - name: Client deploy to EC2
               run: |
