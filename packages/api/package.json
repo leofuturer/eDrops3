@@ -8,7 +8,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "clean": "rimraf dist",
-    "prebuild": "npm run clean && npm install",
+    "prebuild": "npm run clean && npm ci",
     "build": "tsc --build tsconfig.json",
     "postbuild": "node postbuild.cjs"
   },
