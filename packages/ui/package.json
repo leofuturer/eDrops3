@@ -6,7 +6,7 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "prebuild": "npm run clean && npm install",
+    "prebuild": "npm run clean && npm ci",
     "build": "tsc",
     "clean": "rimraf dist"
   },

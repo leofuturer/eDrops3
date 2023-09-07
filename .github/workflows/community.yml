@@ -34,7 +34,6 @@ jobs:
     - name: Community npm install, build, and copy to EC2
       run: |
         cd community
-        npm install
         npm run build
 
         mkdir -p ~/.ssh

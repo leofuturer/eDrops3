@@ -7,7 +7,8 @@
   },
   "scripts": {
     "dev": "vite dev --config ./vite.config.ts",
-    "build": "npm run clean && tsc && vite build",
+    "prebuild": "npm run clean && npm ci",
+    "build": "tsc && vite build",
     "clean": "rimraf dist",
     "preview": "vite preview",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
