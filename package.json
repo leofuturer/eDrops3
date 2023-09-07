@@ -5,6 +5,7 @@
     "node": ">=18.0.0"
   },
   "scripts": {
+    "packages:build": "npm run build --workspaces",
     "docker:build": "docker build -t edroplets_backend server/",
     "docker:buildmac": "docker build -t edroplets_backend server/ --platform linux/amd64",
     "docker:dev": "docker-compose -f docker-compose.yml -f docker-compose.dev.yml up",

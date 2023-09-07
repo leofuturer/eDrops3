@@ -60,7 +60,9 @@ export class FoundryWorkerRepository extends DefaultCrudRepository<
       userId: userInstance.id,
     }
     const foundryWorkerInstance = await this.create(foundryWorkerData);
-    await userRepository.sendVerificationEmail(userInstance, baseURL);
+    if (!foundryWorker.emailVerified) {
+      await userRepository.sendVerificationEmail(userInstance, baseURL);
+    }
     return foundryWorkerInstance;
   }
 

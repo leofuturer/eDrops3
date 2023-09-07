@@ -172,7 +172,9 @@ export class CustomerRepository extends DefaultCrudRepository<
           throw new HttpErrors.InternalServerError(err.message);
         });
     }
-    await userRepository.sendVerificationEmail(userInstance, baseURL);
+    if (!customer.emailVerified) {
+      await userRepository.sendVerificationEmail(userInstance, baseURL);
+    }
     return customerInstance;
   }
 

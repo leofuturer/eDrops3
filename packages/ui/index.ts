@@ -1,3 +1,3 @@
-import tailwindConfig from 'tailwind.config';
+import tailwindConfig from './tailwind.config.js';
 
 export default tailwindConfig

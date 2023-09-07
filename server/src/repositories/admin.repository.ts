@@ -47,7 +47,9 @@ export class AdminRepository extends DefaultCrudRepository<
       userId: userInstance.id,
     };
     const adminInstance = await this.create(adminData);
-    await userRepository.sendVerificationEmail(userInstance, baseURL);
+    if(!admin.emailVerified) {
+      await userRepository.sendVerificationEmail(userInstance, baseURL);
+    }
     return adminInstance;
   }
 
