@@ -183,7 +183,9 @@ export class UserRepository extends DefaultCrudRepository<
       verificationToken: user.verificationToken,
     };
     const userInstance = await this.create(userData);
-    await this.sendVerificationEmail(userInstance, baseURL);
+    if (!user.emailVerified) {
+      await this.sendVerificationEmail(userInstance, baseURL);
+    }
     return userInstance;
   }
 
