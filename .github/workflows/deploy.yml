@@ -41,6 +41,9 @@ jobs:
                   IdentityFile ~/.ssh/ec2.key
                   StrictHostKeyChecking no
                 END
+            - name: Install dependencies
+              run: |
+                npm i -g rimraf cross-env
             - name: Build all local packages
               run: |
                 npm ci
