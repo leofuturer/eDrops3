@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite dev --config ./vite.config.ts",
-    "prebuild": "npm run clean && npm run ci",
+    "prebuild": "npm run clean && npm ci",
     "build": "tsc && vite build",
     "clean": "rimraf dist",
     "preview": "vite preview",
