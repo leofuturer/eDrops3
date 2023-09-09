@@ -8,7 +8,7 @@ function ProjectCard({ project }: { project: ProjectType }) {
 				<div className="relative w-full flex flex-col justify-between h-full group">
 					<div className="w-full h-full rounded-2xl">
 						<img
-							src="/img/EWOD-chip-compressed.png"
+							src="/img/ewod-chip-compressed.png"
 							alt="Project picture"
 							className="w-full h-full rounded-2xl"
 						/>
