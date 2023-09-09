@@ -9,7 +9,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "clean": "rimraf dist",
     "prebuild": "npm run clean && npm ci",
-    "build": "tsc --build tsconfig.json",
+    "build": "tsc --build tsconfig.json --emitDeclarationOnly && esbuild --bundle --minify --format=esm --sourcemap src/index.ts --outdir=dist",
     "postbuild": "node postbuild.cjs"
   },
   "files": [
