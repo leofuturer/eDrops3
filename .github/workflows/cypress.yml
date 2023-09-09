@@ -26,7 +26,7 @@ jobs:
                   cd server
                   npm install
                   npm install -g wait-on
-                  docker build -t edrop_backend .
+                  docker build -t edroplets_backend .
 
                   # initialize server
                   cd .. 
@@ -68,7 +68,7 @@ jobs:
 
                   docker-compose -f docker-compose.yml -f docker-compose.test.yml logs
 
-                  docker logs edrop_backend
+                  docker logs edroplets_backend
               env:
                   APP_EMAIL_API_KEY: ${{ secrets.APP_EMAIL_API_KEY }}
                   SHOPIFY_TOKEN: ${{ secrets.SHOPIFY_TOKEN }}
