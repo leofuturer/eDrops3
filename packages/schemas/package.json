@@ -8,7 +8,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "prebuild": "npm run clean && npm ci",
-    "build": "tsc --emitDeclarationOnly && esbuild --bundle --format=esm --sourcemap --external:@edroplets/api src/index.ts --outdir=dist",
+    "build": "tsc --emitDeclarationOnly && esbuild --bundle --minify --format=esm --sourcemap --external:@edroplets/api src/index.ts --outdir=dist",
     "clean": "rimraf dist"
   },
   "author": "",
