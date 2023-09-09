@@ -57,17 +57,15 @@ export function Register() {
           initialValues={initialInfo}
           onSubmit={(values, actions) => CustomerSubmitSchema.validate(values, { abortEarly: false }).then(() => {
             handleRegister({ ...values } as DTO<Customer & User & Address>)
-          }).catch(
-            (err) => {
-              const errors = err.inner.reduce((acc: object, curr: ValidationError) => {
-                return {
-                  ...acc,
-                  [curr.path as string]: curr.message,
-                };
-              }, {});
-              actions.setErrors(errors);
-            }
-          )}
+          }).catch((err: ValidationError) => {
+            const errors = err.inner.reduce((acc: object, curr: ValidationError) => {
+              return {
+                ...acc,
+                [curr.path as string]: curr.message,
+              };
+            }, {});
+            actions.setErrors(errors);
+          })}
         >
           <Form className="flex flex-col space-y-2">
             <p className="text-xs text-gray-500">Fields with * are required</p>

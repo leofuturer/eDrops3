@@ -1,7 +1,7 @@
 import { Form, Formik } from 'formik';
 import { useEffect, useState } from 'react';
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
-import { api,Admin, User, DTO } from '@edroplets/api';
+import { api, Admin, User, DTO } from '@edroplets/api';
 import FormGroup from '@/component/form/FormGroup';
 import ManageRightLayout from '@/component/layout/ManageRightLayout';
 import { AdminEditSchema, AdminSchema, AdminSubmitSchema } from '@edroplets/schemas';
@@ -38,17 +38,15 @@ export function AddAdmin() {
         onSubmit={(values, actions) => {
           AdminSubmitSchema.validate(values, { abortEarly: false }).then(() => {
             handleAdd({ ...values, phoneNumber: formatPhoneNumber(values.phoneNumber as string) });
-          }).catch(
-            (err) => {
-              const errors = err.inner.reduce((acc: object, curr: ValidationError) => {
-                return {
-                  ...acc,
-                  [curr.path as string]: curr.message,
-                };
-              }, {});
-              actions.setErrors(errors);
-            }
-          )
+          }).catch((err: ValidationError) => {
+            const errors = err.inner.reduce((acc: object, curr: ValidationError) => {
+              return {
+                ...acc,
+                [curr.path as string]: curr.message,
+              };
+            }, {});
+            actions.setErrors(errors);
+          })
         }}
         validationSchema={AdminSchema}
       >
