@@ -51,7 +51,7 @@ export function Signup() {
 					onSubmit={(values, actions) => UserSubmitSchema.validate(values, { abortEarly: false }).then(() => {
 						const { confirmPassword, ...userData } = values;
 						handleRegister(userData);
-					}).catch((err) => {
+					}).catch((err: ValidationError) => {
 						const errors = err.inner.reduce((acc: object, curr: ValidationError) => {
 							return {
 								...acc,

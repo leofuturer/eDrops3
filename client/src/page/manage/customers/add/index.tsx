@@ -48,17 +48,15 @@ export function AddCustomer() {
         validationSchema={UserSchema}
         onSubmit={(values, actions) => UserSubmitSchema.validate(values, { abortEarly: false }).then(() => {
           handleAdd({ ...values, phoneNumber: formatPhoneNumber(values.phoneNumber as string) });
-        }).catch(
-          (err) => {
-            const errors = err.inner.reduce((acc: object, curr: ValidationError) => {
-              return {
-                ...acc,
-                [curr.path as string]: curr.message,
-              };
-            }, {});
-            actions.setErrors(errors);
-          }
-        )}>
+        }).catch((err: ValidationError) => {
+          const errors = err.inner.reduce((acc: object, curr: ValidationError) => {
+            return {
+              ...acc,
+              [curr.path as string]: curr.message,
+            };
+          }, {});
+          actions.setErrors(errors);
+        })}>
         <Form className="flex flex-col space-y-2">
           <small className="">Fields with * are required</small>
           <FormGroup name="email" type="email" required autoComplete="email" />

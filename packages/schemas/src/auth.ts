@@ -1,9 +1,9 @@
-import * as Yup from 'yup';
+import { object, string, ref } from 'yup';
 import { api } from '@edroplets/api';
 import { confirmPasswordSchema, customerTypeSchema, emailSchema, firstNameSchema, lastNameSchema, passwordSchema, phoneNumberSchema, usernameSchema } from './lib/user';
 
 // TODO: ensure yup objects conform to our types (e.g. Customer)
-export const UserSchema = Yup.object({
+export const UserSchema = object({
   email: emailSchema,
   username: usernameSchema,
   password: passwordSchema,
@@ -33,7 +33,7 @@ export const CustomerSubmitSchema = CustomerSchema.test('credentialsTaken', 'Use
   })
 );
 
-export const AdminSchema = Yup.object().shape({
+export const AdminSchema = object().shape({
   phoneNumber: phoneNumberSchema,
   username: usernameSchema,
   email: emailSchema,
@@ -41,7 +41,7 @@ export const AdminSchema = Yup.object().shape({
   confirmPassword: confirmPasswordSchema,
 });
 
-export const AdminEditSchema = Yup.object().shape({
+export const AdminEditSchema = object().shape({
   phoneNumber: phoneNumberSchema,
   username: usernameSchema,
 });
@@ -54,9 +54,9 @@ export const AdminSubmitSchema = AdminSchema.test('credentialsTaken', 'Username 
   })
 );
 
-export const WorkerSchema = Yup.object().shape({
+export const WorkerSchema = object().shape({
   phoneNumber: phoneNumberSchema,
-  affiliation: Yup.string().required('Affiliation can\'t be blank'),
+  affiliation: string().required('Affiliation can\'t be blank'),
   firstName: firstNameSchema,
   lastName: lastNameSchema,
   email: emailSchema,
@@ -73,24 +73,24 @@ export const WorkerSubmitSchema = WorkerSchema.test('credentialsTaken', 'Usernam
   })
 );
 
-export const LoginSchema = Yup.object().shape({
-  usernameOrEmail: Yup.string()
+export const LoginSchema = object().shape({
+  usernameOrEmail: string()
     .required('Username or email can\'t be blank'),
-  password: Yup.string()
+  password: string()
     .required('Password can\'t be blank'),
 });
 
-export const ResetPasswordSchema = Yup.object().shape({
-  newPassword: Yup.string()
+export const ResetPasswordSchema = object().shape({
+  newPassword: string()
     .required('Password can\'t be blank')
     .min(8, 'Password is too short (minimum is 8 characters)')
     .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d\S]{8,}$/, 'Password must contain a uppercase letter, lowercase letter, and number.'),
-  confirmNewPassword: Yup.string()
+  confirmNewPassword: string()
     .required('Confirm password can\'t be blank')
-    .oneOf([Yup.ref('newPassword')], 'Passwords must match'),
+    .oneOf([ref('newPassword')], 'Passwords must match'),
 });
 
-export const ChangePasswordSchema = Yup.object().shape({
-  oldPassword: Yup.string()
+export const ChangePasswordSchema = object().shape({
+  oldPassword: string()
     .required('Old password can\'t be blank'),
 }).concat(ResetPasswordSchema);
