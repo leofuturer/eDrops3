@@ -29,7 +29,7 @@ jobs:
           cd server
           npm install
           npm install -g wait-on
-          docker build -t edrop_backend .
+          docker build -t edroplets_backend .
           
           # initialize server
           cd .. 
@@ -81,7 +81,7 @@ jobs:
             EXIT=1
           fi
 
-          docker logs edrop_backend
+          docker logs edroplets_backend
 
           # Shut down the testing backend
           cd ..

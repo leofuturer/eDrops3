@@ -38,16 +38,16 @@ jobs:
         echo "$SSH_KEY" > ~/.ssh/ec2.key
         chmod 600 ~/.ssh/ec2.key
         cat >> ~/.ssh/config <<END
-          Host edrop_v2_ec2
+          Host edroplets_aws
           HostName $SSH_HOST
           User $SSH_USER
           IdentityFile ~/.ssh/ec2.key
           StrictHostKeyChecking no
         END
 
-        scp -i ~/.ssh/ec2.key -o StrictHostKeyChecking=no edroplets_backend.tar $SSH_USER@$SSH_HOST:~/eDroplets3/edroplets_backend.tar
+        scp -i ~/.ssh/ec2.key -o StrictHostKeyChecking=no edroplets_backend.tar edroplets_aws:~/eDroplets3/edroplets_backend.tar
         cd ..
-        scp -i ~/.ssh/ec2.key -o StrictHostKeyChecking=no Caddyfile *.yml LICENSE README.md CODEOWNERS $SSH_USER@$SSH_HOST:~/eDroplets3/
+        scp -i ~/.ssh/ec2.key -o StrictHostKeyChecking=no Caddyfile *.yml LICENSE README.md CODEOWNERS edroplets_aws:~/eDroplets3/
       env:
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
