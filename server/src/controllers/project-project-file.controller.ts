@@ -124,6 +124,33 @@ export class ProjectProjectFileController {
       : this.projectFileRepository.downloadFileS3(filename, response);
   }
 
+  @oas.response.file()
+  @get('/project-files/{fileId}/download', {
+    responses: {
+      '200': {
+        description: 'Download a file',
+        content: {
+          'application/json': {
+            schema: {type: 'array', items: getModelSchemaRef(ProjectFile)},
+          },
+        },
+      },
+    },
+  })
+  async downloadProjectFile(
+    @param.path.number('fileId') fileId: typeof ProjectFile.prototype.id,
+    @inject(RestBindings.Http.RESPONSE) response: Response,
+  ): Promise<Response> {
+    const filename = await this.projectFileRepository
+      .findById(fileId)
+      .then(file => {
+        return file.containerFileName;
+      });
+    return process.env.NODE_ENV !== 'production'
+      ? this.projectFileRepository.downloadFileDisk(filename, response)
+      : this.projectFileRepository.downloadFileS3(filename, response);
+  }
+
   @patch('/users/{id}/project-files/{fileId}', {
     responses: {
       '200': {
