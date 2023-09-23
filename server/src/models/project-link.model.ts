@@ -1,6 +1,11 @@
 import {Entity, model, property} from '@loopback/repository';
 
-@model()
+@model({
+  settings: {
+    description: 'Community site projects',
+    forceId: false,
+  }
+})
 export class ProjectLink extends Entity {
   @property({
     type: 'number',

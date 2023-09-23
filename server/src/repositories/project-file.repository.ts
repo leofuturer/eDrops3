@@ -12,7 +12,7 @@ import { Project, ProjectFile, ProjectFileRelations } from '../models';
 import { STORAGE_DIRECTORY } from '../services';
 import { ProjectRepository } from './project.repository';
 
-const CONTAINER_NAME = process.env.S3_BUCKET_NAME ?? 'edrop-v2-files';
+const CONTAINER_NAME = process.env.S3_BUCKET_NAME ?? 'edroplets-files';
 
 export class ProjectFileRepository extends DefaultCrudRepository<
   ProjectFile,
