@@ -202,12 +202,6 @@ class UserResource extends Resource<User> {
     });
   }
 
-  async downloadProjectFile(id: typeof User.prototype.id, projectFileId: typeof ProjectFile.prototype.id): Promise<void> {
-    request<string>(`${this.baseURL}/${id}/projects/${projectFileId}/download`, 'GET', {}).then((res) => {
-      download(res);
-    });
-  }
-
   async getUserProfile(id: typeof User.prototype.id) {
     return request<DTO<User>>(`${this.baseURL}/${id}/user-profile`, 'GET', {}).then((res) => {
       return res.data;
