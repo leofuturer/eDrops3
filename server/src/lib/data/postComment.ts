@@ -32,4 +32,22 @@ export const defaultPostComments: Partial<PostComment>[] = [
     userId: 'aaaaaaaa-aaaa-aaaa-bbbb-aaaaaaaaaaaa',
     top: true,
   },
+  {
+    content: 'You may want to try surfactants mentioned in this paper, which seem to be quite promising: https://pubs.acs.org/doi/10.1021/acsami.2c17317',
+    datetime: new Date(Date.now() - 1000 * 60 * 37),
+    likes: 0,
+    postId: 5,
+    author: 'LeoDMF',
+    userId: 'aaaaaaaa-aaaa-aaaa-gggg-aaaaaaaaaaaa',
+    top: true,
+  },
+  {
+    content: 'These two were pretty helpful to me:\nhttps://iopscience.iop.org/\narticle/10.1088/0953-8984/17/28/R01\nhttps://www.tandfonline.com/doi/full/10.1163/156856111X599562',
+    datetime: new Date(Date.now() - 1000 * 60 * 37),
+    likes: 0,
+    postId: 8,
+    author: 'LeoDMF',
+    userId: 'aaaaaaaa-aaaa-aaaa-gggg-aaaaaaaaaaaa',
+    top: true,
+  },
 ];
