@@ -8,6 +8,12 @@ class ProjectFileResource extends Resource<ProjectFile> {
 		super("/project-files");
 	}
 
+  async getBlob(projectFileId: typeof ProjectFile.prototype.id): Promise<string> {
+    return request<string>(`${this.baseURL}/${projectFileId}/download`, 'GET', {}).then((res) => {
+      return res.data;
+    });
+  }
+
 	async download(projectFileId: typeof ProjectFile.prototype.id): Promise<void> {
     request<string>(`${this.baseURL}/${projectFileId}/download`, 'GET', {}).then((res) => {
       download(res);

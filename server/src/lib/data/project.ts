@@ -78,4 +78,15 @@ export const defaultProjects: Partial<Project>[] = [
     likes: 0,
     comments: 0,
   },
+  {
+    id: 8,
+    userId: 'aaaaaaaa-aaaa-aaaa-iiii-aaaaaaaaaaaa',
+    author: 'Mark',
+    title: 'Paper EWOD with four reagent delivery paths',
+    content:
+      'This chip can be used for on-chip mixing with ring-shape electrodes as well as a concentric heater for temperature control. Both ITO and gold were tested to make EWOD electrodes. This chip can be operated by a custom-built control circuit.',
+    datetime: new Date(Date.now() - 1000 * 60 * 60 * 9),
+    likes: 0,
+    comments: 0,
+  },
 ];
