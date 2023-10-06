@@ -19,7 +19,7 @@ import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import { api } from "@edroplets/api";
 import { useCookies } from "react-cookie";
 
-function NavTop() {
+export function NavTop() {
 	const navigate = useNavigate();
   const location = useLocation();
 	const [notLoggedIn, setNotLoggedIn] = useState(true);
@@ -46,7 +46,7 @@ function NavTop() {
 
 	return (
 		<div className="">
-			<header className="flex flex-row items-center bg-sky-800 h-[80px] w-full text-white px-4 justify-between">
+			<header className="flex flex-row items-center bg-sky-800 h-[80px] w-full text-white px-32 justify-between">
 				<div id="navLeft">
 					<NavLink
 						to="/"

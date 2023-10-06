@@ -68,7 +68,7 @@ export function Projects() {
 	useEffect(() => debounceSearch.cancel());
 
 	return (
-		<section className="min-h-full bg-slate-200 grid grid-cols-4">
+		<section className="min-h-full bg-slate-200 grid grid-cols-4 px-20">
 			<ProfilePreview />
 			<div className="col-span-2 flex flex-col">
 				<div className="w-full flex flex-row py-4 h-20 space-x-4">

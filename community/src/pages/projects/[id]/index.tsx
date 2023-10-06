@@ -25,6 +25,7 @@ export function Project() {
 	const [saved, setSaved] = useState<boolean>(false);
 	const [liked, setLiked] = useState<boolean>(false);
 	const [expanded, setExpanded] = useState<boolean>(false);
+	const [imageIds, setImageIds] = useState<number[]>([]);
 
 	const [newComment, setNewComment] = useState<string>("");
 	const [comments, setComments] = useState<CommentType[]>([]);
@@ -39,6 +40,14 @@ export function Project() {
 			setLoading(false);
 		}
 		);
+	}, [id]);
+
+	useEffect(() => {
+		api.project.getProjectFiles(parseInt(id as string)).then((files) => {
+			const images = files.filter((file) => file.fileType === "image");
+			const imageIds = images.map(image => image.id as number);
+			setImageIds(imageIds);
+		})
 	}, [id]);
 
 	// Fetch comments and sort based on time
@@ -137,7 +146,7 @@ export function Project() {
 
 	const projectFiles = currentProject?.projectFiles?.map((projectFile) => {
 		return (
-			<li key={projectFile.id} className="text-sky-700">
+			<li key={projectFile.id} className="text-sky-700 bg-white p-2 shadow-lg rounded-sm">
 				<p
 					className="cursor-pointer"
 					onClick={() => handleDownload(projectFile.id as number)}
@@ -189,12 +198,17 @@ export function Project() {
 								{timeAgo(new Date(currentProject.datetime))}
 							</p>
 						</div>
+						{imageIds.length > 0 &&
+							<div className="w-full h-40 rounded-t-2xl">
+								<img src={`/api/project-files/${imageIds[0]}/download`} alt={currentProject.title} className="w-full h-full rounded-2xl" />
+							</div>
+						}
 						<div>{currentProject?.content}</div>
 						<div>
 							<h3 className="underline underline-offset-4 text-xl mb-2">
 								Files
 							</h3>
-							<ul className="flex flex-col space-y-2">
+							<ul className="flex flex-col divide-y">
 								{projectFiles}
 							</ul>
 						</div>
