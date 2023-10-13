@@ -71,13 +71,13 @@ export function NewForum() {
 					<PhotoIcon className="h-6 w-6" />
 					<p>Image</p>
 				</button>
-				<button
+				{/* <button
 					type="button"
 					className="bg-slate-400 text-black rounded-lg shadow-lg flex flex-row space-x-2 justify-center items-center p-4"
 				>
 					<VideoCameraIcon className="h-6 w-6" />
 					<p>Video</p>
-				</button>
+				</button> */}
 				<button
 					type="button"
 					className="bg-slate-400 text-black rounded-lg shadow-lg flex flex-row space-x-2 justify-center items-center p-4"

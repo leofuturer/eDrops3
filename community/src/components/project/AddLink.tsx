@@ -38,7 +38,7 @@ function AddLink({
 	}
 
 	return (
-		<div className="min-h-1/2 w-1/2 bg-slate-200 rounded-xl flex flex-col space-y-2 p-4 text-slate-400">
+		<>
 			<div className="flex-grow flex flex-col space-y-2 justify-center items-center border-dashed border-2 p-4 border-black/25">
 				<LinkIcon className="h-24 w-24" />
 				<p className="text-2xl">Add Link</p>
@@ -96,7 +96,7 @@ function AddLink({
 			>
 				Next
 			</button>
-		</div>
+		</>
 	);
 }
 

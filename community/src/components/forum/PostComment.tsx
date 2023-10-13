@@ -14,7 +14,7 @@ function PostComment({ comment } : {comment: CommentType }) {
 	const [comments, setComments] = useState<CommentType[]>([]);
 	const [expanded, setExpanded] = useState<boolean>(false);
 
-	const [newComment, setNewComment] = useState<string>("");
+	const [newComment, setNewComment] = useState<string>(""); // eventually debounce this
 
 	const [cookies] = useCookies(["userId"]);
 
@@ -55,6 +55,32 @@ function PostComment({ comment } : {comment: CommentType }) {
 		setExpanded(!expanded);
 	}
 
+	function needAuth(f: Function) {
+		if (!cookies.userId) {
+			navigate("/login");
+		} else {
+			f();
+		}
+	}
+
+	function handleOpen() {
+		setExpanded(!expanded);
+	}
+
+	function handleLike() {
+		if(!comment.id || !cookies.userId) return;
+		api.postComment.update(comment.id, { likes: comment.likes + 1 })
+			.then((res) => {
+				// @ts-ignore
+				currentPost.likes += 1;
+			})
+			.catch((err: AxiosError) => {
+				if (err.message === "No access token found") {
+					navigate("/login");
+				}
+			});
+	}
+
 	return (
 		<div
 			className={`flex flex-col space-y-2 ${
@@ -70,7 +96,7 @@ function PostComment({ comment } : {comment: CommentType }) {
 				</h3>
 				<p>{comment.content}</p>
 				<div className="flex flex-row space-x-4">
-					<div className="flex flex-row space-x-2">
+					<div className="flex flex-row space-x-2 cursor-pointer" onClick={() => needAuth(handleLike)}>
 						<HandThumbUpIcon className="w-5 h-5" />
 						<p>{comment.likes}</p>
 					</div>
@@ -78,7 +104,7 @@ function PostComment({ comment } : {comment: CommentType }) {
 						<ArrowUturnLeftIcon className="w-5 h-5" />
 						<button
 							type="button"
-							onClick={() => setExpanded(!expanded)}
+							onClick={() => needAuth(handleOpen)}
 						>
 							Reply
 						</button>

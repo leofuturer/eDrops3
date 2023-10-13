@@ -1,9 +1,11 @@
 import AddLink from "@/components/project/AddLink";
 import FileUpload from "@/components/project/FileUpload";
+import ImageUpload from "@/components/project/ImageUpload";
 import { Project, ProjectFile, api } from "@edroplets/api";
 import {
 	LinkIcon,
 	PaperClipIcon,
+	PhotoIcon,
 	XMarkIcon
 } from "@heroicons/react/24/solid";
 import { AxiosError } from "axios";
@@ -15,7 +17,7 @@ import { useNavigate } from "react-router-dom";
 export function NewProject() {
 	const [title, setTitle] = useState("");
 	const [content, setContent] = useState("");
-	const [modalType, setModalType] = useState<"link" | "file">("file");
+	const [modalType, setModalType] = useState<typeof ProjectFile.prototype.fileType | "link">("attachment");
 	const [showModal, setShowModal] = useState(false);
 	const [files, setFiles] = useState<ProjectFile[]>([]);
 	const [links, setLinks] = useState<string[]>([]);
@@ -64,13 +66,16 @@ export function NewProject() {
 			});
 	}
 
-	function handleImage() { }
+	function handleImage() { 
+		setModalType("image");
+		setShowModal(true);
+	}
 
 	function handleVideo() { }
 
 	// Since the project hasn't been created yet, we should upload the files, then link them to the project after creation?
 	function handleFile() {
-		setModalType("file");
+		setModalType("attachment");
 		setShowModal(true);
 	}
 
@@ -158,7 +163,7 @@ export function NewProject() {
 					))}
 				</ul>
 				<div className="grid grid-cols-6 gap-2">
-					{/* <button
+					<button
 						type="button"
 						className="bg-slate-400 text-black rounded-lg shadow-lg flex flex-row space-x-2 justify-center items-center p-4"
 						onClick={handleImage}
@@ -166,7 +171,7 @@ export function NewProject() {
 						<PhotoIcon className="h-6 w-6" />
 						<p>Image</p>
 					</button>
-					<button
+					{/*<button
 						type="button"
 						className="bg-slate-400 text-black rounded-lg shadow-lg flex flex-row space-x-2 justify-center items-center p-4"
 						onClick={handleVideo}
@@ -202,20 +207,26 @@ export function NewProject() {
 			{showModal && (
 				<div
 					id="modal"
-					className="absolute inset-0 bg-slate-900 bg-opacity-50 z-50 flex items-center justify-center"
+					className="absolute inset-0 bg-slate-900 bg-opacity-50 z-40 flex items-center justify-center" onClick={() => setShowModal(false)}
 				>
-					{modalType === "file" && (
-						<FileUpload
-							handleClose={() => setShowModal(false)}
-							addFiles={(files) => handleAddFiles(files)}
-						/>
-					)}
-					{modalType === "link" && (
-						<AddLink
-							handleClose={() => setShowModal(false)}
-							addLinks={(links) => handleAddLinks(links)}
-						/>
-					)}
+					<div className="z-50 min-h-1/2 w-1/2 bg-slate-200 rounded-xl flex flex-col space-y-2 p-4 text-slate-400" onClick={(e) => e.stopPropagation()}>
+						{modalType === "attachment" && (
+							<FileUpload
+								handleClose={() => setShowModal(false)}
+								addFiles={(files) => handleAddFiles(files)}
+							/>
+						)}
+						{modalType === "link" && (
+							<AddLink
+								handleClose={() => setShowModal(false)}
+								addLinks={(links) => handleAddLinks(links)}
+							/>
+						)}
+						{modalType === "image" && (
+							<ImageUpload handleClose={() => setShowModal(false)}
+								addFiles={(files) => handleAddFiles(files)} />
+						)}
+					</div>
 				</div>
 			)}
 		</>
