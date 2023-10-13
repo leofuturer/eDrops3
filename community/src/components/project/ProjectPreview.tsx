@@ -23,8 +23,8 @@ function ProjectPreview({ project }: { project: ProjectType }) {
 			className="w-full flex flex-col items-center cursor-pointer rounded-2xl mb-4 bg-white shadow-2xl"
 		>
 			{coverImageId !== -1 &&
-				<div className="w-full h-80 max-h-40 flex justify-center bg-gray-900 rounded-t-2xl">
-					<img src={`/api/project-files/${coverImageId}/download`} alt={project.title} className="h-full" />
+				<div className="h-full w-full max-h-80 flex justify-center bg-gray-900 rounded-t-2xl">
+					<img src={`/api/project-files/${coverImageId}/download`} alt={project.title} className="h-full max-h-80" />
 				</div>
 			}
 			<div className="w-full flex flex-col p-4">

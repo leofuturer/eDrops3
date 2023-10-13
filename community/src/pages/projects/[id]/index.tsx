@@ -1,4 +1,5 @@
 import {
+	ArrowDownIcon,
 	BookmarkIcon,
 	ChatBubbleBottomCenterTextIcon,
 	ChatBubbleLeftRightIcon,
@@ -140,26 +141,33 @@ export function Project() {
 		setExpanded(!expanded);
 	}
 
+	function handleDownloadAll() {
+		currentProject?.projectFiles?.forEach((projectFile) => {
+			api.projectFile.download(projectFile.id as number);
+		});
+	}
+
 	function handleDownload(fileId: number) {
 		api.projectFile.download(fileId);
 	}
 
 	const projectFiles = currentProject?.projectFiles?.map((projectFile) => {
 		return (
-			<li key={projectFile.id} className="text-sky-700 bg-white p-2 shadow-lg rounded-sm">
+			<li key={projectFile.id} className="text-sky-700 bg-white p-2 shadow-lg rounded-sm flex justify-between">
 				<p
 					className="cursor-pointer"
 					onClick={() => handleDownload(projectFile.id as number)}
 				>
 					{projectFile.fileName}
 				</p>
+				<ArrowDownIcon className="w-6 h-6 cursor-pointer" />
 			</li>
 		);
 	});
 
 	const projectLinks = currentProject?.projectLinks?.map((projectLink) => {
 		return (
-			<li key={projectLink.id} className="text-sky-700">
+			<li key={projectLink.id} className="text-sky-700 bg-white p-2 shadow-lg rounded-sm">
 				<a href={projectLink.link} target="_blank" rel="noreferrer">
 					{projectLink.link}
 				</a>
@@ -199,27 +207,42 @@ export function Project() {
 							</p>
 						</div>
 						{imageIds.length > 0 &&
-							<div className="w-full h-40 rounded-t-2xl">
-								<img src={`/api/project-files/${imageIds[0]}/download`} alt={currentProject.title} className="w-full h-full rounded-2xl" />
+							<div className="h-full w-full max-h-80 flex justify-center bg-gray-900 rounded-2xl">
+								<img src={`/api/project-files/${imageIds[0]}/download`} alt={currentProject.title} className="h-full max-h-80" />
 							</div>
 						}
+						{/* {imageIds.slice(1).map((imageId) => (
+							<img src={`/api/project-files/${imageId}/download`} alt={currentProject.title} className="h-full max-h-80" />
+						))} */}
 						<div>{currentProject?.content}</div>
-						<div>
-							<h3 className="underline underline-offset-4 text-xl mb-2">
-								Files
-							</h3>
-							<ul className="flex flex-col divide-y">
-								{projectFiles}
-							</ul>
-						</div>
-						<div>
-							<h3 className="underline underline-offset-4 text-xl mb-2">
-								Links
-							</h3>
-							<ul className="flex flex-col space-y-2">
-								{projectLinks}
-							</ul>
-						</div>
+						{currentProject.projectFiles &&
+							<div className="flex flex-col">
+								<div className=" flex justify-between items-center">
+									<h3 className="text-xl mb-2">
+										Files
+									</h3>
+									<button type="button" onClick={() => handleDownloadAll()} className="bg-primary text-white rounded-md p-2 hidden lg:flex items-center justify-center space-x-2 mb-2">
+										<p>Download All</p>
+										<ArrowDownIcon className="w-6 h-6" />
+									</button>
+								</div>
+								<hr className="border-1 border-gray-800 cursor-pointer mb-2 " />
+								<ul className="flex flex-col divide-y">
+									{projectFiles}
+								</ul>
+							</div>
+						}
+						{currentProject.projectLinks &&
+							<div className="flex flex-col ">
+								<h3 className="text-xl mb-2">
+									Links
+								</h3>
+								<hr className="border-1 border-gray-800 cursor-pointer mb-2 " />
+								<ul className="flex flex-col space-y-2">
+									{projectLinks}
+								</ul>
+							</div>
+						}
 						<div className="flex flex-row space-x-4">
 							<div
 								className="flex flex-row space-x-2 cursor-pointer"
