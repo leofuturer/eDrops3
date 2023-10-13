@@ -130,6 +130,14 @@ export function Post() {
 		setExpanded(!expanded);
 	}
 
+	function needAuth(f: Function) {
+		if (!cookies.userId) {
+			navigate("/login");
+		} else {
+			f();
+		}
+	}
+
 	return (
 		<section className="relative bg-slate-200 min-h-full py-10 grid grid-cols-5">
 			<div className="flex flex-col items-center">
@@ -165,7 +173,7 @@ export function Post() {
 						<div className="flex flex-row space-x-4">
 							<div
 								className="flex flex-row space-x-2 cursor-pointer"
-								onClick={handleLike}
+								onClick={() => needAuth(handleLike)}
 							>
 								<HandThumbUpIcon
 									className={`w-6 h-6 cursor-pointer ${liked ? "fill-black" : ""
@@ -181,7 +189,7 @@ export function Post() {
 							</div> */}
 							<div
 								className="flex flex-row space-x-2 cursor-pointer"
-								onClick={() => setExpanded(!expanded)}
+								onClick={() => needAuth(() => setExpanded(!expanded))}
 							>
 								<ChatBubbleBottomCenterTextIcon className="w-6 h-6" />
 								<p className="text-md">Comment</p>

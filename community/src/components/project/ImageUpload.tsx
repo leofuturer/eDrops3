@@ -7,7 +7,7 @@ import { useCookies } from "react-cookie";
 import { FileWithPath, useDropzone } from "react-dropzone";
 import { useNavigate } from "react-router-dom";
 
-function FileUpload({
+function ImageUpload({
 	handleClose,
 	addFiles,
 }: {
@@ -21,9 +21,7 @@ function FileUpload({
 	const { acceptedFiles, fileRejections, getRootProps, getInputProps } =
 		useDropzone({
 			accept: {
-				"application/octet-stream": [".dxf"],
-				// Note: need to determine MIME type for actual DXF files
-				// Currently using generic 'application/octet-stream' for all files
+				"image/*": [".png", ".jpg", ".jpeg"],
 			},
 			maxSize: 30 * 1000 * 1000, // 30 MB
 			onDropAccepted(droppedFiles, event) {
@@ -111,4 +109,4 @@ function FileUpload({
 	);
 }
 
-export default FileUpload;
+export default ImageUpload;

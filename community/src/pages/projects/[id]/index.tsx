@@ -106,7 +106,7 @@ export function Project() {
 						: currentProject.likes - 1;
 				})
 				.catch((err: AxiosError) => {
-					if (err.message === "No access token found") {
+					if (err.status === 401) {
 						navigate("/login");
 					}
 					// console.log(err);
@@ -114,6 +114,14 @@ export function Project() {
 		}
 		else {
 			navigate("/projects");
+		}
+	}
+
+	function needAuth(f: Function) {
+		if (!cookies.userId) {
+			navigate("/login");
+		} else {
+			f();
 		}
 	}
 
@@ -195,7 +203,7 @@ export function Project() {
 								<BookmarkIcon
 									className={`w-10 h-10 cursor-pointer ${saved ? "fill-black" : ""
 										}`}
-									onClick={handleSave}
+									onClick={() => needAuth(handleSave)}
 								/>
 							</div>
 							<p className="text-md">
@@ -246,7 +254,7 @@ export function Project() {
 						<div className="flex flex-row space-x-4">
 							<div
 								className="flex flex-row space-x-2 cursor-pointer"
-								onClick={handleLike}
+								onClick={() => needAuth(handleLike)}
 							>
 								<HandThumbUpIcon
 									className={`w-6 h-6 cursor-pointer ${liked ? "fill-black" : ""
@@ -264,7 +272,7 @@ export function Project() {
 							</div> */}
 							<div
 								className="flex flex-row space-x-2 cursor-pointer"
-								onClick={() => setExpanded(!expanded)}
+								onClick={() => needAuth(() => setExpanded(!expanded))}
 							>
 								<ChatBubbleBottomCenterTextIcon className="w-6 h-6" />
 								<p className="text-md">Comment</p>
