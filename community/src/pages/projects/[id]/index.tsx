@@ -168,7 +168,7 @@ export function Project() {
 				>
 					{projectFile.fileName}
 				</p>
-				<ArrowDownIcon className="w-6 h-6 cursor-pointer" />
+				<ArrowDownIcon className="w-6 h-6 cursor-pointer" onClick={() => handleDownload(projectFile.id as number)} />
 			</li>
 		);
 	});

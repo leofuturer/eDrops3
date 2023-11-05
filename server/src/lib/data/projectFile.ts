@@ -26,7 +26,7 @@ export const defaultProjectFiles: Partial<ProjectFile>[] = [
     fileSize: '171 KB',
     isDeleted: false,
     container: 'edroplets-files',
-    fileType: 'attachment',
+    fileType: 'image',
     isPublic: true,
   },
   {
