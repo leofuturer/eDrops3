@@ -48,7 +48,7 @@ function PostPreview({ post }: { post: Post }) {
 					/>
 				</div>
 				<div className="flex flex-row space-x-2 items-center">
-					<div className="flex items-center"><UserCircleIcon className="h-6" /><h3>{post.author}</h3></div>
+					<div className="flex items-center space-x-1"><UserCircleIcon className="h-6 text-gray-500" /><h3>{post.author}</h3></div>
 					<p>&#183;</p>
 					<p>{new Date(post.datetime).toLocaleDateString()}</p>
 				</div>
