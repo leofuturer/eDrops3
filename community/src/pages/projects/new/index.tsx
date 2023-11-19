@@ -80,9 +80,15 @@ export function NewProject() {
 	}
 
 	function handleAddFiles(newFiles: ProjectFile[]) {
-		const union = [...new Set([...files, ...newFiles])];
+		console.log(newFiles)
+		// const union = [...new Set([...files, ...newFiles])];
+		const union = [...files, ...newFiles];
 		setFiles(union);
 	}
+
+	useEffect(() => {
+		console.log(files);
+	}, [files]);
 
 	function handleLink() {
 		setModalType("link");
@@ -100,8 +106,9 @@ export function NewProject() {
 
 	return (
 		<>
-			<section className="bg-slate-200 h-[calc(100vh-80px)] py-20 px-40 flex flex-col space-y-4">
-				<div className="flex flex-col space-y-4 h-full">
+			<section className="bg-slate-200 h-[calc(100vh-80px)] py-20 px-40 grid grid-rows-4 space-y-4">
+				{JSON.stringify(files)}
+				<div className="flex flex-col space-y-4 row-span-3">
 					<input
 						type="text"
 						value={title}
@@ -116,7 +123,7 @@ export function NewProject() {
 						onChange={(e) => setContent(e.target.value)}
 					/>
 				</div>
-				<ul className="flex flex-col space-y-4 min-h-fit py-4 max-h-40 pr-4 overflow-y-scroll">
+				<ul className="flex flex-col space-y-4 min-h-fit py-4 max-h-40 pr-4 overflow-y-auto">
 					{files.map((file) => (
 						<li
 							className="bg-white rounded-lg flex flex-row justify-between p-2"
