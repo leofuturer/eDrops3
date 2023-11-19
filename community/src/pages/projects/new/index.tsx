@@ -80,9 +80,9 @@ export function NewProject() {
 	}
 
 	function handleAddFiles(newFiles: ProjectFile[]) {
-		console.log(newFiles)
-		// const union = [...new Set([...files, ...newFiles])];
-		const union = [...files, ...newFiles];
+		// console.log(newFiles)
+		const union = [...new Set([...files, ...newFiles])];
+		// const union = [...files, ...newFiles];
 		setFiles(union);
 	}
 
@@ -107,7 +107,6 @@ export function NewProject() {
 	return (
 		<>
 			<section className="bg-slate-200 h-[calc(100vh-80px)] py-20 px-40 grid grid-rows-4 space-y-4">
-				{JSON.stringify(files)}
 				<div className="flex flex-col space-y-4 row-span-3">
 					<input
 						type="text"

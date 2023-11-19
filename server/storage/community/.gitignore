@@ -1,5 +1,6 @@
 *.dxf
 *.jpg
+*.png
 
 # Don't ignore seed data
 !glass EWOD basic operations.dxf 
