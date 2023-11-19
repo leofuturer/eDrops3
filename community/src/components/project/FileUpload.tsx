@@ -83,7 +83,7 @@ function FileUpload({
 			<div
 				{...getRootProps({
 					className:
-						"dropzone flex-grow flex flex-col justify-center items-center border-dashed border-2 border-black/25",
+						"dropzone flex-grow flex flex-col justify-center items-center border-dashed border-2 border-black/25 py-4",
 				})}
 			>
 				<input {...getInputProps()} />
