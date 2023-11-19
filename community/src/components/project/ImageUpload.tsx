@@ -45,6 +45,7 @@ function ImageUpload({
 				formData.append("community", file);
 			});
 			api.user.uploadProjectFiles(cookies.userId, formData).then((files) => {
+					// console.log("In image upload modal:", files);
 					addFiles(files);
 					return files;
 				})

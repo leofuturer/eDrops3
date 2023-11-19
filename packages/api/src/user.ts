@@ -62,10 +62,10 @@ class UserResource extends Resource<User> {
   }
 
   async uploadProjectFiles(id: typeof User.prototype.id, formData: FormData): Promise<DTO<ProjectFile>[]> {
-    return request<DTO<ProjectFile>[]>(`${this.baseURL}/${id}/project-files`, 'POST', formData, {
+    return request<{fileInfo: DTO<ProjectFile>[]}>(`${this.baseURL}/${id}/project-files`, 'POST', formData, {
       'Content-Type': 'multipart/form-data'
     }).then((res) => {
-      return res.data;
+      return res.data.fileInfo;
     });
   }
 
