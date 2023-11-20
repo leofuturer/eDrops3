@@ -23,6 +23,7 @@ import {
   UserRepository
 } from '../repositories';
 import { FILE_UPLOAD_SERVICE, STORAGE_DIRECTORY } from '../services';
+import { authenticate } from '@loopback/authentication';
 
 export class ProjectProjectFileController {
   constructor(
@@ -55,6 +56,51 @@ export class ProjectProjectFileController {
     return this.projectRepository.projectFiles(id).find(filter);
   }
 
+  @authenticate('jwt')
+  @post('/users/{id}/project-images', {
+    responses: {
+      '200': {
+        description: 'Project model instance',
+        content: {'application/json': {schema: getModelSchemaRef(ProjectFile)}},
+      },
+    },
+  })
+  async imageUpload(
+    @param.path.string('id') id: typeof User.prototype.id,
+    @requestBody.file() request: Request,
+    @inject(RestBindings.Http.RESPONSE) response: Response,
+  ): Promise<object> {
+    const username = await this.userRepository.findById(id).then(user => {
+      return user.username;
+    });
+    return new Promise<object>((resolve, reject) => {
+      this.handler(request, response, async (err: unknown) => {
+        if (err) reject(err);
+        else {
+          const res =
+            process.env.NODE_ENV !== 'production'
+              ? await this.projectFileRepository.uploadFileDisk(
+                  request,
+                  response,
+                  username as string,
+                  id as string,
+                  "image"
+                )
+              : await this.projectFileRepository.uploadFileS3(
+                  request,
+                  response,
+                  username as string,
+                  id as string,
+                  "image"
+                );
+          // console.log(res);
+          resolve(res);
+        }
+      });
+    });
+  }
+
+  @authenticate('jwt')
   @post('/users/{id}/project-files', {
     responses: {
       '200': {

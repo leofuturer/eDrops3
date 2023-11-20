@@ -55,6 +55,7 @@ export class ProjectFileRepository extends DefaultCrudRepository<
     response: Response,
     username: string,
     userId: string,
+    fileType: "attachment" | "image" = "attachment",
   ): Promise<object> {
     const mapper = (f: Express.Multer.File) => ({
       fieldname: f.fieldname,
@@ -86,7 +87,7 @@ export class ProjectFileRepository extends DefaultCrudRepository<
           container: CONTAINER_NAME, // need fix
           isDeleted: false,
           isPublic: request.body.isPublic === 'public',
-          fileType: 'attachment',
+          fileType: fileType,
           fileSize: calculate.formatBytes(f.size as number, 1),
           uploader: username,
           userId: userId,
@@ -104,6 +105,7 @@ export class ProjectFileRepository extends DefaultCrudRepository<
     response: Response,
     username: string,
     userId: string,
+    fileType: "attachment" | "image" = "attachment",
   ): Promise<object> {
     const mapper = (f: Express.MulterS3.File) => ({
       fieldname: f.fieldname,
@@ -138,7 +140,7 @@ export class ProjectFileRepository extends DefaultCrudRepository<
           container: CONTAINER_NAME, // need fix
           isDeleted: false,
           isPublic: request.body.isPublic === 'public',
-          fileType: 'attachment',
+          fileType: fileType,
           fileSize: calculate.formatBytes(f.size as number, 1),
           uploader: username,
           userId: userId,

@@ -69,6 +69,14 @@ class UserResource extends Resource<User> {
     });
   }
 
+  async uploadProjectImages(id: typeof User.prototype.id, formData: FormData): Promise<DTO<ProjectFile>[]> {
+    return request<{fileInfo: DTO<ProjectFile>[]}>(`${this.baseURL}/${id}/project-images`, 'POST', formData, {
+      'Content-Type': 'multipart/form-data'
+    }).then((res) => {
+      return res.data.fileInfo;
+    });
+  }
+
   async getPosts(id: typeof User.prototype.id): Promise<DTO<Post>[]> {
     return request<DTO<Post>[]>(`${this.baseURL}/${id}/posts`, 'GET', {}).then((res) => {
       return res.data;
