@@ -86,10 +86,6 @@ export function NewProject() {
 		setFiles(union);
 	}
 
-	useEffect(() => {
-		console.log(files);
-	}, [files]);
-
 	function handleLink() {
 		setModalType("link");
 		setShowModal(true);
