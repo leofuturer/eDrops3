@@ -64,7 +64,7 @@ export function Forum() {
 	useEffect(() => debounceSearch.cancel());
 
 	return (
-		<section className="bg-slate-200 min-h-full grid grid-cols-4">
+		<section className="bg-slate-200 min-h-full grid grid-cols-4 px-20">
 			<ProfilePreview />
 			<div className="col-span-2 flex flex-col">
 				<div className="w-full flex flex-row py-4 h-20 space-x-4">
