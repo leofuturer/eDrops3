@@ -1,21 +1,21 @@
 version: "3.9"
 
-# https://start.jcolemorrison.com/authorized-resources-and-database-migrations-with-strongloops-loopback/
-
 services:
-  edrop_backend:
+  backend:
     env_file:
       - ./deploy/prod/backend.env
+    environment:
+      - PROD_RESET_DATABASE=$PROD_RESET_DATABASE
     depends_on:
-      - edrop_caddy
+      - caddy
   
-  edrop_caddy:
+  caddy:
     build: 
       context: .
       dockerfile: Dockerfile
     env_file:
       - ./deploy/prod/caddy.env
-    container_name: edrop_caddy
+    container_name: edroplets_caddy
     restart: unless-stopped
     ports:
       - 80:80

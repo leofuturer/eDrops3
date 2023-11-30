@@ -1,10 +1,6 @@
-import { LinkIcon, PaperClipIcon, PlusIcon } from "@heroicons/react/outline";
-import { XIcon } from "@heroicons/react/solid";
-import Cookies from "js-cookie";
-import React, { useCallback, useState } from "react";
-import { useDropzone, FileWithPath, FileError } from "react-dropzone";
-import { ProjectFile } from "../../../../server/src/models";
-import { uploadFiles } from "../../api/file";
+import { LinkIcon, PlusIcon } from "@heroicons/react/24/outline";
+import { XMarkIcon } from "@heroicons/react/24/solid";
+import { useState } from "react";
 import { validateURL } from "../../lib/url";
 
 function AddLink({
@@ -42,13 +38,14 @@ function AddLink({
 	}
 
 	return (
-		<div className="min-h-1/2 w-1/2 bg-slate-200 rounded-xl flex flex-col space-y-2 p-4 text-slate-400">
+		<>
 			<div className="flex-grow flex flex-col space-y-2 justify-center items-center border-dashed border-2 p-4 border-black/25">
 				<LinkIcon className="h-24 w-24" />
 				<p className="text-2xl">Add Link</p>
 				<div className="flex flex-row space-x-2 w-2/3">
 					<label className="flex flex-col justify-center items-center w-full">
 						<input
+							title="Input link"
 							type="text"
 							name="link"
 							className="focus:outline-none p-2 w-full"
@@ -82,7 +79,7 @@ function AddLink({
 							>
 								{link}
 							</a>
-							<XIcon
+							<XMarkIcon
 								className="h-6 w-6 cursor-pointer"
 								onClick={() =>
 									setLinks(links.filter((l) => l !== link))
@@ -99,7 +96,7 @@ function AddLink({
 			>
 				Next
 			</button>
-		</div>
+		</>
 	);
 }
 

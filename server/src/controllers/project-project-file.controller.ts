@@ -23,6 +23,7 @@ import {
   UserRepository
 } from '../repositories';
 import { FILE_UPLOAD_SERVICE, STORAGE_DIRECTORY } from '../services';
+import { authenticate } from '@loopback/authentication';
 
 export class ProjectProjectFileController {
   constructor(
@@ -36,7 +37,7 @@ export class ProjectProjectFileController {
     @inject(STORAGE_DIRECTORY) private storageDirectory: string,
   ) {}
 
-  @get('/projects/{id}/projectFiles', {
+  @get('/projects/{id}/project-files', {
     responses: {
       '200': {
         description: 'Array of Project has many ProjectFile',
@@ -55,7 +56,52 @@ export class ProjectProjectFileController {
     return this.projectRepository.projectFiles(id).find(filter);
   }
 
-  @post('/users/{id}/projectFiles', {
+  @authenticate('jwt')
+  @post('/users/{id}/project-images', {
+    responses: {
+      '200': {
+        description: 'Project model instance',
+        content: {'application/json': {schema: getModelSchemaRef(ProjectFile)}},
+      },
+    },
+  })
+  async imageUpload(
+    @param.path.string('id') id: typeof User.prototype.id,
+    @requestBody.file() request: Request,
+    @inject(RestBindings.Http.RESPONSE) response: Response,
+  ): Promise<object> {
+    const username = await this.userRepository.findById(id).then(user => {
+      return user.username;
+    });
+    return new Promise<object>((resolve, reject) => {
+      this.handler(request, response, async (err: unknown) => {
+        if (err) reject(err);
+        else {
+          const res =
+            process.env.NODE_ENV !== 'production'
+              ? await this.projectFileRepository.uploadFileDisk(
+                  request,
+                  response,
+                  username as string,
+                  id as string,
+                  "image"
+                )
+              : await this.projectFileRepository.uploadFileS3(
+                  request,
+                  response,
+                  username as string,
+                  id as string,
+                  "image"
+                );
+          // console.log(res);
+          resolve(res);
+        }
+      });
+    });
+  }
+
+  @authenticate('jwt')
+  @post('/users/{id}/project-files', {
     responses: {
       '200': {
         description: 'Project model instance',
@@ -97,7 +143,7 @@ export class ProjectProjectFileController {
   }
 
   @oas.response.file()
-  @get('/users/{id}/projectFiles/{fileId}', {
+  @get('/users/{id}/project-files/{fileId}', {
     responses: {
       '200': {
         description: 'Download a file',
@@ -124,7 +170,34 @@ export class ProjectProjectFileController {
       : this.projectFileRepository.downloadFileS3(filename, response);
   }
 
-  @patch('/users/{id}/projectFiles/{fileId}', {
+  @oas.response.file()
+  @get('/project-files/{fileId}/download', {
+    responses: {
+      '200': {
+        description: 'Download a file',
+        content: {
+          'application/json': {
+            schema: {type: 'array', items: getModelSchemaRef(ProjectFile)},
+          },
+        },
+      },
+    },
+  })
+  async downloadProjectFile(
+    @param.path.number('fileId') fileId: typeof ProjectFile.prototype.id,
+    @inject(RestBindings.Http.RESPONSE) response: Response,
+  ): Promise<Response> {
+    const filename = await this.projectFileRepository
+      .findById(fileId)
+      .then(file => {
+        return file.containerFileName;
+      });
+    return process.env.NODE_ENV !== 'production'
+      ? this.projectFileRepository.downloadFileDisk(filename, response)
+      : this.projectFileRepository.downloadFileS3(filename, response);
+  }
+
+  @patch('/users/{id}/project-files/{fileId}', {
     responses: {
       '200': {
         description: 'Project.ProjectFile PATCH success count',
@@ -147,7 +220,7 @@ export class ProjectProjectFileController {
     return this.projectFileRepository.updateById(fileId, projectFile);
   }
 
-  @del('/users/{id}/projectFiles/{fileId}', {
+  @del('/users/{id}/project-files/{fileId}', {
     responses: {
       '200': {
         description: 'Project.ProjectFile DELETE success count',

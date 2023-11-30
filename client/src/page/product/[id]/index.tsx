@@ -1,4 +1,4 @@
-import { api } from '@/api';
+import { api } from '@edroplets/api';
 import Loading from '@/component/ui/Loading';
 import { CartContext } from '@/context/CartContext';
 import {

@@ -106,9 +106,8 @@ export class EdropsBackendApplication extends BootMixin(
     }
 
     // Seed database if environmental variable is set
-    if (
-      process.env.RESET_DATABASE === 'Yes' &&
-      process.env.NODE_ENV !== 'production'
+    if ((process.env.RESET_DATABASE === 'Yes' &&
+      process.env.NODE_ENV !== 'production') || (process.env.PROD_RESET_DATABASE === 'Yes' && process.env.NODE_ENV === 'production')
     ) {
       console.log('Clearing database...');
       this.clearDb = clearDb.bind(this);

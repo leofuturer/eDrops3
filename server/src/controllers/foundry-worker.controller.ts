@@ -1,6 +1,6 @@
 import { authenticate } from '@loopback/authentication';
-import {inject} from '@loopback/core';
-import {Filter, FilterExcludingWhere, repository} from '@loopback/repository';
+import { inject } from '@loopback/core';
+import { Filter, FilterExcludingWhere, repository } from '@loopback/repository';
 import {
   del,
   get,
@@ -11,10 +11,12 @@ import {
   requestBody,
   response,
   HttpErrors,
+  RestBindings,
+  Request,
 } from '@loopback/rest';
-import {SecurityBindings, UserProfile} from '@loopback/security';
-import {FoundryWorker, User} from '../models';
-import {FoundryWorkerRepository, UserRepository} from '../repositories';
+import { SecurityBindings, UserProfile } from '@loopback/security';
+import { FoundryWorker, User } from '../models';
+import { FoundryWorkerRepository, UserRepository } from '../repositories';
 import { DTO } from '../lib/types/model';
 
 export class FoundryWorkerController {
@@ -23,14 +25,15 @@ export class FoundryWorkerController {
     public foundryWorkerRepository: FoundryWorkerRepository,
     @repository(UserRepository)
     public userRepository: UserRepository,
-    @inject(SecurityBindings.USER, {optional: true})
+    @inject(SecurityBindings.USER, { optional: true })
     public user: UserProfile,
-  ) {}
+    @inject(RestBindings.Http.REQUEST) public request: Request,
+  ) { }
 
   @post('/foundry-workers')
   @response(200, {
     description: 'FoundryWorker model instance',
-    content: {'application/json': {schema: getModelSchemaRef(FoundryWorker)}},
+    content: { 'application/json': { schema: getModelSchemaRef(FoundryWorker) } },
   })
   async create(
     @requestBody({
@@ -44,7 +47,7 @@ export class FoundryWorkerController {
     })
     foundryWorker: DTO<FoundryWorker & User>,
   ): Promise<FoundryWorker> {
-    return this.foundryWorkerRepository.createFoundryWorker(foundryWorker);
+    return this.foundryWorkerRepository.createFoundryWorker(foundryWorker, this.request.headers.origin);
   }
 
   @get('/foundry-workers')
@@ -54,7 +57,7 @@ export class FoundryWorkerController {
       'application/json': {
         schema: {
           type: 'array',
-          items: getModelSchemaRef(FoundryWorker, {includeRelations: true}),
+          items: getModelSchemaRef(FoundryWorker, { includeRelations: true }),
         },
       },
     },
@@ -62,7 +65,7 @@ export class FoundryWorkerController {
   async find(
     @param.filter(FoundryWorker) filter?: Filter<FoundryWorker>,
   ): Promise<FoundryWorker[]> {
-    return this.foundryWorkerRepository.find(filter);
+    return this.foundryWorkerRepository.find({ ...filter, include: ['user'] });
   }
 
   @get('/foundry-workers/{id}')
@@ -70,13 +73,13 @@ export class FoundryWorkerController {
     description: 'FoundryWorker model instance',
     content: {
       'application/json': {
-        schema: getModelSchemaRef(FoundryWorker, {includeRelations: true}),
+        schema: getModelSchemaRef(FoundryWorker, { includeRelations: true }),
       },
     },
   })
   async findById(
     @param.path.string('id') id: string,
-    @param.filter(FoundryWorker, {exclude: 'where'})
+    @param.filter(FoundryWorker, { exclude: 'where' })
     filter?: FilterExcludingWhere<FoundryWorker>,
   ): Promise<FoundryWorker> {
     return this.foundryWorkerRepository.findById(id, { include: ['user'], ...filter });
@@ -99,7 +102,7 @@ export class FoundryWorkerController {
     @requestBody({
       content: {
         'application/json': {
-          schema: getModelSchemaRef(FoundryWorker, {partial: true}),
+          schema: getModelSchemaRef(FoundryWorker, { partial: true }),
         },
       },
     })

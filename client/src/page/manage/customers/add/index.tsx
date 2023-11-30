@@ -1,10 +1,9 @@
-import { api } from '@/api';
+import { api, Address, Customer, DTO, User } from '@edroplets/api';
 import FormGroup from '@/component/form/FormGroup';
 import ManageRightLayout from '@/component/layout/ManageRightLayout';
 import { formatPhoneNumber } from '@/lib/phone';
 import { ROUTES } from '@/router/routes';
-import { UserSchema, UserSubmitSchema } from '@/schemas';
-import { Address, Customer, DTO, User } from '@/types';
+import { UserSchema, UserSubmitSchema } from '@edroplets/schemas';
 import { Form, Formik } from 'formik';
 import { useState } from 'react';
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
@@ -49,17 +48,15 @@ export function AddCustomer() {
         validationSchema={UserSchema}
         onSubmit={(values, actions) => UserSubmitSchema.validate(values, { abortEarly: false }).then(() => {
           handleAdd({ ...values, phoneNumber: formatPhoneNumber(values.phoneNumber as string) });
-        }).catch(
-          (err) => {
-            const errors = err.inner.reduce((acc: object, curr: ValidationError) => {
-              return {
-                ...acc,
-                [curr.path as string]: curr.message,
-              };
-            }, {});
-            actions.setErrors(errors);
-          }
-        )}>
+        }).catch((err: ValidationError) => {
+          const errors = err.inner.reduce((acc: object, curr: ValidationError) => {
+            return {
+              ...acc,
+              [curr.path as string]: curr.message,
+            };
+          }, {});
+          actions.setErrors(errors);
+        })}>
         <Form className="flex flex-col space-y-2">
           <small className="">Fields with * are required</small>
           <FormGroup name="email" type="email" required autoComplete="email" />

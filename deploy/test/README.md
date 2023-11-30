@@ -12,5 +12,7 @@ Below is the contents of `backend_pwds.env`, with values missing. Contact Leo or
 Contents of `backend_pwds.env`:    
 APP_EMAIL_PASSWORD=  
 SHOPIFY_TOKEN=  
-  
+APP_PUSHER_API_KEY=
+APP_PUSHER_API_SECRET=
+
 The purpose of this README is to ensure the `deploy` and `test` folders are created.  

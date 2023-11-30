@@ -1,13 +1,12 @@
-import { useEffect, useState } from "react";
-import { postCommentComments, postComments } from "../../api/serverConfig";
-import API from "../../api/api";
-import { CommentType, PostType } from "../../lib/types";
+import { ChevronRightIcon, HandThumbUpIcon } from "@heroicons/react/24/outline";
+import { ArrowUturnLeftIcon } from "@heroicons/react/24/solid";
 import { AxiosError } from "axios";
-import { ChevronRightIcon, ThumbUpIcon } from "@heroicons/react/outline";
-import { ReplyIcon } from "@heroicons/react/solid";
-import { timeAgo } from "../../lib/time";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import Cookies from "js-cookie";
+import { api } from "@edroplets/api";
+import { timeAgo } from "../../lib/time";
+import { PostComment as CommentType } from "@edroplets/api";
+import { useCookies } from "react-cookie";
 
 function PostComment({ comment } : {comment: CommentType }) {
 	const navigate = useNavigate();
@@ -15,22 +14,16 @@ function PostComment({ comment } : {comment: CommentType }) {
 	const [comments, setComments] = useState<CommentType[]>([]);
 	const [expanded, setExpanded] = useState<boolean>(false);
 
-	const [newComment, setNewComment] = useState<string>("");
+	const [newComment, setNewComment] = useState<string>(""); // eventually debounce this
+
+	const [cookies] = useCookies(["userId"]);
 
 	// Get all comments under this comment
 	useEffect(() => {
-		API.Request(
-			postCommentComments.replace(
-				"id",
-				comment.id ? comment.id.toString() : ""
-			),
-			"GET",
-			{},
-			false
-		)
+		api.postComment.getPostComments(comment.id as number)
 			.then((res) => {
 				// console.log('Not top-level comments', res.data);
-				setComments(res.data);
+				setComments(res);
 			})
 			.catch((err: AxiosError) => {
 				// console.log(err);
@@ -38,24 +31,17 @@ function PostComment({ comment } : {comment: CommentType }) {
 	}, [comment.id, newComment]);
 
 	function handleReply() {
+		if(!comment.id || !cookies.userId) return;
 		const newPostComment = {
 			content: newComment,
 			author: "",
 			datetime: new Date(),
 			likes: 0,
 			postId: comment.postId,
-			userId: Cookies.get("userId") as string,
+			userId: cookies.userId,
 			top: false,
 		};
-		API.Request(
-			postCommentComments.replace(
-				"id",
-				comment.id ? comment.id.toString() : ""
-			),
-			"POST",
-			newPostComment,
-			true
-		)
+		api.postComment.createPostComment(comment.id, newPostComment)
 			.then((res) => {
 				setNewComment("");
 				// @ts-ignore
@@ -67,6 +53,32 @@ function PostComment({ comment } : {comment: CommentType }) {
 				}
 			});
 		setExpanded(!expanded);
+	}
+
+	function needAuth(f: Function) {
+		if (!cookies.userId) {
+			navigate("/login");
+		} else {
+			f();
+		}
+	}
+
+	function handleOpen() {
+		setExpanded(!expanded);
+	}
+
+	function handleLike() {
+		if(!comment.id || !cookies.userId) return;
+		api.postComment.update(comment.id, { likes: comment.likes + 1 })
+			.then((res) => {
+				// @ts-ignore
+				currentPost.likes += 1;
+			})
+			.catch((err: AxiosError) => {
+				if (err.message === "No access token found") {
+					navigate("/login");
+				}
+			});
 	}
 
 	return (
@@ -84,15 +96,15 @@ function PostComment({ comment } : {comment: CommentType }) {
 				</h3>
 				<p>{comment.content}</p>
 				<div className="flex flex-row space-x-4">
-					<div className="flex flex-row space-x-2">
-						<ThumbUpIcon className="w-5 h-5" />
+					<div className="flex flex-row space-x-2 cursor-pointer" onClick={() => needAuth(handleLike)}>
+						<HandThumbUpIcon className="w-5 h-5" />
 						<p>{comment.likes}</p>
 					</div>
 					<div className="flex flex-row space-x-2">
-						<ReplyIcon className="w-5 h-5" />
+						<ArrowUturnLeftIcon className="w-5 h-5" />
 						<button
 							type="button"
-							onClick={() => setExpanded(!expanded)}
+							onClick={() => needAuth(handleOpen)}
 						>
 							Reply
 						</button>

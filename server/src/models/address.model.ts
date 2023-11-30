@@ -47,7 +47,8 @@ export class Address extends Entity {
 
   @property({
     type: 'boolean',
-    required: true,
+    required: false,
+    default: false,
   })
   isDefault: boolean;
 

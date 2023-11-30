@@ -1,11 +1,10 @@
-import { api } from '@/api';
+import { api, DTO, FoundryWorker, User } from '@edroplets/api';
 import FormGroup from '@/component/form/FormGroup';
 import ManageRightLayout from '@/component/layout/ManageRightLayout';
 import { formatPhoneNumber } from '@/lib/phone';
 import { ROUTES } from '@/router/routes';
-import { WorkerSchema } from '@/schemas';
-import { AddressSchema } from '@/schemas/shopify';
-import { DTO, FoundryWorker, User } from '@/types';
+import { WorkerSchema } from '@edroplets/schemas';
+import { AddressSchema } from '@edroplets/schemas';
 import { Form, Formik } from 'formik';
 import { useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';

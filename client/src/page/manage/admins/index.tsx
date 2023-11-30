@@ -1,10 +1,9 @@
 import { useEffect, useState } from 'react';
 import { useCookies } from 'react-cookie';
 import { useNavigate } from 'react-router-dom';
-import { api } from '@/api';
+import { api, Admin, DTO, IncludeUser } from '@edroplets/api';
 import ManageRightLayout from '@/component/layout/ManageRightLayout';
 import DeleteModal from '@/component/modal/DeleteModal';
-import { Admin, DTO, IncludeUser } from '@/types';
 import { ROUTES, idRoute } from '@/router/routes';
 
 export function Admins() {

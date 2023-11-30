@@ -1,11 +1,9 @@
 version: "3.9"
 
-# https://start.jcolemorrison.com/authorized-resources-and-database-migrations-with-strongloops-loopback/
-
 services:  
-  edrop_mysqldb_testdb:
+  testdb:
     image: mysql:8.0 # max version supported by AWS RDS
-    container_name: edrop_mysqldb
+    container_name: edroplets_db
     env_file:
       - ./deploy/test/mysql.env
     command: --default_authentication_plugin=mysql_native_password
@@ -21,7 +19,7 @@ services:
       retries: 8
       start_period: 30s
 
-  edrop_backend:
+  backend:
     volumes:
       - ./server/:/usr/src/app
     env_file:
@@ -31,7 +29,7 @@ services:
       - APP_EMAIL_API_KEY
       - SHOPIFY_TOKEN
     depends_on:
-      edrop_mysqldb_testdb: # start database before backend
+      testdb: # start database before backend
         condition: service_healthy
 
 volumes:

@@ -5,7 +5,7 @@ import SEO from '@/component/header/seo';
 import ItemCard from './ItemCard';
 import ItemLoad from './ItemLoad';
 import { metadata } from './metadata';
-import { api } from '@/api';
+import { api } from '@edroplets/api';
 
 export function Products() {
   const products = api.product.getAll();

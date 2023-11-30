@@ -1,12 +1,11 @@
-import { PaperClipIcon } from "@heroicons/react/outline";
-import { XIcon } from "@heroicons/react/solid";
+import { ProjectFile, api } from "@edroplets/api";
+import { PaperClipIcon } from "@heroicons/react/24/outline";
+import { XMarkIcon } from "@heroicons/react/24/solid";
 import { AxiosError } from "axios";
-import Cookies from "js-cookie";
-import React, { useCallback, useState } from "react";
-import { useDropzone, FileWithPath, FileError } from "react-dropzone";
+import { useState } from "react";
+import { useCookies } from "react-cookie";
+import { FileWithPath, useDropzone } from "react-dropzone";
 import { useNavigate } from "react-router-dom";
-import { ProjectFile } from "../../../../server/src/models";
-import { uploadFiles } from "../../api/file";
 
 function FileUpload({
 	handleClose,
@@ -16,6 +15,7 @@ function FileUpload({
 	addFiles: (files: ProjectFile[]) => void;
 }) {
 	const navigate = useNavigate();
+	const [cookies] = useCookies(["userId"]);
 
 	const [files, setFiles] = useState<FileWithPath[]>([]);
 	const { acceptedFiles, fileRejections, getRootProps, getInputProps } =
@@ -39,13 +39,14 @@ function FileUpload({
 	}
 
 	async function handleNext() {
+		if(!cookies.userId) {navigate("/login"); return;}
 		// console.log(files);
 		if (files) {
-			const uploadedFiles = await uploadFiles(
-				Cookies.get("userId") as string,
-				files
-			)
-				.then((files) => {
+			const formData = new FormData();
+			files.forEach((file) => {
+				formData.append("community", file);
+			});
+			api.user.uploadProjectFiles(cookies.userId, formData).then((files) => {
 					addFiles(files);
 					return files;
 				})
@@ -72,17 +73,17 @@ function FileUpload({
 				title="Remove file"
 				onClick={() => removeFile(file)}
 			>
-				<XIcon className="h-4 w-4" />
+				<XMarkIcon className="h-4 w-4" />
 			</button>
 		</li>
 	));
 
 	return (
-		<div className="h-1/2 w-1/2 bg-slate-200 rounded-xl flex flex-col space-y-2 p-4 text-slate-400">
+		<>
 			<div
 				{...getRootProps({
 					className:
-						"dropzone flex-grow flex flex-col justify-center items-center border-dashed border-2 border-black/25",
+						"dropzone flex-grow flex flex-col justify-center items-center border-dashed border-2 border-black/25 py-4",
 				})}
 			>
 				<input {...getInputProps()} />
@@ -106,7 +107,7 @@ function FileUpload({
 			>
 				Next
 			</button>
-		</div>
+		</>
 	);
 }
 

@@ -1,7 +1,7 @@
 
 import Pusher from 'pusher-js';
 import React, { useEffect, useState } from 'react';
-import { api } from '@/api';
+import { api } from '@edroplets/api';
 
 const usePusher = () => {
   const [key, setKey] = useState<string>(''); // Note that key must be initialized before pusher for buildClient to work

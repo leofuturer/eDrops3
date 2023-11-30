@@ -1,60 +1,43 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Address, DTO } from '@/types';
-import { ROUTES } from '@/router/routes';
+import { USState, stateAbbreviation } from '@/lib/address';
+import { ROUTES, idRoute } from '@/router/routes';
+import { Address, DTO } from '@edroplets/api';
+import { CubeIcon } from '@heroicons/react/24/solid';
+import { NavLink, useNavigate } from 'react-router-dom';
 
-function AddressTemplate({ address, addressNum, onDeletion }: { address: DTO<Address>, addressNum: number, onDeletion: () => void }) {
-
-  const navigate = useNavigate();
-
-  function handleUpdateAddress() {
-    navigate(ROUTES.ManageAddressUpdate, {
-      state: {
-        addressInfo: address,
-        addressId: address.id,
-      }
-    });
-  }
-
+function AddressTemplate({ address, handleDelete, handleSetDefault}: { address: DTO<Address>, handleDelete: () => void, handleSetDefault: () => void }) {
   return (
-    <div className="flex flex-col bg-white rounded-lg p-4 shadow-box space-y-2">
-      <div className="flex flex-row justify-between items-center h-10">
-        <h3 className="text-xl">Address {addressNum}</h3>
-        {address.isDefault && (
-          <div className="text-sm">
-            <div className="flex justify-between items-center space-x-2">
-              <span className="">Default Shipping</span>
-              <i className="fa fa-cube fa-inline" />
+    <div className="flex flex-col bg-white rounded-md shadow-lg shadow-primary_light/25 border-primary_light/25 border-[1px]  text-sm ">
+      <div className="grid grid-rows-1 items-center py-2 px-4">
+        {address.isDefault ? (
+            <div className="flex justify-between items-center">
+              <p>Default Shipping</p>
+              <CubeIcon className="w-5" />
             </div>
-            <div className="flex justify-between items-center space-x-2">
-              <span className="">Default Billing</span>
-              <i className="fa fa-credit-card fa-inline" />
+        ) : (
+          <>
+            <div className="flex justify-between items-center h-[1.25rem]">
             </div>
-          </div>
+          </>
         )}
       </div>
-      <div className="flex flex-col text-sm">
-        <div className="">{address.street}</div>
-        <div className="">{address.streetLine2}</div>
-        <div className="">{address.city}</div>
-        <div className="">{address.state}</div>
+      <hr className="border-primary_light/25" />
+      <div className="grid grid-rows-3 px-4 py-2">
+        <div className="">{address.street}{address.streetLine2 ? `, ${address.streetLine2}` : ''}</div>
+        <div className="">{address.city}, {stateAbbreviation(address.state as USState)}, {address.zipCode}</div>
         <div className="">{address.country}</div>
-        <div className="">{address.zipCode}</div>
       </div>
-      <div className="flex flex-row space-x-4">
-        <button
-          type="button"
-          className="bg-primary_light hover:bg-primary text-white rounded-md px-4 py-1 flex space-x-2 items-center"
-          onClick={handleUpdateAddress}
-        >
-          <i className="fa fa-cog" />
-          <p className="">Update</p>
-        </button>
+      <hr className="border-primary_light/25" />
+      <div className="flex flex-row space-x-4 px-4 py-2">
+        <NavLink to={idRoute(ROUTES.ManageAddressEdit, address.id as number)} className="animated-underline">
+          Edit
+        </NavLink>
+      <p className="cursor-pointer animated-underline" onClick={handleDelete}>
+          Remove
+        </p>
         {!address.isDefault &&
-          <button type="button" className="bg-red-700 text-white rounded-md px-4 py-1 flex space-x-2 items-center">
-            <i className="fa fa-trash" />
-            <p className="" onClick={onDeletion}>Delete</p>
-          </button>
+          <p className="cursor-pointer animated-underline"
+            onClick={handleSetDefault}
+          >Set as Default</p>
         }
       </div>
     </div >

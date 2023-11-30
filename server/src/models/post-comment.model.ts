@@ -58,7 +58,7 @@ export class PostComment extends Entity {
   @hasMany(() => PostComment, {
     through: {model: () => PostCommentLink, keyFrom: 'parentId', keyTo: 'childId'},
   })
-  postComments: PostComment[];
+  postComments?: PostComment[];
 
   constructor(data?: Partial<PostComment>) {
     super(data);

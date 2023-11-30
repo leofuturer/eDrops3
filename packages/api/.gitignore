@@ -1,0 +1,8 @@
+dist/
+esm/
+output/
+umd/
+
+node_modules/
+
+.rollup.cache/

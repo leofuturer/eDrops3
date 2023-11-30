@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { api } from '@/api';
+import { api, Customer, IncludeUser, DTO } from '@edroplets/api';
 import ManageRightLayout from '@/component/layout/ManageRightLayout';
 import DeleteModal from '@/component/modal/DeleteModal';
-import { Customer, IncludeUser, DTO } from '@/types';
 import { ROUTES, idRoute } from '@/router/routes';
+import { BanknotesIcon, CircleStackIcon, CurrencyDollarIcon, PencilSquareIcon, TrashIcon } from '@heroicons/react/24/solid';
 
 export function Customers() {
   const [customerList, setCustomerList] = useState<DTO<IncludeUser<Customer>>[]>([]);
@@ -78,10 +78,10 @@ export function Customers() {
               <td>{customer.user.username}</td>
               <td>{customer.user.email}</td>
               <td>{customer.phoneNumber}</td>
-              <td><i className="fa fa-database cursor-pointer" onClick={() => handleRetrieveFiles(customer)} /></td>
-              <td><i className="fa fa-money-bill cursor-pointer" onClick={() => handleRetrieveOrders(customer)} /></td>
-              <td><i className="fa fa-edit cursor-pointer" onClick={() => handleEdit(customer)} /></td>
-              <td><i className="fa fa-trash cursor-pointer" onClick={() => handleDeleteCustomer(customer)} /></td>
+              <td><CircleStackIcon className="w-5 cursor-pointer" onClick={() => handleRetrieveFiles(customer)} /></td>
+              <td><BanknotesIcon className="w-5 cursor-pointer" onClick={() => handleRetrieveOrders(customer)} /></td>
+              <td><PencilSquareIcon className="w-5 cursor-pointer" onClick={() => handleEdit(customer)} /></td>
+              <td><TrashIcon className="w-5 cursor-pointer" onClick={() => handleDeleteCustomer(customer)} /></td>
             </tr>
           ))}
         </tbody>

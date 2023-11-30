@@ -2,11 +2,10 @@ import { ErrorMessage, Field, Form, Formik, FormikConfig } from 'formik';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ValidationError } from 'yup';
-import { api } from '@/api';
+import { api, Address, Customer, User, DTO } from '@edroplets/api';
 import FormGroup from '@/component/form/FormGroup';
 import SEO from '@/component/header/seo';
-import { UserSchema, UserSubmitSchema } from '@/schemas';
-import { Address, Customer, User, DTO } from '@/types';
+import { CustomerSchema, CustomerSubmitSchema } from '@edroplets/schemas';
 import { metadata } from './metadata';
 import { ROUTES } from '@/router/routes';
 
@@ -45,7 +44,7 @@ export function Register() {
   }
 
   return (
-    <div className="flex items-center justify-center py-20">
+    <div className="flex items-center justify-center py-10">
       <SEO
         title="eDroplets | Register"
         description=""
@@ -54,21 +53,19 @@ export function Register() {
       <div className="flex flex-col shadow-box-sm rounded-lg py-4 w-1/2 px-20 space-y-2">
         <h3 className="text-secondary text-2xl text-center font-bold border-b-2 pb-2 border-secondary">Sign Up</h3>
         <Formik
-          validationSchema={UserSchema}
+          validationSchema={CustomerSchema}
           initialValues={initialInfo}
-          onSubmit={(values, actions) => UserSubmitSchema.validate(values, { abortEarly: false }).then(() => {
+          onSubmit={(values, actions) => CustomerSubmitSchema.validate(values, { abortEarly: false }).then(() => {
             handleRegister({ ...values } as DTO<Customer & User & Address>)
-          }).catch(
-            (err) => {
-              const errors = err.inner.reduce((acc: object, curr: ValidationError) => {
-                return {
-                  ...acc,
-                  [curr.path as string]: curr.message,
-                };
-              }, {});
-              actions.setErrors(errors);
-            }
-          )}
+          }).catch((err: ValidationError) => {
+            const errors = err.inner.reduce((acc: object, curr: ValidationError) => {
+              return {
+                ...acc,
+                [curr.path as string]: curr.message,
+              };
+            }, {});
+            actions.setErrors(errors);
+          })}
         >
           <Form className="flex flex-col space-y-2">
             <p className="text-xs text-gray-500">Fields with * are required</p>
