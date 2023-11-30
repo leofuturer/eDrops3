@@ -12,7 +12,7 @@ function ProjectCard({ project }: { project: ProjectType }) {
 				setCoverImageId(-1);
 			}
 			else {
-				setCoverImageId(images[0].id);
+				setCoverImageId(images[0].id ?? -1);
 			}
 		})
 	}, [project.id]);
