@@ -9,6 +9,7 @@ import {
   param,
   patch,
   post,
+  Request,
   requestBody,
   Response,
   response,
@@ -66,6 +67,7 @@ export class UserController {
     @inject(SecurityBindings.USER, { optional: true })
     public user: UserProfile,
     @repository(UserRepository) protected userRepository: UserRepository,
+    @inject(RestBindings.Http.REQUEST) private request: Request,
   ) { }
 
   @post('/users')
@@ -85,18 +87,7 @@ export class UserController {
     })
     newUser: User,
   ): Promise<User> {
-    const hashedPassword = await hash(newUser.password, await genSalt());
-
-    const savedUser = await this.userRepository.create({
-      username: newUser.username,
-      password: hashedPassword,
-      email: newUser.email,
-      emailVerified: newUser.emailVerified,
-      verificationToken: newUser.verificationToken,
-      userType: newUser.userType,
-    });
-
-    return savedUser;
+    return await this.userRepository.createUser(newUser, this.request.headers.origin);
   }
 
   @get('/users')
@@ -299,6 +290,7 @@ export class UserController {
     else if (!user.emailVerified) {
       await this.userRepository.sendVerificationEmail(
         user as User,
+        this.request.headers.origin,
       );
     }
   }
@@ -327,9 +319,9 @@ export class UserController {
       throw new HttpErrors.NotFound('User not found');
     }
     if (user.emailVerified) {
-      response.redirect('/emailVerified');
+      response.redirect('/email-verified');
     } else {
-      response.redirect('/emailVerifyInvalid');
+      response.redirect('/email-unverified');
     }
     return user;
   }
@@ -445,7 +437,7 @@ export class UserController {
     @requestBody() body: { username: string; email: string },
   ): Promise<{ usernameTaken: boolean; emailTaken: boolean }> {
     if (!body.username && !body.email) {
-      throw new HttpErrors.NotFound('Missing username and/or email keys');
+      throw new HttpErrors.BadRequest('Missing username and/or email keys');
     }
 
     const usernameTaken = await this.userRepository

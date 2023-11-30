@@ -19,7 +19,7 @@ export class UserSavedProjectController {
   ) {}
 
   @authenticate('jwt')
-  @get('/users/{id}/savedProjects', {
+  @get('/users/{id}/saved-projects', {
     responses: {
       '200': {
         description: 'Get all user saved projects',
@@ -40,7 +40,7 @@ export class UserSavedProjectController {
   }
 
   @authenticate('jwt')
-  @get('/users/{id}/savedProjects/{projectId}', {
+  @get('/users/{id}/saved-projects/{projectId}', {
     responses: {
       '200': {
         description: 'Check if a project is saved',
@@ -61,7 +61,7 @@ export class UserSavedProjectController {
   }
 
   @authenticate('jwt')
-  @post('/users/{id}/savedProjects/{projectId}', {
+  @post('/users/{id}/saved-projects/{projectId}', {
     responses: {
       '200': {
         description: 'Save a project',
@@ -79,7 +79,7 @@ export class UserSavedProjectController {
   }
 
   @authenticate('jwt')
-  @del('/users/{id}/savedProjects/{projectId}', {
+  @del('/users/{id}/saved-projects/{projectId}', {
     responses: {
       '200': {
         description: 'Unsave a project',

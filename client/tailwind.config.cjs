@@ -1,4 +1,3 @@
-const lineClamp = require('@tailwindcss/line-clamp');
 const _ = require('lodash');
 
 /** @type {import('tailwindcss').Config} */
@@ -23,6 +22,5 @@ module.exports = {
   },
   safelist: _.range(100).map((i) => `w-[${i}%]`), // all percent width classes for progress bar
   plugins: [
-    lineClamp,
   ],
 }

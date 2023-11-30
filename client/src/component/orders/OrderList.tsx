@@ -1,10 +1,11 @@
 import { ROUTES, idRoute } from '@/router/routes';
 import { useContext } from 'react';
 import { CartContext } from '@/context/CartContext';
-import { DTO, OrderInfo } from '@/types';
+import { DTO, OrderInfo } from '@edroplets/api';
 import { SERVICE_EMAIL } from '@/lib/constants/misc';
 import { useCookies } from 'react-cookie';
 import { ROLES } from '@/lib/constants/roles';
+import { ChatBubbleOvalLeftEllipsisIcon } from '@heroicons/react/24/solid';
 
 /*
  The order list page for both customer and worker
@@ -32,31 +33,31 @@ export function OrderList({ orderList }: { orderList: DTO<OrderInfo>[] }) {
     <table className="table-info">
       <thead className="">
         <tr className="border-b-2">
-          <th className="p-2">Order ID</th>
-          {cookies.userType === ROLES.Admin && <th className="p-2">Customer ID</th>}
-          <th className="p-2">Order Date</th>
-          <th className="p-2">Status</th>
-          <th className="p-2">Price</th>
-          <th className="p-2">Other Details</th>
+          <th className="">Order ID</th>
+          {cookies.userType === ROLES.Admin && <th className="">Customer ID</th>}
+          <th className="">Order Date</th>
+          <th className="">Status</th>
+          <th className="">Price</th>
+          <th className="">Other Details</th>
         </tr>
       </thead>
       <tbody>
         {cart.enabled && orderList.length !== 0 ? orderList.map((order, index) => (
           <tr key={index}>
-            <td className="p-2">{order.orderComplete ? order.orderInfoId : 'In cart'}</td>
+            <td className="">{order.orderComplete ? order.orderInfoId : 'In cart'}</td>
             {cookies.userType === ROLES.Admin && <td>{order.customerId}</td>}
-            <td className="p-2">{order.createdAt.substring(0, order.createdAt.indexOf('T'))}</td>
-            <td className="p-2">{order.status}</td>
-            <td className="p-2">
+            <td className="">{order.createdAt.substring(0, order.createdAt.indexOf('T'))}</td>
+            <td className="">{order.status}</td>
+            <td className="">
               ${order.total_cost ? parseFloat(order.total_cost).toFixed(2) : 0}
             </td>
-            <td className="p-2">
-              <i className="fa fa-commenting cursor-pointer" onClick={() => order.id && handleDetail(order.id)} />
+            <td className="">
+              <ChatBubbleOvalLeftEllipsisIcon className="w-5 cursor-pointer" onClick={() => order.id && handleDetail(order.id)} />
             </td>
           </tr>
         )) : (
           <tr>
-            <td className="p-2" colSpan={100}>
+            <td className="" colSpan={100}>
               No orders found.
             </td>
           </tr>

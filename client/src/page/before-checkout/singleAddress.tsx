@@ -1,5 +1,6 @@
 import React from 'react';
-import { Address, DTO } from '@/types';
+import { Address, DTO } from '@edroplets/api';
+import { CreditCardIcon, CubeIcon } from '@heroicons/react/24/solid';
 
 function SingleAddress({ address, addressNum, selected, onClick }: { address: DTO<Address>, addressNum: number, selected: boolean, onClick: () => void }) {
   return (
@@ -10,11 +11,11 @@ function SingleAddress({ address, addressNum, selected, onClick }: { address: DT
           <div className="text-sm">
             <div className="flex justify-between items-center space-x-2">
               <span className="">Default Shipping</span>
-              <i className="fa fa-cube fa-inline" />
+              <CubeIcon className="w-5" />
             </div>
             <div className="flex justify-between items-center space-x-2">
               <span className="">Default Billing</span>
-              <i className="fa fa-credit-card fa-inline" />
+              <CreditCardIcon className="w-5" />
             </div>
           </div>
         )}

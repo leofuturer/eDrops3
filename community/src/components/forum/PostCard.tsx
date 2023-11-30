@@ -1,7 +1,7 @@
 import { NavLink } from "react-router-dom";
-import { PostType } from "../../lib/types";
+import { Post } from "@edroplets/api";
 
-function PostCard({ post }: { post: PostType }) {
+function PostCard({ post }: { post: Post }) {
 	return (
 		<NavLink to={`/forum/${post.id}`} className="h-full">
 			<div className="h-full w-full rounded-2xl shadow-xl bg-white flex flex-row items-center">

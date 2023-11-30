@@ -1,11 +1,10 @@
-import { api } from '@/api';
+import { api, Address, Customer, DTO, IncludeAddress } from '@edroplets/api';
 import AddAddress from '@/component/address/AddAddress';
 import MessageLayout from '@/component/layout/MessageLayout';
 import ModalBackground from '@/component/modal/ModalBackground';
 import Loading from '@/component/ui/Loading';
 import { CartContext } from '@/context/CartContext';
 import { ROUTES } from '@/router/routes';
-import { Address, Customer, DTO, IncludeAddress } from '@/types';
 import { useContext, useEffect, useState } from 'react';
 import { useCookies } from 'react-cookie';
 import { useNavigate } from 'react-router-dom';
@@ -13,7 +12,7 @@ import SingleAddress from './singleAddress';
 
 export function BeforeCheckout() {
   const [addressList, setAddressList] = useState<DTO<Address>[]>([]);
-  const [selectedAddrIndex, setSelectedAddrIndex] = useState(0);
+  const [selectedAddrIndex, setSelectedAddrIndex] = useState(-1);
   const [doneLoading, setDoneLoading] = useState(false);
   const [customer, setCustomer] = useState<DTO<IncludeAddress<Customer>>>({} as DTO<IncludeAddress<Customer>>);
   const [preparingForCheckout, setPreparingForCheckout] = useState(false);
@@ -28,8 +27,15 @@ export function BeforeCheckout() {
   useEffect(() => {
     api.customer.get(cookies.userId).then((customer) => {
       setCustomer(customer);
-      setAddressList(customer.addresses);
-      setSelectedAddrIndex(0);
+      if ('addresses' in customer) {
+        setAddressList(customer.addresses);
+        for (let i = 0; i < customer.addresses.length; i++) {
+          if (customer.addresses[i].isDefault) {
+            setSelectedAddrIndex(i);
+            break;
+          }
+        }
+      }
     }).catch((err) => {
       console.error(err);
     }).finally(() => {
@@ -40,7 +46,7 @@ export function BeforeCheckout() {
   function handlePayment() {
     setPreparingForCheckout(true);
     cart.checkout(addressList[selectedAddrIndex]).then((res) => {
-      navigate(ROUTES.Login);
+      navigate(ROUTES.ManageCart);
     }).catch((err) => {
       console.error(err);
     }).finally(() => {
@@ -61,13 +67,13 @@ export function BeforeCheckout() {
             {preparingForCheckout ? <Loading /> :
               <div className="flex flex-row space-x-4">
                 <button type="button" className="bg-primary_light hover:bg-primary text-white rounded-md px-4 py-2 text-lg"
-                  onClick={() => navigate(ROUTES.Login)}>Return to Cart</button>
+                  onClick={() => navigate(ROUTES.ManageCart)}>Return to Cart</button>
                 <button type="button" className="bg-primary_light hover:bg-primary text-white rounded-md px-4 py-2 text-lg"
                   onClick={handlePayment}>Proceed to Payment</button>
               </div>}
           </div>
           <div className="grid grid-cols-2 w-full gap-4">
-            {addressList.map((address, index) => (
+            {addressList?.length > 0 && addressList.map((address, index) => (
               <SingleAddress
                 key={index}
                 selected={index === selectedAddrIndex}
@@ -85,7 +91,7 @@ export function BeforeCheckout() {
             <div className="p-4 flex justify-end">
               <i className="fa fa-xmark cursor-pointer text-gray-400 hover:text-gray-600" onClick={() => setShowAdd(false)} />
             </div>
-            <div className="px-8">
+            <div className="px-8 py-4">
               <AddAddress userId={cookies.userId} onAdd={(addr) => {
                 setShowAdd(false)
                 setAddressList([...addressList, addr])

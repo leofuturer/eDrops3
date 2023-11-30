@@ -20,7 +20,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [16.15.x]
+        node-version: [18]
 
     steps:
     - uses: actions/checkout@v3
@@ -30,24 +30,24 @@ jobs:
         node-version: ${{ matrix.node-version }}
     - name: Backend npm install, docker build, and copy image to EC2
       run: |
-          cd server
-          docker build -t edrop_backend .
-          docker save -o edrop_backend.tar edrop_backend
+        cd server
+        docker build -t edroplets_backend .
+        docker save -o edroplets_backend.tar edroplets_backend
 
-          mkdir -p ~/.ssh
-          echo "$SSH_KEY" > ~/.ssh/ec2.key
-          chmod 600 ~/.ssh/ec2.key
-          cat >> ~/.ssh/config <<END
-            Host edrop_v2_ec2
-            HostName $SSH_HOST
-            User $SSH_USER
-            IdentityFile ~/.ssh/ec2.key
-            StrictHostKeyChecking no
-          END
+        mkdir -p ~/.ssh
+        echo "$SSH_KEY" > ~/.ssh/ec2.key
+        chmod 600 ~/.ssh/ec2.key
+        cat >> ~/.ssh/config <<END
+          Host edroplets_aws
+          HostName $SSH_HOST
+          User $SSH_USER
+          IdentityFile ~/.ssh/ec2.key
+          StrictHostKeyChecking no
+        END
 
-          scp -i ~/.ssh/ec2.key -o StrictHostKeyChecking=no edrop_backend.tar $SSH_USER@$SSH_HOST:~/eDroplets3/edrop_backend.tar
-          cd ..
-          scp -i ~/.ssh/ec2.key -o StrictHostKeyChecking=no Caddyfile *.yml LICENSE README.md CODEOWNERS $SSH_USER@$SSH_HOST:~/eDroplets3/
+        scp -i ~/.ssh/ec2.key -o StrictHostKeyChecking=no edroplets_backend.tar edroplets_aws:~/eDroplets3/edroplets_backend.tar
+        cd ..
+        scp -i ~/.ssh/ec2.key -o StrictHostKeyChecking=no Caddyfile *.yml LICENSE README.md CODEOWNERS edroplets_aws:~/eDroplets3/
       env:
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -64,7 +64,7 @@ jobs:
         script_stop: true # stop after any command fails
         script: |
           cd ~/eDroplets3
-          docker load -i edrop_backend.tar
+          docker load -i edroplets_backend.tar
           docker-compose -f docker-compose.yml -f docker-compose.prod.yml down
           docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d
           # follow logs for 10 seconds to see if rollout had any issues

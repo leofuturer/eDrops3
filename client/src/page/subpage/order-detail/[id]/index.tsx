@@ -1,9 +1,8 @@
 import OrderItem from '@/component/orders/OrderItem';
 import { ROUTES } from '@/router/routes';
-import { Address, DTO, OrderChip, OrderInfo, OrderProduct } from '@/types';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { api } from '@/api';
+import { api, Address, DTO, OrderChip, OrderInfo, OrderProduct } from '@edroplets/api';
 import MessageLayout from '@/component/layout/MessageLayout';
 
 

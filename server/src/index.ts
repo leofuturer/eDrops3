@@ -1,5 +1,13 @@
-import {SchemaMigrationOptions} from '@loopback/repository';
-import {ApplicationConfig, EdropsBackendApplication} from './application';
+import { SchemaMigrationOptions } from '@loopback/repository';
+import { ApplicationConfig, EdropsBackendApplication } from './application';
+import dotenv from 'dotenv';
+import path from 'path';
+
+// If in development, inject environment variables from .env file
+// In production, environment variables are injected into the Docker container
+if (process.env.NODE_ENV !== 'production') {
+  dotenv.config({ path: path.resolve(__dirname, '../../deploy/dev/backend.env') });
+}
 
 export * from './application';
 

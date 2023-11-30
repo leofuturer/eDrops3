@@ -1,0 +1,56 @@
+version: "3.9"
+
+# https://start.jcolemorrison.com/authorized-resources-and-database-migrations-with-strongloops-loopback/
+
+services:  
+  db:
+    image: postgres:15.3 # max version supported by AWS RDS
+    container_name: edroplets_db
+    env_file:
+      - ./deploy/dev/postgres.env
+    restart: always
+    ports:
+      - 5432:5432
+    volumes:
+      - postgresdb:/var/lib/postgresql/data # persistent storage for DB
+    healthcheck:
+      test: ["CMD", "pg_isready" ,"-U", "edroplets"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # edrop_backend:
+  #   volumes:
+  #     - ./server/storage:/home/node/app/storage # persistent storage for uploaded files
+  #   env_file:
+  #     - ./deploy/dev/backend.env
+  #   depends_on:
+  #     edrop_mysqldb:
+  #       condition: service_healthy
+  #     # edrop_ngrok:
+  #     #   condition: service_healthy
+  
+  ngrok:
+    # for local dev development, to receive Shopify webhooks
+    image: ngrok/ngrok:latest
+    command:
+      - "start"
+      - "--all"
+      - "--config"
+      - "/etc/ngrok.yml"
+    volumes:
+      - ./ngrok.yml:/etc/ngrok.yml
+    container_name: edroplets_ngrok
+    env_file:
+      - ./deploy/dev/ngrok.env
+    ports:
+      - 4040:4040 # ngrok web interface
+    # healthcheck:
+    #   test: ["CMD", "curl", "-f", "http://localhost:4040"]
+    #   interval: 15s
+    #   timeout: 30s
+    #   retries: 8
+    #   start_period: 30s
+
+volumes:
+  postgresdb:

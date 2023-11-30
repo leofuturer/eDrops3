@@ -37,6 +37,10 @@ import {
   defaultProjects,
   defaultUsers
 } from './data/index';
+import { defaultProjectFiles } from './data/projectFile';
+import { defaultProjectLinks } from './data/projectLink';
+import fs from 'fs';
+import path from 'path';
 
 export async function clearDb(this: EdropsBackendApplication): Promise<void> {
   /* Clear Admin table */
@@ -202,7 +206,7 @@ export async function seedDb(this: EdropsBackendApplication): Promise<void> {
   );
   const customers: Customer[] = await Promise.all(
     defaultCustomers.map(customer =>
-      customerRepo.createCustomer(customer, false),
+      customerRepo.createCustomer(customer),
     ),
   );
 
@@ -264,4 +268,37 @@ export async function seedDb(this: EdropsBackendApplication): Promise<void> {
   // const projectComments = await Promise.all(
   //   defaultProjectComments.map(projectComment => projectCommentRepo.create(projectComment)),
   // );
+
+  /* Seed ProjectLink table */
+  const projectLinkRepo: ProjectLinkRepository = await this.getRepository(
+    ProjectLinkRepository,
+  );
+  const projectLinks = await Promise.all(
+    defaultProjectLinks.map(projectLink =>
+      projectLinkRepo.create(projectLink),
+    ),
+  );
+
+  /* Seed ProjectFile table */
+  const projectFileRepo: ProjectFileRepository = await this.getRepository(
+    ProjectFileRepository,
+  );
+  const projectFiles = await Promise.all(
+    defaultProjectFiles.map(projectFile =>
+      projectFileRepo.create(projectFile),
+    ),
+  );
+
+  // Copy project files to local storage
+  // const seedFilesDir = path.join(__dirname, 'data', 'files');
+  // const storageDir = path.join(__dirname, '..', '..', 'storage', 'community');
+  // if (!fs.existsSync(storageDir)) {
+  //   fs.mkdirSync(storageDir);
+  // }
+
+  // for (const projectFile of projectFiles) {
+  //   const seedFilePath = path.join(seedFilesDir, projectFile.containerFileName);
+  //   const storageFilePath = path.join(storageDir, projectFile.containerFileName);
+  //   fs.copyFileSync(seedFilePath, storageFilePath);
+  // }
 }

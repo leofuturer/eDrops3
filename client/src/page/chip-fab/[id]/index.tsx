@@ -3,13 +3,12 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { Product } from 'shopify-buy'; // TODO: waiting on @types/shopify-buy to be updated
 import Loading from '@/component/ui/Loading';
 import { CartContext } from '@/context/CartContext';
-import { DTO, FileInfo } from '@/types';
 import { ewodFabServiceId } from '@/lib/constants/products';
 import { ROUTES } from '@/router/routes';
-import { api } from '@/api';
+import { api, DTO, FileInfo } from '@edroplets/api';
 import { Material } from '@/types/chip';
 import { useCookies } from 'react-cookie';
-const DXFPreview = React.lazy(() => import('../dxf_preview'));
+const DXFPreview = React.lazy(() => import('./DXFPreview'));
 
 export function ChipOrder() {
   const material: Material[] = [Material.Glass, Material.PCB, Material.Paper];
@@ -39,7 +38,7 @@ export function ChipOrder() {
       navigate(ROUTES.ManageFiles);
       return;
     }
-    api.customer.getFile(cookies.userId, id).then((fileInfo) => {
+    api.customer.getFile(cookies.userId, parseInt(id)).then((fileInfo) => {
       setCustomAttrs(attrs => ({ ...attrs, fileInfo }));
     });
   }, [id]);
@@ -72,7 +71,6 @@ export function ChipOrder() {
     <div className="container flex justify-center py-10" >
       <div className="grid grid-cols-2 md:w-2/3 gap-4">
         <div className="flex flex-col space-y-2">
-          {/* DY - replace temporary image above with a preview of the uploaded PDF */}
           <div className="">
             <Suspense fallback={<Loading />}>
               <DXFPreview fileInfo={customAttrs.fileInfo} />

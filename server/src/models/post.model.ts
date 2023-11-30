@@ -71,7 +71,7 @@ export class Post extends Entity {
     type: 'string',
     // required: true,
   })
-  userId: string;
+  userId?: string;
 
   @hasMany(() => PostComment)
   postComments?: PostComment[];

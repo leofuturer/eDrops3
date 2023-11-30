@@ -1,8 +1,8 @@
-import { api } from '@/api';
+import { api, DTO, FoundryWorker, IncludeUser, OrderChip } from '@edroplets/api';
 import { CartContext } from '@/context';
 import { ROLES } from '@/lib/constants/roles';
 import { ROUTES, idRoute } from '@/router/routes';
-import { DTO, FoundryWorker, IncludeUser, OrderChip } from '@/types'
+import { ArrowDownTrayIcon, ChatBubbleOvalLeftEllipsisIcon, UsersIcon } from '@heroicons/react/24/solid';
 import React, { useContext, useEffect, useState } from 'react'
 import { useCookies } from 'react-cookie';
 
@@ -13,6 +13,7 @@ function ChipOrderList({ chipOrderList }: { chipOrderList: DTO<OrderChip>[] }) {
 
   useEffect(() => {
     cookies.userType === ROLES.Admin && api.worker.getAll().then((workers) => {
+      console.log(workers);
       setWorkerList(workers);
     });
   }, [])
@@ -21,7 +22,7 @@ function ChipOrderList({ chipOrderList }: { chipOrderList: DTO<OrderChip>[] }) {
     switch (cookies.userType) {
       case ROLES.Customer:
         // for customer, `id` is file ID
-        api.customer.downloadFile(cookies.userId, fileId);
+        api.customer.downloadFile(cookies.userId, fileId, true);
         break;
       case ROLES.Worker:
         // for worker, `id` is chipOrder ID (associated with that file)
@@ -45,7 +46,7 @@ function ChipOrderList({ chipOrderList }: { chipOrderList: DTO<OrderChip>[] }) {
     const dropdown = document.getElementById(`status-selection-${chipOrderId}`);
     // @ts-expect-error
     const selectedStatus = dropdown.options[dropdown.selectedIndex].value;
-    api.worker.updateChip(cookies.userId, chipOrderId, { status: selectedStatus});
+    api.worker.updateChip(cookies.userId, chipOrderId, { status: selectedStatus });
   }
 
   // TODO: work on option for admin to reassign if needed
@@ -99,7 +100,7 @@ function ChipOrderList({ chipOrderList }: { chipOrderList: DTO<OrderChip>[] }) {
               : (<td className="">
                 <form
                   className=""
-                  onSubmit={(e) => handleStatus(e, item?.id)} // TODO: fix form submission
+                  onSubmit={(e) => handleStatus(e, item?.id as number)} // TODO: fix form submission
                 >
                   <select title="status" className="order-status" name="status" defaultValue={item?.status}>
                     <option value="Fabrication request received">Fab Req Received</option>
@@ -114,17 +115,17 @@ function ChipOrderList({ chipOrderList }: { chipOrderList: DTO<OrderChip>[] }) {
             <td className="">{item?.quantity}</td>
             <td className="">
               {cookies.userType === ROLES.Worker
-                ? <i className="fa fa-download cursor-pointer" onClick={() => handleDownload(item?.id)} />
-                : <i className="fa fa-download cursor-pointer" onClick={() => handleDownload(item?.fileInfoId)} />
+                ? <ArrowDownTrayIcon className="w-5 cursor-pointer mx-auto" onClick={() => handleDownload(item?.id as number)} />
+                : <ArrowDownTrayIcon className="w-5 cursor-pointer mx-auto" onClick={() => handleDownload(item?.fileInfoId)} />
               }
             </td>
             <td className="">
-              <i className="fa fa-commenting cursor-pointer" onClick={() => handleChat(item?.orderInfoId)} />
+              <ChatBubbleOvalLeftEllipsisIcon className="w-5 cursor-pointer mx-auto" onClick={() => handleChat(item?.orderInfoId as number)} />
             </td>
             {cookies.userType === ROLES.Admin &&
               <td className="">
                 <div className="flex flex-row space-x-2">
-                  <i className="fa fa-user-group cursor-pointer" />
+                  <UsersIcon className="w-5 cursor-pointer mx-auto" />
                   <select title="workers" onChange={(e) => handleAssign(e)}>
                     {workerList.map((worker) => (
                       <option value={worker?.id}>{worker?.user.username}</option>

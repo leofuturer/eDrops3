@@ -72,16 +72,16 @@ export class Project extends Entity {
   @property({
     type: 'string',
   })
-  userId: string;
+  userId?: string;
 
   @hasMany(() => ProjectFile)
-  projectFiles: ProjectFile[];
+  projectFiles?: ProjectFile[];
 
   @hasMany(() => ProjectLink)
-  projectLinks: ProjectLink[];
+  projectLinks?: ProjectLink[];
 
   @hasMany(() => ProjectComment)
-  projectComments: ProjectComment[];
+  projectComments?: ProjectComment[];
 
   constructor(data?: Partial<Project>) {
     super(data);

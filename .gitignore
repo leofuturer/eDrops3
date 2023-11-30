@@ -1,8 +1,25 @@
+# npm packages
 node_modules/
+
+# macOS files
 *.DS_Store
+
+# env files
 deploy/dev/*.env
 deploy/prod/*.env
 deploy/test/backend_pwds.env
+
+# deprecated
 **/permission_matrix.json
+
+# logs
 logs.txt
+
+# any docker images built
 *.tar
+
+# VSCode folder
+.vscode/
+
+# any build output
+**/dist

@@ -9,6 +9,7 @@ import { HttpErrors, Request, Response } from '@loopback/rest';
 import AWS from 'aws-sdk';
 import { genSalt, hash } from 'bcryptjs';
 import path from 'path';
+import ShopifyBuy, { buildClient, MailingAddressInput } from 'shopify-buy';
 import { MysqlDsDataSource } from '../datasources';
 import { calculate } from '../lib/toolbox/calculate';
 import log from '../lib/toolbox/log';
@@ -27,14 +28,8 @@ import { AddressRepository } from './customer-address.repository';
 import { FileInfoRepository } from './file-info.repository';
 import { OrderInfoRepository } from './order-info.repository';
 import { UserRepository } from './user.repository';
-import fetch from 'node-fetch';
-import ShopifyBuy, { Product, buildClient } from 'shopify-buy';
 
 const CONTAINER_NAME = process.env.S3_BUCKET_NAME ?? 'edrop-v2-files';
-
-// https://stackoverflow.com/questions/48433783/referenceerror-fetch-is-not-defined
-// @ts-ignore
-global.fetch = fetch;
 
 export class CustomerRepository extends DefaultCrudRepository<
   Customer,
@@ -130,7 +125,7 @@ export class CustomerRepository extends DefaultCrudRepository<
    */
   async createCustomer(
     customer: DTO<Customer & User & Partial<Omit<Address, 'id'>>>,
-    createAddress = true,
+    baseURL: string = process.env.EMAIL_HOSTNAME as string,
   ): Promise<Customer> {
     const hashedPassword = await hash(customer.password, await genSalt());
     const userData: DTO<User> = {
@@ -157,26 +152,28 @@ export class CustomerRepository extends DefaultCrudRepository<
     const customerInstance = await this.create(customerData).catch(err => {
       throw new HttpErrors.InternalServerError(err.message);
     });
-    if (createAddress) {
-      const AddressData: Partial<Address> = {
-        street: customer.street || 'Not provided during signup',
-        streetLine2: customer.streetLine2 || 'Not provided during signup',
-        country: customer.country || 'Not provided during signup',
-        state: customer.state || 'Not provided during signup',
-        city: customer.city || 'Not provided during signup',
-        zipCode: customer.zipCode || 'Not provided during signup',
+    if (customer.country && customer.state && customer.city && customer.street && customer.zipCode) {
+      const addressData: DTO<Address> = {
+        street: customer.street,
+        ...(customer.streetLine2 && { streetLine2: customer.streetLine2 }),
+        country: customer.country,
+        state: customer.state,
+        city: customer.city,
+        zipCode: customer.zipCode,
         isDefault: customer.isDefault || true,
       };
       log.info('Customer instance created, now associating address with it');
       this.addresses(customerInstance.id)
-        .create(AddressData)
-        .then(() => {
-          userRepository.sendVerificationEmail(userInstance);
-        })
+        .create(addressData)
         .catch(err => {
           // roll back the customer creation
           this.deleteById(customerInstance?.id);
+          userRepository.deleteById(userInstance?.id);
+          throw new HttpErrors.InternalServerError(err.message);
         });
+    }
+    if (!customer.emailVerified) {
+      await userRepository.sendVerificationEmail(userInstance, baseURL);
     }
     return customerInstance;
   }
@@ -186,6 +183,23 @@ export class CustomerRepository extends DefaultCrudRepository<
     await userRepository.deleteById(id);
     // May need to delete associated addresses and order infos?
     await this.deleteById(id);
+  }
+
+  async setDefaultAddress(id: typeof Customer.prototype.id, addressId: typeof Address.prototype.id): Promise<Address> {
+    const defaultAddresses = await this.addresses(id).find({
+      where: { isDefault: true }
+    });
+    if (defaultAddresses.length > 0) {
+      // Remove default from all other addresses
+      await Promise.all(defaultAddresses.map(async (d) => {
+        d.isDefault = false;
+        return this.addresses(id).patch(d, { id: d.id });
+      }));
+    }
+    const addressToChange = await this.addresses(id).find({ where: { id: addressId } }).then(addresses => addresses[0]);
+    addressToChange.isDefault = true;
+    await this.addresses(id).patch(addressToChange, { id: addressToChange.id });
+    return addressToChange;
   }
 
   // DO NOT USE FROM CONTROLLER
@@ -257,7 +271,7 @@ export class CustomerRepository extends DefaultCrudRepository<
       .catch(err => { throw err; });
   }
 
-  async checkoutCart(id: typeof Customer.prototype.id, orderId: typeof OrderInfo.prototype.id, address: Address): Promise<OrderInfo> {
+  async checkoutCart(id: typeof Customer.prototype.id, orderId: typeof OrderInfo.prototype.id, address?: DTO<Address>): Promise<OrderInfo> {
     const orderInfos = await this.orderInfos(id).find({ where: { id: orderId, orderComplete: false } });
     if (orderInfos.length === 0) {
       throw new HttpErrors.NotFound('No cart found');
@@ -266,23 +280,25 @@ export class CustomerRepository extends DefaultCrudRepository<
 
     const user = await this.user(id);
     const customer = await this.findById(id);
-    return this.shopify.checkout.updateEmail(cart.checkoutIdClient, user.email)
-      .then((res: any) => {
-        const shippingAddr = {
-          address1: address.street,
-          address2: address.streetLine2,
-          city: address.city,
-          province: address.state,
-          country: address.country,
-          zip: address.zipCode,
-          firstName: customer.firstName,
-          lastName: customer.lastName,
-          phone: customer.phoneNumber,
-        };
-        return this.shopify.checkout.updateShippingAddress(cart.checkoutIdClient, shippingAddr)
-      }).then((res: any) => {
-        return cart;
+    await this.shopify.checkout.updateEmail(cart.checkoutIdClient, user.email)
+      .then((res) => {
+        if (address) {
+          const shippingAddr: MailingAddressInput = {
+            address1: address.street,
+            address2: address.streetLine2,
+            city: address.city,
+            province: address.state,
+            country: address.country,
+            zip: address.zipCode,
+            firstName: customer.firstName,
+            lastName: customer.lastName,
+            phone: customer.phoneNumber,
+          };
+          return this.shopify.checkout.updateShippingAddress(cart.checkoutIdClient, shippingAddr)
+        }
+        return res;
       });
+    return cart;
   }
 
   async uploadFile(request: Request, response: Response, id: typeof Customer.prototype.id): Promise<FileInfo> {

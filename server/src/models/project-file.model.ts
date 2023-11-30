@@ -5,6 +5,7 @@ import {Project} from './project.model';
   settings: {
     description: 'File information',
     scope: {where: {isDeleted: false}},
+    forceId: false,
   },
 })
 export class ProjectFile extends Entity {
