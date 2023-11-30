@@ -97,7 +97,7 @@ export function NewProject() {
 	}
 
 	function handleDownload(file: ProjectFile) {
-		api.user.downloadProjectFile(cookies.userId, file.id as number);
+		api.projectFile.download(file.id as number);
 	}
 
 	return (

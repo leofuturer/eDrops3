@@ -124,7 +124,7 @@ function Project() {
 	}
 
 	function handleDownload(fileId: number) {
-		api.user.downloadProjectFile(cookies.userId, fileId);
+		api.projectFile.download(fileId);
 	}
 
 	const projectFiles = currentProject?.projectFiles?.map((projectFile) => {
