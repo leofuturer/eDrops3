@@ -83,7 +83,7 @@ export class ProjectFileRepository extends DefaultCrudRepository<
           fileName: request.body.newName
             ? request.body.newName
             : f.originalname,
-          containerFileName: f.originalname,
+          containerFileName: `community/${f.originalname}`,
           container: CONTAINER_NAME, // need fix
           isDeleted: false,
           isPublic: request.body.isPublic === 'public',
@@ -158,7 +158,7 @@ export class ProjectFileRepository extends DefaultCrudRepository<
     filename: string,
     response: Response,
   ): Promise<Response> {
-    const file = path.resolve(`${this.storageDirectory}/community/`, filename);
+    const file = path.resolve(`${this.storageDirectory}/`, filename);
     if (!file.startsWith(this.storageDirectory))
       throw new HttpErrors.BadRequest(`Invalid file id: ${filename}`);
     response.download(file, filename);

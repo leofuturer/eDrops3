@@ -1,15 +1,19 @@
 import { NavLink } from "react-router-dom";
 import { Post } from "@edroplets/api";
+import { UserCircleIcon } from "@heroicons/react/24/solid";
 
 function PostCard({ post }: { post: Post }) {
 	return (
 		<NavLink to={`/forum/${post.id}`} className="h-full">
 			<div className="h-full w-full rounded-2xl shadow-xl bg-white flex flex-row items-center">
-				<div className="relative w-full flex flex-col bg-slate-300 hover:bg-slate-700 hover:text-white justify-end h-full group rounded-2xl">
-					<div className="w-full rounded-2xl p-4">
-						<h3 className="w-full line-clamp-2 text-md font-bold">
+				<div className="relative w-full flex flex-col bg-slate-300 hover:bg-slate-500 hover:text-white justify-start h-full group rounded-2xl">
+					<div className="w-full rounded-2xl p-4 flex flex-col space-y-2">
+						<h3 className="w-full line-clamp-3 text-xl font-bold">
 							{post.title}
 						</h3>
+						<p className="w-full line-clamp-1 text-sm flex items-center space-x-1">
+							<UserCircleIcon className="h-6 w-6" /><p>{post.author} </p>
+						</p>
 						<p className="w-full line-clamp-6 text-sm">
 							{post.content}
 						</p>

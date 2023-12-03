@@ -24,7 +24,7 @@ export function Home() {
 	return (
 		<section
 			id="hero"
-			className="h-full w-full flex flex-row items-center justify-center bg-slate-200 p-10 space-x-10"
+			className="h-full w-full flex flex-row items-center justify-center bg-slate-200 p-10 space-x-10 px-20"
 		>
 			<div className="h-full w-1/2 p-4 bg-white shadow-2xl rounded-lg flex flex-col">
 				<h1 className="my-4 w-full text-4xl font-semibold text-center">
@@ -38,7 +38,7 @@ export function Home() {
 			</div>
 			<div className="h-full w-1/2 p-4 bg-white shadow-2xl rounded-lg flex flex-col">
 				<h1 className="my-4 w-full text-4xl font-semibold text-center">
-					Featured <b className="font-extrabold text-sky-700">Posts</b>
+					Featured <b className="font-extrabold text-sky-700">Discussions</b>
 				</h1>
 				<div className="grid grid-cols-1 md:grid-cols-2 grid-rows-2 gap-4 h-full">
 					{featuredPostList.map((post) => (
