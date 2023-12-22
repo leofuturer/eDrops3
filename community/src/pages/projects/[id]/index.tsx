@@ -135,7 +135,7 @@ export function Project() {
 			userId: cookies.userId,
 			top: true,
 		};
-		api.project.addProjectComment(cookies.userId, newPostComment)
+		api.project.addProjectComment(parseInt(id), newPostComment)
 			.then((res) => {
 				setNewComment("");
 				currentProject.comments = currentProject.comments + 1;

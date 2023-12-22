@@ -35,14 +35,17 @@ export class PostRepository extends DefaultCrudRepository<
   }
 
   async getFeaturedPosts(): Promise<Post[]> {
-    return this.find({
-      where: {
-        datetime: {
-          gte: new Date(Date.now() - 1000 * 60 * 60 * 24 * 7),
-        },
-      },
-      order: ['likes DESC'],
-      limit: 4,
+    const LIMIT = 16;
+    const latestPosts = await this.find({
+      order: ['datetime DESC'],
+      limit: LIMIT,
     });
+
+    // Sort latest posts by likes
+    const featuredPosts = latestPosts.sort((a, b) => {
+      return b.likes - a.likes;
+    }).slice(0, 4);
+    
+    return featuredPosts;
   }
 }
