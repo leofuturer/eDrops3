@@ -28,7 +28,7 @@ function ProjectCard({ project }: { project: ProjectType }) {
 						/>
 					</div>}
 				<div className="z-10 inset-0 w-full h-full p-4  flex flex-col space-y-2 justify-start">
-					<h3 className="w-full line-clamp-3 text-2xl">
+					<h3 className="w-full line-clamp-3 text-lg lg:text-xl 2xl:text-2xl">
 						{project.title}
 					</h3>
 					<p className="w-full line-clamp-1 text-sm flex items-center space-x-1">
@@ -36,13 +36,13 @@ function ProjectCard({ project }: { project: ProjectType }) {
 						<p>&#183;</p>
 						<p>{new Date(project.datetime).toLocaleDateString()}</p>
 					</p>
-					<p className="w-full line-clamp-4 text-sm">
+					{/* <p className="w-full line-clamp-4 text-sm">
 						{project.content}
-					</p>
+					</p> */}
 					{/* <p className="w-full line-clamp-1">
 							{new Date(project.datetime).toLocaleDateString()}
 						</p> */}
-					{/* <div className="flex items-center space-x-4">
+					<div className="hidden xl:flex items-center space-x-4">
 						<div className="flex items-center space-x-2">
 							<HandThumbUpIcon className="h-6" />
 							<p>{project.likes}</p>
@@ -51,7 +51,7 @@ function ProjectCard({ project }: { project: ProjectType }) {
 							<ChatBubbleBottomCenterTextIcon className="h-6" />
 							<p>{project.comments}</p>
 						</div>
-					</div> */}
+					</div>
 				</div>
 			</div>
 		</NavLink>

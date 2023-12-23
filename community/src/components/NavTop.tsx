@@ -46,17 +46,17 @@ export function NavTop() {
 
 	return (
 		<div className="">
-			<header className="flex flex-row items-center bg-sky-800 h-[80px] w-full text-white px-32 justify-between">
+			<header className="flex flex-row items-center bg-sky-800 h-[80px] w-full text-white px-16 md:px-32 justify-between">
 				<div id="navLeft">
 					<NavLink
 						to="/"
 						className="flex flex-row items-center justify-center"
 					>
-						<h1 className="text-2xl">eDroplets Community</h1>
+						<h1 className="hidden md:block text-2xl">eDroplets Community</h1>
 						<img
 							src="/img/edroplets-logo-inverted.png"
 							alt="eDroplets Logo"
-							className="max-h-[50px]"
+							className="max-h-[50px] shrink-0"
 						/>
 					</NavLink>
 				</div>
