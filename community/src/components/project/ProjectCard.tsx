@@ -42,7 +42,7 @@ function ProjectCard({ project }: { project: ProjectType }) {
 					{/* <p className="w-full line-clamp-1">
 							{new Date(project.datetime).toLocaleDateString()}
 						</p> */}
-					<div className="hidden xl:flex items-center space-x-4">
+					<div className="flex items-center space-x-4">
 						<div className="flex items-center space-x-2">
 							<HandThumbUpIcon className="h-6" />
 							<p>{project.likes}</p>

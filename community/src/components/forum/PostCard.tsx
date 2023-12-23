@@ -20,7 +20,7 @@ function PostCard({ post }: { post: Post }) {
 						{/* <p className="w-full line-clamp-4 text-sm">
 							{post.content}
 						</p> */}
-						<div className="hidden xl:flex items-center space-x-4">
+						<div className="flex items-center space-x-4">
 							<div className="flex items-center space-x-2">
 								<HandThumbUpIcon className="h-6" />
 								<p>{post.likes}</p>
