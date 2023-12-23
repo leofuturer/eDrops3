@@ -34,7 +34,7 @@ function ProfilePreview() {
 	if (loading) return <ProfilePreviewLoad />
 
 	return (
-		<div className="flex flex-col mt-20 px-10">
+		<div className="hidden md:flex flex-col mt-20">
 			<div
 				className={`${isUser
 					? "bg-white text-slate-800"

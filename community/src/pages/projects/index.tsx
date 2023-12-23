@@ -68,9 +68,9 @@ export function Projects() {
 	useEffect(() => debounceSearch.cancel());
 
 	return (
-		<section className="min-h-full bg-slate-200 grid grid-cols-4 px-20">
+		<section className="min-h-full bg-slate-200 grid grid-cols-4 gap-5 lg:gap-10 px-10 lg:px-20">
 			<ProfilePreview />
-			<div className="col-span-2 flex flex-col">
+			<div className="col-span-4 md:col-span-2 flex flex-col">
 				<div className="w-full flex flex-row py-4 h-20 space-x-4">
 					<div className="relative w-4/5 h-full">
 						<input
@@ -105,7 +105,7 @@ export function Projects() {
 					))}
 				</div>
 			</div>
-			<div className="flex flex-col px-10 mt-20">
+			<div className="hidden md:flex flex-col mt-20">
 				<div className="flex flex-col sticky top-20 space-y-4">
 					<div
 						className={`py-2 px-4 justify-center items-center rounded-3xl ${
