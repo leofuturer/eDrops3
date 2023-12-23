@@ -126,6 +126,7 @@ export function Project() {
 	}
 
 	function handleComment() {
+		if(!id) return;
 		if (!cookies.userId) { navigate("/login"); return; }
 		const newPostComment = {
 			content: newComment,
