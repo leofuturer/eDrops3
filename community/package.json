@@ -25,6 +25,7 @@
     "react-cookie": "^4.1.1",
     "react-dom": "^18.0.0",
     "react-dropzone": "^14.2.2",
+    "react-modal": "^3.16.1",
     "react-router-dom": "^6.3.0",
     "yup": "^1.2.0"
   },
@@ -33,6 +34,7 @@
     "@types/lodash": "^4.14.182",
     "@types/react": "^18.0.0",
     "@types/react-dom": "^18.0.0",
+    "@types/react-modal": "^3.16.3",
     "@typescript-eslint/eslint-plugin": "^6.2.0",
     "@typescript-eslint/parser": "^6.2.0",
     "@vitejs/plugin-react": "^4.0.3",
