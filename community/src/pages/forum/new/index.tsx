@@ -11,18 +11,38 @@ import { useNavigate } from "react-router-dom";
 import { api, Post as PostType, Project as ProjectType } from "@edroplets/api";
 import { request } from "@edroplets/api";
 import { useCookies } from "react-cookie";
+import { useSearchParams } from "react-router-dom";
 
 export function NewForum() {
 	const [title, setTitle] = useState("");
 	const [content, setContent] = useState("");
 
 	const [cookies] = useCookies(["userId"]);
-
+	const [searchParams, setSearchParams] = useSearchParams();
 	const navigate = useNavigate();
 
 	useEffect(() => {
 		if (!cookies.userId) { navigate("/login"); }
 	}, [cookies.userId]);
+
+	useEffect(() => {
+		if (searchParams.get("edit")) {
+			let idStr = searchParams.get("id");
+			if (idStr==null) {
+				navigate('/forum/new');
+				return;
+			}
+			let id = parseInt(idStr);
+			api.post.get(id).then((res) => {
+				if (cookies.userId!==res.userId) {
+					navigate('/forum');
+					return;
+				}
+				setContent(res.content);
+				setTitle(res.title);
+			});
+		}
+	}, [])
 
 	function handlePost() {
 		if (!cookies.userId) { navigate("/login"); return; }
@@ -35,6 +55,7 @@ export function NewForum() {
 			comments: 0
 			// dislikes: 0,
 		};
+		// if editing, handle request differently (send to /edit endpoint or something)
 		// console.log(data);
 		api.user.createPost(cookies.userId, data)
 			.then((res) => navigate(`/forum/${res.id}`))
@@ -132,7 +153,7 @@ export function NewForum() {
 					className="bg-sky-800 text-white font-semibold rounded-lg shadow-lg flex flex-row justify-center items-center p-4 col-end-7 col-span-1"
 					onClick={handlePost}
 				>
-					Post
+					{searchParams.get("edit") ? 'Save' : 'Post'}
 				</button>
 			</div>
 		</section>

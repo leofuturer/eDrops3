@@ -16,7 +16,7 @@ import { useCookies } from "react-cookie";
 export function Profile(): JSX.Element {
 	const [user, setUser] = useState<User>({} as User);
 	const [feedData, setFeedData] = useState<Post[] | Project[]>([]);
-	const [feed, setFeed] = useState<"Projects" | "Questions">("Projects");
+	const [feed, setFeed] = useState<"Projects" | "Posts">("Projects");
 	const [feedType, setFeedType] = useState<"Activity" | "Saved">("Activity");
 	const [dropdown, setDropdown] = useState<boolean>(false);
 	const [edit, setEdit] = useState<boolean>(false);
@@ -59,7 +59,7 @@ export function Profile(): JSX.Element {
 				});
 			}
 		}
-		else if (feed === "Questions") {
+		else if (feed === "Posts") {
 			if(feedType === "Activity") {
 				api.user.getPosts(user.id).then((res) => {
 					setFeedData(res);
@@ -77,7 +77,7 @@ export function Profile(): JSX.Element {
 		setDropdown(false);
 	}
 
-	function handleFeed(type: "Projects" | "Questions") {
+	function handleFeed(type: "Projects" | "Posts") {
 		setFeed(type);
 	}
 
@@ -132,7 +132,7 @@ export function Profile(): JSX.Element {
 
 					<div className="flex flex-row space-x-4">
 						<div
-							className={`py-2 px-4 justify-center items-center rounded-3xl ${
+							className={`py-2 px-4 justify-center items-center rounded-3xl cursor-pointer ${
 								feed === "Projects"
 									? "bg-sky-800 text-white"
 									: ""
@@ -142,14 +142,14 @@ export function Profile(): JSX.Element {
 							<p className="text-xl text-center">Projects</p>
 						</div>
 						<div
-							className={`py-2 px-4 justify-center items-center rounded-3xl ${
-								feed === "Questions"
+							className={`py-2 px-4 justify-center items-center rounded-3xl cursor-pointer ${
+								feed === "Posts"
 									? "bg-sky-800 text-white"
 									: ""
 							}`}
-							onClick={() => handleFeed("Questions")}
+							onClick={() => handleFeed("Posts")}
 						>
-							<p className="text-xl text-center">Questions</p>
+							<p className="text-xl text-center">Posts</p>
 						</div>
 					</div>
 				</div>
