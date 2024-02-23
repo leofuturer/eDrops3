@@ -158,7 +158,8 @@ export class ProjectFileRepository extends DefaultCrudRepository<
     filename: string,
     response: Response,
   ): Promise<Response> {
-    const file = path.resolve(`${this.storageDirectory}/community/`, filename);
+    const file = path.resolve(`${this.storageDirectory}`, filename);
+    console.log(this.storageDirectory);
     if (!file.startsWith(this.storageDirectory))
       throw new HttpErrors.BadRequest(`Invalid file id: ${filename}`);
     response.download(file, filename);

@@ -5,6 +5,7 @@ import {
 	ChevronLeftIcon,
 	ChevronRightIcon,
 	HandThumbUpIcon,
+	EllipsisHorizontalIcon
 } from "@heroicons/react/24/outline";
 import { AxiosError } from "axios";
 import Cookies from "js-cookie";
@@ -29,7 +30,10 @@ export function Post() {
 	const [newComment, setNewComment] = useState<string>("");
 	const [comments, setComments] = useState<CommentType[]>([]);
 
+	const [dropdownVisible, setDropdownVisible] = useState<boolean>(false);
+	const [deleteModalVisible, setDeleteModalVisible] = useState<boolean>(false);
 	const [cookies] = useCookies(["userId"]);
+	
 
 	// Fetch current post and set loading to false after fetch
 	useEffect(() => {
@@ -138,6 +142,7 @@ export function Post() {
 		}
 	}
 
+
 	return (
 		<section className="relative bg-slate-200 min-h-full py-10 grid grid-cols-5">
 			<div className="flex flex-col items-center">
@@ -151,15 +156,52 @@ export function Post() {
 				{!loading && (
 					<>
 						<div className="flex flex-col">
-							<div className="flex flex-row w-full justify-between">
+							<div className="flex flex-row w-full h-15 resize-none justify-between">
 								<h1 className="text-3xl">
 									{currentPost?.title}
 								</h1>
-								<BookmarkIcon
-									className={`w-10 h-10 cursor-pointer ${saved ? "fill-black" : ""
-										}`}
-									onClick={handleSave}
-								/>
+								<div className="flex flex-row">
+									{
+										(currentPost.userId===cookies.userId) ?
+											<div className="flex flex-col">
+												<EllipsisHorizontalIcon
+													className={`w-10 h-10 cursor-pointer ${saved ? "fill-black" : ""}`}
+													onClick={() => setDropdownVisible(!dropdownVisible)}
+												/>
+												<div style={{display: dropdownVisible ? "block" : "none"}} className="absolute mt-8 -ml-9">
+													<ul className="text-white bg-slate-700 p-2 px-3 rounded">
+														<li>
+															<button
+																onClick={()=> {
+																	console.log("editing");
+																	navigate(`/forum/new?edit=true&id=${id}`);
+																}}
+															>
+																Edit
+															</button>
+														</li>
+														<li>
+															<button
+																onClick={() => {
+																	setDeleteModalVisible(true);
+																}}
+															>
+																Delete
+															</button>
+														</li>
+													</ul>
+												</div>
+											</div> 
+											: 
+											<></>
+									}
+									
+									<BookmarkIcon
+										className={`w-10 h-10 cursor-pointer ${saved ? "fill-black" : ""
+											}`}
+										onClick={handleSave}
+									/>
+								</div>
 							</div>
 							<p className="text-md">
 								<Link to={`/profile/${currentPost?.userId}`}>
@@ -238,6 +280,7 @@ export function Post() {
 				)}
 			</div>
 		</section>
+		
 	);
 }
 
