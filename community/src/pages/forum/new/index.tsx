@@ -56,6 +56,16 @@ export function NewForum() {
 			// dislikes: 0,
 		};
 		// if editing, handle request differently (send to /edit endpoint or something)
+		if (searchParams.get("edit")) {
+			api.user.editPost(cookies.userId, data)
+			.then((res) => navigate(`/forum/${res.id}`))
+			.catch((err: AxiosError) => {
+				if (err.response?.status === 401) {
+					navigate("/login");
+				}
+				console.log(err);
+			});
+		}
 		// console.log(data);
 		api.user.createPost(cookies.userId, data)
 			.then((res) => navigate(`/forum/${res.id}`))
