@@ -135,6 +135,28 @@ export function Post() {
 		setExpanded(!expanded);
 	}
 
+	function handleDelete() {
+		const title = currentPost.title;
+		const content = currentPost.content;
+		const data: PostType = {
+			title,
+			content,
+			author: "",
+			datetime: new Date(),
+			likes: 0,
+			comments: 0
+			// dislikes: 0,
+		};
+		api.user.deletePost(cookies.userId, data)
+		.then((res) => navigate(`/forum`))
+		.catch((err: AxiosError) => {
+			if (err.response?.status === 401) {
+				navigate("/login");
+			}
+			console.log(err);
+		});
+	}
+
 	function needAuth(f: Function) {
 		if (!cookies.userId) {
 			navigate("/login");
@@ -175,7 +197,7 @@ export function Post() {
 					<div>
 				  		<button
 							// call the /delete endpoint
-							onClick={()=>{}}
+							onClick={handleDelete}
 							className="bg-red-400 text-white p-2.5 ml-0 mt-6 mr-auto rounded"
 						>Delete</button>
 						<button 
