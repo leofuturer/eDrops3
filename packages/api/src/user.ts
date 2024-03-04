@@ -95,8 +95,8 @@ class UserResource extends Resource<User> {
     });
   }
 
-  async deletePost(id: typeof User.prototype.id, post: Post): Promise<DTO<Post>> {
-    return request<DTO<Post>>(`${this.baseURL}/${id}/posts`, 'DELETE', post).then((res) => {
+  async deletePost(id: typeof User.prototype.id, postId: typeof Post.prototype.id): Promise<DTO<Post>> {
+    return request<DTO<Post>>(`${this.baseURL}/${id}/posts/${postId}`, 'DELETE', {}).then((res) => {
       return res.data;
     });
   }

@@ -136,18 +136,11 @@ export function Post() {
 	}
 
 	function handleDelete() {
+		const id = currentPost.id;
+		if (!id) return;
 		const title = currentPost.title;
 		const content = currentPost.content;
-		const data: PostType = {
-			title,
-			content,
-			author: "",
-			datetime: new Date(),
-			likes: 0,
-			comments: 0
-			// dislikes: 0,
-		};
-		api.user.deletePost(cookies.userId, data)
+		api.user.deletePost(cookies.userId, id)
 		.then((res) => navigate(`/forum`))
 		.catch((err: AxiosError) => {
 			if (err.response?.status === 401) {
@@ -179,10 +172,10 @@ export function Post() {
 					},
 					content: {
 					  position: 'absolute',
-					  top: '150px',
-					  left: '650px',
-					  right: '650px',
-					  bottom: '700px',
+					  top: '20%',
+					  left: '35%',
+					  height: '20%',
+					  width: '30%',
 					  background: '#fff',
 					  overflow: 'auto',
 					  WebkitOverflowScrolling: 'touch',

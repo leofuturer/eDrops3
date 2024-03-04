@@ -57,6 +57,9 @@ export function NewForum() {
 		};
 		// if editing, handle request differently (send to /edit endpoint or something)
 		if (searchParams.get("edit")) {
+			const id = searchParams.get("id");
+			if (!id) return;
+			data.id = parseInt(id);
 			api.user.editPost(cookies.userId, data)
 			.then((res) => navigate(`/forum/${res.id}`))
 			.catch((err: AxiosError) => {
