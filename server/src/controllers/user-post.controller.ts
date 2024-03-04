@@ -1,4 +1,5 @@
 import { intercept } from '@loopback/core';
+import {authenticate} from '@loopback/authentication';
 import {
   Count,
   CountSchema,
@@ -47,6 +48,7 @@ export class UserPostController {
     return this.userRepository.posts(id).find(filter);
   }
 
+  @authenticate('jwt')
   @intercept(AuthorInterceptor.BINDING_KEY)
   @post('/users/{id}/posts', {
     responses: {
@@ -73,6 +75,7 @@ export class UserPostController {
     return this.userRepository.posts(id).create(post);
   }
 
+  @authenticate('jwt')
   @patch('/users/{id}/posts/{postId}', {
     responses: {
       '200': {
@@ -96,6 +99,7 @@ export class UserPostController {
     return this.userRepository.posts(id).patch(post, {id: postId});
   }
 
+  @authenticate('jwt')
   @del('/users/{id}/posts/{postId}', {
     responses: {
       '200': {

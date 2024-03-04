@@ -5,12 +5,20 @@ import { debounce } from "lodash";
 import React, { useEffect, useMemo, useState } from "react";
 import { NavLink } from "react-router-dom";
 import { api, Post } from "@edroplets/api";
+import { DeleteModal } from "@/components/ui/DeleteModal";
+import { useCookies } from "react-cookie";
+import { useNavigate } from "react-router-dom";
+import { AxiosError } from "axios";
 
 export function Forum() {
+	const navigate = useNavigate();
 	const [postList, setPostList] = useState<Post[]>([]);
 	const [sortedPosts, setSortedPosts] = useState<Post[]>([]);
 	const [search, setSearch] = useState("");
 	const [feedType, setFeedType] = useState<"Featured" | "New">("Featured");
+	const [deleteModalVisible, setDeleteModalVisible] = useState<boolean>(false);
+	const [currPost, setCurrPost] = useState<number | undefined>(undefined);
+	const [cookies] = useCookies(["userId"]);
 
 	useEffect(() => {
 		let filter = {};
@@ -63,8 +71,32 @@ export function Forum() {
 
 	useEffect(() => debounceSearch.cancel());
 
+	function handleDelete(id: number) {
+		if (!id) return;
+		api.user.deletePost(cookies.userId, id)
+		.then(() => {
+			let tempList = [...postList];
+			const index = tempList.findIndex((element) => element.id==id);
+			tempList.splice(index, 1);
+			setPostList(tempList);
+		})
+		.catch((err: AxiosError) => {
+			if (err.response?.status === 401) {
+				navigate("/login");
+			}
+			console.log(err);
+		});
+		setDeleteModalVisible(false);
+	}
+
 	return (
 		<section className="bg-slate-200 min-h-full grid grid-cols-4 px-20">
+			<DeleteModal
+				postId={currPost}
+				deleteModalVisible={deleteModalVisible}
+				setDeleteModalVisible={setDeleteModalVisible}
+				handleDelete={handleDelete}
+			/>
 			<ProfilePreview />
 			<div className="col-span-2 flex flex-col">
 				<div className="w-full flex flex-row py-4 h-20 space-x-4">
@@ -97,7 +129,10 @@ export function Forum() {
 				</div>
 				<div id="postList">
 					{sortedPosts.map((post) => (
-						<PostPreview post={post} key={post.id} />
+						<PostPreview post={post} key={post.id} handleDelete={()=>{
+							setCurrPost(post.id);
+							setDeleteModalVisible(true);
+						}}/>
 					))}
 				</div>
 			</div>
