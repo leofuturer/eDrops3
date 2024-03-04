@@ -46,19 +46,24 @@ export function NewForum() {
 
 	function handlePost() {
 		if (!cookies.userId) { navigate("/login"); return; }
-		const data: PostType = {
+		const createData: Partial<PostType> = {
 			title,
 			content,
 			author: "",
 			likes: 0,
-			comments: 0
+			comments: 0,
+			datetime: new Date()
 			// dislikes: 0,
 		};
+		const patchData: Partial<PostType> = {
+			title,
+			content
+		}
 		// if editing, handle request differently (send to /edit endpoint or something)
 		if (searchParams.get("edit")) {
 			const id = searchParams.get("id");
 			if (!id) return;
-			api.user.editPost(cookies.userId, data, parseInt(id))
+			api.user.editPost(cookies.userId, patchData, parseInt(id))
 			.then((res) => navigate(`/forum/${id}`))
 			.catch((err: AxiosError) => {
 				if (err.response?.status === 401) {
@@ -68,7 +73,8 @@ export function NewForum() {
 			});
 		}
 		// console.log(data);
-		api.user.createPost(cookies.userId, data)
+		else {
+			api.user.createPost(cookies.userId, createData)
 			.then((res) => navigate(`/forum/${res.id}`))
 			.catch((err: AxiosError) => {
 				if (err.response?.status === 401) {
@@ -76,6 +82,7 @@ export function NewForum() {
 				}
 				console.log(err);
 			});
+		}
 	}
 
 	// TODO: add post files? currently model doesn't exist in backend

@@ -6,12 +6,11 @@ import { BookmarkIcon, ChatBubbleBottomCenterTextIcon, ChatBubbleLeftIcon, HandT
 import { useCookies } from "react-cookie";
 import { AxiosError } from "axios";
 
-function PostPreview({ post }: { post: Post }) {
+function PostPreview({ post, handleDelete }: { post: Post, handleDelete: Function }) {
 
 	const [saved, setSaved] = useState<boolean>(false);
 	const [cookies] = useCookies(["userId"]);
 	const [dropdownVisible, setDropdownVisible] = useState<boolean>(false);
-	const [deleteModalVisible, setDeleteModalVisible] = useState<boolean>(false);
 	const navigate = useNavigate();
 
 	useEffect(() => {
@@ -70,8 +69,9 @@ function PostPreview({ post }: { post: Post }) {
 											<li>
 												<button
 													onClick={(e) => {
+														// have parent class handle this
 														e.preventDefault();
-														setDeleteModalVisible(true);
+														handleDelete();
 														setDropdownVisible(false);
 													}}
 												>
