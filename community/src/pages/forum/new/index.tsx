@@ -50,7 +50,6 @@ export function NewForum() {
 			title,
 			content,
 			author: "",
-			datetime: new Date(),
 			likes: 0,
 			comments: 0
 			// dislikes: 0,
@@ -59,9 +58,8 @@ export function NewForum() {
 		if (searchParams.get("edit")) {
 			const id = searchParams.get("id");
 			if (!id) return;
-			data.id = parseInt(id);
-			api.user.editPost(cookies.userId, data)
-			.then((res) => navigate(`/forum/${res.id}`))
+			api.user.editPost(cookies.userId, data, parseInt(id))
+			.then((res) => navigate(`/forum/${id}`))
 			.catch((err: AxiosError) => {
 				if (err.response?.status === 401) {
 					navigate("/login");
