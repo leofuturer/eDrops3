@@ -89,8 +89,8 @@ class UserResource extends Resource<User> {
     });
   }
 
-  async editPost(id: typeof User.prototype.id, post: Post): Promise<DTO<Post>> {
-    return request<DTO<Post>>(`${this.baseURL}/${id}/posts`, 'PATCH', post).then((res) => {
+  async editPost(id: typeof User.prototype.id, post: Post, postId: typeof Post.prototype.id): Promise<DTO<Post>> {
+    return request<DTO<Post>>(`${this.baseURL}/${id}/posts/${postId}`, 'PATCH', post).then((res) => {
       return res.data;
     });
   }

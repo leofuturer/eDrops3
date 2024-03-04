@@ -73,7 +73,7 @@ export class UserPostController {
     return this.userRepository.posts(id).create(post);
   }
 
-  @patch('/users/{id}/posts', {
+  @patch('/users/{id}/posts/{postId}', {
     responses: {
       '200': {
         description: 'User.Post PATCH success count',
@@ -83,6 +83,7 @@ export class UserPostController {
   })
   async patch(
     @param.path.string('id') id: string,
+    @param.path.number('postId') postId: typeof Post.prototype.id,
     @requestBody({
       content: {
         'application/json': {
@@ -90,30 +91,15 @@ export class UserPostController {
         },
       },
     })
-    post: Partial<Post>,
-    @param.query.object('where', getWhereSchemaFor(Post)) where?: Where<Post>,
+    post: Partial<Post>
   ): Promise<Count> {
-    return this.userRepository.posts(id).patch(post, where);
+    return this.userRepository.posts(id).patch(post, {id: postId});
   }
 
-  // @del('/users/{id}/posts', {
-  //   responses: {
-  //     '200': {
-  //       description: 'User.Post DELETE success count',
-  //       content: {'application/json': {schema: CountSchema}},
-  //     },
-  //   },
-  // })
-  // async delete(
-  //   @param.path.string('id') id: string,
-  //   @param.query.object('where', getWhereSchemaFor(Post)) where?: Where<Post>,
-  // ): Promise<Count> {
-  //   return this.userRepository.posts(id).delete(where);
-  // }
   @del('/users/{id}/posts/{postId}', {
     responses: {
       '200': {
-        description: 'Unlike a post',
+        description: 'Delete a post',
       },
     },
   })
