@@ -96,18 +96,33 @@ export class UserPostController {
     return this.userRepository.posts(id).patch(post, where);
   }
 
-  @del('/users/{id}/posts', {
+  // @del('/users/{id}/posts', {
+  //   responses: {
+  //     '200': {
+  //       description: 'User.Post DELETE success count',
+  //       content: {'application/json': {schema: CountSchema}},
+  //     },
+  //   },
+  // })
+  // async delete(
+  //   @param.path.string('id') id: string,
+  //   @param.query.object('where', getWhereSchemaFor(Post)) where?: Where<Post>,
+  // ): Promise<Count> {
+  //   return this.userRepository.posts(id).delete(where);
+  // }
+  @del('/users/{id}/posts/{postId}', {
     responses: {
       '200': {
-        description: 'User.Post DELETE success count',
-        content: {'application/json': {schema: CountSchema}},
+        description: 'Unlike a post',
       },
     },
   })
   async delete(
-    @param.path.string('id') id: string,
-    @param.query.object('where', getWhereSchemaFor(Post)) where?: Where<Post>,
+    @param.path.string('id') id: typeof User.prototype.id,
+    @param.path.number('postId') postId: typeof Post.prototype.id,
   ): Promise<Count> {
-    return this.userRepository.posts(id).delete(where);
+    return this.userRepository
+      .posts(id)
+      .delete({id: postId});
   }
 }
