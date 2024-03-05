@@ -11,13 +11,13 @@ export enum ROUTES {
   EmailUnverified = '/email-unverified',
   Project = '/project/:id',
   Projects = '/projects',
-  Posts  = '/forum',
+  Posts = '/forum',
   Post = '/forum/:id',
   Profile = '/profile/:id',
   SelfProfile = '/profile',
   // Authenticated routes
   NewProject = '/projects/new',
-  NewPost = '/forum/new',             
+  NewPost = '/forum/new',
 }
 
 export const idRoute = (route: ROUTES, id: string | number) => route.replace(':id', id as string);
