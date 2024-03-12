@@ -44,51 +44,9 @@ function PostPreview({ post, handleDelete }: { post: Post, handleDelete: Functio
         <div className="flex flex-row justify-between items-center">
           <h3 className="text-xl">{post.title}</h3>
           <div className="flex flex-row">
-            {
-							(post.userId === cookies.userId)
-							  ? (
-  <div className="flex flex-col">
-    <EllipsisHorizontalIcon
-      className="w-10 h-10 z-100 cursor-default"
-      onClick={(e) => {
-										  e.preventDefault();
-										  setDropdownVisible(!dropdownVisible);
-      }}
-    />
-    <div style={{ display: dropdownVisible ? 'block' : 'none' }} className="absolute mt-8 -ml-9">
-      <ul className="text-white bg-slate-700 p-2 px-3 rounded">
-        <li>
-          <button
-            onClick={(e) => {
-													  e.preventDefault();
-													  console.log('editing');
-													  navigate(`/forum/new?edit=true&id=${post.id}`);
-            }}
-          >
-            Edit
-          </button>
-        </li>
-        <li>
-          <button
-            onClick={(e) => {
-													  // have parent class handle this
-													  e.preventDefault();
-													  handleDelete();
-													  setDropdownVisible(false);
-            }}
-          >
-            Delete
-          </button>
-        </li>
-      </ul>
-    </div>
-  </div>
-							  )
-							  :								<></>
-						}
             <BookmarkIcon
               className={`w-8 h-8 cursor-default ${saved ? 'fill-black' : ''
-              }`}
+                }`}
               onClick={(e) => handleSave(e)}
             />
           </div>
@@ -105,15 +63,59 @@ function PostPreview({ post, handleDelete }: { post: Post, handleDelete: Functio
 
         <p className="line-clamp-2">{post.content}</p>
 
-        <div className="flex items-center space-x-4">
-          <div className="flex items-center space-x-2">
-            <HandThumbUpIcon className="h-6" />
-            <p>{post.likes}</p>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-2">
+              <HandThumbUpIcon className="h-6" />
+              <p>{post.likes}</p>
+            </div>
+            <div className="flex items-center space-x-2">
+              <ChatBubbleBottomCenterTextIcon className="h-6" />
+              <p>{post.comments}</p>
+            </div>
           </div>
-          <div className="flex items-center space-x-2">
-            <ChatBubbleBottomCenterTextIcon className="h-6" />
-            <p>{post.comments}</p>
-          </div>
+          {
+              (post.userId === cookies.userId)
+                ? (
+                  <div className="flex flex-col">
+                    <EllipsisHorizontalIcon
+                      className="w-10 h-10 z-100 cursor-default"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        setDropdownVisible(!dropdownVisible);
+                      }}
+                    />
+                    <div style={{ display: dropdownVisible ? 'block' : 'none' }} className="absolute mt-8 -ml-9">
+                      <ul className="text-white bg-slate-700 p-2 px-3 rounded">
+                        <li>
+                          <button
+                            onClick={(e) => {
+                              e.preventDefault();
+                              console.log('editing');
+                              navigate(`/forum/new?edit=true&id=${post.id}`);
+                            }}
+                          >
+                            Edit
+                          </button>
+                        </li>
+                        <li>
+                          <button
+                            onClick={(e) => {
+                              // have parent class handle this
+                              e.preventDefault();
+                              handleDelete();
+                              setDropdownVisible(false);
+                            }}
+                          >
+                            Delete
+                          </button>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                )
+                : <></>
+            }
         </div>
 
       </div>

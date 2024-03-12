@@ -20,8 +20,8 @@ export function DeleteModal({
           position: 'absolute',
           top: '20%',
           left: '35%',
-          height: '20%',
-          width: '30%',
+          height: '15%',
+          width: '25%',
           background: '#fff',
           overflow: 'auto',
           WebkitOverflowScrolling: 'touch',
@@ -46,7 +46,7 @@ export function DeleteModal({
           </button>
           <button
             onClick={() => setDeleteModalVisible(false)}
-            className="bg-green-400 text-white p-2.5 mt-6 m-2 rounded"
+            className="bg-green-400 text-white p-2.5 mt-0 m-2 rounded"
           >
             Cancel
           </button>
