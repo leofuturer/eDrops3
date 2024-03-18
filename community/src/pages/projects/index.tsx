@@ -6,11 +6,14 @@ import { NavLink } from 'react-router-dom';
 import { api, Project as ProjectType } from '@edroplets/api';
 import ProjectPreview from '@/components/project/ProjectPreview';
 import ProfilePreview from '@/components/profile/ProfilePreview';
+import { DeleteModal } from '@/components/ui/DeleteModal';
 
 export function Projects() {
   const [projectList, setProjectList] = useState<ProjectType[]>([]);
   const [sortedProjects, setSortedProjects] = useState<ProjectType[]>([]);
   const [search, setSearch] = useState('');
+  const [deleteModalVisible, setDeleteModalVisible] = useState<boolean>(false);
+  const [currProj, setCurrProj] = useState<number | undefined>(undefined);
   const [feedType, setFeedType] = useState<'Featured' | 'New'>('Featured');
 
   // Return projects based on search query (debounced)
@@ -67,6 +70,12 @@ export function Projects() {
 
   return (
     <section className="min-h-full bg-slate-200 grid grid-cols-4 px-20">
+       <DeleteModal
+        postId={currProj}
+        deleteModalVisible={deleteModalVisible}
+        setDeleteModalVisible={setDeleteModalVisible}
+        handleDelete={()=>{}}
+      />
       <ProfilePreview />
       <div className="col-span-2 flex flex-col">
         <div className="w-full flex flex-row py-4 h-20 space-x-4">
@@ -99,7 +108,12 @@ export function Projects() {
         </div>
         <div id="projectList">
           {sortedProjects.map((project) => (
-            <ProjectPreview project={project} key={project.id} />
+            <ProjectPreview project={project} 
+              key={project.id} 
+              handleDelete={() => {
+                setCurrProj(project.id);
+                setDeleteModalVisible(true);
+            }}/>
           ))}
         </div>
       </div>

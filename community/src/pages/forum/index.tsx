@@ -130,8 +130,8 @@ export function Forum() {
               post={post}
               key={post.id}
               handleDelete={() => {
-						  setCurrPost(post.id);
-						  setDeleteModalVisible(true);
+						    setCurrPost(post.id);
+						    setDeleteModalVisible(true);
               }}
             />
           ))}

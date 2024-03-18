@@ -9,7 +9,7 @@ import { AxiosError } from 'axios';
 import Cookies from 'js-cookie';
 import { useEffect, useState } from 'react';
 import { useCookies } from 'react-cookie';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import ImageUpload from '@/components/project/ImageUpload';
 import FileUpload from '@/components/project/FileUpload';
 import AddLink from '@/components/project/AddLink';
@@ -22,8 +22,29 @@ export function NewProject() {
   const [files, setFiles] = useState<ProjectFile[]>([]);
   const [links, setLinks] = useState<string[]>([]);
   const [cookies] = useCookies(['userId']);
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (searchParams.get('edit')) {
+      console.log("editing");
+      const idStr = searchParams.get('id');
+      if (idStr == null) {
+        navigate('/forum/new');
+        return;
+      }
+      const id = parseInt(idStr);
+      api.project.get(id).then((res) => {
+        if (cookies.userId !== res.userId) {
+          navigate('/forum');
+          return;
+        }
+        setContent(res.content);
+        setTitle(res.title);
+      });
+    }
+  }, []);
 
   useEffect(() => {
     if (!cookies.userId) {
@@ -32,7 +53,7 @@ export function NewProject() {
   }, [cookies.userId]);
 
   function handlePost() {
-    const data: Project = {
+    const data: Partial<Project> = {
       title,
       content,
       author: '',
@@ -41,6 +62,13 @@ export function NewProject() {
       comments: 0,
       // dislikes: 0,
     };
+
+    if (searchParams.get('edit')) {
+      // request a PATCH endpoint for project (not created yet)
+      navigate(`/project/${searchParams.get('id')}`);
+      return;
+    }
+
     // console.log(data);
     api.user.createProject(cookies.userId as string, data).then(async (res) => {
       // console.log(res);

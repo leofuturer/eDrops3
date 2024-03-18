@@ -7,6 +7,7 @@ import {
   ChevronLeftIcon,
   ChevronRightIcon,
   HandThumbUpIcon,
+  EllipsisHorizontalIcon
 } from '@heroicons/react/24/outline';
 import { AxiosError } from 'axios';
 import { useCookies } from 'react-cookie';
@@ -17,6 +18,7 @@ import {
 import { api, ProjectComment as CommentType, Project as ProjectType } from '@edroplets/api';
 import { timeAgo } from '@/lib/time';
 import ProjectComment from '@/components/project/ProjectComment';
+import { DeleteModal } from '@/components/ui/DeleteModal';
 
 export function Project() {
   const { id } = useParams();
@@ -33,6 +35,9 @@ export function Project() {
 
   const [newComment, setNewComment] = useState<string>('');
   const [comments, setComments] = useState<CommentType[]>([]);
+
+  const [dropdownVisible, setDropdownVisible] = useState<boolean>(false);
+  const [deleteModalVisible, setDeleteModalVisible] = useState<boolean>(false);
 
   const [cookies] = useCookies(['userId']);
 
@@ -179,6 +184,12 @@ export function Project() {
 
   return (
     <section className="relative bg-slate-200 min-h-full py-10 grid grid-cols-5">
+       <DeleteModal
+        postId={currentProject.id}
+        deleteModalVisible={deleteModalVisible}
+        setDeleteModalVisible={setDeleteModalVisible}
+        handleDelete={()=>{}}
+      />
       <div className="flex flex-col items-center">
         <div className="h-10 w-10">
           <NavLink to="/projects">
@@ -194,11 +205,50 @@ export function Project() {
               <h1 className="text-3xl">
                 {currentProject?.title}
               </h1>
-              <BookmarkIcon
-                className={`w-10 h-10 cursor-pointer ${saved ? 'fill-black' : ''
-                }`}
-                onClick={() => needAuth(handleSave)}
-              />
+              <div className="flex flex-row">
+                  {
+                    (currentProject.userId === cookies.userId)
+                      ? (
+                        <div className="flex flex-col">
+                          <EllipsisHorizontalIcon
+                            className={`w-10 h-10 cursor-pointer ${saved ? 'fill-black' : ''}`}
+                            onClick={() => setDropdownVisible(!dropdownVisible)}
+                          />
+                          <div style={{ display: dropdownVisible ? 'block' : 'none' }} className="absolute mt-8 -ml-9">
+                            <ul className="text-white bg-slate-700 p-2 px-3 rounded">
+                              <li>
+                                <button
+                                  onClick={() => {
+                                    console.log('editing');
+                                    navigate(`/projects/new?edit=true&id=${id}`);
+                                  }}
+                                >
+                                  Edit
+                                </button>
+                              </li>
+                              <li>
+                                <button
+                                  onClick={() => {
+                                    setDeleteModalVisible(true);
+                                    setDropdownVisible(false);
+                                  }}
+                                >
+                                  Delete
+                                </button>
+                              </li>
+                            </ul>
+                          </div>
+                        </div>
+                      )
+                      : <></>
+                  }
+
+                  <BookmarkIcon
+                    className={`w-10 h-10 cursor-pointer ${saved ? 'fill-black' : ''
+                      }`}
+                    onClick={handleSave}
+                  />
+                </div>
             </div>
             <p className="text-md">
               <Link to={`/profile/${currentProject?.userId}`}>
