@@ -8,12 +8,12 @@
     "packages:build": "npm run build --workspaces",
     "docker:build": "docker build -t edroplets_backend server/",
     "docker:buildmac": "docker build -t edroplets_backend server/ --platform linux/amd64",
-    "docker:dev": "docker-compose -f docker-compose.yml -f docker-compose.dev.yml up",
-    "docker:stop": "docker-compose -f docker-compose.yml -f docker-compose.dev.yml down",
-    "docker:reset": "cross-env RESET_DATABASE=Yes docker-compose -f docker-compose.yml -f docker-compose.dev.yml up",
-    "docker:migrate": "cross-env MIGRATE_DATABASE=Yes docker-compose -f docker-compose.yml -f docker-compose.dev.yml up",
-    "docker:flush": "cross-env RESET_DATABASE=Yes MIGRATE_DATABASE=Yes docker-compose -f docker-compose.yml -f docker-compose.dev.yml up",
-    "docker:restart": "docker-compose -f docker-compose.yml -f docker-compose.dev.yml restart edroplets_backend",
+    "docker:dev": "docker compose -f docker-compose.yml -f docker-compose.dev.yml up",
+    "docker:stop": "docker compose -f docker-compose.yml -f docker-compose.dev.yml down",
+    "docker:reset": "cross-env RESET_DATABASE=Yes docker compose -f docker-compose.yml -f docker-compose.dev.yml up",
+    "docker:migrate": "cross-env MIGRATE_DATABASE=Yes docker compose -f docker-compose.yml -f docker-compose.dev.yml up",
+    "docker:flush": "cross-env RESET_DATABASE=Yes MIGRATE_DATABASE=Yes docker compose -f docker-compose.yml -f docker-compose.dev.yml up",
+    "docker:restart": "docker compose -f docker-compose.yml -f docker-compose.dev.yml restart edroplets_backend",
     "docker:sql": "docker exec -it edroplets_db mysql -u edroplets -p edroplets",
     "docker:sqlroot": "docker exec -it edroplets_db mysql -u root -p edroplets",
     "client:dev": "npm run dev --prefix client",
@@ -31,6 +31,7 @@
     "typescript": "^5.2.2"
   },
   "workspaces": [
-    "packages/*"
+    "packages/api",
+    "packages/schemas"
   ]
 }
