@@ -36,12 +36,17 @@ export function NewProject() {
       }
       const id = parseInt(idStr);
       api.project.get(id).then((res) => {
+        console.log(res);
         if (cookies.userId !== res.userId) {
           navigate('/forum');
           return;
         }
         setContent(res.content);
         setTitle(res.title);
+        if (res.projectFiles) setFiles(res.projectFiles);
+        if (res.projectLinks) setLinks(res.projectLinks.map((obj)=>obj.link));
+        // also get existing files and links
+
       });
     }
   }, []);
