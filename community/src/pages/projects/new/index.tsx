@@ -16,6 +16,7 @@ import AddLink from '@/components/project/AddLink';
 
 export function NewProject() {
   const [title, setTitle] = useState('');
+  const [projId, setProjId] = useState(-1);
   const [content, setContent] = useState('');
   const [modalType, setModalType] = useState<typeof ProjectFile.prototype.fileType | 'link'>('attachment');
   const [showModal, setShowModal] = useState(false);
@@ -35,6 +36,7 @@ export function NewProject() {
         return;
       }
       const id = parseInt(idStr);
+      setProjId(id);
       api.project.get(id).then((res) => {
         console.log(res);
         if (cookies.userId !== res.userId) {
@@ -70,6 +72,10 @@ export function NewProject() {
 
     if (searchParams.get('edit')) {
       // request a PATCH endpoint for project (not created yet)
+      api.user.editProject(cookies.userId as string, data, projId).then(async (res) => {
+        // handle de-linking files and linking newly added files and stuff
+
+      })
       navigate(`/project/${searchParams.get('id')}`);
       return;
     }
