@@ -7,14 +7,19 @@ import { api, Project as ProjectType } from '@edroplets/api';
 import ProjectPreview from '@/components/project/ProjectPreview';
 import ProfilePreview from '@/components/profile/ProfilePreview';
 import { DeleteModal } from '@/components/ui/DeleteModal';
+import { useCookies } from 'react-cookie';
+import { AxiosError } from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 export function Projects() {
+  const navigate = useNavigate();
   const [projectList, setProjectList] = useState<ProjectType[]>([]);
   const [sortedProjects, setSortedProjects] = useState<ProjectType[]>([]);
   const [search, setSearch] = useState('');
   const [deleteModalVisible, setDeleteModalVisible] = useState<boolean>(false);
   const [currProj, setCurrProj] = useState<number | undefined>(undefined);
   const [feedType, setFeedType] = useState<'Featured' | 'New'>('Featured');
+  const [cookies] = useCookies(['userId']);
 
   // Return projects based on search query (debounced)
   useEffect(() => {
@@ -64,6 +69,24 @@ export function Projects() {
     console.log(e.target.value);
   };
 
+  function handleDelete(id: number) {
+    if (!id) return;
+    api.user.deleteProject(cookies.userId, id)
+      .then(() => {
+        const tempList = [...projectList];
+        const index = tempList.findIndex((element) => element.id == id);
+        tempList.splice(index, 1);
+        setProjectList(tempList);
+      })
+      .catch((err: AxiosError) => {
+        if (err.response?.status === 401) {
+          navigate('/login');
+        }
+        console.log(err);
+      });
+    setDeleteModalVisible(false);
+  }
+
   const debounceSearch = useMemo(() => debounce(handleSearch, 300), []);
 
   useEffect(() => debounceSearch.cancel());
@@ -74,7 +97,9 @@ export function Projects() {
         postId={currProj}
         deleteModalVisible={deleteModalVisible}
         setDeleteModalVisible={setDeleteModalVisible}
-        handleDelete={()=>{}}
+        handleDelete={()=>{
+          handleDelete(currProj);
+        }}
       />
       <ProfilePreview />
       <div className="col-span-2 flex flex-col">

@@ -159,6 +159,18 @@ class UserResource extends Resource<User> {
     });
   }
 
+  async deleteProject(id: typeof User.prototype.id, projectId: typeof Project.prototype.id): Promise<DTO<Project>> {
+    return request<DTO<Project>>(`${this.baseURL}/${id}/projects/${projectId}`, 'DELETE', {}).then((res) => {
+      return res.data;
+    });
+  }
+
+  async editProject(id: typeof User.prototype.id, project: Project, projectId: typeof Project.prototype.id): Promise<DTO<Project>> {
+    return request<DTO<Project>>(`${this.baseURL}/${id}/projects/${projectId}`, 'PATCH', project).then((res) => {
+      return res.data;
+    });
+  }
+
   async getLikedProjects(id: typeof User.prototype.id): Promise<DTO<Project>[]> {
     return request<DTO<Project>[]>(`${this.baseURL}/${id}/liked-projects`, 'GET', {}).then((res) => {
       return res.data;
