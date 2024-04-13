@@ -20,7 +20,9 @@ export function NewProject() {
   const [content, setContent] = useState('');
   const [modalType, setModalType] = useState<typeof ProjectFile.prototype.fileType | 'link'>('attachment');
   const [showModal, setShowModal] = useState(false);
+  const [existingFiles, setExistingFiles] = useState<ProjectFile[]>([]);
   const [files, setFiles] = useState<ProjectFile[]>([]);
+  const [existingLinks, setExistingLinks] = useState<string[]>([]);
   const [links, setLinks] = useState<string[]>([]);
   const [cookies] = useCookies(['userId']);
   const [searchParams, setSearchParams] = useSearchParams();
@@ -45,9 +47,8 @@ export function NewProject() {
         }
         setContent(res.content);
         setTitle(res.title);
-        if (res.projectFiles) setFiles(res.projectFiles);
-        if (res.projectLinks) setLinks(res.projectLinks.map((obj)=>obj.link));
-        // also get existing files and links
+        if (res.projectFiles) setExistingFiles(res.projectFiles);
+        if (res.projectLinks) setExistingLinks(res.projectLinks.map((obj)=>obj.link));
 
       });
     }
@@ -74,7 +75,16 @@ export function NewProject() {
       // request a PATCH endpoint for project (not created yet)
       api.user.editProject(cookies.userId as string, data, projId).then(async (res) => {
         // handle de-linking files and linking newly added files and stuff
-
+        const projectId = projId;
+        const filePromises = files.map((file) => {
+          api.project.linkProjectFile(cookies.userId as string, projectId as number, file.id as number);
+        });
+        await Promise.all(filePromises);
+        // Add links to Project using ProjectLink
+        const linkPromises = links.map((link) => {
+          api.project.addProjectLink(projectId as number, link);
+        });
+        await Promise.all(linkPromises);
       })
       navigate(`/project/${searchParams.get('id')}`);
       return;
@@ -158,6 +168,24 @@ export function NewProject() {
           />
         </div>
         <ul className="flex flex-col space-y-4 min-h-fit py-4 max-h-40 pr-4 overflow-y-auto">
+          {existingFiles.map((file) => (
+            <li
+              className="bg-white rounded-lg flex flex-row justify-between p-2"
+              key={file.id}
+            >
+              <div
+                className="flex flex-row space-x-2 cursor-pointer"
+                onClick={() => handleDownload(file)}
+              >
+                <PaperClipIcon className="h-6 w-6" />
+                <p>{file.fileName}</p>
+              </div>
+              <XMarkIcon
+                className="h-6 w-6 cursor-pointer"
+                onClick={() => setExistingFiles(existingFiles.filter((f) => f !== file))}
+              />
+            </li>
+          ))}
           {files.map((file) => (
             <li
               className="bg-white rounded-lg flex flex-row justify-between p-2"
@@ -173,6 +201,28 @@ export function NewProject() {
               <XMarkIcon
                 className="h-6 w-6 cursor-pointer"
                 onClick={() => setFiles(files.filter((f) => f !== file))}
+              />
+            </li>
+          ))}
+          {existingLinks.map((link) => (
+            <li
+              className="bg-white rounded-lg flex flex-row justify-between p-2"
+              key={link}
+            >
+              <div className="flex flex-row space-x-2 cursor-pointer">
+                <LinkIcon className="h-6 w-6" />
+                <a
+                  href={link}
+                  className="text-sky-700"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  {link}
+                </a>
+              </div>
+              <XMarkIcon
+                className="h-6 w-6 cursor-pointer"
+                onClick={() => setExistingLinks(existingLinks.filter((l) => l !== link))}
               />
             </li>
           ))}
