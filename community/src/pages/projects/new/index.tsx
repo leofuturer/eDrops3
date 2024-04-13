@@ -23,6 +23,7 @@ export function NewProject() {
   const [existingFiles, setExistingFiles] = useState<ProjectFile[]>([]);
   const [files, setFiles] = useState<ProjectFile[]>([]);
   const [existingLinks, setExistingLinks] = useState<string[]>([]);
+  const [deletedLinks, setDeletedLinks] = useState<string[]>([]);
   const [links, setLinks] = useState<string[]>([]);
   const [cookies] = useCookies(['userId']);
   const [searchParams, setSearchParams] = useSearchParams();
@@ -84,7 +85,11 @@ export function NewProject() {
         const linkPromises = links.map((link) => {
           api.project.addProjectLink(projectId as number, link);
         });
+        const deleteLinkPromises = deletedLinks.map((link) => {
+          api.project.removeProjectLink(projectId as number, link);
+        })
         await Promise.all(linkPromises);
+        await Promise.all(deleteLinkPromises);
       })
       navigate(`/project/${searchParams.get('id')}`);
       return;
@@ -222,7 +227,12 @@ export function NewProject() {
               </div>
               <XMarkIcon
                 className="h-6 w-6 cursor-pointer"
-                onClick={() => setExistingLinks(existingLinks.filter((l) => l !== link))}
+                onClick={() => {
+                  setExistingLinks(existingLinks.filter((l) => l !== link));
+                  let deleted = [...deletedLinks];
+                  deleted.push(link);
+                  setDeletedLinks(deleted);
+                }}
               />
             </li>
           ))}

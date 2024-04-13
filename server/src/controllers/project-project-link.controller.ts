@@ -26,6 +26,7 @@ export class ProjectProjectLinkController {
     @repository(ProjectRepository) protected projectRepository: ProjectRepository,
   ) { }
 
+  // is this even used??
   @get('/projects/{id}/project-links', {
     responses: {
       '200': {
@@ -45,6 +46,7 @@ export class ProjectProjectLinkController {
     return this.projectRepository.projectLinks(id).find(filter);
   }
 
+  // this creates links when the project is created
   @post('/projects/{id}/project-links', {
     responses: {
       '200': {
@@ -70,6 +72,7 @@ export class ProjectProjectLinkController {
     return this.projectRepository.projectLinks(id).create(projectLink);
   }
 
+  // this isn't really necessary (unless we want to edit links, but that's not a priority if you have add/delete)
   @patch('/projects/{id}/project-links', {
     responses: {
       '200': {
@@ -103,8 +106,18 @@ export class ProjectProjectLinkController {
   })
   async delete(
     @param.path.number('id') id: number,
-    @param.query.object('where', getWhereSchemaFor(ProjectLink)) where?: Where<ProjectLink>,
+    @requestBody({
+      content: {
+        'application/json': {
+          schema: getModelSchemaRef(ProjectLink, {
+            title: 'NewProjectLinkInProject',
+            exclude: ['id'],
+            optional: ['projectId']
+          }),
+        },
+      },
+    }) projectLink: Omit<ProjectLink, 'id'>,
   ): Promise<Count> {
-    return this.projectRepository.projectLinks(id).delete(where);
+    return this.projectRepository.projectLinks(id).delete({link: projectLink.link});
   }
 }
