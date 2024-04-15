@@ -24,7 +24,7 @@ import {ProjectRepository} from '../repositories';
 export class ProjectProjectLinkController {
   constructor(
     @repository(ProjectRepository) protected projectRepository: ProjectRepository,
-  ) { }
+  ) {}
 
   // is this even used??
   @get('/projects/{id}/project-links', {
@@ -96,7 +96,7 @@ export class ProjectProjectLinkController {
     return this.projectRepository.projectLinks(id).patch(projectLink, where);
   }
 
-  @del('/projects/{id}/project-links', {
+  @post('/projects/{id}/project-links/delete', {
     responses: {
       '200': {
         description: 'Project.ProjectLink DELETE success count',
@@ -109,14 +109,12 @@ export class ProjectProjectLinkController {
     @requestBody({
       content: {
         'application/json': {
-          schema: getModelSchemaRef(ProjectLink, {
-            title: 'NewProjectLinkInProject',
-            exclude: ['id'],
-            optional: ['projectId']
-          }),
+          schema: {
+            type: "object"
+          }
         },
       },
-    }) projectLink: Omit<ProjectLink, 'id'>,
+    }) projectLink: {"link": string}
   ): Promise<Count> {
     return this.projectRepository.projectLinks(id).delete({link: projectLink.link});
   }
