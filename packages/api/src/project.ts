@@ -20,8 +20,9 @@ class ProjectResource extends Resource<Project> {
       return res.data;
     });
   }
+
   async removeProjectLink(projectId: typeof Project.prototype.id, link: string) {
-    return request(`${this.baseURL}/${projectId}/project-links`, "DELETE", { link: link }).then((res) => {
+    return request(`${this.baseURL}/${projectId}/project-links/delete`, "POST", { link: link }).then((res) => {
       return res.data;
     });
   }
