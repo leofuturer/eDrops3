@@ -15,6 +15,12 @@ class ProjectResource extends Resource<Project> {
     });
   }
 
+  async delinkProjectFile(userId: typeof User.prototype.id, projectId: typeof Project.prototype.id, projectFileId: typeof ProjectFile.prototype.id) {
+    return request(`/users/${userId}/project-files/${projectFileId}`, "DELETE", {}).then((res) => {
+      return res.data;
+    });
+  }
+
   async addProjectLink(projectId: typeof Project.prototype.id, link: string) {
     return request(`${this.baseURL}/${projectId}/project-links`, "POST", { link: link }).then((res) => {
       return res.data;

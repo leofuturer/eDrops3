@@ -21,6 +21,7 @@ export function NewProject() {
   const [modalType, setModalType] = useState<typeof ProjectFile.prototype.fileType | 'link'>('attachment');
   const [showModal, setShowModal] = useState(false);
   const [existingFiles, setExistingFiles] = useState<ProjectFile[]>([]);
+  const [deletedFiles, setDeletedFiles] = useState<ProjectFile[]>([]);
   const [files, setFiles] = useState<ProjectFile[]>([]);
   const [existingLinks, setExistingLinks] = useState<string[]>([]);
   const [deletedLinks, setDeletedLinks] = useState<string[]>([]);
@@ -80,7 +81,11 @@ export function NewProject() {
         const filePromises = files.map((file) => {
           api.project.linkProjectFile(cookies.userId as string, projectId as number, file.id as number);
         });
+        const deleteFilePromises = deletedFiles.map((file) => {
+          api.project.delinkProjectFile(cookies.userId as string, projectId as number, file.id as number);
+        })
         await Promise.all(filePromises);
+        await Promise.all(deleteFilePromises);
         // Add links to Project using ProjectLink
         const linkPromises = links.map((link) => {
           api.project.addProjectLink(projectId as number, link);
@@ -187,7 +192,12 @@ export function NewProject() {
               </div>
               <XMarkIcon
                 className="h-6 w-6 cursor-pointer"
-                onClick={() => setExistingFiles(existingFiles.filter((f) => f !== file))}
+                onClick={() => {
+                  setExistingFiles(existingFiles.filter((f) => f !== file));
+                  let deletedTemp = [...deletedFiles];
+                  deletedTemp.push(file);
+                  setDeletedFiles(deletedTemp);
+                }}
               />
             </li>
           ))}
