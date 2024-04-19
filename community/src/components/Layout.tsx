@@ -1,19 +1,21 @@
 import { Outlet, useLocation } from "react-router-dom";
 import NavTop from "./NavTop";
+import Footer from "./footer/Footer";
 
 function Layout() {
 	const location = useLocation();
 	const { pathname } = location;
-	const stickyNavPaths: string[] = ["/profile", "/login", "/signup"];
-	const stickyNav = stickyNavPaths.includes(pathname);
 
 	return (
 		<main className="w-full min-h-screen flex flex-col">
-			<div className={`z-50 ${stickyNav ? "sticky top-0" : ""}`}>
+			<div className={`min-h-full h-full`}>
 				<NavTop />
 			</div>
-			<div className="h-[calc(100vh-80px)]">
+			<div className="h-[calc(100vh-280px)]">
 				<Outlet />
+			</div>
+			<div>
+				<Footer />
 			</div>
 		</main>
 	);
