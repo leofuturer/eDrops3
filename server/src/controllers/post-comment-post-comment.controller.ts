@@ -87,7 +87,7 @@ export class PostCommentPostCommentController {
       });
   }
 
-  @patch('/post-comments/{id}/post-comments', {
+  @patch('/post-comments/{id}', {
     responses: {
       '200': {
         description: 'PostComment.PostComment PATCH success count',
@@ -104,13 +104,11 @@ export class PostCommentPostCommentController {
         },
       },
     })
-    postComment: Partial<PostComment>,
     @param.query.object('where', getWhereSchemaFor(PostComment))
     where?: Where<PostComment>,
-  ): Promise<Count> {
-    return this.postCommentRepository
-      .postComments(id)
-      .patch(postComment, where);
+  ): Promise<void> {
+    let currLikes = (await this.postCommentRepository.findById(id)).likes;
+    return this.postCommentRepository.updateById(id, {likes: currLikes+1});
   }
 
   @del('/post-comments/{id}/post-comments', {

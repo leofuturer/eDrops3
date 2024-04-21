@@ -69,7 +69,7 @@ function PostComment({ comment } : {comment: CommentType }) {
 
 	function handleLike() {
 		if(!comment.id || !cookies.userId) return;
-		api.postComment.update(comment.id, { likes: comment.likes + 1 })
+		api.postComment.update(comment.id, {})
 			.then((res) => {
 				// @ts-ignore
 				currentPost.likes += 1;
