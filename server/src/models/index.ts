@@ -3,6 +3,7 @@ export * from './address.model';
 export * from './customer.model';
 export * from './file-info.model';
 export * from './foundry-worker.model';
+export * from './liked-comment.model'
 export * from './liked-post.model';
 export * from './liked-project.model';
 export * from './order-chip.model';

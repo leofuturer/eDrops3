@@ -8,7 +8,7 @@ import { timeAgo } from "../../lib/time";
 import { PostComment as CommentType } from "@edroplets/api";
 import { useCookies } from "react-cookie";
 
-function PostComment({ comment } : {comment: CommentType }) {
+function PostComment( commentData : {comment: CommentType }) {
 	const navigate = useNavigate();
 
 	const [comments, setComments] = useState<CommentType[]>([]);
@@ -17,6 +17,7 @@ function PostComment({ comment } : {comment: CommentType }) {
 	const [newComment, setNewComment] = useState<string>(""); // eventually debounce this
 
 	const [cookies] = useCookies(["userId"]);
+	const [comment, setComment] = useState<CommentType>(commentData.comment);
 
 	// Get all comments under this comment
 	useEffect(() => {
@@ -69,10 +70,14 @@ function PostComment({ comment } : {comment: CommentType }) {
 
 	function handleLike() {
 		if(!comment.id || !cookies.userId) return;
-		api.postComment.update(comment.id, {})
+		api.postComment.update(comment.id, {userId: cookies.userId})
 			.then((res) => {
 				// @ts-ignore
-				currentPost.likes += 1;
+				let temp = structuredClone(comment);
+				temp.likes++;
+				setComment(temp);
+				console.log("liked this commment");
+				
 			})
 			.catch((err: AxiosError) => {
 				if (err.message === "No access token found") {
