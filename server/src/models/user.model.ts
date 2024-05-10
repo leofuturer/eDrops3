@@ -6,7 +6,6 @@ import {Post} from './post.model';
 import {Project} from './project.model';
 import {LikedPost} from './liked-post.model';
 import {LikedProject} from './liked-project.model';
-import {LikedComment} from './liked-comment.model';
 import {UserFollower} from './user-follower.model';
 
 @model({
@@ -108,11 +107,6 @@ export class User extends Entity {
     through: {model: () => LikedPost, keyFrom: 'userId', keyTo: 'postId'},
   })
   likedPosts?: Post[];
-
-  @hasMany(() => Entity, {
-    through: {model: () => LikedComment, keyFrom: 'userId', keyTo: 'commentId'},
-  })
-  likedComments?: string[];
 
   constructor(data?: Partial<User>) {
     super(data);
