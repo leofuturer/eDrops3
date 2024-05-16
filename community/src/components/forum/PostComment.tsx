@@ -13,7 +13,7 @@ function PostComment({ comment } : {comment: CommentType }) {
 
 	const [comments, setComments] = useState<CommentType[]>([]);
 	const [expanded, setExpanded] = useState<boolean>(false);
-
+	const [liked, setLiked] = useState<boolean>(false);
 	const [newComment, setNewComment] = useState<string>(""); // eventually debounce this
 
 	const [cookies] = useCookies(["userId"]);
@@ -29,6 +29,15 @@ function PostComment({ comment } : {comment: CommentType }) {
 				// console.log(err);
 			});
 	}, [comment.id, newComment]);
+
+	// check if comment is liked initially
+	useEffect(() => {
+		if (comment.id && cookies.userId) {
+			api.user.getLikedComment(cookies.userId, comment.id).then((res) => {
+				setLiked(!!res);
+			});
+		}
+	}, [comment, cookies.userId]);
 
 	function handleReply() {
 		if(!comment.id || !cookies.userId) return;
@@ -69,16 +78,11 @@ function PostComment({ comment } : {comment: CommentType }) {
 
 	function handleLike() {
 		if(!comment.id || !cookies.userId) return;
-		api.postComment.update(comment.id, {})
-			.then((res) => {
-				// @ts-ignore
-				currentPost.likes += 1;
-			})
-			.catch((err: AxiosError) => {
-				if (err.message === "No access token found") {
-					navigate("/login");
-				}
-			});
+		api.user.likeComment(cookies.userId, comment.id).then((res) => {
+			setLiked(res);
+			if (res) comment.likes++;
+			else comment.likes--;
+		})
 	}
 
 	return (
@@ -97,7 +101,7 @@ function PostComment({ comment } : {comment: CommentType }) {
 				<p>{comment.content}</p>
 				<div className="flex flex-row space-x-4">
 					<div className="flex flex-row space-x-2 cursor-pointer" onClick={() => needAuth(handleLike)}>
-						<HandThumbUpIcon className="w-5 h-5" />
+						<HandThumbUpIcon className={`w-6 h-6 cursor-pointer ${liked ? "fill-black" : ""}`} />
 						<p>{comment.likes}</p>
 					</div>
 					<div className="flex flex-row space-x-2">

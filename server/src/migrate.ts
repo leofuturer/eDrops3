@@ -1,6 +1,7 @@
 import {EdropsBackendApplication} from './application';
 
 export async function migrate(args: string[]) {
+  console.log(args);
   const existingSchema = args.includes('--rebuild') ? 'drop' : 'alter';
   console.log('Migrating schemas (%s existing schema)', existingSchema);
 

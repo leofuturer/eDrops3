@@ -24,6 +24,7 @@ export * from './project.controller';
 export * from './user-follower.controller';
 export * from './user-liked-post.controller';
 export * from './user-liked-project.controller';
+export * from './user-liked-comment.controller';
 export * from './user-post.controller';
 export * from './user-project.controller';
 export * from './user-saved-post.controller';
@@ -32,3 +33,4 @@ export * from './user-user-profile.controller';
 export * from './user.controller';
 
 export * from './product.controller';
+export * from './user-post-comment.controller';
