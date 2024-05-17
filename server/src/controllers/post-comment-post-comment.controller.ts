@@ -121,24 +121,12 @@ export class PostCommentPostCommentController {
   })
   async delete(
     @param.path.number('id') id: number,
-    @param.query.object('where', getWhereSchemaFor(PostComment))
-    where?: Where<PostComment>,
-  ): Promise<Count> {
+  ): Promise<void> {
     return this.postCommentRepository
-      .postComments(id)
-      .delete(where)
-      .then(async count => {
-        const postId = await this.postCommentRepository
-          .findById(id)
-          .then(postComment => {
-            return postComment.postId;
-          });
-        this.postRepository.findById(postId).then(post => {
-          this.postRepository.updateById(postId, {
-            comments: post.comments - count.count,
-          });
-        });
-        return count;
-      });
+      .updateById(id, {
+        author: "<DELETED>",
+        content: "<DELETED>",
+        userId: "<DELETED>"
+      })
   }
 }

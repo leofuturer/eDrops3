@@ -18,6 +18,14 @@ class PostCommentResource extends Resource<PostComment> {
       (res) => res.data
     );
   }
+
+  async deletePostComment(id: number) {
+    console.log(`${this.baseURL}/${id}/post-comments`);
+    return request<PostComment>(`${this.baseURL}/${id}/post-comments`, "DELETE", {}).then(
+      (res) => res.data
+    );
+  }
+  
 }
 
 export const postComment = new PostCommentResource();

@@ -1,5 +1,5 @@
 import { ChevronRightIcon, HandThumbUpIcon } from "@heroicons/react/24/outline";
-import { ArrowUturnLeftIcon } from "@heroicons/react/24/solid";
+import { XMarkIcon, ArrowUturnLeftIcon } from "@heroicons/react/24/solid";
 import { AxiosError } from "axios";
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
@@ -10,7 +10,7 @@ import { useCookies } from "react-cookie";
 
 function PostComment({ comment } : {comment: CommentType }) {
 	const navigate = useNavigate();
-
+	const [deleted, setDeleted] = useState(false);
 	const [comments, setComments] = useState<CommentType[]>([]);
 	const [expanded, setExpanded] = useState<boolean>(false);
 	const [liked, setLiked] = useState<boolean>(false);
@@ -37,7 +37,7 @@ function PostComment({ comment } : {comment: CommentType }) {
 				setLiked(!!res);
 			});
 		}
-	}, [comment, cookies.userId]);
+	}, []);
 
 	function handleReply() {
 		if(!comment.id || !cookies.userId) return;
@@ -50,6 +50,7 @@ function PostComment({ comment } : {comment: CommentType }) {
 			userId: cookies.userId,
 			top: false,
 		};
+		
 		api.postComment.createPostComment(comment.id, newPostComment)
 			.then((res) => {
 				setNewComment("");
@@ -85,6 +86,16 @@ function PostComment({ comment } : {comment: CommentType }) {
 		})
 	}
 
+	function handleDelete() {
+		if(!comment.id || !cookies.userId) return;
+		if (comment.userId!=cookies.userId) return; // backend should also secure this
+		if (comment.content=="<DELETED>") return;
+		api.postComment.deletePostComment(comment.id).then(() => {
+			console.log("deleted comment");
+			setDeleted(true);
+		})
+	}
+
 	return (
 		<div
 			className={`flex flex-col space-y-2 ${
@@ -94,11 +105,11 @@ function PostComment({ comment } : {comment: CommentType }) {
 			<div className="flex flex-col space-y-2 pb-2 border-b-2 border-black/25">
 				<h3 className="text-lg">
 					<Link to={`/profile/${comment?.userId}`}>
-						{comment?.author}
+						{deleted ? "<DELETED>" : comment?.author}
 					</Link>{" "}
 					&#8226; {timeAgo(new Date(comment.datetime))}
 				</h3>
-				<p>{comment.content}</p>
+				<p>{deleted ? "<DELETED>" : comment.content}</p>
 				<div className="flex flex-row space-x-4">
 					<div className="flex flex-row space-x-2 cursor-pointer" onClick={() => needAuth(handleLike)}>
 						<HandThumbUpIcon className={`w-6 h-6 cursor-pointer ${liked ? "fill-black" : ""}`} />
@@ -113,6 +124,19 @@ function PostComment({ comment } : {comment: CommentType }) {
 							Reply
 						</button>
 					</div>
+					{comment.userId==cookies.userId && comment.content!="<DELETED>" && !deleted ? 
+						<div className="flex flex-row space-x-2 cursor-pointer">
+							<XMarkIcon className="w-7 h-7" />
+							<button
+								type="button"
+								onClick={() => handleDelete()}
+							>
+								Delete
+							</button>
+						</div>
+						: <></>
+					}
+					
 				</div>
 			</div>
 			{expanded && (
