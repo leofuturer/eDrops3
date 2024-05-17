@@ -74,10 +74,10 @@ export class UserLikedCommentController {
   ): Promise<void> {
     this.userRepository
       .likedComments(id)
-      .link(5)
+      .link(commentId)
       .then(() =>
-        this.postCommentRepository.findById(5).then(comment =>
-          this.postCommentRepository.updateById(5, {
+        this.postCommentRepository.findById(commentId).then(comment =>
+          this.postCommentRepository.updateById(commentId, {
             likes: comment.likes + 1,
           }),
         ),
