@@ -87,10 +87,10 @@ export class PostCommentPostCommentController {
       });
   }
 
-  @patch('/post-comments/{id}', {
+  @patch('/post-comments/{id}/post-comments', {
     responses: {
       '200': {
-        description: 'PostComment.PostComment PATCH success count',
+        description: 'Edit a comment',
         content: {'application/json': {schema: CountSchema}},
       },
     },
@@ -100,15 +100,19 @@ export class PostCommentPostCommentController {
     @requestBody({
       content: {
         'application/json': {
-          schema: getModelSchemaRef(PostComment, {partial: true}),
+          schema: getModelSchemaRef(PostComment, {
+            title: 'Edited post comment',
+            exclude: ['id'],
+          }),
         },
       },
     })
-    @param.query.object('where', getWhereSchemaFor(PostComment))
-    where?: Where<PostComment>,
+    postComment: Omit<PostComment, 'id'>,
   ): Promise<void> {
-    let currLikes = (await this.postCommentRepository.findById(id)).likes;
-    return this.postCommentRepository.updateById(id, {likes: currLikes+1});
+    return this.postCommentRepository
+      .updateById(id, {
+        content: postComment.content,
+      })
   }
 
   @del('/post-comments/{id}/post-comments', {

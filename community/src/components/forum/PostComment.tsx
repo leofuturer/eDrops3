@@ -1,5 +1,5 @@
 import { ChevronRightIcon, HandThumbUpIcon } from "@heroicons/react/24/outline";
-import { XMarkIcon, ArrowUturnLeftIcon } from "@heroicons/react/24/solid";
+import { XMarkIcon, ArrowUturnLeftIcon, PencilIcon, CheckIcon} from "@heroicons/react/24/solid";
 import { AxiosError } from "axios";
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
@@ -14,6 +14,8 @@ function PostComment({ comment } : {comment: CommentType }) {
 	const [comments, setComments] = useState<CommentType[]>([]);
 	const [expanded, setExpanded] = useState<boolean>(false);
 	const [liked, setLiked] = useState<boolean>(false);
+	const [currentlyEditing, setCurrentlyEditing] = useState(false);
+	const [commentContent, setCommentContent] = useState(comment.content);
 	const [newComment, setNewComment] = useState<string>(""); // eventually debounce this
 
 	const [cookies] = useCookies(["userId"]);
@@ -96,6 +98,23 @@ function PostComment({ comment } : {comment: CommentType }) {
 		})
 	}
 
+	function handleSaveEdit() {
+		setCurrentlyEditing(false);
+		// send api request
+		const editedPostComment = {
+			content: commentContent,
+			author: "",
+			datetime: new Date(),
+			likes: 0,
+			postId: comment.postId,
+			userId: cookies.userId,
+			top: false,
+		};
+		api.postComment.editPostComment(comment.id, editedPostComment).then(() => {
+			console.log("edited comment");
+		})
+	}
+
 	return (
 		<div
 			className={`flex flex-col space-y-2 ${
@@ -109,7 +128,7 @@ function PostComment({ comment } : {comment: CommentType }) {
 					</Link>{" "}
 					&#8226; {timeAgo(new Date(comment.datetime))}
 				</h3>
-				<p>{deleted ? "<DELETED>" : comment.content}</p>
+				{currentlyEditing ? <input value={commentContent} onChange={(e) => setCommentContent(e.target.value)}></input> : <p>{deleted ? "<DELETED>" : commentContent}</p>}
 				<div className="flex flex-row space-x-4">
 					<div className="flex flex-row space-x-2 cursor-pointer" onClick={() => needAuth(handleLike)}>
 						<HandThumbUpIcon className={`w-6 h-6 cursor-pointer ${liked ? "fill-black" : ""}`} />
@@ -124,6 +143,18 @@ function PostComment({ comment } : {comment: CommentType }) {
 							Reply
 						</button>
 					</div>
+					{comment.userId==cookies.userId && comment.content!="<DELETED>" && !deleted ? 
+						<div className="flex flex-row space-x-2 cursor-pointer">
+							{currentlyEditing ? <CheckIcon className="w-7 h-7" />: <PencilIcon className="w-7 h-7"/>}
+							<button
+								type="button"
+								onClick={() => currentlyEditing ? handleSaveEdit(): setCurrentlyEditing(true)}
+							>
+								{currentlyEditing ? "Save" : "Edit"}
+							</button>
+						</div>
+						: <></>
+					}
 					{comment.userId==cookies.userId && comment.content!="<DELETED>" && !deleted ? 
 						<div className="flex flex-row space-x-2 cursor-pointer">
 							<XMarkIcon className="w-7 h-7" />
