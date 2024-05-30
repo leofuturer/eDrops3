@@ -95,12 +95,10 @@ export function Login() {
 						</button>
 					</Form>
 				</Formik>
-				
+
 				<NavLink to={ROUTES.ForgotPassword} className="text-center text-primary_light hover:text-primary text-sm mt-4">Forgot Password?</NavLink>
 				<p className="text-center text-sm mt-2">If you experience trouble logging in to your account, please <a href="mailto:info@edroplets.org">contact us.</a></p>
 				<div className="w-2/3">
-					
-					
 				</div>
 			</div>
 		</div >
