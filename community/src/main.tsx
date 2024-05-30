@@ -7,7 +7,7 @@ import {
 	Route,
 	Navigate,
 } from "react-router-dom";
-import { Home, Projects, NewProject, Project, Profile, Forum, NewForum, Post, Login, Signup, CheckEmail, EmailVerified, EmailUnverified, ForgotPassword } from "@/pages/index";
+import { Home, Projects, NewProject, Project, Profile, Forum, NewForum, Post, Login, Signup, CheckEmail, EmailVerified, EmailUnverified, ForgotPassword, ResetPassword} from "@/pages/index";
 import Layout from "./components/Layout";
 import { AuthLayout } from './components/AuthLayout';
 import { ROUTES } from "./router/routes";
@@ -27,6 +27,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
 					<Route path={ROUTES.Login} element={<Login />} />
 					<Route path={ROUTES.Signup} element={<Signup />} />
 					<Route path={ROUTES.ForgotPassword} element={<ForgotPassword />} />
+					<Route path={ROUTES.ResetPassword} element={<ResetPassword />} />
 					<Route path={ROUTES.CheckEmail} element={<CheckEmail />} />
 					<Route path={ROUTES.EmailVerified} element={<EmailVerified />} />
 					<Route path={ROUTES.EmailUnverified} element={<EmailUnverified />} />
