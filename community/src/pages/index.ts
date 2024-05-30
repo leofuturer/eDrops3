@@ -3,6 +3,7 @@ export * from './forum/new/index';
 export * from './forum/[id]/index'
 export * from './home/index';
 export * from './login/index';
+export * from './forgot-password/index';
 export * from './profile/index';
 export * from './projects/index';
 export * from './projects/new/index';

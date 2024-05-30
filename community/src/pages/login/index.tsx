@@ -54,6 +54,14 @@ export function Login() {
 					</Form>
 				</Formik>
 				<div className="w-2/3">
+					
+					<button type="button" className="w-full h-8 bg-white text-primary text-lg rounded-md pt-3"
+						onClick={() => navigate("/forgot-password")}
+					>
+						Forgot Password?
+					</button>
+				</div>
+				<div className="w-2/3">
 					<p className="text-gray-500 text-sm align-middle text-center w-full before:w-1/5 before:absolute before:border-gray-400 before:border-b-[1px] before:translate-x-[-105%] before:translate-y-2.5 after:w-1/5 after:absolute after:border-gray-400 after:border-b-[1px] after:translate-x-[5%] after:translate-y-2.5 my-2">or</p>
 					<button type="button" className="w-full h-16 bg-white text-primary outline outline-primary outline-1 text-lg rounded-md"
 						onClick={() => navigate("/signup")}
