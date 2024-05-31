@@ -19,6 +19,7 @@ import {
 import {AuthorInterceptor} from '../interceptors';
 import {PostComment, PostCommentLink} from '../models';
 import {PostCommentRepository, PostRepository} from '../repositories';
+import { authenticate } from '@loopback/authentication';
 
 export class PostCommentPostCommentController {
   constructor(
@@ -49,6 +50,7 @@ export class PostCommentPostCommentController {
   }
 
   @intercept(AuthorInterceptor.BINDING_KEY)
+  @authenticate('jwt')
   @post('/post-comments/{id}/post-comments', {
     responses: {
       '200': {
@@ -87,6 +89,7 @@ export class PostCommentPostCommentController {
       });
   }
 
+  @authenticate('jwt')
   @patch('/post-comments/{id}/post-comments', {
     responses: {
       '200': {
@@ -115,6 +118,7 @@ export class PostCommentPostCommentController {
       })
   }
 
+  @authenticate('jwt')
   @del('/post-comments/{id}/post-comments', {
     responses: {
       '200': {

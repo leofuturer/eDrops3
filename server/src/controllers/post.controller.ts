@@ -13,13 +13,14 @@ import {
 } from '@loopback/rest';
 import { Post } from '../models';
 import { PostRepository } from '../repositories';
+import { authenticate } from '@loopback/authentication';
 
+@authenticate('jwt')
 export class PostController {
   constructor(
     @repository(PostRepository)
     public postRepository : PostRepository,
   ) {}
-
   @post('/posts')
   @response(200, {
     description: 'Post model instance',
@@ -37,10 +38,12 @@ export class PostController {
       },
     })
     post: Omit<Post, 'id'>,
-  ): Promise<Post> {
-    return this.postRepository.create(post);
+  ): Promise<object> {
+    this.postRepository.create(post);
+    return {"success": true};
   }
 
+  @authenticate.skip()
   @get('/posts/count')
   @response(200, {
     description: 'Post model count',
@@ -52,6 +55,7 @@ export class PostController {
     return this.postRepository.count(where);
   }
 
+  @authenticate.skip()
   @get('/posts')
   @response(200, {
     description: 'Array of Post model instances',
@@ -89,6 +93,7 @@ export class PostController {
     return this.postRepository.updateAll(post, where);
   }
 
+  @authenticate.skip()
   @get('/posts/{id}')
   @response(200, {
     description: 'Post model instance',
@@ -142,6 +147,7 @@ export class PostController {
     await this.postRepository.deleteById(id);
   }
 
+  @authenticate.skip()
   @get('/posts/featured')
   @response(200, {
     description: 'Featured posts',
