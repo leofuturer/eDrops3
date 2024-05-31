@@ -8,19 +8,24 @@ import {
 } from '@loopback/repository';
 import {
   del, get,
-  getModelSchemaRef, param, patch, post, put, requestBody,
+  getModelSchemaRef, HttpErrors, param, patch, post, put, requestBody,
   response
 } from '@loopback/rest';
 import { Post } from '../models';
 import { PostRepository } from '../repositories';
 import { authenticate } from '@loopback/authentication';
+import { inject } from '@loopback/core';
+import { RestBindings, Request } from '@loopback/rest';
+import { jwtDecode } from "jwt-decode";
 
 @authenticate('jwt')
 export class PostController {
   constructor(
+    @inject(RestBindings.Http.REQUEST) private request: Request,
     @repository(PostRepository)
     public postRepository : PostRepository,
   ) {}
+
   @post('/posts')
   @response(200, {
     description: 'Post model instance',
@@ -39,8 +44,18 @@ export class PostController {
     })
     post: Omit<Post, 'id'>,
   ): Promise<object> {
+    const authHeader = this.request.headers["authorization"];
+    if (!authHeader) {
+      throw new HttpErrors.Unauthorized("Request header missing");
+    }
+    const token = authHeader.split(" ")[1];
+    const decoded = jwtDecode<{"name": string, "id": string, "userType": string}>(token);
+    if (!decoded.name || decoded.name!=post.author) {
+      throw new HttpErrors.Unauthorized("User unauthorized");
+    }
     this.postRepository.create(post);
-    return {"success": true};
+
+    return {"jwt": token, "decoded": decoded}
   }
 
   @authenticate.skip()
