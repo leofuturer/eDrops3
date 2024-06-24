@@ -13,5 +13,6 @@
     "forceConsistentCasingInFileNames": true,
     "baseUrl": ".",
     "jsx": "react",
+    "allowJs": true,
   },
 }
