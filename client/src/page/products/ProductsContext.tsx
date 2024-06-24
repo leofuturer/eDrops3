@@ -1,28 +1,42 @@
-import React, { createContext, useState, useEffect, useContext } from 'react';
+import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { Product } from 'shopify-buy';
 import { api } from '@edroplets/api';
-import { productIds } from '@/lib/constants/products';
 
-const ProductsContext = createContext();
+interface ProductsContextProps {
+  products: Product[];
+  loading: boolean;
+  error: string | null;
+}
 
-export const ProductsProvider = ({ children }) => {
-  const [products, setProducts] = useState([]);
+const ProductsContext = createContext<ProductsContextProps | undefined>(undefined);
+
+export const useProducts = (): ProductsContextProps => {
+  const context = useContext(ProductsContext);
+  if (context === undefined) {
+    throw new Error('useProducts must be used within a ProductsProvider');
+  }
+  return context;
+};
+
+interface ProductsProviderProps {
+  children: ReactNode;
+}
+
+export const ProductsProvider: React.FC<ProductsProviderProps> = ({ children }) => {
+  const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const productPromises = productIds.map(id => api.product.get(id));
-        const productsData = await Promise.all(productPromises);
-        setProducts(productsData);
-      } catch (err) {
-        setError(err);
-      } finally {
+    api.product.getAll()
+      .then((fetchedProducts: Product[]) => {
+        setProducts(fetchedProducts);
         setLoading(false);
-      }
-    };
-
-    fetchProducts();
+      })
+      .catch((err) => {
+        setError(err.message);
+        setLoading(false);
+      });
   }, []);
 
   return (
@@ -31,6 +45,3 @@ export const ProductsProvider = ({ children }) => {
     </ProductsContext.Provider>
   );
 };
-
-export const useProducts = () => useContext(ProductsContext);
-export default ProductsContext;
