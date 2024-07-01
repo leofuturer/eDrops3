@@ -136,8 +136,11 @@ export class EdropsBackendApplication extends BootMixin(
         ? {
             storage: multer.diskStorage({
               destination: (req, file, cb) => {
-                const folder = file.fieldname;
-                const dir = `${destination}/${folder}`;
+                // not really sure about this one, i'm not familiar with how files are supposed to be stored
+                // i did this so uploaded files from community site go in the same place that the default images from the seed data go
+
+                // const folder = file.fieldname;
+                const dir = `${destination}`;
                 fs.access(dir, fs.constants.F_OK, err => {
                   if (err) {
                     return fs.mkdir(dir, error => cb(error, dir));

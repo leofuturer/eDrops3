@@ -33,7 +33,7 @@ export const signUpConstraints = {
   },
   phoneNumber: {
     format: {
-      pattern: /^(\+\d{1,2}\s?)?1?\-?\.?\s?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/, 
+      pattern: /^(\+\d{1,2}\s?)?1?\-?\.?\s?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/,
       message: 'must be a valid phone number',
     },
   },

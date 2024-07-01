@@ -1,3 +1,4 @@
+
 import { ChevronRightIcon, HandThumbUpIcon } from "@heroicons/react/24/outline";
 import { XMarkIcon, ArrowUturnLeftIcon, PencilIcon, CheckIcon} from "@heroicons/react/24/solid";
 import { AxiosError } from "axios";
@@ -18,19 +19,19 @@ function PostComment({ comment } : {comment: CommentType }) {
 	const [commentContent, setCommentContent] = useState(comment.content);
 	const [newComment, setNewComment] = useState<string>(""); // eventually debounce this
 
-	const [cookies] = useCookies(["userId"]);
+  const [cookies] = useCookies(['userId']);
 
-	// Get all comments under this comment
-	useEffect(() => {
-		api.postComment.getPostComments(comment.id as number)
-			.then((res) => {
-				// console.log('Not top-level comments', res.data);
-				setComments(res);
-			})
-			.catch((err: AxiosError) => {
-				// console.log(err);
-			});
-	}, [comment.id, newComment]);
+  // Get all comments under this comment
+  useEffect(() => {
+    api.postComment.getPostComments(comment.id as number)
+      .then((res) => {
+        // console.log('Not top-level comments', res.data);
+        setComments(res);
+      })
+      .catch((err: AxiosError) => {
+        // console.log(err);
+      });
+  }, [comment.id, newComment]);
 
 	// check if comment is liked initially
 	useEffect(() => {
@@ -67,18 +68,18 @@ function PostComment({ comment } : {comment: CommentType }) {
 		setExpanded(!expanded);
 	}
 
-	function needAuth(f: Function) {
-		if (!cookies.userId) {
-			navigate("/login");
-		} else {
-			f();
-		}
-	}
+  function needAuth(f: Function) {
+    if (!cookies.userId) {
+      navigate('/login');
+    } else {
+      f();
+    }
+  }
 
-	function handleOpen() {
-		setExpanded(!expanded);
-	}
-
+  function handleOpen() {
+    setExpanded(!expanded);
+  }
+  
 	function handleLike() {
 		if(!comment.id || !cookies.userId) return;
 		api.user.likeComment(cookies.userId, comment.id).then((res) => {
