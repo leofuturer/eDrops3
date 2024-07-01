@@ -83,8 +83,20 @@ class UserResource extends Resource<User> {
     });
   }
 
-  async createPost(id: typeof User.prototype.id, post: Post): Promise<DTO<Post>> {
+  async createPost(id: typeof User.prototype.id, post: Partial<Post>): Promise<DTO<Post>> {
     return request<DTO<Post>>(`${this.baseURL}/${id}/posts`, 'POST', post).then((res) => {
+      return res.data;
+    });
+  }
+
+  async editPost(id: typeof User.prototype.id, post: Partial<Post>, postId: typeof Post.prototype.id): Promise<DTO<Post>> {
+    return request<DTO<Post>>(`${this.baseURL}/${id}/posts/${postId}`, 'PATCH', post).then((res) => {
+      return res.data;
+    });
+  }
+
+  async deletePost(id: typeof User.prototype.id, postId: typeof Post.prototype.id): Promise<DTO<Post>> {
+    return request<DTO<Post>>(`${this.baseURL}/${id}/posts/${postId}`, 'DELETE', {}).then((res) => {
       return res.data;
     });
   }
@@ -143,6 +155,18 @@ class UserResource extends Resource<User> {
 
   async createProject(id: typeof User.prototype.id, project: Project): Promise<DTO<Project>> {
     return request<DTO<Project>>(`${this.baseURL}/${id}/projects`, 'POST', project).then((res) => {
+      return res.data;
+    });
+  }
+
+  async deleteProject(id: typeof User.prototype.id, projectId: typeof Project.prototype.id): Promise<DTO<Project>> {
+    return request<DTO<Project>>(`${this.baseURL}/${id}/projects/${projectId}`, 'DELETE', {}).then((res) => {
+      return res.data;
+    });
+  }
+
+  async editProject(id: typeof User.prototype.id, project: Project, projectId: typeof Project.prototype.id): Promise<DTO<Project>> {
+    return request<DTO<Project>>(`${this.baseURL}/${id}/projects/${projectId}`, 'PATCH', project).then((res) => {
       return res.data;
     });
   }

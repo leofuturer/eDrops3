@@ -1,31 +1,31 @@
-import React, { useState } from "react";
-import { api } from "@edroplets/api";
-import { LoginSchema, UserSubmitSchema } from "@edroplets/schemas";
-import { useLocation, useNavigate } from "react-router-dom";
-import { ErrorMessage, Field, FieldProps, Form, Formik, validateYupSchema } from "formik";
-import { useCookies } from "react-cookie";
-import FormInput from "@/components/ui/FormInput";
+import React, { useState } from 'react';
+import { api } from '@edroplets/api';
+import { LoginSchema, UserSubmitSchema } from '@edroplets/schemas';
+import { useLocation, useNavigate } from 'react-router-dom';
+import {
+  ErrorMessage, Field, FieldProps, Form, Formik, validateYupSchema,
+} from 'formik';
+import { useCookies } from 'react-cookie';
+import FormInput from '@/components/ui/FormInput';
 
 export function Login() {
-	const navigate = useNavigate();
-	const location = useLocation();
+  const navigate = useNavigate();
+  const location = useLocation();
 
-	const [cookie, setCookie] = useCookies(['access_token', 'userId', 'userType', 'username']);
+  const [cookie, setCookie] = useCookies(['access_token', 'userId', 'userType', 'username']);
 
-	const [initialValues, setInitialValues] = useState({
-		usernameOrEmail: "",
-		password: "",
-	});
+  const [initialValues, setInitialValues] = useState({
+    usernameOrEmail: '',
+    password: '',
+  });
 
-	const handleLogin = ({ usernameOrEmail, password }: { usernameOrEmail: string, password: string }) => {
-		return api.user.login(usernameOrEmail, password).then((data) => {
-			setCookie('access_token', data.token, { path: '/' });
-			setCookie('userId', data.userId, { path: '/' });
-			setCookie('userType', data.userType, { path: '/' });
-			setCookie('username', data.username, { path: '/' });
-			navigate(location.state?.path || "/home");
-		});
-	};
+  const handleLogin = ({ usernameOrEmail, password }: { usernameOrEmail: string, password: string }) => api.user.login(usernameOrEmail, password).then((data) => {
+    setCookie('access_token', data.token, { path: '/' });
+    setCookie('userId', data.userId, { path: '/' });
+    setCookie('userType', data.userType, { path: '/' });
+    setCookie('username', data.username, { path: '/' });
+    navigate(location.state?.path || '/home');
+  });
 
 	return (
 		<div className="w-full h-full flex flex-col justify-center items-center">

@@ -1,16 +1,18 @@
-import React from "react";
-import ReactDOM from "react-dom/client";
-import "./index.css";
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import './index.css';
 import {
-	BrowserRouter as Router,
-	Routes,
-	Route,
-	Navigate,
-} from "react-router-dom";
-import { Home, Projects, NewProject, Project, Profile, Forum, NewForum, Post, Login, Signup, CheckEmail, EmailVerified, EmailUnverified, ForgotPassword, ResetPassword} from "@/pages/index";
-import Layout from "./components/Layout";
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from 'react-router-dom';
+import {
+  Home, Projects, NewProject, Project, Profile, Forum, NewForum, Post, Login, Signup, CheckEmail, EmailVerified, EmailUnverified,
+} from '@/pages/index';
+import Layout from './components/Layout';
 import { AuthLayout } from './components/AuthLayout';
-import { ROUTES } from "./router/routes";
+import { ROUTES } from './router/routes';
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
 	<React.StrictMode>
