@@ -61,6 +61,8 @@ export function ChipOrder() {
   }
 
   function handleAddToCart() {
+    console.log("printing chip");
+    console.log(product);
     setAddingToCart(true);
     cart.addChip(product, quantity, { ...customAttrs, wcpa: customAttrs.wcpa.toString() }).then(() => {
       setAddingToCart(false);
@@ -146,6 +148,7 @@ export function ChipOrder() {
           <div className="flex justify-center items-center">
             {addingToCart ? <Loading /> :
               <button
+                id="addToCart"
                 type="button"
                 className="bg-primary_light text-white px-4 py-2 rounded w-full"
                 onClick={() => cart.enabled && handleAddToCart()}

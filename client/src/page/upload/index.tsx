@@ -213,7 +213,7 @@ function Upload() {
             )}
         </div>
         {file !== undefined &&
-          <button type="button" className="bg-secondary rounded-md py-4 px-8 text-white text-xl w-max" onClick={onFileUpload} >
+          <button id="uploadFile" type="button" className="bg-secondary rounded-md py-4 px-8 text-white text-xl w-max" onClick={onFileUpload} >
             Upload File
           </button>}
       </div>

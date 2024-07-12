@@ -5,14 +5,19 @@ describe("Placing order tests", () => {
         cy.url().should('include', '/home');
         cy.get('a[href*="/upload"]').filter(':visible').first().click();
         cy.url().should('include', '/upload');
-        cy.get('input[type=file]').selectFile('./cypress/test.dxf', {force: true});
-        cy.get('button').contains('Upload File').click();
-        cy.get('button').contains('Upload this file').click();
-        cy.get('button').contains('Proceed to fabrication').click();
 
+        cy.get('input[type=file]').selectFile('./cypress/test.dxf', {force: true});
+        cy.get('button[id="uploadFile"]').click();
+        const confirmation = cy.get('button[id="affirmative"]');
+        if (confirmation) confirmation.click();
+        cy.get('button[id="affirmative"]').click();
+
+        cy.wait(2000);
         cy.url().should('include', '/chip-fab');
-        cy.get('button').contains('Add to Cart').click();
+        cy.get('button[id="addToCart"]').click();
         cy.url().should('include', 'manage/cart');
-        cy.get('button').contains('Checkout').click();
+        cy.get('button[id="checkout"]').click();
+        cy.get('button[id="payment"]').click();
+
     })
 })
