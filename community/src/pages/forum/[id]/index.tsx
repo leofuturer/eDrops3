@@ -252,6 +252,7 @@ export function Post() {
               <div
                 className="flex flex-row space-x-2 cursor-pointer"
                 onClick={() => needAuth(() => setExpanded(!expanded))}
+                data-cy="writeComment"
               >
                 <ChatBubbleBottomCenterTextIcon className="w-6 h-6" />
                 <p className="text-md">Comment</p>
@@ -275,6 +276,7 @@ export function Post() {
                     setNewComment(e.target.value);
                   }}
                   placeholder="Reply"
+                  data-cy="commentArea"
                 />
                 <div className="flex flex-row justify-end">
                   <button
@@ -282,6 +284,7 @@ export function Post() {
                     title="Send"
                     className="bg-sky-800 rounded-md p-2"
                     onClick={handleComment}
+                    data-cy="submitComment"
                   >
                     <ChevronRightIcon className="w-4 h-4 text-white" />
                   </button>

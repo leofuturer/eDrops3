@@ -124,16 +124,16 @@ function PostComment({ comment } : {comment: CommentType }) {
 		>
 			<div className="flex flex-col space-y-2 pb-2 border-b-2 border-black/25">
 				<h3 className="text-lg">
-					<Link to={`/profile/${comment?.userId}`}>
+					<Link to={`/profile/${comment?.userId}`} data-cy="commentAuthor">
 						{deleted ? "<DELETED>" : comment?.author}
 					</Link>{" "}
 					&#8226; {timeAgo(new Date(comment.datetime))}
 				</h3>
-				{currentlyEditing ? <input value={commentContent} onChange={(e) => setCommentContent(e.target.value)}></input> : <p>{deleted ? "<DELETED>" : commentContent}</p>}
+				{currentlyEditing ? <input value={commentContent} onChange={(e) => setCommentContent(e.target.value)} data-cy="commentEditor"></input> : <p data-cy="commentContent">{deleted ? "<DELETED>" : commentContent}</p>}
 				<div className="flex flex-row space-x-4">
-					<div className="flex flex-row space-x-2 cursor-pointer" onClick={() => needAuth(handleLike)}>
+					<div className="flex flex-row space-x-2 cursor-pointer" onClick={() => needAuth(handleLike)} data-cy="likeComment">
 						<HandThumbUpIcon className={`w-6 h-6 cursor-pointer ${liked ? "fill-black" : ""}`} />
-						<p>{comment.likes}</p>
+						<p data-cy="commentLikes">{comment.likes}</p>
 					</div>
 					<div className="flex flex-row space-x-2">
 						<ArrowUturnLeftIcon className="w-5 h-5" />
@@ -148,6 +148,7 @@ function PostComment({ comment } : {comment: CommentType }) {
 						<div className="flex flex-row space-x-2 cursor-pointer">
 							{currentlyEditing ? <CheckIcon className="w-7 h-7" />: <PencilIcon className="w-7 h-7"/>}
 							<button
+                data-cy="editButton"
 								type="button"
 								onClick={() => currentlyEditing ? handleSaveEdit(): setCurrentlyEditing(true)}
 							>
@@ -160,6 +161,7 @@ function PostComment({ comment } : {comment: CommentType }) {
 						<div className="flex flex-row space-x-2 cursor-pointer">
 							<XMarkIcon className="w-7 h-7" />
 							<button
+                data-cy="deleteButton"
 								type="button"
 								onClick={() => handleDelete()}
 							>
