@@ -35,6 +35,7 @@ export function DeleteModal({
         <div>Are you sure you want to delete this post?</div>
         <div>
           <button
+            id="deletePost"
                         // call the /delete endpoint
             onClick={() => {
               if (!postId) return;

@@ -173,7 +173,7 @@ export function Post() {
           <>
             <div className="flex flex-col">
               <div className="flex flex-row w-full h-15 resize-none justify-between">
-                <h1 className="text-3xl">
+                <h1 className="text-3xl" id="postTitle">
                   {currentPost?.title}
                 </h1>
                 <div className="flex flex-row">
@@ -222,7 +222,7 @@ export function Post() {
                 </div>
               </div>
               <p className="text-md">
-                <Link to={`/profile/${currentPost?.userId}`}>
+                <Link to={`/profile/${currentPost?.userId}`} id="postAuthor">
                   {currentPost?.author}
                 </Link>
                 {' '}
@@ -231,7 +231,7 @@ export function Post() {
                 {timeAgo(new Date(currentPost.datetime))}
               </p>
             </div>
-            <div>{currentPost?.content}</div>
+            <div id="postContent">{currentPost?.content}</div>
             <div className="flex flex-row space-x-4">
               <div
                 className="flex flex-row space-x-2 cursor-pointer"

@@ -1,4 +1,4 @@
-describe('Login page tests', () => {
+describe('Login/Signup page tests', () => {
     beforeEach(() => {
       cy.visit('localhost:8087/login');
     });
@@ -24,16 +24,32 @@ describe('Login page tests', () => {
       cy.url().should('include', '/login');
     });
   
-    // it('Forgot password redirect', () => {
-    //   cy.get('a[href*="/forgetPass"]').click();
   
-    //   cy.url().should('include', '/forgetPass');
-    // });
-  
-    // it('Signup redirect', () => {
-    //   cy.get('a[href*="/register"]').click();
-  
-    //   cy.url().should('include', '/register');
-    // });
+    it('Signup with valid credentials', () => {
+      cy.get('a[href*="/signup"]').click();
+      const username = crypto.randomUUID().substring(0, 8);
+      cy.signup(username, username+"@gmail.com", "edropTest123");
+      cy.get('button[type=submit]').click();
+      cy.url().should('include', 'check-email');
+
+    });
+
+    it('Signup with invalid username', () => {
+      cy.get('a[href*="/signup"]').click();
+      const username = 'customerA';
+      cy.signup(username, username+"@gmail.com", "edropTest123");
+      cy.get('button[type=submit]').click();
+      // check for error (for now just check no redirect)
+      cy.url().should('include', '/signup');
+    })
+
+    it('Signup with invalid email', () => {
+      cy.get('a[href*="/signup"]').click();
+      const username = crypto.randomUUID().substring(0, 8);
+      cy.signup(username, "cdevadhar@gmail.com", "edropTest123");
+      cy.get('button[type=submit]').click();
+      // check for error (for now just check no redirect)
+      cy.url().should('include', '/signup');
+    })
   });
   

@@ -79,6 +79,7 @@ function PostPreview({ post, handleDelete }: { post: Post, handleDelete: Functio
                 ? (
                   <div className="flex flex-col">
                     <EllipsisHorizontalIcon
+                      id="openMenu"
                       className="w-10 h-10 z-100 cursor-default"
                       onClick={(e) => {
                         e.preventDefault();
@@ -89,6 +90,7 @@ function PostPreview({ post, handleDelete }: { post: Post, handleDelete: Functio
                       <ul className="text-white bg-slate-700 p-2 px-3 rounded">
                         <li>
                           <button
+                            id="editButton"
                             onClick={(e) => {
                               e.preventDefault();
                               console.log('editing');
@@ -100,6 +102,7 @@ function PostPreview({ post, handleDelete }: { post: Post, handleDelete: Functio
                         </li>
                         <li>
                           <button
+                            id="deleteButton"
                             onClick={(e) => {
                               // have parent class handle this
                               e.preventDefault();
