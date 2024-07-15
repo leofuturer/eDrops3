@@ -19,7 +19,9 @@ import {
 } from '@loopback/rest';
 import {Project} from '../models';
 import {ProjectRepository} from '../repositories';
+import { authenticate } from '@loopback/authentication';
 
+@authenticate('jwt')
 export class ProjectController {
   constructor(
     @repository(ProjectRepository)
@@ -56,6 +58,7 @@ export class ProjectController {
   //   return this.projectRepository.count(where);
   // }
 
+  @authenticate.skip()
   @get('/projects')
   @response(200, {
     description: 'Array of Project model instances',
@@ -93,6 +96,7 @@ export class ProjectController {
   //   return this.projectRepository.updateAll(project, where);
   // }
 
+  @authenticate.skip()
   @get('/projects/{id}')
   @response(200, {
     description: 'Project model instance',
@@ -147,6 +151,7 @@ export class ProjectController {
   //   await this.projectRepository.deleteById(id);
   // }
 
+  @authenticate.skip()
   @get('/projects/featured')
   @response(200, {
     description: 'Featured projects',

@@ -24,3 +24,4 @@ export * from './user-follower.repository';
 export * from './user-profile.repository';
 export * from './user.repository';
 
+export * from './liked-comment.repository';

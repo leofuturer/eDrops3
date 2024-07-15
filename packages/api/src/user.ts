@@ -1,4 +1,4 @@
-import { DTO, FileInfo, Post, Project, ProjectFile, User } from "./lib/types";
+import { DTO, FileInfo, Post, Project, ProjectFile, User, PostComment} from "./lib/types";
 import request from "./lib/api";
 import { Resource } from "./lib/resource";
 import { download } from "./lib/download";
@@ -190,6 +190,23 @@ class UserResource extends Resource<User> {
       }
       else {
         return request(`${this.baseURL}/${id}/liked-projects/${projectId}`, 'POST', {}).then(() => true);
+      }
+    });
+  }
+
+  async getLikedComment(id: typeof User.prototype.id, commentId: typeof PostComment.prototype.id): Promise<DTO<PostComment>> {
+    return request<DTO<PostComment>>(`${this.baseURL}/${id}/liked-comments/${commentId}`, 'GET', {}).then((res) => {
+      return res.data;
+    });
+  }
+
+  async likeComment(id: typeof User.prototype.id, commentId: typeof PostComment.prototype.id): Promise<boolean> {
+    return request<PostComment>(`${this.baseURL}/${id}/liked-comments/${commentId}`, 'GET', {}).then((res) => {
+      if (res.data) {
+        return request(`${this.baseURL}/${id}/liked-comments/${commentId}`, 'DELETE', {}).then(() => false);
+      }
+      else {
+        return request(`${this.baseURL}/${id}/liked-comments/${commentId}`, 'POST', {}).then(() => true);
       }
     });
   }

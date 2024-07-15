@@ -19,6 +19,7 @@ import {
 import {AuthorInterceptor} from '../interceptors';
 import {PostComment, PostCommentLink} from '../models';
 import {PostCommentRepository, PostRepository} from '../repositories';
+import { authenticate } from '@loopback/authentication';
 
 export class PostCommentPostCommentController {
   constructor(
@@ -49,6 +50,7 @@ export class PostCommentPostCommentController {
   }
 
   @intercept(AuthorInterceptor.BINDING_KEY)
+  @authenticate('jwt')
   @post('/post-comments/{id}/post-comments', {
     responses: {
       '200': {
@@ -87,10 +89,11 @@ export class PostCommentPostCommentController {
       });
   }
 
+  @authenticate('jwt')
   @patch('/post-comments/{id}/post-comments', {
     responses: {
       '200': {
-        description: 'PostComment.PostComment PATCH success count',
+        description: 'Edit a comment',
         content: {'application/json': {schema: CountSchema}},
       },
     },
@@ -100,19 +103,22 @@ export class PostCommentPostCommentController {
     @requestBody({
       content: {
         'application/json': {
-          schema: getModelSchemaRef(PostComment, {partial: true}),
+          schema: getModelSchemaRef(PostComment, {
+            title: 'Edited post comment',
+            exclude: ['id'],
+          }),
         },
       },
     })
-    postComment: Partial<PostComment>,
-    @param.query.object('where', getWhereSchemaFor(PostComment))
-    where?: Where<PostComment>,
-  ): Promise<Count> {
+    postComment: Omit<PostComment, 'id'>,
+  ): Promise<void> {
     return this.postCommentRepository
-      .postComments(id)
-      .patch(postComment, where);
+      .updateById(id, {
+        content: postComment.content,
+      })
   }
 
+  @authenticate('jwt')
   @del('/post-comments/{id}/post-comments', {
     responses: {
       '200': {
@@ -123,24 +129,12 @@ export class PostCommentPostCommentController {
   })
   async delete(
     @param.path.number('id') id: number,
-    @param.query.object('where', getWhereSchemaFor(PostComment))
-    where?: Where<PostComment>,
-  ): Promise<Count> {
+  ): Promise<void> {
     return this.postCommentRepository
-      .postComments(id)
-      .delete(where)
-      .then(async count => {
-        const postId = await this.postCommentRepository
-          .findById(id)
-          .then(postComment => {
-            return postComment.postId;
-          });
-        this.postRepository.findById(postId).then(post => {
-          this.postRepository.updateById(postId, {
-            comments: post.comments - count.count,
-          });
-        });
-        return count;
-      });
+      .updateById(id, {
+        author: "<DELETED>",
+        content: "<DELETED>",
+        userId: "<DELETED>"
+      })
   }
 }
