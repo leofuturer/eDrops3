@@ -130,7 +130,7 @@ export function Project() {
 
   function handleComment() {
     if (!cookies.userId) { navigate('/login'); return; }
-    const newPostComment = {
+    const newProjectComment = {
       content: newComment,
       author: '',
       datetime: new Date(),
@@ -138,7 +138,7 @@ export function Project() {
       userId: cookies.userId,
       top: true,
     };
-    api.project.addProjectComment(cookies.userId, newPostComment)
+    api.project.addProjectComment(currentProject.id as number, newProjectComment)
       .then((res) => {
         setNewComment('');
         currentProject.comments += 1;

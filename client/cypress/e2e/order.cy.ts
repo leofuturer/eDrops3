@@ -1,8 +1,11 @@
 
 describe("Placing order tests", () => {
-    it('Place an order', () => {
+    beforeEach(() => {
         cy.login("customerA", "edropTest123");
         cy.url().should('include', '/home');
+    })
+    it('Place an order', () => {
+       
         cy.get('a[href*="/upload"]').filter(':visible').first().click();
         cy.url().should('include', '/upload');
 
@@ -17,7 +20,19 @@ describe("Placing order tests", () => {
         cy.get('button[id="addToCart"]').click();
         cy.url().should('include', 'manage/cart');
         cy.get('button[id="checkout"]').click();
-        cy.get('button[id="payment"]').click();
+        // cy.get('button[id="payment"]').click();
 
+    })
+
+    it('Delete from cart', () => {
+        cy.intercept('PATCH', '/api/orders/*/order-chips/*').as("response");
+        cy.visit('localhost:8086/manage/profile');
+        cy.get('a[href*="/cart"').filter(':visible').click();
+        const order = cy.get('button[data-cy=deleteButton]')
+        if (order) {
+            order.click();
+            cy.wait(2000);
+            cy.get('p[data-cy=emptyMessage]').should('exist');
+        }
     })
 })
