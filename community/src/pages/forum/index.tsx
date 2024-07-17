@@ -124,7 +124,7 @@ export function Forum() {
             </NavLink>
           </div>
         </div>
-        <div id="postList">
+        <div data-cy="postList">
           {sortedPosts.map((post) => (
             <PostPreview
               post={post}

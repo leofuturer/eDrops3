@@ -121,7 +121,7 @@ export function NewForum() {
     <section className="bg-slate-200 h-[calc(100vh-80px)] py-20 px-40 flex flex-col space-y-4">
       <div className="flex flex-col space-y-4 h-full">
         <input
-          id="postTitle"
+          data-cy="postTitle"
           type="text"
           value={title}
           placeholder="Title"
@@ -129,7 +129,7 @@ export function NewForum() {
           className="p-2 rounded-lg shadow-lg"
         />
         <textarea
-          id="postContent"
+          data-cy="postContent"
           placeholder="Description"
           value={content}
           className="p-2 rounded-lg shadow-lg resize-none h-full"
@@ -169,7 +169,7 @@ export function NewForum() {
 					<p>Link</p>
 				</button> */}
         <button
-          id="submitPost"
+          data-cy="submitPost"
           type="button"
           className="bg-sky-800 text-white font-semibold rounded-lg shadow-lg flex flex-row justify-center items-center p-4 col-end-7 col-span-1"
           onClick={handlePost}
