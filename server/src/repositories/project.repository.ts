@@ -10,9 +10,9 @@ import {
   ProjectRelations,
   ProjectFile,
   ProjectLink,
-  ProjectComment,
+  Comment,
 } from '../models';
-import {ProjectCommentRepository} from './project-comment.repository';
+import {CommentRepository} from './comment.repository';
 import {ProjectFileRepository} from './project-file.repository';
 import {ProjectLinkRepository} from './project-link.repository';
 
@@ -32,7 +32,7 @@ export class ProjectRepository extends DefaultCrudRepository<
   >;
 
   public readonly projectComments: HasManyRepositoryFactory<
-    ProjectComment,
+    Comment,
     typeof Project.prototype.id
   >;
 
@@ -42,8 +42,8 @@ export class ProjectRepository extends DefaultCrudRepository<
     protected projectFileRepositoryGetter: Getter<ProjectFileRepository>,
     @repository.getter('ProjectLinkRepository')
     protected projectLinkRepositoryGetter: Getter<ProjectLinkRepository>,
-    @repository.getter('ProjectCommentRepository')
-    protected projectCommentRepositoryGetter: Getter<ProjectCommentRepository>,
+    @repository.getter('CommentRepository')
+    protected projectCommentRepositoryGetter: Getter<CommentRepository>,
   ) {
     super(Project, dataSource);
     this.projectLinks = this.createHasManyRepositoryFactoryFor(

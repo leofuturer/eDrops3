@@ -4,7 +4,7 @@ import {
   Customer,
   Address,
   Post,
-  PostComment, User
+  Comment, User
 } from '../models';
 import {
   AdminRepository,
@@ -17,11 +17,9 @@ import {
   OrderItemRepository,
   OrderMessageRepository,
   OrderProductRepository,
-  PostCommentLinkRepository,
-  PostCommentRepository,
+  CommentLinkRepository,
+  CommentRepository,
   PostRepository,
-  ProjectCommentLinkRepository,
-  ProjectCommentRepository,
   ProjectFileRepository,
   ProjectLinkRepository,
   ProjectRepository,
@@ -32,7 +30,7 @@ import {
   defaultAddresses,
   defaultCustomers,
   defaultFoundryWorkers,
-  defaultPostComments,
+  defaultComments,
   defaultPosts,
   defaultProjects,
   defaultUsers
@@ -130,23 +128,23 @@ export async function clearDb(this: EdropsBackendApplication): Promise<void> {
   await postRepo.deleteAll();
   await postRepo.execute('ALTER TABLE Post AUTO_INCREMENT = ?', [1]);
 
-  /* Clear PostComment table */
-  const postCommentRepo: PostCommentRepository = await this.getRepository(
-    PostCommentRepository,
-  );
-  await postCommentRepo.deleteAll();
-  await postCommentRepo.execute('ALTER TABLE PostComment AUTO_INCREMENT = ?', [
-    1,
-  ]);
+  /* Clear Comment table */
+  // const commentRepo: CommentRepository = await this.getRepository(
+  //   CommentRepository,
+  // );
+  // await commentRepo.deleteAll();
+  // await commentRepo.execute('ALTER TABLE comment AUTO_INCREMENT = ?', [
+  //   1,
+  // ]);
 
-  /* Clear PostCommentLink table */
-  const postCommentLinkRepo: PostCommentLinkRepository =
-    await this.getRepository(PostCommentLinkRepository);
-  await postCommentLinkRepo.deleteAll();
-  await postCommentLinkRepo.execute(
-    'ALTER TABLE PostCommentLink AUTO_INCREMENT = ?',
-    [1],
-  );
+  /* Clear commentLink table */
+  // const commentLinkRepo: CommentLinkRepository =
+  //   await this.getRepository(CommentLinkRepository);
+  // await commentLinkRepo.deleteAll();
+  // await commentLinkRepo.execute(
+  //   'ALTER TABLE commentLink AUTO_INCREMENT = ?',
+  //   [1],
+  // );
 
   /* Clear Project table */
   const projectRepo: ProjectRepository = await this.getRepository(
@@ -155,24 +153,6 @@ export async function clearDb(this: EdropsBackendApplication): Promise<void> {
   await projectRepo.deleteAll();
   await projectRepo.execute('ALTER TABLE Project AUTO_INCREMENT = ?', [1]);
 
-  /* Clear ProjectComment table */
-  const projectCommentRepo: ProjectCommentRepository = await this.getRepository(
-    ProjectCommentRepository,
-  );
-  await projectCommentRepo.deleteAll();
-  await projectCommentRepo.execute(
-    'ALTER TABLE ProjectComment AUTO_INCREMENT = ?',
-    [1],
-  );
-
-  /* Clear ProjectCommentLink table */
-  const projectCommentLinkRepo: ProjectCommentLinkRepository =
-    await this.getRepository(ProjectCommentLinkRepository);
-  await projectCommentLinkRepo.deleteAll();
-  await projectCommentLinkRepo.execute(
-    'ALTER TABLE ProjectCommentLink AUTO_INCREMENT = ?',
-    [1],
-  );
 
   /* Clear ProjectFile table */
   const projectFileRepo: ProjectFileRepository = await this.getRepository(
@@ -243,13 +223,13 @@ export async function seedDb(this: EdropsBackendApplication): Promise<void> {
     defaultPosts.map(post => postRepo.create(post)),
   );
 
-  /* Seed PostComment table */
-  const postCommentRepo: PostCommentRepository = await this.getRepository(
-    PostCommentRepository,
+  /* Seed comment table */
+  const commentRepo: CommentRepository = await this.getRepository(
+    CommentRepository,
   );
-  const postComments: PostComment[] = await Promise.all(
-    defaultPostComments.map(postComment =>
-      postRepo.postComments(postComment.postId).create(postComment),
+  const comments: Comment[] = await Promise.all(
+    defaultComments.map(comment =>
+      postRepo.postComments(comment.parentId).create(comment),
     ),
   );
 

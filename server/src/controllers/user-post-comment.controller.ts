@@ -17,7 +17,7 @@ import {
 } from '@loopback/rest';
 import {
 User,
-PostComment,
+Comment,
 } from '../models';
 import {UserRepository} from '../repositories';
 
@@ -32,7 +32,7 @@ export class UserPostCommentController {
         description: 'Array of User has many PostComment through LikedComment',
         content: {
           'application/json': {
-            schema: {type: 'array', items: getModelSchemaRef(PostComment)},
+            schema: {type: 'array', items: getModelSchemaRef(Comment)},
           },
         },
       },
@@ -40,8 +40,8 @@ export class UserPostCommentController {
   })
   async find(
     @param.path.string('id') id: string,
-    @param.query.object('filter') filter?: Filter<PostComment>,
-  ): Promise<PostComment[]> {
+    @param.query.object('filter') filter?: Filter<Comment>,
+  ): Promise<Comment[]> {
     return this.userRepository.likedComments(id).find(filter);
   }
 
@@ -49,7 +49,7 @@ export class UserPostCommentController {
     responses: {
       '200': {
         description: 'create a PostComment model instance',
-        content: {'application/json': {schema: getModelSchemaRef(PostComment)}},
+        content: {'application/json': {schema: getModelSchemaRef(Comment)}},
       },
     },
   })
@@ -58,14 +58,14 @@ export class UserPostCommentController {
     @requestBody({
       content: {
         'application/json': {
-          schema: getModelSchemaRef(PostComment, {
+          schema: getModelSchemaRef(Comment, {
             title: 'NewPostCommentInUser',
             exclude: ['id'],
           }),
         },
       },
-    }) postComment: Omit<PostComment, 'id'>,
-  ): Promise<PostComment> {
+    }) postComment: Omit<Comment, 'id'>,
+  ): Promise<Comment> {
     return this.userRepository.likedComments(id).create(postComment);
   }
 
@@ -82,12 +82,12 @@ export class UserPostCommentController {
     @requestBody({
       content: {
         'application/json': {
-          schema: getModelSchemaRef(PostComment, {partial: true}),
+          schema: getModelSchemaRef(Comment, {partial: true}),
         },
       },
     })
-    postComment: Partial<PostComment>,
-    @param.query.object('where', getWhereSchemaFor(PostComment)) where?: Where<PostComment>,
+    postComment: Partial<Comment>,
+    @param.query.object('where', getWhereSchemaFor(Comment)) where?: Where<Comment>,
   ): Promise<Count> {
     return this.userRepository.likedComments(id).patch(postComment, where);
   }
@@ -102,7 +102,7 @@ export class UserPostCommentController {
   })
   async delete(
     @param.path.string('id') id: string,
-    @param.query.object('where', getWhereSchemaFor(PostComment)) where?: Where<PostComment>,
+    @param.query.object('where', getWhereSchemaFor(Comment)) where?: Where<Comment>,
   ): Promise<Count> {
     return this.userRepository.likedComments(id).delete(where);
   }

@@ -17,14 +17,14 @@ import {
   requestBody,
 } from '@loopback/rest';
 import {AuthorInterceptor} from '../interceptors';
-import {PostComment, PostCommentLink} from '../models';
-import {PostCommentRepository, PostRepository} from '../repositories';
+import {Comment, CommentLink} from '../models';
+import {CommentRepository, PostRepository} from '../repositories';
 import { authenticate } from '@loopback/authentication';
 
-export class PostCommentPostCommentController {
+export class CommentCommentController {
   constructor(
-    @repository(PostCommentRepository)
-    protected postCommentRepository: PostCommentRepository,
+    @repository(CommentRepository)
+    protected commentRepository: CommentRepository,
     @repository(PostRepository)
     protected postRepository: PostRepository,
   ) {}
@@ -36,7 +36,7 @@ export class PostCommentPostCommentController {
           'Array of PostComment has many PostComment through PostCommentLink',
         content: {
           'application/json': {
-            schema: {type: 'array', items: getModelSchemaRef(PostComment)},
+            schema: {type: 'array', items: getModelSchemaRef(Comment)},
           },
         },
       },
@@ -44,9 +44,9 @@ export class PostCommentPostCommentController {
   })
   async find(
     @param.path.number('id') id: number,
-    @param.query.object('filter') filter?: Filter<PostComment>,
-  ): Promise<PostComment[]> {
-    return this.postCommentRepository.postComments(id).find({...filter, where: { top: false }});
+    @param.query.object('filter') filter?: Filter<Comment>,
+  ): Promise<Comment[]> {
+    return this.commentRepository.comments(id).find({...filter, where: { top: false }});
   }
 
   @intercept(AuthorInterceptor.BINDING_KEY)
@@ -55,37 +55,37 @@ export class PostCommentPostCommentController {
     responses: {
       '200': {
         description: 'create a PostComment model instance',
-        content: {'application/json': {schema: getModelSchemaRef(PostComment)}},
+        content: {'application/json': {schema: getModelSchemaRef(Comment)}},
       },
     },
   })
   async create(
-    @param.path.number('id') id: typeof PostComment.prototype.id,
+    @param.path.number('id') id: typeof Comment.prototype.id,
     @requestBody({
       content: {
         'application/json': {
-          schema: getModelSchemaRef(PostComment, {
+          schema: getModelSchemaRef(Comment, {
             title: 'NewPostCommentInPostComment',
             exclude: ['id'],
           }),
         },
       },
     })
-    postComment: Omit<PostComment, 'id'>,
-  ): Promise<PostComment> {
-    return this.postCommentRepository
-      .postComments(id)
-      .create(postComment)
-      .then(async postComment => {
-        const postId = await this.postCommentRepository
+    comment: Omit<Comment, 'id'>,
+  ): Promise<Comment> {
+    return this.commentRepository
+      .comments(id)
+      .create(comment)
+      .then(async comment => {
+        const postId = await this.commentRepository
           .findById(id)
-          .then(postComment => postComment.postId);
+          .then(comment => comment.parentId);
         this.postRepository.findById(postId).then(post => {
           this.postRepository.updateById(postId, {
             comments: post.comments + 1,
           });
         });
-        return postComment;
+        return comment;
       });
   }
 
@@ -103,16 +103,16 @@ export class PostCommentPostCommentController {
     @requestBody({
       content: {
         'application/json': {
-          schema: getModelSchemaRef(PostComment, {
+          schema: getModelSchemaRef(Comment, {
             title: 'Edited post comment',
             exclude: ['id'],
           }),
         },
       },
     })
-    postComment: Omit<PostComment, 'id'>,
+    postComment: Omit<Comment, 'id'>,
   ): Promise<void> {
-    return this.postCommentRepository
+    return this.commentRepository
       .updateById(id, {
         content: postComment.content,
       })
@@ -130,7 +130,7 @@ export class PostCommentPostCommentController {
   async delete(
     @param.path.number('id') id: number,
   ): Promise<void> {
-    return this.postCommentRepository
+    return this.commentRepository
       .updateById(id, {
         author: "<DELETED>",
         content: "<DELETED>",

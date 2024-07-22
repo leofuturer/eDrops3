@@ -19,7 +19,7 @@ export class LikedComment extends Entity {
     type: 'number',
     required: true
   })
-  postCommentId: number;
+  commentId: number;
 
   constructor(data?: Partial<LikedComment>) {
     super(data);

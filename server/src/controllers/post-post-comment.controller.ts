@@ -17,14 +17,14 @@ import {
 } from '@loopback/rest';
 import {intercept} from '@loopback/core';
 import {AuthorInterceptor} from '../interceptors';
-import {Post, PostComment} from '../models';
-import {PostCommentRepository, PostRepository} from '../repositories';
+import {Post, Comment} from '../models';
+import {CommentRepository, PostRepository} from '../repositories';
 
 export class PostPostCommentController {
   constructor(
     @repository(PostRepository) protected postRepository: PostRepository,
-    @repository(PostCommentRepository)
-    protected postComments: PostCommentRepository,
+    @repository(CommentRepository)
+    protected postComments: CommentRepository,
   ) {}
 
   @get('/posts/{id}/post-comments', {
@@ -33,7 +33,7 @@ export class PostPostCommentController {
         description: 'Array of Post has many PostComment',
         content: {
           'application/json': {
-            schema: {type: 'array', items: getModelSchemaRef(PostComment)},
+            schema: {type: 'array', items: getModelSchemaRef(Comment)},
           },
         },
       },
@@ -41,8 +41,8 @@ export class PostPostCommentController {
   })
   async find(
     @param.path.number('id') id: number,
-    @param.query.object('filter') filter?: Filter<PostComment>,
-  ): Promise<PostComment[]> {
+    @param.query.object('filter') filter?: Filter<Comment>,
+  ): Promise<Comment[]> {
     return this.postRepository.postComments(id).find({...filter, where: {top: true}});
   }
 
@@ -52,14 +52,14 @@ export class PostPostCommentController {
         description: 'Number of PostComments for a Post',
         content: {
           'application/json': {
-            schema: {type: 'array', items: getModelSchemaRef(PostComment)},
+            schema: {type: 'array', items: getModelSchemaRef(Comment)},
           },
         },
       },
     },
   })
   async commentCount(@param.path.number('id') id: number): Promise<Count> {
-    return this.postComments.count({postId: id});
+    return this.postComments.count({parentId: id});
   }
 
   @intercept(AuthorInterceptor.BINDING_KEY)
@@ -67,7 +67,7 @@ export class PostPostCommentController {
     responses: {
       '200': {
         description: 'Post model instance',
-        content: {'application/json': {schema: getModelSchemaRef(PostComment)}},
+        content: {'application/json': {schema: getModelSchemaRef(Comment)}},
       },
     },
   })
@@ -76,16 +76,16 @@ export class PostPostCommentController {
     @requestBody({
       content: {
         'application/json': {
-          schema: getModelSchemaRef(PostComment, {
+          schema: getModelSchemaRef(Comment, {
             title: 'NewPostCommentInPost',
             exclude: ['id'],
-            optional: ['postId'],
+            optional: ['parentId'],
           }),
         },
       },
     })
-    postComment: Omit<PostComment, 'id'>,
-  ): Promise<PostComment> {
+    postComment: Omit<Comment, 'id'>,
+  ): Promise<Comment> {
     return this.postRepository
       .postComments(id)
       .create(postComment)
@@ -110,13 +110,13 @@ export class PostPostCommentController {
     @requestBody({
       content: {
         'application/json': {
-          schema: getModelSchemaRef(PostComment, {partial: true}),
+          schema: getModelSchemaRef(Comment, {partial: true}),
         },
       },
     })
-    postComment: Partial<PostComment>,
-    @param.query.object('where', getWhereSchemaFor(PostComment))
-    where?: Where<PostComment>,
+    postComment: Partial<Comment>,
+    @param.query.object('where', getWhereSchemaFor(Comment))
+    where?: Where<Comment>,
   ): Promise<Count> {
     return this.postRepository.postComments(id).patch(postComment, where);
   }
@@ -131,8 +131,8 @@ export class PostPostCommentController {
   })
   async delete(
     @param.path.number('id') id: number,
-    @param.query.object('where', getWhereSchemaFor(PostComment))
-    where?: Where<PostComment>,
+    @param.query.object('where', getWhereSchemaFor(Comment))
+    where?: Where<Comment>,
   ): Promise<Count> {
     return this.postRepository
       .postComments(id)
