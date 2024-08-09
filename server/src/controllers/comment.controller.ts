@@ -18,19 +18,20 @@ import {
 import {intercept} from '@loopback/core';
 import {AuthorInterceptor} from '../interceptors';
 import {Post, Comment} from '../models';
-import {CommentRepository, PostRepository} from '../repositories';
+import {CommentRepository, PostRepository, ProjectRepository} from '../repositories';
 
-export class PostPostCommentController {
+export class CommentController {
   constructor(
     @repository(PostRepository) protected postRepository: PostRepository,
+    @repository(ProjectRepository) protected projectRepository: ProjectRepository,
     @repository(CommentRepository)
-    protected postComments: CommentRepository,
+    protected comments: CommentRepository,
   ) {}
 
-  @get('/posts/{id}/post-comments', {
+  @get('/comments/{type}/{id}', {
     responses: {
       '200': {
-        description: 'Array of Post has many PostComment',
+        description: 'Get comments for a post or project',
         content: {
           'application/json': {
             schema: {type: 'array', items: getModelSchemaRef(Comment)},
@@ -40,16 +41,18 @@ export class PostPostCommentController {
     },
   })
   async find(
+    @param.path.string('type') type: string,
     @param.path.number('id') id: number,
     @param.query.object('filter') filter?: Filter<Comment>,
   ): Promise<Comment[]> {
-    return this.postRepository.postComments(id).find({...filter, where: {top: true}});
+    if (type=='post') return this.postRepository.postComments(id).find({...filter, where: {top: true}});
+    else return this.projectRepository.projectComments(id).find({...filter, where: {top: true}});
   }
 
-  @get('/posts/{id}/commentCount', {
+  @get('/commentCount/{type}/{id}', {
     responses: {
       '200': {
-        description: 'Number of PostComments for a Post',
+        description: 'Number of comments for a post or project',
         content: {
           'application/json': {
             schema: {type: 'array', items: getModelSchemaRef(Comment)},
@@ -58,20 +61,24 @@ export class PostPostCommentController {
       },
     },
   })
-  async commentCount(@param.path.number('id') id: number): Promise<Count> {
-    return this.postComments.count({parentId: id});
+  async commentCount(
+    @param.path.string('type') type: string,
+    @param.path.number('id') id: number
+  ): Promise<Count> {
+    return this.comments.count({parentId: id, parentType: type});
   }
 
   @intercept(AuthorInterceptor.BINDING_KEY)
-  @post('/posts/{id}/post-comments', {
+  @post('/comments/{type}/{id}', {
     responses: {
       '200': {
-        description: 'Post model instance',
+        description: 'Create a comment',
         content: {'application/json': {schema: getModelSchemaRef(Comment)}},
       },
     },
   })
   async create(
+    @param.path.string('type') type: string,
     @param.path.number('id') id: typeof Post.prototype.id,
     @requestBody({
       content: {
@@ -79,22 +86,37 @@ export class PostPostCommentController {
           schema: getModelSchemaRef(Comment, {
             title: 'NewPostCommentInPost',
             exclude: ['id'],
-            optional: ['parentId'],
+            optional: ['parentId', 'parentType'],
           }),
         },
       },
     })
-    postComment: Omit<Comment, 'id'>,
+    comment: Omit<Comment, 'id'>,
   ): Promise<Comment> {
-    return this.postRepository
+    comment.parentType = type;
+    comment.parentId = id;
+    if (type=='post') {
+      return this.postRepository
       .postComments(id)
-      .create(postComment)
-      .then(comment => {
+      .create(comment)
+      .then(c => {
         this.postRepository.findById(id).then(post => {
           this.postRepository.updateById(id, {comments: post.comments + 1});
         });
-        return comment;
+        return c;
       });
+    }
+    else {
+      return this.projectRepository
+      .projectComments(id)
+      .create(comment)
+      .then(c => {
+        this.projectRepository.findById(id).then(project => {
+          this.projectRepository.updateById(id, {comments: project.comments+1});
+        });
+        return c;
+      })
+    }
   }
 
   @patch('/posts/{id}/post-comments', {

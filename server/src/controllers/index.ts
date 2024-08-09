@@ -14,7 +14,7 @@ export * from './order-info-order-message.controller';
 export * from './order-product.controller';
 export * from './ping.controller';
 export * from './post-comment-post-comment.controller';
-export * from './post-post-comment.controller';
+export * from './comment.controller';
 export * from './post.controller';
 export * from './project-file-project.controller';
 export * from './project-project-file.controller';
