@@ -1,7 +1,7 @@
 'use strict';
 
 module.exports = function(app) {
-  var db = app.datasources.mysqld;
+  var db = app.datasources.mysqlDS;
 
   db.autoupdate(function(err) {
     if (err) throw err;
