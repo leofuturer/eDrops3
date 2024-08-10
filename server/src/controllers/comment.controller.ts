@@ -45,8 +45,8 @@ export class CommentController {
     @param.path.number('id') id: number,
     @param.query.object('filter') filter?: Filter<Comment>,
   ): Promise<Comment[]> {
-    if (type=='post') return this.postRepository.postComments(id).find({...filter, where: {top: true}});
-    else return this.projectRepository.projectComments(id).find({...filter, where: {top: true}});
+    if (type=='post') return this.postRepository.postComments(id).find({...filter, where: {top: true, parentType: 'post'}});
+    else return this.projectRepository.projectComments(id).find({...filter, where: {top: true, parentType: 'project'}});
   }
 
   @get('/commentCount/{type}/{id}', {
@@ -119,31 +119,35 @@ export class CommentController {
     }
   }
 
-  @patch('/posts/{id}/post-comments', {
+  @patch('/comments/{commentId}', {
     responses: {
       '200': {
-        description: 'Post.PostComment PATCH success count',
+        description: 'Edit a comment',
         content: {'application/json': {schema: CountSchema}},
       },
     },
   })
   async patch(
-    @param.path.number('id') id: number,
+    @param.path.number('commentId') commentId: number,
     @requestBody({
       content: {
         'application/json': {
-          schema: getModelSchemaRef(Comment, {partial: true}),
+          schema: getModelSchemaRef(Comment, {
+            title: 'Edited post comment',
+            exclude: ['id'],
+          }),
         },
       },
     })
-    postComment: Partial<Comment>,
-    @param.query.object('where', getWhereSchemaFor(Comment))
-    where?: Where<Comment>,
-  ): Promise<Count> {
-    return this.postRepository.postComments(id).patch(postComment, where);
+    comment: Omit<Comment, 'id'>,
+  ): Promise<void> {
+    return this.comments
+      .updateById(commentId, {
+        content: comment.content,
+      })
   }
 
-  @del('/posts/{id}/post-comments', {
+  @del('/comments/{commentId}', {
     responses: {
       '200': {
         description: 'Post.PostComment DELETE success count',
@@ -152,20 +156,13 @@ export class CommentController {
     },
   })
   async delete(
-    @param.path.number('id') id: number,
-    @param.query.object('where', getWhereSchemaFor(Comment))
-    where?: Where<Comment>,
-  ): Promise<Count> {
-    return this.postRepository
-      .postComments(id)
-      .delete(where)
-      .then(count => {
-        this.postRepository.findById(id).then(post => {
-          this.postRepository.updateById(id, {
-            comments: post.comments - count.count,
-          });
-        });
-        return count;
-      });
+    @param.path.number('commentId') commentId: number,
+  ): Promise<void> {
+    return this.comments
+      .updateById(commentId, {
+        author: "<DELETED>",
+        content: "<DELETED>",
+        userId: "<DELETED>"
+      })
   }
 }

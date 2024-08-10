@@ -22,18 +22,18 @@ export class CommentRepository extends DefaultCrudRepository<
 
   constructor(
     @inject('datasources.mysqlDS') dataSource: MysqlDsDataSource,
-    // @repository.getter('CommentLinkRepository')
-    // protected CommentLinkRepositoryGetter: Getter<CommentLinkRepository>,
+    @repository.getter('CommentLinkRepository')
+    protected CommentLinkRepositoryGetter: Getter<CommentLinkRepository>,
   ) {
     super(Comment, dataSource);
-    // this.comments = this.createHasManyThroughRepositoryFactoryFor(
-    //   'Comments',
-    //   Getter.fromValue(this),
-    //   CommentLinkRepositoryGetter,
-    // );
-    // this.registerInclusionResolver(
-    //   'Comments',
-    //   this.comments.inclusionResolver,
-    // );
+    this.comments = this.createHasManyThroughRepositoryFactoryFor(
+      'comments',
+      Getter.fromValue(this),
+      CommentLinkRepositoryGetter,
+    );
+    this.registerInclusionResolver(
+      'comments',
+      this.comments.inclusionResolver,
+    );
   }
 }

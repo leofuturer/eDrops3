@@ -14,7 +14,7 @@ import {
   Link, NavLink, useNavigate, useParams,
 } from 'react-router-dom';
 import {
-  api, Post as PostType, PostComment as CommentType, request,
+  api, Post as PostType, Comment as CommentType, request,
 } from '@edroplets/api';
 import { useCookies } from 'react-cookie';
 import { timeAgo } from '@/lib/time';
@@ -53,6 +53,7 @@ export function Post() {
   // Fetch comments and sort based on time
   useEffect(() => {
     if (id) {
+      console.log(api);
       api.post.getPostComments(parseInt(id)).then((comments) => {
         // console.log("Top-level comments", res.data);
         const sortedComments = comments.sort((a, b) => (a.datetime < b.datetime ? 1 : -1));
@@ -62,22 +63,22 @@ export function Post() {
   }, [id, newComment]);
 
   // Check if post is saved initially
-  useEffect(() => {
-    if (currentPost.id && cookies.userId) {
-      api.user.getSavedPost(cookies.userId, currentPost.id).then((res) => {
-        setSaved(!!res);
-      });
-    }
-  }, [currentPost, cookies.userId]);
+  // useEffect(() => {
+  //   if (currentPost.id && cookies.userId) {
+  //     api.user.getSavedPost(cookies.userId, currentPost.id).then((res) => {
+  //       setSaved(!!res);
+  //     });
+  //   }
+  // }, [currentPost, cookies.userId]);
 
   // Check if post is liked initially
-  useEffect(() => {
-    if (currentPost.id && cookies.userId) {
-      api.user.getLikedPost(cookies.userId, currentPost.id).then((res) => {
-        setLiked(!!res);
-      });
-    }
-  }, [currentPost, cookies.userId]);
+  // useEffect(() => {
+  //   if (currentPost.id && cookies.userId) {
+  //     api.user.getLikedPost(cookies.userId, currentPost.id).then((res) => {
+  //       setLiked(!!res);
+  //     });
+  //   }
+  // }, [currentPost, cookies.userId]);
 
   function handleSave() {
     if (cookies.userId) {
@@ -118,6 +119,7 @@ export function Post() {
       datetime: new Date(),
       likes: 0,
       userId: cookies.userId,
+      parentType: 'post',
       top: true,
     };
     api.post.addPostComment(parseInt(id), newPostComment)

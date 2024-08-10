@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { api } from "@edroplets/api";
 import { timeAgo } from "../../lib/time";
-import { PostComment as CommentType } from "@edroplets/api";
+import { Comment as CommentType } from "@edroplets/api";
 import { useCookies } from "react-cookie";
 
 function PostComment({ comment } : {comment: CommentType }) {
@@ -23,7 +23,7 @@ function PostComment({ comment } : {comment: CommentType }) {
 
   // Get all comments under this comment
   useEffect(() => {
-    api.postComment.getPostComments(comment.id as number)
+    api.comment.getChildComments(comment.id as number)
       .then((res) => {
         // console.log('Not top-level comments', res.data);
         setComments(res);
@@ -49,12 +49,13 @@ function PostComment({ comment } : {comment: CommentType }) {
 			author: "",
 			datetime: new Date(),
 			likes: 0,
-			postId: comment.postId,
+			parentId: comment.parentId,
+			parentType: comment.parentType,
 			userId: cookies.userId,
 			top: false,
 		};
 		
-		api.postComment.createPostComment(comment.id, newPostComment)
+		api.comment.createChildComment(comment.id, newPostComment)
 			.then((res) => {
 				setNewComment("");
 				// @ts-ignore
@@ -93,13 +94,14 @@ function PostComment({ comment } : {comment: CommentType }) {
 		if(!comment.id || !cookies.userId) return;
 		if (comment.userId!=cookies.userId) return; // backend should also secure this
 		if (comment.content=="<DELETED>") return;
-		api.postComment.deletePostComment(comment.id).then(() => {
+		api.comment.deleteComment(comment.id).then(() => {
 			console.log("deleted comment");
 			setDeleted(true);
 		})
 	}
 
 	function handleSaveEdit() {
+		if(!comment.id || !cookies.userId) return;
 		setCurrentlyEditing(false);
 		// send api request
 		const editedPostComment = {
@@ -107,11 +109,12 @@ function PostComment({ comment } : {comment: CommentType }) {
 			author: "",
 			datetime: new Date(),
 			likes: 0,
-			postId: comment.postId,
+			parentId: comment.parentId,
+			parentType: comment.parentType,
 			userId: cookies.userId,
 			top: false,
 		};
-		api.postComment.editPostComment(comment.id, editedPostComment).then(() => {
+		api.comment.editComment(comment.id, editedPostComment).then(() => {
 			console.log("edited comment");
 		})
 	}
