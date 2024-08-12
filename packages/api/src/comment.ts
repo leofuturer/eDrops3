@@ -4,7 +4,7 @@ import { Comment } from "./lib/types";
 
 class CommentResource extends Resource<Comment> {
   constructor() {
-    super("/comments");
+    super("");
   }
 
   async getChildComments(id: number) {

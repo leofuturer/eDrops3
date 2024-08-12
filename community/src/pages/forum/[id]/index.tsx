@@ -30,6 +30,7 @@ export function Post() {
   const [saved, setSaved] = useState<boolean>(false);
   const [liked, setLiked] = useState<boolean>(false);
   const [expanded, setExpanded] = useState<boolean>(false);
+  const [requestComments, setRequestComments] = useState<number>(0);
 
   const [newComment, setNewComment] = useState<string>('');
   const [comments, setComments] = useState<CommentType[]>([]);
@@ -53,14 +54,13 @@ export function Post() {
   // Fetch comments and sort based on time
   useEffect(() => {
     if (id) {
-      console.log(api);
       api.post.getPostComments(parseInt(id)).then((comments) => {
         // console.log("Top-level comments", res.data);
         const sortedComments = comments.sort((a, b) => (a.datetime < b.datetime ? 1 : -1));
         setComments(sortedComments);
       });
     }
-  }, [id, newComment]);
+  }, [id, requestComments]);
 
   // Check if post is saved initially
   // useEffect(() => {
@@ -126,6 +126,7 @@ export function Post() {
       .then((res) => {
         setNewComment('');
         currentPost.comments += 1;
+        setRequestComments(requestComments+1);
       })
       .catch((err: AxiosError) => {
         if (err.response?.status === 401) {
