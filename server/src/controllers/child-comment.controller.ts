@@ -61,7 +61,7 @@ export class ChildCommentController {
     },
   })
   async create(
-    @param.path.number('id') id: typeof Comment.prototype.id,
+    @param.path.number('commentId') id: typeof Comment.prototype.id,
     @requestBody({
       content: {
         'application/json': {

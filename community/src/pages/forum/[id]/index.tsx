@@ -38,7 +38,6 @@ export function Post() {
   const [dropdownVisible, setDropdownVisible] = useState<boolean>(false);
   const [deleteModalVisible, setDeleteModalVisible] = useState<boolean>(false);
   const [cookies] = useCookies(['userId']);
-
   // Fetch current post and set loading to false after fetch
   useEffect(() => {
     if (id) {
@@ -294,6 +293,7 @@ export function Post() {
             <div className="flex flex-col space-y-2">
               {comments.map((comment: CommentType) => (
                 <PostComment
+                  currentPost={currentPost}
                   comment={comment}
                   key={comment.id}
                 />
