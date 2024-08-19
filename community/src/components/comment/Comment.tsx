@@ -9,7 +9,7 @@ import { timeAgo } from "../../lib/time";
 import { Comment as CommentType, Post as PostType} from "@edroplets/api";
 import { useCookies } from "react-cookie";
 
-function PostComment({ comment, currentPost} : {comment: CommentType, currentPost: PostType}) {
+function Comment({ comment, currentPost} : {comment: CommentType, currentPost: PostType}) {
 	const navigate = useNavigate();
 	const [deleted, setDeleted] = useState(false);
 	const [comments, setComments] = useState<CommentType[]>([]);
@@ -19,7 +19,7 @@ function PostComment({ comment, currentPost} : {comment: CommentType, currentPos
 	const [commentContent, setCommentContent] = useState(comment.content);
 	const [newComment, setNewComment] = useState<string>(""); // eventually debounce this
 	const [requestComments, setRequestComments] = useState<number>(0);
-  const [cookies] = useCookies(['userId']);
+	const [cookies] = useCookies(['userId']);
 
   // Get all comments under this comment
   useEffect(() => {
@@ -209,11 +209,11 @@ function PostComment({ comment, currentPost} : {comment: CommentType, currentPos
 			)}
 			<div className="">
 				{comments.map((comment: CommentType) => (
-					<PostComment comment={comment} key={comment.id} currentPost={currentPost}/>
+					<Comment comment={comment} key={comment.id} currentPost={currentPost}/>
 				))}
 			</div>
 		</div>
 	);
 }
 
-export default PostComment;
+export default Comment;
