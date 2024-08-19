@@ -71,7 +71,7 @@ export class UserLikedCommentController {
   async create(
     @param.path.string('id') id: typeof User.prototype.id,
     @param.path.number('commentId') commentId: typeof Comment.prototype.id,
-  ): Promise<void> {
+  ): Promise<{"success": boolean}> {
     this.userRepository
       .likedComments(id)
       .link(commentId)
@@ -79,9 +79,10 @@ export class UserLikedCommentController {
         this.postCommentRepository.findById(commentId).then(comment =>
           this.postCommentRepository.updateById(commentId, {
             likes: comment.likes + 1,
-          }),
+          })
         ),
       );
+    return {"success": true};
   }
 
   @authenticate('jwt')

@@ -140,11 +140,12 @@ export class CommentController {
       },
     })
     comment: Omit<Comment, 'id'>,
-  ): Promise<void> {
-    return this.comments
+  ): Promise<Comment> {
+    this.comments
       .updateById(commentId, {
         content: comment.content,
-      })
+    })
+    return comment;
   }
 
   @del('/comments/{commentId}', {
@@ -157,12 +158,13 @@ export class CommentController {
   })
   async delete(
     @param.path.number('commentId') commentId: number,
-  ): Promise<void> {
-    return this.comments
+  ): Promise<{"success": boolean}> {
+    this.comments
       .updateById(commentId, {
         author: "<DELETED>",
         content: "<DELETED>",
         userId: "<DELETED>"
       })
+    return {"success": true};
   }
 }
