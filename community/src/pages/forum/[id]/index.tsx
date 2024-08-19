@@ -18,7 +18,7 @@ import {
 } from '@edroplets/api';
 import { useCookies } from 'react-cookie';
 import { timeAgo } from '@/lib/time';
-import PostComment from '@/components/forum/PostComment';
+import Comment from '@/components/comment/Comment';
 import { DeleteModal } from '@/components/ui/DeleteModal';
 
 export function Post() {
@@ -292,7 +292,7 @@ export function Post() {
             )}
             <div className="flex flex-col space-y-2">
               {comments.map((comment: CommentType) => (
-                <PostComment
+                <Comment
                   currentPost={currentPost}
                   comment={comment}
                   key={comment.id}

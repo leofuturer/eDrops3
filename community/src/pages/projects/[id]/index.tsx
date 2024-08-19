@@ -15,9 +15,9 @@ import { useEffect, useState } from 'react';
 import {
   Link, NavLink, useNavigate, useParams,
 } from 'react-router-dom';
-import { api, ProjectComment as CommentType, Project as ProjectType } from '@edroplets/api';
+import { api, Comment as CommentType, Project as ProjectType } from '@edroplets/api';
 import { timeAgo } from '@/lib/time';
-import ProjectComment from '@/components/project/ProjectComment';
+import Comment from '@/components/comment/Comment';
 import { DeleteModal } from '@/components/ui/DeleteModal';
 
 export function Project() {
@@ -137,6 +137,7 @@ export function Project() {
       likes: 0,
       userId: cookies.userId,
       top: true,
+      parentType: 'project'
     };
     api.project.addProjectComment(cookies.userId, newPostComment)
       .then((res) => {
@@ -362,7 +363,7 @@ export function Project() {
           )}
           <div className="flex flex-col space-y-2">
             {comments.map((comment: CommentType) => (
-              <ProjectComment comment={comment} key={comment.id} />
+              <Comment comment={comment} key={comment.id} currentPost={currentProject}/>
             ))}
           </div>
         </>

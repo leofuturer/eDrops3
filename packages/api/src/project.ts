@@ -60,7 +60,7 @@ class ProjectResource extends Resource<Project> {
 
   async addProjectComment(id: typeof Project.prototype.id, comment: Comment) {
     const url = this.baseURL.replace("/projects", "");
-    return request<Comment>(`${url}/${id}/comments/project/${id}`, "POST", comment).then((res) => {
+    return request<Comment>(`${url}/comments/project/${id}`, "POST", comment).then((res) => {
       return res.data;
     });
   }
