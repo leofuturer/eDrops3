@@ -1,11 +1,10 @@
-
 describe('Forum comment tests', () => {
     beforeEach(() => {
         cy.login("customerA", "edropTest123");
         cy.wait(1000);
-        cy.get('a[href*="/forum"]').first().click();
+        cy.get('a[href*="/projects"]').first().click();
         cy.wait(1000);
-        cy.get('a[href*="/forum/"]').then(links => {
+        cy.get('a[href*="/project/"]').then(links => {
             for (const link of links) {
                 console.log(typeof link);
                 if (!link.href.includes("new")) {
@@ -17,7 +16,8 @@ describe('Forum comment tests', () => {
     })
 
     it("Post a comment", () => {
-        cy.intercept('POST', '/api/comments/post/*').as('response');
+        cy.intercept('POST', '/api/comments/project/*').as('response');
+        cy.wait(1000);
         cy.get('*[data-cy=writeComment]').click();
         cy.get('textarea[data-cy=commentArea]').type("Test Cypress Comment");
         cy.get('button[data-cy=submitComment]').click();

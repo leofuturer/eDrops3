@@ -321,6 +321,7 @@ export function Project() {
 								</p>
 							</div> */}
             <div
+              data-cy="writeComment"
               className="flex flex-row space-x-2 cursor-pointer"
               onClick={() => needAuth(() => setExpanded(!expanded))}
             >
@@ -341,6 +342,7 @@ export function Project() {
             } ease-in-out duration-500`}
           >
             <textarea
+              data-cy="commentArea"
               title="reply"
               className="w-full rounded-md resize-none border-black/25 border-2 p-2"
               value={newComment}
@@ -351,6 +353,7 @@ export function Project() {
             />
             <div className="flex flex-row justify-end">
               <button
+                data-cy="submitComment"
                 type="button"
                 title="Send"
                 className="bg-sky-800 rounded-md p-2"
