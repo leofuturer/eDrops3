@@ -5,8 +5,8 @@ import {
   HasManyRepositoryFactory,
 } from '@loopback/repository';
 import {MysqlDsDataSource} from '../datasources';
-import {Post, PostRelations, PostComment} from '../models';
-import {PostCommentRepository} from './post-comment.repository';
+import {Post, PostRelations, Comment} from '../models';
+import {CommentRepository} from './comment.repository';
 
 export class PostRepository extends DefaultCrudRepository<
   Post,
@@ -14,14 +14,14 @@ export class PostRepository extends DefaultCrudRepository<
   PostRelations
 > {
   public readonly postComments: HasManyRepositoryFactory<
-    PostComment,
+    Comment,
     typeof Post.prototype.id
   >;
 
   constructor(
     @inject('datasources.mysqlDS') dataSource: MysqlDsDataSource,
-    @repository.getter('PostCommentRepository')
-    protected postCommentRepositoryGetter: Getter<PostCommentRepository>,
+    @repository.getter('CommentRepository')
+    protected postCommentRepositoryGetter: Getter<CommentRepository>,
   ) {
     super(Post, dataSource);
     this.postComments = this.createHasManyRepositoryFactoryFor(

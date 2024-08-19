@@ -14,7 +14,7 @@ import {
   Link, NavLink, useNavigate, useParams,
 } from 'react-router-dom';
 import {
-  api, Post as PostType, PostComment as CommentType, request,
+  api, Post as PostType, Comment as CommentType, request,
 } from '@edroplets/api';
 import { useCookies } from 'react-cookie';
 import { timeAgo } from '@/lib/time';
@@ -30,6 +30,7 @@ export function Post() {
   const [saved, setSaved] = useState<boolean>(false);
   const [liked, setLiked] = useState<boolean>(false);
   const [expanded, setExpanded] = useState<boolean>(false);
+  const [requestComments, setRequestComments] = useState<number>(0);
 
   const [newComment, setNewComment] = useState<string>('');
   const [comments, setComments] = useState<CommentType[]>([]);
@@ -37,7 +38,6 @@ export function Post() {
   const [dropdownVisible, setDropdownVisible] = useState<boolean>(false);
   const [deleteModalVisible, setDeleteModalVisible] = useState<boolean>(false);
   const [cookies] = useCookies(['userId']);
-
   // Fetch current post and set loading to false after fetch
   useEffect(() => {
     if (id) {
@@ -59,25 +59,25 @@ export function Post() {
         setComments(sortedComments);
       });
     }
-  }, [id, newComment]);
+  }, [id, requestComments]);
 
   // Check if post is saved initially
-  useEffect(() => {
-    if (currentPost.id && cookies.userId) {
-      api.user.getSavedPost(cookies.userId, currentPost.id).then((res) => {
-        setSaved(!!res);
-      });
-    }
-  }, [currentPost, cookies.userId]);
+  // useEffect(() => {
+  //   if (currentPost.id && cookies.userId) {
+  //     api.user.getSavedPost(cookies.userId, currentPost.id).then((res) => {
+  //       setSaved(!!res);
+  //     });
+  //   }
+  // }, [currentPost, cookies.userId]);
 
   // Check if post is liked initially
-  useEffect(() => {
-    if (currentPost.id && cookies.userId) {
-      api.user.getLikedPost(cookies.userId, currentPost.id).then((res) => {
-        setLiked(!!res);
-      });
-    }
-  }, [currentPost, cookies.userId]);
+  // useEffect(() => {
+  //   if (currentPost.id && cookies.userId) {
+  //     api.user.getLikedPost(cookies.userId, currentPost.id).then((res) => {
+  //       setLiked(!!res);
+  //     });
+  //   }
+  // }, [currentPost, cookies.userId]);
 
   function handleSave() {
     if (cookies.userId) {
@@ -118,12 +118,14 @@ export function Post() {
       datetime: new Date(),
       likes: 0,
       userId: cookies.userId,
+      parentType: 'post',
       top: true,
     };
     api.post.addPostComment(parseInt(id), newPostComment)
       .then((res) => {
         setNewComment('');
         currentPost.comments += 1;
+        setRequestComments(requestComments+1);
       })
       .catch((err: AxiosError) => {
         if (err.response?.status === 401) {
@@ -294,6 +296,7 @@ export function Post() {
             <div className="flex flex-col space-y-2">
               {comments.map((comment: CommentType) => (
                 <PostComment
+                  currentPost={currentPost}
                   comment={comment}
                   key={comment.id}
                 />

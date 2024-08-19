@@ -6,10 +6,10 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { api } from "@edroplets/api";
 import { timeAgo } from "../../lib/time";
-import { PostComment as CommentType } from "@edroplets/api";
+import { Comment as CommentType, Post as PostType} from "@edroplets/api";
 import { useCookies } from "react-cookie";
 
-function PostComment({ comment } : {comment: CommentType }) {
+function PostComment({ comment, currentPost} : {comment: CommentType, currentPost: PostType}) {
 	const navigate = useNavigate();
 	const [deleted, setDeleted] = useState(false);
 	const [comments, setComments] = useState<CommentType[]>([]);
@@ -18,12 +18,12 @@ function PostComment({ comment } : {comment: CommentType }) {
 	const [currentlyEditing, setCurrentlyEditing] = useState(false);
 	const [commentContent, setCommentContent] = useState(comment.content);
 	const [newComment, setNewComment] = useState<string>(""); // eventually debounce this
-
+	const [requestComments, setRequestComments] = useState<number>(0);
   const [cookies] = useCookies(['userId']);
 
   // Get all comments under this comment
   useEffect(() => {
-    api.postComment.getPostComments(comment.id as number)
+    api.comment.getChildComments(comment.id as number)
       .then((res) => {
         // console.log('Not top-level comments', res.data);
         setComments(res);
@@ -31,10 +31,11 @@ function PostComment({ comment } : {comment: CommentType }) {
       .catch((err: AxiosError) => {
         // console.log(err);
       });
-  }, [comment.id, newComment]);
+  }, [comment.id, requestComments]);
 
 	// check if comment is liked initially
 	useEffect(() => {
+		// console.log(currentPost);
 		if (comment.id && cookies.userId) {
 			api.user.getLikedComment(cookies.userId, comment.id).then((res) => {
 				setLiked(!!res);
@@ -49,18 +50,22 @@ function PostComment({ comment } : {comment: CommentType }) {
 			author: "",
 			datetime: new Date(),
 			likes: 0,
-			postId: comment.postId,
+			parentId: comment.parentId,
+			parentType: comment.parentType,
 			userId: cookies.userId,
 			top: false,
 		};
 		
-		api.postComment.createPostComment(comment.id, newPostComment)
+		api.comment.createChildComment(comment.id, newPostComment)
 			.then((res) => {
 				setNewComment("");
 				// @ts-ignore
 				currentPost.comments += 1;
+				setRequestComments(requestComments+1);
+				
 			})
 			.catch((err: AxiosError) => {
+				console.log(err);
 				if (err.message === "No access token found") {
 					navigate("/login");
 				}
@@ -93,13 +98,14 @@ function PostComment({ comment } : {comment: CommentType }) {
 		if(!comment.id || !cookies.userId) return;
 		if (comment.userId!=cookies.userId) return; // backend should also secure this
 		if (comment.content=="<DELETED>") return;
-		api.postComment.deletePostComment(comment.id).then(() => {
+		api.comment.deleteComment(comment.id).then(() => {
 			console.log("deleted comment");
 			setDeleted(true);
 		})
 	}
 
 	function handleSaveEdit() {
+		if(!comment.id || !cookies.userId) return;
 		setCurrentlyEditing(false);
 		// send api request
 		const editedPostComment = {
@@ -107,11 +113,12 @@ function PostComment({ comment } : {comment: CommentType }) {
 			author: "",
 			datetime: new Date(),
 			likes: 0,
-			postId: comment.postId,
+			parentId: comment.parentId,
+			parentType: comment.parentType,
 			userId: cookies.userId,
 			top: false,
 		};
-		api.postComment.editPostComment(comment.id, editedPostComment).then(() => {
+		api.comment.editComment(comment.id, editedPostComment).then(() => {
 			console.log("edited comment");
 		})
 	}
@@ -202,7 +209,7 @@ function PostComment({ comment } : {comment: CommentType }) {
 			)}
 			<div className="">
 				{comments.map((comment: CommentType) => (
-					<PostComment comment={comment} key={comment.id} />
+					<PostComment comment={comment} key={comment.id} currentPost={currentPost}/>
 				))}
 			</div>
 		</div>

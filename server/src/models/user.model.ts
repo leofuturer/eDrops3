@@ -7,7 +7,7 @@ import {Project} from './project.model';
 import {LikedPost} from './liked-post.model';
 import {LikedProject} from './liked-project.model';
 import {UserFollower} from './user-follower.model';
-import {PostComment} from './post-comment.model';
+import {Comment} from './comment.model';
 import {LikedComment} from './liked-comment.model';
 
 @model({
@@ -110,8 +110,8 @@ export class User extends Entity {
   })
   likedPosts?: Post[];
 
-  @hasMany(() => PostComment, {through: {model: () => LikedComment}})
-  likedComments?: PostComment[];
+  @hasMany(() => Comment, {through: {model: () => LikedComment}})
+  likedComments?: Comment[];
 
   constructor(data?: Partial<User>) {
     super(data);

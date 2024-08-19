@@ -1,14 +1,14 @@
 import {authenticate} from '@loopback/authentication';
 import {Count, CountSchema, Filter, repository} from '@loopback/repository';
 import {del, get, getModelSchemaRef, param, post} from '@loopback/rest';
-import {User, PostComment, LikedComment, Post} from '../models';
-import {PostCommentRepository, UserRepository} from '../repositories';
+import {User, Comment, LikedComment, Post} from '../models';
+import {CommentRepository, UserRepository} from '../repositories';
 
 export class UserLikedCommentController {
   constructor(
     @repository(UserRepository) protected userRepository: UserRepository,
-    @repository(PostCommentRepository)
-    protected postCommentRepository: PostCommentRepository,
+    @repository(CommentRepository)
+    protected postCommentRepository: CommentRepository,
   ) {}
 
   @authenticate('jwt')
@@ -18,7 +18,7 @@ export class UserLikedCommentController {
         description: 'Get all user liked comments',
         content: {
           'application/json': {
-            schema: {type: 'array', items: getModelSchemaRef(PostComment)},
+            schema: {type: 'array', items: getModelSchemaRef(Comment)},
           },
         },
       },
@@ -26,9 +26,9 @@ export class UserLikedCommentController {
   })
   async getAll(
     @param.path.string('id') id: typeof User.prototype.id,
-    @param.query.object('filter') filter?: Filter<PostComment>,
-  ): Promise<PostComment[]> {
-    const likedComments: PostComment[] = await this.userRepository
+    @param.query.object('filter') filter?: Filter<Comment>,
+  ): Promise<Comment[]> {
+    const likedComments: Comment[] = await this.userRepository
       .likedComments(id)
       .find(filter);
     return likedComments;
@@ -49,8 +49,8 @@ export class UserLikedCommentController {
   })
   async find(
     @param.path.string('id') id: string,
-    @param.path.number('commentId') commentId: typeof PostComment.prototype.id,
-  ): Promise<PostComment> {
+    @param.path.number('commentId') commentId: typeof Comment.prototype.id,
+  ): Promise<Comment> {
     const likedComments = await this.userRepository
       .likedComments(id)
       .find({where: {id: commentId}});
@@ -70,7 +70,7 @@ export class UserLikedCommentController {
   })
   async create(
     @param.path.string('id') id: typeof User.prototype.id,
-    @param.path.number('commentId') commentId: typeof PostComment.prototype.id,
+    @param.path.number('commentId') commentId: typeof Comment.prototype.id,
   ): Promise<void> {
     this.userRepository
       .likedComments(id)
@@ -95,7 +95,7 @@ export class UserLikedCommentController {
   })
   async delete(
     @param.path.string('id') id: typeof User.prototype.id,
-    @param.path.number('commentId') commentId: typeof PostComment.prototype.id,
+    @param.path.number('commentId') commentId: typeof Comment.prototype.id,
   ): Promise<void> {
     this.userRepository
       .likedComments(id)

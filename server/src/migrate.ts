@@ -1,21 +1,29 @@
-import {EdropsBackendApplication} from './application';
+import {juggler} from '@loopback/repository';
+import {MysqlDsDataSource} from './datasources/mysql-ds.datasource';
 
-export async function migrate(args: string[]) {
-  console.log(args);
-  const existingSchema = args.includes('--rebuild') ? 'drop' : 'alter';
-  console.log('Migrating schemas (%s existing schema)', existingSchema);
+async function migrate() {
+  const ds = new MysqlDsDataSource();
 
-  const app = new EdropsBackendApplication();
-  await app.boot();
-  await app.migrateSchema({existingSchema});
+  try {
+    // Log datasource settings
+    console.log('Datasource settings:', ds.settings);
 
-  // Connectors usually keep a pool of opened connections,
-  // this keeps the process running even after all work is done.
-  // We need to exit explicitly.
-  process.exit(0);
+    // Perform the schema migration for the datasource
+    console.log('Migrating database schema...');
+    await ds.automigrate();
+    console.log('Database migration completed.');
+
+  } catch (err) {
+    console.error('Cannot migrate database schema', err);
+  } finally {
+    // Disconnect the datasource
+    await ds.disconnect();
+    console.log('Datasource disconnected.');
+    process.exit(0);
+  }
 }
 
-migrate(process.argv).catch(err => {
+migrate().catch(err => {
   console.error('Cannot migrate database schema', err);
   process.exit(1);
 });

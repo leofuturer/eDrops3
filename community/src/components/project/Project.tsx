@@ -109,7 +109,7 @@ function Project() {
       userId: cookies.userId,
       top: true,
     };
-    api.project.addProjectComment(currentProject.id, newProjectComment)
+    api.project.addProjectComment(currentProject.id as number, newProjectComment)
       .then((res) => {
         setNewComment('');
         currentProject.comments += 1;
