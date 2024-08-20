@@ -9,10 +9,15 @@ import { DeleteModal } from '@/components/ui/DeleteModal';
 import ProfilePreview from '@/components/profile/ProfilePreview';
 import PostPreview from '@/components/forum/PostPreview';
 
+type PostPrev = Post & {
+  liked?: boolean;
+  saved?: boolean;
+}
+
 export function Forum() {
   const navigate = useNavigate();
-  const [postList, setPostList] = useState<Post[]>([]);
-  const [sortedPosts, setSortedPosts] = useState<Post[]>([]);
+  const [postList, setPostList] = useState<PostPrev[]>([]);
+  const [sortedPosts, setSortedPosts] = useState<PostPrev[]>([]);
   const [search, setSearch] = useState('');
   const [feedType, setFeedType] = useState<'Featured' | 'New'>('Featured');
   const [deleteModalVisible, setDeleteModalVisible] = useState<boolean>(false);
@@ -44,19 +49,21 @@ export function Forum() {
         },
       };
     }
-    api.post.getAll({ filter }).then((res) => {
+    api.post.getAll({ filter }).then(async(res) => {
+      await getLikedAndSaved(res);
       setPostList(res);
     });
   }, [search]);
 
   useEffect(() => {
-    const sortedPosts = ([] as Post[]).concat(postList);
+    const sortedPosts = ([] as PostPrev[]).concat(postList);
     if (feedType === 'Featured') {
       sortedPosts.sort((a, b) => (a.likes < b.likes ? 1 : -1));
     } else if (feedType === 'New') {
       sortedPosts.sort((a, b) => (a.datetime < b.datetime ? 1 : -1));
     }
     setSortedPosts(sortedPosts);
+
   }, [feedType, postList]);
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -84,6 +91,60 @@ export function Forum() {
         console.log(err);
       });
     setDeleteModalVisible(false);
+  }
+
+  function setSaved(id: number) {
+    if (!cookies.userId) { navigate('/login'); return; }
+    api.user.savePost(cookies.userId, id)
+      .then((res) => {
+        let temp = [...postList];
+        let post = postList.find((post) => post.id==id);
+        if (post) {
+          console.log(res);
+          post.saved = res;
+          setPostList(temp);
+        }
+      })
+      .catch((err: AxiosError) => {
+        if (err.message === 'No access token found') {
+          navigate('/login');
+        }
+        // console.log(err);
+      });
+  }
+
+  function setLiked(id: number) {
+    if (!cookies.userId) { navigate('/login'); return; }
+    api.user.likePost(cookies.userId, id)
+      .then((res) => {
+        let temp = [...postList];
+        let post = postList.find((post) => post.id==id);
+        if (post) {
+          console.log(res);
+          post.liked = res;
+          if (res) post.likes++;
+          else post.likes--;
+          setPostList(temp);
+        }
+      })
+      .catch((err: AxiosError) => {
+        if (err.message === 'No access token found') {
+          navigate('/login');
+        }
+        // console.log(err);
+      });
+  }
+
+  async function getLikedAndSaved(list: PostPrev[]) {
+    const [likedPosts, savedPosts] = await Promise.all([
+      api.user.getLikedPosts(cookies.userId),
+      api.user.getSavedPosts(cookies.userId),
+    ]);
+  
+    for (const post of list) {
+      post.liked = likedPosts.some(element => element.id === post.id);
+      post.saved = savedPosts.some(element => element.id === post.id);
+    }
   }
 
   return (
@@ -125,16 +186,18 @@ export function Forum() {
           </div>
         </div>
         <div data-cy="postList">
-          {sortedPosts.map((post) => (
-            <PostPreview
+          {sortedPosts.map((post) => {
+            return <PostPreview
               post={post}
               key={post.id}
               handleDelete={() => {
 						    setCurrPost(post.id);
 						    setDeleteModalVisible(true);
               }}
+              setSaved={setSaved}
+              setLiked={setLiked}
             />
-          ))}
+          })}
         </div>
       </div>
       <div className="flex flex-col px-10 mt-20">

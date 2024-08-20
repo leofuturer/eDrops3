@@ -224,7 +224,7 @@ class UserResource extends Resource<User> {
   }
 
   async saveProject(id: typeof User.prototype.id, projectId: typeof Project.prototype.id): Promise<boolean> {
-    return request<Project>(`${this.baseURL}/${id}/saved-projects/${projectId}`, 'POST', {}).then((res) => {
+    return request<Project>(`${this.baseURL}/${id}/saved-projects/${projectId}`, 'GET', {}).then((res) => {
       if (res.data) {
         return request(`${this.baseURL}/${id}/saved-projects/${projectId}`, 'DELETE', {}).then(() => false);
       }

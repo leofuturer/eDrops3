@@ -62,22 +62,22 @@ export function Post() {
   }, [id, requestComments]);
 
   // Check if post is saved initially
-  // useEffect(() => {
-  //   if (currentPost.id && cookies.userId) {
-  //     api.user.getSavedPost(cookies.userId, currentPost.id).then((res) => {
-  //       setSaved(!!res);
-  //     });
-  //   }
-  // }, [currentPost, cookies.userId]);
+  useEffect(() => {
+    if (currentPost.id && cookies.userId) {
+      api.user.getSavedPost(cookies.userId, currentPost.id).then((res) => {
+        setSaved(!!res);
+      });
+    }
+  }, [currentPost, cookies.userId]);
 
   // Check if post is liked initially
-  // useEffect(() => {
-  //   if (currentPost.id && cookies.userId) {
-  //     api.user.getLikedPost(cookies.userId, currentPost.id).then((res) => {
-  //       setLiked(!!res);
-  //     });
-  //   }
-  // }, [currentPost, cookies.userId]);
+  useEffect(() => {
+    if (currentPost.id && cookies.userId) {
+      api.user.getLikedPost(cookies.userId, currentPost.id).then((res) => {
+        setLiked(!!res);
+      });
+    }
+  }, [currentPost, cookies.userId]);
 
   function handleSave() {
     if (cookies.userId) {

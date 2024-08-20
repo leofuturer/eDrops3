@@ -8,31 +8,24 @@ import {
 import { useCookies } from 'react-cookie';
 import { AxiosError } from 'axios';
 
-function PostPreview({ post, handleDelete }: { post: Post, handleDelete: Function }) {
-  const [saved, setSaved] = useState<boolean>(false);
+type PostPrev = Post & {
+  liked?: boolean;
+  saved?: boolean;
+}
+
+function PostPreview({ post, handleDelete, setSaved, setLiked}: { post: PostPrev, handleDelete: Function, setSaved: Function, setLiked: Function}) {
   const [cookies] = useCookies(['userId']);
   const [dropdownVisible, setDropdownVisible] = useState<boolean>(false);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if (post.id && cookies.userId) {
-      api.user.getSavedPost(cookies.userId, post.id).then((res) => {
-        setSaved(!!res);
-      });
-    }
-  }, [post, cookies.userId]);
-
   function handleSave(e: React.MouseEvent) {
     e.preventDefault();
-    if (!cookies.userId) { navigate('/login'); return; }
-    api.user.savePost(cookies.userId, post.id as number)
-      .then((res) => setSaved(res))
-      .catch((err: AxiosError) => {
-        if (err.message === 'No access token found') {
-          navigate('/login');
-        }
-        // console.log(err);
-      });
+    setSaved(post.id);
+  }
+
+  function handleLike(e: React.MouseEvent) {
+    e.preventDefault();
+    setLiked(post.id);
   }
 
   return (
@@ -45,7 +38,7 @@ function PostPreview({ post, handleDelete }: { post: Post, handleDelete: Functio
           <h3 className="text-xl">{post.title}</h3>
           <div className="flex flex-row">
             <BookmarkIcon
-              className={`w-8 h-8 cursor-default ${saved ? 'fill-black' : ''
+              className={`w-8 h-8 cursor-default ${post.saved ? 'fill-black' : ''
                 }`}
               onClick={(e) => handleSave(e)}
             />
@@ -65,8 +58,10 @@ function PostPreview({ post, handleDelete }: { post: Post, handleDelete: Functio
 
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-4">
-            <div className="flex items-center space-x-2">
-              <HandThumbUpIcon className="h-6" />
+            <div className="flex items-center space-x-2"
+              onClick={handleLike}
+            >
+              <HandThumbUpIcon className="h-6" fill={post.liked ? 'black' : 'none'}/>
               <p>{post.likes}</p>
             </div>
             <div className="flex items-center space-x-2">
