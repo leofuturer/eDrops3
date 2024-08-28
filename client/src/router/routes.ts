@@ -2,7 +2,10 @@ export enum ROUTES {
   // Public routes
   Root = '/',
   Home = '/home',
-  Products = '/products',
+  Products = '/marketplace',
+  Design = '/design',
+  Community = '/community',
+  Control = '/control',
   Product = '/product/:id',
   ComingSoon = '/coming-soon',
   Login = '/login',
@@ -13,7 +16,7 @@ export enum ROUTES {
   EmailVerified = '/email-verified',
   EmailUnverified = '/email-unverified',
   // Authenticated routes
-  Upload = '/upload',
+  Upload = '/fab',
   ChipFab = '/chip-fab/:id',
   BeforeCheckout = '/before-checkout',
   // Manage routes
