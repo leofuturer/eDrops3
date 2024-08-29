@@ -1,16 +1,28 @@
 import { useContext, useState } from 'react';
 import { useCookies } from 'react-cookie';
-import { NavLink, useNavigate } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import { CartContext } from '@/context/CartContext';
 import UserMenu from './UserMenu';
 import { ROUTES } from '@/router/routes';
 import { ArrowUpTrayIcon, Bars3BottomRightIcon, Bars3Icon, CircleStackIcon, ShoppingCartIcon } from '@heroicons/react/24/solid';
 
+function Dropdown({open, setOpen}: {open:boolean, setOpen: Function}) {
+  return (
+    <div className="relative group ml-4">
+    <button className="text-white ml-4 mt-2" onClick={()=>setOpen(!open)}>Open Source Tools</button>
+    <div className="absolute bg-primary text-white rounded mt-2 w-64" hidden={!open}>
+      <a href="http://cad.edroplets.org" className="block px-4 py-2 hover:bg-gray-600">Chip Design Platform (CAD)</a>
+      <a href="/fab" className="block px-4 py-2 hover:bg-gray-600">Foundry Service Platform</a>
+      <a href="http://gui.edroplets.org" className="block px-4 py-2 hover:bg-gray-600">Chip Control GUI</a>
+    </div>
+  </div>
+  )
+}
 function NavTop() {
   const [show, setShow] = useState(false);
   const [showDropNav, setShowDropNav] = useState(false);
+  const [showMenu, setShowMenu] = useState(false);
   const cart = useContext(CartContext);
-
   const [cookies, setCookie, removeCookie] = useCookies(['username', 'userType', 'userId', 'access_token']);
 
   function signout() {
@@ -25,14 +37,15 @@ function NavTop() {
   return (
     <header className="bg-primary w-full flex flex-col md:flex-row">
       <div className="h-[80px] w-full flex flex-row justify-between items-center px-4 md:px-6 lg:px-24 xl:px-48 text-xl lg:text-2xl font-medium text-white">
-        <div className="flex flex-row items-center py-4 h-full space-x-8">
+        <div className="flex flex-row items-center py-4 h-full">
           <NavLink to={ROUTES.Home} className="flex-none flex flex-row items-end h-full">
             <img className="h-full flex-none" src="/img/edrop_logo_inverted.png" alt="" />
             <h1 className="text-4xl hover:text-accent hidden lg:flex">Droplets</h1>
           </NavLink>
-          <NavLink to={ROUTES.Home} className="hover:text-accent hidden xl:flex pt-2">Home</NavLink>
-          <NavLink to={ROUTES.Products} className="hover:text-accent hidden md:flex pt-2">Products</NavLink>
-          <a href="https://community.edroplets.org" target='_blank' rel='noopener' className="hover:text-accent hidden md:flex pt-2">Community</a>
+          <NavLink to={ROUTES.Home} className="hover:text-accent hidden xl:flex pt-2 ml-8">Home</NavLink>
+          <Dropdown open={showMenu} setOpen={setShowMenu}/>
+          <a href="https://community.edroplets.org" target='_blank' rel='noopener' className="hover:text-accent hidden md:flex pt-2 ml-8">Community</a>
+          
         </div>
         <div className="hidden md:flex flex-row items-center h-full space-x-8 text-xl pt-2">
           {cookies.access_token ? <>
