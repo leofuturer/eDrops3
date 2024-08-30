@@ -106,7 +106,6 @@ export class CustomerFileInfoController {
     });
   }
 
-  @authenticate('jwt')
   @patch('/customers/{id}/guestTransfer/{fileId}', {
     responses: {
       '200': {
@@ -119,7 +118,6 @@ export class CustomerFileInfoController {
       },
     },
   })
-  @authenticate('jwt')
   async transferFile(
     @param.path.string('id') id: typeof Customer.prototype.id,
     @param.path.number('fileId') fileId: number,
@@ -127,7 +125,16 @@ export class CustomerFileInfoController {
     // find the file, change the fields 'uploader' and 'customerID' to match the currently logged in user
     const user = await this.userRepository.findById(id);
     const username = user.username;
-    await this.customerRepository.fileInfos('aaaaaaaa-bbbb-aaaa-aaaa-aaaaaaaaaaaa').patch({uploader: username, customerId: id}, {'id': fileId})
+    const existingRecord = await this.customerRepository.fileInfos('aaaaaaaa-bbbb-aaaa-aaaa-aaaaaaaaaaaa').find({where: {id: fileId}});
+    if (existingRecord.length==0) return;
+
+    const newRecord = existingRecord[0];
+    newRecord.customerId = id;
+    newRecord.uploader = username;
+    delete newRecord["id"];
+    await this.customerRepository.fileInfos(id).create(newRecord);
+    await this.customerRepository.fileInfos('aaaaaaaa-bbbb-aaaa-aaaa-aaaaaaaaaaaa').delete({id: fileId});
+    return;
   }
 
 
