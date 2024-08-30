@@ -1,6 +1,6 @@
 import { ErrorMessage, Field, Form, Formik, FormikConfig } from 'formik';
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { ValidationError } from 'yup';
 import { api, Address, Customer, User, DTO } from '@edroplets/api';
 import FormGroup from '@/component/form/FormGroup';
@@ -27,13 +27,20 @@ export function Register() {
     confirmPassword: '',
     isDefault: true,
   });
-
+  const [searchParams, setSearchParams] = useSearchParams();
   const [requestInProgress, setRequestInProgress] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const navigate = useNavigate();
-
+  console.log("signup page");
   function handleRegister(customerData: DTO<Customer & User & Address>) {
-    api.customer.create(customerData).then(() => {
+    api.customer.create(customerData).then((data) => {
+      const fileTransfer = searchParams.get('guestFile');
+      if (fileTransfer) {
+        api.customer.guestTransferFile(data.userId, parseInt(fileTransfer)).then((res) => {
+          console.log(res);
+          return;
+        })
+      }
       navigate(ROUTES.CheckEmail);
       setErrorMessage('');
     }).catch((error) => {

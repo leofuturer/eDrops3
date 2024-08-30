@@ -104,6 +104,7 @@ function Upload() {
             }, 10 * i + 1000);
           }
         }
+        handleShopping(fileInfo.id);
       }).catch((err) => {
         console.error(err);
       });
@@ -129,9 +130,9 @@ function Upload() {
     });
   }
 
-  function handleShopping() {
+  function handleShopping(fileID?: number) {
     setShowUpload(false);
-    navigate(idRoute(ROUTES.ChipFab, fileInfo.id as number));
+    navigate(idRoute(ROUTES.ChipFab, fileID ? fileID : fileInfo.id as number));
   }
 
   function handleLibrary() {
