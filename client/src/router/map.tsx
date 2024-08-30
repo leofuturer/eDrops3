@@ -50,9 +50,9 @@ export function FlattenedRouteMap() {
         <Route path={ROUTES.CheckEmail} element={<CheckEmail />} />
         <Route path={ROUTES.EmailVerified} element={<EmailVerified />} />
         <Route path={ROUTES.EmailUnverified} element={<EmailUnverified />} />
+        <Route path={ROUTES.Upload} element={<Upload />} />
+        <Route path={ROUTES.ChipFab} element={<ChipOrder />} />
         <Route element={<AuthLayout />} >
-          <Route path={ROUTES.Upload} element={<Upload />} />
-          <Route path={ROUTES.ChipFab} element={<ChipOrder />} />
           <Route path={ROUTES.BeforeCheckout} element={<BeforeCheckout />} />
           <Route element={<ManageLayout />}>
             {/* Pages for admins */

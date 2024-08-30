@@ -38,6 +38,12 @@ export function ChipOrder() {
       navigate(ROUTES.ManageFiles);
       return;
     }
+    if (!cookies.userId) {
+      api.customer.guestGetFile(parseInt(id)).then((fileInfo) => {
+        setCustomAttrs(attrs => ({ ...attrs, fileInfo }));
+      });
+      return;
+    }
     api.customer.getFile(cookies.userId, parseInt(id)).then((fileInfo) => {
       setCustomAttrs(attrs => ({ ...attrs, fileInfo }));
     });
