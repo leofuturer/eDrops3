@@ -88,6 +88,28 @@ function Upload() {
     const formData = new FormData();
     formData.append('www', file as File);
     formData.append('fields', JSON.stringify(extraFields));
+    if (!cookies.userId) {
+      api.customer.guestUploadFile(formData).then((fileInfo) => {
+        // console.log(res);
+        setShowConfirm(false);
+        setFileInfo(fileInfo);
+        for (let i = 70; i <= 101; i += 1) {
+          if (i <= 100) {
+            setTimeout(() => {
+              setProgress(i)
+            }, 10 * i);
+          } else {
+            setTimeout(() => {
+              setProgress(101);
+            }, 10 * i + 1000);
+          }
+        }
+        handleShopping(fileInfo.id);
+      }).catch((err) => {
+        console.error(err);
+      });
+      return;
+    }
     api.customer.uploadFile(cookies.userId, formData).then((fileInfo) => {
       // console.log(res);
       setShowConfirm(false);
@@ -108,9 +130,9 @@ function Upload() {
     });
   }
 
-  function handleShopping() {
+  function handleShopping(fileID?: number) {
     setShowUpload(false);
-    navigate(idRoute(ROUTES.ChipFab, fileInfo.id as number));
+    navigate(idRoute(ROUTES.ChipFab, fileID ? fileID : fileInfo.id as number));
   }
 
   function handleLibrary() {
@@ -132,12 +154,6 @@ function Upload() {
   function handleCancel() {
     setShowConfirm(false);
   }
-
-  useEffect(() => {
-    if (!cookies.userId) {
-      redirect('/login');
-    }
-  }, [cookies.userId])
 
   const ptypeList = pTypes.map((p, i) => {
     return (

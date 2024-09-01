@@ -5,10 +5,17 @@ import { ROLES } from '@/lib/constants/roles';
 import { AddAdmin, AddCustomer, AddNewAddress, AddWorker, Address, Admins, AllFiles, AllOrders, BeforeCheckout, Cart, ChangePassword, CheckEmail, ChipOrder, CustomerOrders, Customers, EmailUnverified, EmailVerified, FeatureComing, Files, ForgetPass, FoundryWorkers, Home, Login, ManageAdmin, ManageCustomer, ManageWorker, OrderChat, OrderDetail, OwnOrders, PageNotFound, Product, Products, Profile, Register, ResetPassword, UpdateAddress, ChipOrders, WorkerOrders } from '@/page/index';
 import Upload from '@/page/upload';
 import jwt_decode, { JwtPayload } from 'jwt-decode';
-import { useEffect } from 'react';
+import { useEffect} from 'react';
 import { useCookies } from 'react-cookie';
-import { Navigate, Route, Routes } from 'react-router-dom';
+import { Navigate, Route, Routes} from 'react-router-dom';
 import { ROUTES } from './routes';
+
+function Redirect({url}: {url: string}) {
+  useEffect(() => {
+    window.location.href=url;
+  }, []);
+  return null;
+}
 
 export function FlattenedRouteMap() {
   const [cookies, setCookie, removeCookie] = useCookies(['userType', 'access_token', 'username', 'userId']);
@@ -31,6 +38,9 @@ export function FlattenedRouteMap() {
         <Route path={ROUTES.Root} element={<Navigate to="/home" replace />} />
         <Route path={ROUTES.Home} element={<Home />} />
         <Route path={ROUTES.Products} element={<Products />} />
+        <Route path={ROUTES.Design} element={<Redirect url="http://cad.edroplets.org"/>}/>
+        <Route path={ROUTES.Community} element={<Redirect url="http://community.edroplets.org"/>}/>
+        <Route path={ROUTES.Control} element={<Redirect url="http://gui.edroplets.org"/>}/>
         <Route path={ROUTES.Product} element={<Product />} />
         <Route path={ROUTES.ComingSoon} element={<FeatureComing />} />
         <Route path={ROUTES.Login} element={<Login />} />
@@ -40,9 +50,9 @@ export function FlattenedRouteMap() {
         <Route path={ROUTES.CheckEmail} element={<CheckEmail />} />
         <Route path={ROUTES.EmailVerified} element={<EmailVerified />} />
         <Route path={ROUTES.EmailUnverified} element={<EmailUnverified />} />
+        <Route path={ROUTES.Upload} element={<Upload />} />
+        <Route path={ROUTES.ChipFab} element={<ChipOrder />} />
         <Route element={<AuthLayout />} >
-          <Route path={ROUTES.Upload} element={<Upload />} />
-          <Route path={ROUTES.ChipFab} element={<ChipOrder />} />
           <Route path={ROUTES.BeforeCheckout} element={<BeforeCheckout />} />
           <Route element={<ManageLayout />}>
             {/* Pages for admins */

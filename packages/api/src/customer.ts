@@ -120,6 +120,30 @@ class CustomerResource extends Resource<Customer> {
     });
   }
 
+  async guestUploadFile(formData: FormData): Promise<DTO<FileInfo>> {
+    const url = this.baseURL.replace('customers', '');
+    return request<DTO<FileInfo>>(`${url}/guest/files`, 'POST', formData, {
+      'Content-Type': 'multipart/form-data'
+    }).then((res) => {
+      return res.data;
+    });
+  }
+
+  async guestGetFile(fileId: typeof FileInfo.prototype.id): Promise<DTO<FileInfo>> {
+    const url = this.baseURL.replace('customers', '');
+    return request<DTO<FileInfo>>(`${url}/guest/files/${fileId}`, 'GET', {}).then((res) => {
+      return res.data;
+    });
+  }
+
+  async guestTransferFile(id: typeof Customer.prototype.id, fileId: typeof FileInfo.prototype.id): Promise<number> {
+    return request<number>(`${this.baseURL}/${id}/guestTransfer/${fileId}`, 'PATCH', {}, {
+      'Content-Type': 'multipart/form-data'
+    }).then((res) => {
+      return res.data;
+    });
+  }
+
   async downloadFile(id: typeof Customer.prototype.id, fileId: number, save: boolean = false): Promise<string> {
     return request<string>(`${this.baseURL}/${id}/files/${fileId}/download`, 'GET', {}).then(async (res) => {
       const data = res.data as string;

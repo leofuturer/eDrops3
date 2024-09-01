@@ -35,7 +35,16 @@ export function ChipOrder() {
   // make sure file information is passed from all files or file upload page
   useEffect(() => {
     if (!id) {
+      if (!cookies.userId) {
+        navigate('/');
+      }
       navigate(ROUTES.ManageFiles);
+      return;
+    }
+    if (!cookies.userId) {
+      api.customer.guestGetFile(parseInt(id)).then((fileInfo) => {
+        setCustomAttrs(attrs => ({ ...attrs, fileInfo }));
+      });
       return;
     }
     api.customer.getFile(cookies.userId, parseInt(id)).then((fileInfo) => {
@@ -61,6 +70,9 @@ export function ChipOrder() {
   }
 
   function handleAddToCart() {
+    if (!cookies.userId) {
+      navigate(`/login?guestFile=${id}`);
+    }
     setAddingToCart(true);
     cart.addChip(product, quantity, { ...customAttrs, wcpa: customAttrs.wcpa.toString() }).then(() => {
       setAddingToCart(false);
