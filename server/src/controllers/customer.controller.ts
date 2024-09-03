@@ -1,24 +1,20 @@
-import { authenticate } from '@loopback/authentication';
 import { inject, intercept } from '@loopback/core';
 import { Filter, FilterExcludingWhere, repository } from '@loopback/repository';
 import {
+  Request,
+  RestBindings,
   del,
   get,
   getModelSchemaRef,
-  HttpErrors,
   param,
   patch,
   post,
   requestBody,
-  Response,
-  response,
-  RestBindings
+  response
 } from '@loopback/rest';
-import { SecurityBindings, UserProfile } from '@loopback/security';
-import { compare } from 'bcryptjs';
 import { CustomerCreateInterceptor } from '../interceptors';
 import { DTO } from '../lib/types/model';
-import { Customer, CustomerAddress, OrderInfo, User } from '../models';
+import { Address, Customer, User } from '../models';
 import { CustomerRepository, UserRepository } from '../repositories';
 
 export class CustomerController {
@@ -27,6 +23,7 @@ export class CustomerController {
     public customerRepository: CustomerRepository,
     @repository(UserRepository)
     public userRepository: UserRepository,
+    @inject(RestBindings.Http.REQUEST) public request: Request,
   ) { }
 
   @intercept(CustomerCreateInterceptor.BINDING_KEY)
@@ -42,17 +39,12 @@ export class CustomerController {
           schema: {
             type: 'object',
           },
-          // schema: getModelSchemaRef(Customer, {
-          //   title: 'NewCustomer',
-          //   exclude: ['id'],
-          //   includeRelations: true,
-          // }),
         },
       },
     })
-    customer: DTO<Customer & User & CustomerAddress>,
+    customer: DTO<Customer & User & Address>,
   ): Promise<Customer> {
-    return this.customerRepository.createCustomer(customer);
+    return this.customerRepository.createCustomer(customer, this.request.headers.origin);
   }
 
   @get('/customers')
@@ -70,7 +62,7 @@ export class CustomerController {
   async find(
     @param.filter(Customer) filter?: Filter<Customer>,
   ): Promise<Customer[]> {
-    return this.customerRepository.find(filter);
+    return this.customerRepository.find({ include: ['user', 'addresses'], ...filter });
   }
 
   @get('/customers/{id}')
@@ -87,7 +79,7 @@ export class CustomerController {
     @param.filter(Customer, { exclude: 'where' })
     filter?: FilterExcludingWhere<Customer>,
   ): Promise<Customer> {
-    return this.customerRepository.findById(id, filter);
+    return this.customerRepository.findById(id, { include: ['user', 'addresses'], ...filter });
   }
 
   @del('/customers/{id}')
@@ -95,7 +87,7 @@ export class CustomerController {
     description: 'Customer DELETE success',
   })
   async deleteById(@param.path.number('string') id: string): Promise<void> {
-    await this.customerRepository.deleteById(id);
+    await this.customerRepository.deleteCustomer(id);
   }
 
   @patch('/customers/{id}')
@@ -114,59 +106,5 @@ export class CustomerController {
     customer: Customer,
   ): Promise<void> {
     await this.customerRepository.updateById(id, customer);
-  }
-
-  @get('/customers/getApi')
-  @response(200, {
-    description: 'Get API key and domain',
-    content: {
-      'application/json': {
-        schema: {
-          properties: {
-            info: {
-              properties: {
-                token: {
-                  type: 'string',
-                },
-                domain: {
-                  type: 'string',
-                },
-                key: {
-                  type: 'string',
-                }
-              },
-            },
-          },
-        },
-      },
-    },
-  })
-  async getApiToken(): Promise<object> {
-    return {
-      info: {
-        token: (process.env.SHOPIFY_STORE !== 'test'
-          ? process.env.SHOPIFY_TOKEN
-          : process.env.SHOPIFY_TOKEN_TEST) as string,
-        domain: (process.env.SHOPIFY_STORE !== 'test'
-          ? process.env.SHOPIFY_DOMAIN
-          : process.env.SHOPIFY_DOMAIN_TEST) as string,
-        key: (process.env.APP_PUSHER_API_KEY) as string,
-      },
-    };
-  }
-
-  @get('/customers/{id}/getCustomerCart')
-  @response(200, {
-    description: 'Customer cart',
-    content: {
-      'application/json': {
-        schema: {},
-      },
-    },
-  })
-  async getCustomerCart(
-    @param.path.string('id') id: string,
-  ): Promise<Partial<OrderInfo> | null>{
-    return this.customerRepository.getCustomerCart(id);
   }
 }

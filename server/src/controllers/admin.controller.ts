@@ -1,5 +1,3 @@
-import { authenticate } from '@loopback/authentication';
-import { inject } from '@loopback/core';
 import {
   Count,
   CountSchema,
@@ -12,7 +10,6 @@ import {
   del,
   get,
   getModelSchemaRef,
-  HttpErrors,
   param,
   patch,
   post,
@@ -20,21 +17,9 @@ import {
   requestBody,
   response
 } from '@loopback/rest';
-import { SecurityBindings, UserProfile } from '@loopback/security';
-import { compare } from 'bcryptjs';
-import fetch from 'node-fetch';
-import Client from 'shopify-buy';
-import Products from '../lib/constants/productConstants';
 import { Admin, OrderChip, User } from '../models';
 import { AdminRepository, OrderInfoRepository, OrderProductRepository } from '../repositories';
-
-// @ts-ignore
-global.fetch = fetch;
-
-const client = Client.buildClient({
-  storefrontAccessToken: process.env.SHOPIFY_TOKEN as string,
-  domain: process.env.SHOPIFY_DOMAIN as string,
-});
+import { DTO } from '../lib/types/model';
 
 export class AdminController {
   constructor(
@@ -65,7 +50,7 @@ export class AdminController {
         },
       },
     })
-    admin: Omit<Admin & User, 'id'>,
+    admin: DTO<Admin & User>,
   ): Promise<Admin> {
     return this.adminRepository.createAdmin(admin);
   }
@@ -83,7 +68,7 @@ export class AdminController {
     },
   })
   async find(@param.filter(Admin) filter?: Filter<Admin>): Promise<Admin[]> {
-    return this.adminRepository.find(filter);
+    return this.adminRepository.find({ include: ['user'], ...filter });
   }
 
   @patch('/admins')
@@ -119,7 +104,7 @@ export class AdminController {
     @param.filter(Admin, { exclude: 'where' })
     filter?: FilterExcludingWhere<Admin>,
   ): Promise<Admin> {
-    return this.adminRepository.findById(id, filter);
+    return this.adminRepository.findById(id, { include: ['user'], ...filter});
   }
 
   @patch('/admins/{id}')
@@ -156,87 +141,10 @@ export class AdminController {
     description: 'Admin DELETE success',
   })
   async deleteById(@param.path.string('id') id: string): Promise<void> {
-    await this.adminRepository.deleteById(id);
+    await this.adminRepository.deleteAdmin(id);
   }
 
-  @get('/admins/getItems')
-  @response(200, {
-    description: 'Retrieve items',
-    content: {
-      'application/json': {
-        schema: {
-          type: 'array',
-        },
-      },
-    },
-  })
-  async returnAllItems(): Promise<Client.Product[]> {
-    const productIds = [
-      Products.CONTROLSYSID,
-      Products.PCBCHIPID,
-      Products.TESTBOARDID,
-    ];
-    // console.log(productIds);
-    return client.product
-      .fetchMultiple(productIds)
-      .then((res: Client.Product[]) => {
-        return res.map(r => {
-          return {
-            ...r,
-            id: Buffer.from(r.id as string, 'utf-8').toString('base64'),
-            variants: r.variants.map(variant => {
-              return {
-                ...variant,
-                id: Buffer.from(variant.id as string, 'utf-8').toString(
-                  'base64',
-                ),
-              };
-            }),
-          };
-        });
-      })
-      .catch((err: Error) => {
-        console.log(err);
-        return [];
-      });
-  }
-
-  @get('/admins/getOne')
-  @response(200, {
-    description: 'Retrieve one item',
-    content: {
-      'application/json': {
-        schema: {
-          type: 'object',
-        },
-      },
-    },
-  })
-  async returnOneItem(
-    @param.query.string('productId') productId: string,
-  ): Promise<Client.Product | object> {
-    return client.product
-      .fetch(productId)
-      .then((res: Client.Product) => {
-        console.log(res);
-        return {
-          ...res,
-          id: Buffer.from(res.id as string, 'utf-8').toString('base64'),
-          variants: res.variants.map(variant => {
-            return {
-              ...variant,
-              id: Buffer.from(variant.id as string, 'utf-8').toString('base64'),
-            };
-          }),
-        };
-      })
-      .catch((err: Error) => {
-        console.log(err);
-        return {};
-      });
-  }
-
-  @get('/admins/orderChips')
+  @get('/admins/order-chips')
   @response(200, {
     description: 'Array of OrderChip model instances',
     content: {
@@ -256,32 +164,5 @@ export class AdminController {
     });
 
     return allOrderChips;
-  }
-
-  @get('/admins/getApi')
-  @response(200, {
-    description: 'Get API token',
-    content: {
-      'application/json': {
-        schema: {
-          properties: {
-            token: {
-              type: 'string',
-            },
-            domain: {
-              type: 'string',
-            },
-          },
-        },
-      },
-    },
-  })
-  async getApiToken(): Promise<object> {
-    const info = {
-      token: process.env.SHOPIFY_TOKEN as string,
-      domain: process.env.SHOPIFY_DOMAIN as string,
-    };
-    console.log(info);
-    return info;
   }
 }

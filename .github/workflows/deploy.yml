@@ -21,7 +21,7 @@ jobs:
         runs-on: ubuntu-latest
         strategy:
             matrix:
-                node-version: [16]
+                node-version: [18]
 
         steps:
             - uses: actions/checkout@v3
@@ -31,45 +31,50 @@ jobs:
                   node-version: ${{ matrix.node-version }}
             - name: Setup SSH
               run: |
-                  mkdir -p ~/.ssh
-                  echo "$SSH_KEY" > ~/.ssh/ec2.key
-                  chmod 600 ~/.ssh/ec2.key
-                  cat >> ~/.ssh/config <<END
-                    Host edrop_v3_ec2
-                    HostName $SSH_HOST
-                    User $SSH_USER
-                    IdentityFile ~/.ssh/ec2.key
-                    StrictHostKeyChecking no
-                  END
+                mkdir -p ~/.ssh
+                echo "$SSH_KEY" > ~/.ssh/ec2.key
+                chmod 600 ~/.ssh/ec2.key
+                cat >> ~/.ssh/config <<END
+                  Host edroplets_aws
+                  HostName $SSH_HOST
+                  User $SSH_USER
+                  IdentityFile ~/.ssh/ec2.key
+                  StrictHostKeyChecking no
+                END
+            - name: Install dependencies
+              run: |
+                npm i -g rimraf cross-env
+            - name: Build all local packages
+              run: |
+                npm ci
+                npm run packages:build
             - name: Client deploy to EC2
               run: |
-                  cd client
-                  npm ci
-                  npm run build
+                cd client
+                npm run build
 
-                  ssh edrop_v3_ec2 'cd ~/eDroplets3/client && rm -r dist && mkdir dist'
-                  scp -i ~/.ssh/ec2.key -o StrictHostKeyChecking=no -r dist/* $SSH_USER@$SSH_HOST:~/eDroplets3/client/dist
+                ssh edroplets_aws 'cd ~/eDroplets3/client && rm -r dist && mkdir dist'
+                scp -i ~/.ssh/ec2.key -o StrictHostKeyChecking=no -r dist/* $SSH_USER@$SSH_HOST:~/eDroplets3/client/dist
             - name: Community deploy to EC2
               run: |
-                  cd community
-                  npm ci
-                  npm run build
+                cd community
+                npm run build
 
-                  ssh edrop_v3_ec2 'cd ~/eDroplets3/community && rm -r dist && mkdir dist'
-                  scp -i ~/.ssh/ec2.key -o StrictHostKeyChecking=no -r dist/* $SSH_USER@$SSH_HOST:~/eDroplets3/community/dist
+                ssh edroplets_aws 'cd ~/eDroplets3/community && rm -r dist && mkdir dist'
+                scp -i ~/.ssh/ec2.key -o StrictHostKeyChecking=no -r dist/* $SSH_USER@$SSH_HOST:~/eDroplets3/community/dist
             - name: Backend deploy to EC2
               run: |
-                  cd server
-                  docker build -t edrop_backend .
-                  docker save -o edrop_backend.tar edrop_backend
+                cd server
+                docker build -t edroplets_backend .
+                docker save -o edroplets_backend.tar edroplets_backend
 
-                  scp -i ~/.ssh/ec2.key -o StrictHostKeyChecking=no edrop_backend.tar $SSH_USER@$SSH_HOST:~/eDroplets3/edrop_backend.tar
-                  cd ..
-                  scp -i ~/.ssh/ec2.key -o StrictHostKeyChecking=no Caddyfile *.yml LICENSE README.md CODEOWNERS $SSH_USER@$SSH_HOST:~/eDroplets3/
+                scp -i ~/.ssh/ec2.key -o StrictHostKeyChecking=no edroplets_backend.tar $SSH_USER@$SSH_HOST:~/eDroplets3/edroplets_backend.tar
+                cd ..
+                scp -i ~/.ssh/ec2.key -o StrictHostKeyChecking=no Caddyfile *.yml LICENSE README.md CODEOWNERS $SSH_USER@$SSH_HOST:~/eDroplets3/
             - name: Restart Caddy to pickup new files
               run: |
-                  echo 'Restarting Caddy to pick up new files'
-                  ssh edrop_v3_ec2 'cd ~/eDroplets3/ && ls client/dist/ && docker restart edrop_caddy'
+                echo 'Restarting Caddy to pick up new files'
+                ssh edroplets_aws 'cd ~/eDroplets3/ && ls client/dist/ && docker restart edroplets_caddy'
               env:
                   AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
                   AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}

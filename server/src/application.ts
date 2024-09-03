@@ -20,6 +20,7 @@ import {
 } from './components/jwt-authentication';
 import { clearDb, seedDb } from './lib/seed';
 import { FILE_UPLOAD_SERVICE, STORAGE_DIRECTORY } from './services';
+// import { NgrokObserver } from './observers';
 
 export { ApplicationConfig };
 
@@ -35,6 +36,9 @@ export class EdropsBackendApplication extends BootMixin(
 
     // Set up the custom sequence
     // this.sequence(MySequence);
+
+    // Doesn't seem to work on Mac (generates XML instead of JSON API response)
+    // this.lifeCycleObserver(NgrokObserver);
 
     // Set up default home page
     this.static('/', path.join(__dirname, '../public'));
@@ -102,9 +106,8 @@ export class EdropsBackendApplication extends BootMixin(
     }
 
     // Seed database if environmental variable is set
-    if (
-      process.env.RESET_DATABASE === 'Yes' &&
-      process.env.NODE_ENV !== 'production'
+    if ((process.env.RESET_DATABASE === 'Yes' &&
+      process.env.NODE_ENV !== 'production') || (process.env.PROD_RESET_DATABASE === 'Yes' && process.env.NODE_ENV === 'production')
     ) {
       console.log('Clearing database...');
       this.clearDb = clearDb.bind(this);
@@ -133,8 +136,11 @@ export class EdropsBackendApplication extends BootMixin(
         ? {
             storage: multer.diskStorage({
               destination: (req, file, cb) => {
-                const folder = file.fieldname;
-                const dir = `${destination}/${folder}`;
+                // not really sure about this one, i'm not familiar with how files are supposed to be stored
+                // i did this so uploaded files from community site go in the same place that the default images from the seed data go
+
+                // const folder = file.fieldname;
+                const dir = `${destination}`;
                 fs.access(dir, fs.constants.F_OK, err => {
                   if (err) {
                     return fs.mkdir(dir, error => cb(error, dir));

@@ -5,7 +5,7 @@ export const defaultAdmins: DTO<Admin & User>[] = [
   {
     id: 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa',
     username: 'adminA',
-    email: 'edropswebsite@gmail.com',
+    email: 'edropswebsite+adminA@gmail.com',
     password: 'edropTest123',
     phoneNumber: '1-310-111-2222',
     emailVerified: true,

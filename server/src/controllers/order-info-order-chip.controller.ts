@@ -1,9 +1,11 @@
 import { authenticate } from '@loopback/authentication';
 import { intercept } from '@loopback/core';
 import {
+  Count,
   repository
 } from '@loopback/repository';
 import {
+  del,
   get,
   getModelSchemaRef, HttpErrors,
   param,
@@ -15,20 +17,21 @@ import {
 import { OrderItemCreateInterceptor } from '../interceptors';
 import { OrderChip, OrderInfo } from '../models';
 import { OrderInfoRepository } from '../repositories';
+import { CheckoutLineItemInput, Product } from 'shopify-buy';
 
 export class OrderInfoOrderChipController {
   constructor(
     @repository(OrderInfoRepository)
     protected orderInfoRepository: OrderInfoRepository,
-  ) {}
+  ) { }
 
-  @get('/orderInfos/{id}/orderChips', {
+  @get('/orders/{id}/order-chips', {
     responses: {
       '200': {
         description: 'Array of OrderInfo has many OrderChip',
         content: {
           'application/json': {
-            schema: {type: 'array', items: getModelSchemaRef(OrderChip)},
+            schema: { type: 'array', items: getModelSchemaRef(OrderChip) },
           },
         },
       },
@@ -37,13 +40,13 @@ export class OrderInfoOrderChipController {
   async find(
     @param.path.number('id') id: number,
   ): Promise<OrderChip[]> {
-    const orderInfo = await this.orderInfoRepository.findById(id, {include: [{relation: 'orderChips' }]});
+    const orderInfo = await this.orderInfoRepository.findById(id, { include: [{ relation: 'orderChips' }] });
     return orderInfo.orderChips ?? [];
   }
 
   @authenticate('jwt')
   @intercept(OrderItemCreateInterceptor.BINDING_KEY)
-  @post('/orderInfos/{id}/addOrderChipToCart', {
+  @post('/orders/{id}/order-chips', {
     responses: {
       '200': {
         description: 'Added orderChip to cart',
@@ -55,107 +58,104 @@ export class OrderInfoOrderChipController {
     @requestBody({
       content: {
         'application/json': {
-          schema: getModelSchemaRef(OrderChip, {
-            title: 'NewOrderChipInOrderInfo',
-            exclude: ['id'],
-            partial: true,
-          }),
+          schema: {
+            type: 'object', // TODO: revisit how we can combine these two schemas
+          }
+          // schema: getModelSchemaRef(OrderChip, {
+          //   title: 'NewOrderChipInOrderInfo',
+          //   exclude: ['id'],
+          //   partial: true,
+          // }),
         },
       },
     })
-    orderChip: Omit<OrderChip, 'id'>,
-  ): Promise<void> {
-    this.orderInfoRepository
-      .orderChips(id)
-      .find({
-        where: {
-          variantIdShopify: orderChip.variantIdShopify,
-          otherDetails: orderChip.otherDetails,
-        },
-      })
-      .then(orderChips => {
-        if (orderChips.length > 1) {
-          throw new HttpErrors.UnprocessableEntity(
-            'More than one entry for product',
-          );
-        } else if (orderChips.length === 0) {
-          this.orderInfoRepository
-            .orderChips(id)
-            .create(orderChip)
-            .then(orderChipInstance => {
-              console.log(
-                `Created orderChip with id ${orderChipInstance.id}, product ${orderChipInstance.name}`,
-              );
-              return orderChipInstance;
-            })
-            .catch(err => {
-              console.error(err);
-            });
-        } else if (orderChips.length === 1) {
-          this.orderInfoRepository.orderChips(id).patch({
-            quantity: orderChips[0].quantity + orderChip.quantity,
-            lastUpdated: orderChips[0].lastUpdated,
-          }, { id: orderChips[0].id })
-          .catch(err => {
-            console.error(err);
-          });
-        } else {
-          throw new HttpErrors.UnprocessableEntity(
-            'Unknown entries for product',
-          );
-        }
-      })
-      .catch(err => {
-        throw new HttpErrors.InternalServerError(err);
-      });
+    chip: Product & CheckoutLineItemInput,
+  ): Promise<OrderChip> {
+    return this.orderInfoRepository.addOrderChip(id, chip);
+    // Increment quantity if product already exists in cart
+    // this.orderInfoRepository
+    //   .orderChips(id)
+    //   .find({
+    //     where: {
+    //       variantIdShopify: orderChip.variantIdShopify,
+    //       otherDetails: orderChip.otherDetails,
+    //     },
+    //   })
+    //   .then(orderChips => {
+    //     if (orderChips.length > 1) {
+    //       throw new HttpErrors.UnprocessableEntity(
+    //         'More than one entry for product',
+    //       );
+    //     } else if (orderChips.length === 0) {
+    //       this.orderInfoRepository
+    //         .orderChips(id)
+    //         .create(orderChip)
+    //         .then(orderChipInstance => {
+    //           console.log(
+    //             `Created orderChip with id ${orderChipInstance.id}, product ${orderChipInstance.name}`,
+    //           );
+    //           return orderChipInstance;
+    //         })
+    //         .catch(err => {
+    //           console.error(err);
+    //         });
+    //     } else if (orderChips.length === 1) {
+    //       this.orderInfoRepository.orderChips(id).patch({
+    //         quantity: orderChips[0].quantity + orderChip.quantity,
+    //         lastUpdated: orderChips[0].lastUpdated,
+    //       }, { id: orderChips[0].id })
+    //         .catch(err => {
+    //           console.error(err);
+    //         });
+    //     } else {
+    //       throw new HttpErrors.UnprocessableEntity(
+    //         'Unknown entries for product',
+    //       );
+    //     }
+    //   })
+    //   .catch(err => {
+    //     throw new HttpErrors.InternalServerError(err);
+    //   });
   }
 
-  @patch('/orderInfos/{id}/updateChipLineItemId')
+  @patch('/orders/{id}/order-chips/{orderChipId}')
   @response(204, {
-    description: 'OrderChip LineItemIdShopify PATCH success',
+    description: 'OrderChip PATCH success',
   })
-  async patch(
+  async patchById(
     @param.path.number('id') id: typeof OrderInfo.prototype.id,
-    @requestBody() body: { 
-      lineItemIdShopify: string; 
-      variantIdShopify: string; 
-      otherDetails: string;
-      updatedAt: string; 
-    },
-  ): Promise<void> {
-    this.orderInfoRepository
-      .orderChips(id)
-      .find({
-        where: {
-          variantIdShopify: body.variantIdShopify,
-          otherDetails: body.otherDetails,
+    @param.path.number('orderChipId') orderChipId: typeof OrderChip.prototype.id,
+    @requestBody({
+      content: {
+        'application/json': {
+          schema: getModelSchemaRef(OrderChip, { partial: true }),
         },
-      })
-      .then(orderChips => {
-        if (orderChips.length > 1) {
-          throw new HttpErrors.UnprocessableEntity(
-            'More than one entry for product',
-          );
-        } else if (orderChips.length === 0) {
-          throw new HttpErrors.UnprocessableEntity(
-            'Entry for product does not exist',
-          );
-        } else if (orderChips.length === 1) {
-          this.orderInfoRepository.orderChips(id).patch({
-            lineItemIdShopify: body.lineItemIdShopify,
-            lastUpdated: body.updatedAt,
-          }, { id: orderChips[0].id })
-          .catch(err => {
-            console.error(err);
-          });
-        } else {
-          throw new HttpErrors.UnprocessableEntity(
-            'Unknown entries for product',
-          );
-        }
-      })
-      .catch(err => {
-        throw new HttpErrors.InternalServerError(err);
-      });
+      },
+    })
+    orderChip: Partial<OrderChip>,
+  ): Promise<Count> {
+    return this.orderInfoRepository.updateOrderChip(id, orderChipId, orderChip);
+    // this.orderInfoRepository
+    //   .orderChips(id)
+    //   .patch(orderChip, { id: orderChipId })
+    //   .then(() => {
+    //     console.log(
+    //       `Patched orderChip with id ${orderChipId} in order with id ${id}`,
+    //     );
+    //   })
+    //   .catch(err => {
+    //     console.error(err);
+    //   });
+  }
+
+  @del('/orders/{id}/order-chips/{orderChipId}')
+  @response(204, {
+    description: 'OrderChip DELETE success',
+  })
+  async deleteById(
+    @param.path.number('id') id: typeof OrderInfo.prototype.id,
+    @param.path.number('orderChipId') orderChipId: typeof OrderChip.prototype.id,
+  ): Promise<void> {
+    return this.orderInfoRepository.deleteOrderChip(id, orderChipId);
   }
 }

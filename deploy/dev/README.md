@@ -15,24 +15,34 @@ APP_MYSQL_PASSWORD=
 APP_MYSQL_HOST=  
 APP_MYSQL_PORT=  
   
-APP_EMAIL_HOST=smtp.gmail.com  
+APP_EMAIL_HOST=smtp.sendgrid.net  
 APP_EMAIL_PORT=465  
-APP_EMAIL_USERNAME=edropswebsite@gmail.com  
-APP_EMAIL_PASSWORD=  
+APP_EMAIL_USERNAME=info@edroplets.org 
+APP_EMAIL_API_KEY=  
+
+APP_PUSHER_API_ID=
+APP_PUSHER_API_KEY=
+APP_PUSHER_API_SECRET=
+APP_PUSHER_API_CLUSTER=
   
-SHOPIFY_DOMAIN=wqntest.myshopify.com  
+SHOPIFY_DOMAIN=edrops-store.myshopify.com  
 SHOPIFY_TOKEN=  
+
+# APP_MYSQL_HOST is the MySQL DB container name  
+# https://stackoverflow.com/questions/47979270/django-cannot-connect-mysql-in-docker-compose  
+
+# Set debug strings as necessary
+# https://loopback.io/doc/en/lb4/Setting-debug-strings.html
   
 Contents of `mysql.env`:    
 MYSQL_ROOT_PASSWORD=  
 MYSQL_DATABASE=  
 MYSQL_USER=  
 MYSQL_PASSWORD=  
+
+# https://hub.docker.com/_/mysql
   
 Contents of `ngrok.env`:    
-NGROK_PORT=3000  
-NGROK_AUTH=  
-NGROK_LOOK_DOMAIN=edrop_backend  
-NGROK_DEBUG=true  
-  
+NGROK_AUTHTOKEN=  
+
 The purpose of this README is to ensure the `deploy` and `dev` folders are created.  

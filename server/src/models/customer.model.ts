@@ -1,5 +1,5 @@
 import { belongsTo, Entity, hasMany, model, property } from '@loopback/repository';
-import { CustomerAddress } from './customer-address.model';
+import { Address } from './address.model';
 import { FileInfo } from './file-info.model';
 import { OrderInfo } from './order-info.model';
 import { User } from './user.model';
@@ -43,8 +43,8 @@ export class Customer extends Entity {
   })
   customerType: 'person' | 'company';
 
-  @hasMany(() => CustomerAddress)
-  customerAddresses?: CustomerAddress[];
+  @hasMany(() => Address, { keyTo: 'userId' })
+  addresses?: Address[];
 
   @hasMany(() => FileInfo)
   fileInfos?: FileInfo[];

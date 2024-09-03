@@ -1,23 +1,22 @@
 import { authenticate } from '@loopback/authentication';
 import { inject } from '@loopback/core';
-import { CountSchema, Filter, repository } from '@loopback/repository';
+import { Count, CountSchema, Filter, repository } from '@loopback/repository';
 import {
-  del,
   ExpressRequestHandler,
+  Request,
+  Response,
+  RestBindings,
+  del,
   get,
   getModelSchemaRef,
-  HttpErrors,
   oas,
   param,
   post,
-  Request,
-  requestBody,
-  Response,
-  RestBindings,
+  patch,
+  requestBody
 } from '@loopback/rest';
-import path from 'path';
 import { Customer, FileInfo } from '../models';
-import { CustomerRepository, FileInfoRepository } from '../repositories';
+import { CustomerRepository, FileInfoRepository, UserRepository } from '../repositories';
 import { FILE_UPLOAD_SERVICE, STORAGE_DIRECTORY } from '../services';
 
 export class CustomerFileInfoController {
@@ -26,6 +25,8 @@ export class CustomerFileInfoController {
    * @param handler - Inject an Express request handler to deal with the request
    */
   constructor(
+    @repository(UserRepository)
+    protected userRepository: UserRepository,
     @repository(CustomerRepository)
     protected customerRepository: CustomerRepository,
     @repository(FileInfoRepository)
@@ -34,7 +35,7 @@ export class CustomerFileInfoController {
     @inject(STORAGE_DIRECTORY) private storageDirectory: string,
   ) { }
 
-  @get('/customers/{id}/customerFiles', {
+  @get('/customers/{id}/files', {
     responses: {
       '200': {
         description: 'Retrieve all customer files',
@@ -54,7 +55,7 @@ export class CustomerFileInfoController {
   }
 
   @authenticate('jwt')
-  @post('/customers/{id}/uploadFile', {
+  @post('/customers/{id}/files', {
     responses: {
       '200': {
         description: 'Upload a file',
@@ -66,39 +67,121 @@ export class CustomerFileInfoController {
     @param.path.string('id') id: typeof Customer.prototype.userId,
     @requestBody.file() request: Request,
     @inject(RestBindings.Http.RESPONSE) response: Response,
-  ): Promise<object> {
-    const username = await this.customerRepository
-      .user(id)
-      .then(user => {
-        return user.username;
-      });
-    return new Promise<object>((resolve, reject) => {
+  ): Promise<FileInfo> {
+    return new Promise<FileInfo>((resolve, reject) => {
       this.handler(request, response, async (err: unknown) => {
         if (err) reject(err);
         else {
           // console.log(request.files);
           resolve(
-            process.env.NODE_ENV !== 'production'
-              ? await this.customerRepository.uploadDisk(
-                request,
-                response,
-                username as string,
-                id as string,
-              )
-              : await this.customerRepository.uploadS3(
-                request,
-                response,
-                username as string,
-                id as string,
-              ),
+            await this.customerRepository.uploadFile(request, response, id)
           );
         }
       });
     });
   }
 
+  @post('/guest/files', {
+    responses: {
+      '200': {
+        description: 'Upload a file without logging in',
+        content: { 'application/json': { schema: { type: 'object' } } },
+      },
+    },
+  })
+  async guestFileUpload(
+    @requestBody.file() request: Request,
+    @inject(RestBindings.Http.RESPONSE) response: Response,
+  ): Promise<FileInfo> {
+    return new Promise<FileInfo>((resolve, reject) => {
+      this.handler(request, response, async (err: unknown) => {
+        if (err) reject(err);
+        else {
+          // console.log(request.files);
+          resolve(
+            await this.customerRepository.uploadFile(request, response, 'aaaaaaaa-bbbb-aaaa-aaaa-aaaaaaaaaaaa')
+          );
+        }
+      });
+    });
+  }
+
+  @authenticate('jwt')
+  @patch('/customers/{id}/guestTransfer/{fileId}', {
+    responses: {
+      '200': {
+        description: 'Transfer ownership of a file',
+        content: {
+          'application/json': {
+            schema: { type: 'array', items: getModelSchemaRef(FileInfo) },
+          },
+        },
+      },
+    },
+  })
+  async transferFile(
+    @param.path.string('id') id: typeof Customer.prototype.id,
+    @param.path.number('fileId') fileId: number,
+  ): Promise<number> {
+    // find the file, change the fields 'uploader' and 'customerID' to match the currently logged in user
+    const user = await this.userRepository.findById(id);
+    const username = user.username;
+    const existingRecord = await this.customerRepository.fileInfos('aaaaaaaa-bbbb-aaaa-aaaa-aaaaaaaaaaaa').find({where: {id: fileId}});
+    if (existingRecord.length==0) return -1;
+
+    const newRecord = existingRecord[0];
+    newRecord.customerId = id;
+    newRecord.uploader = username;
+    delete newRecord["id"];
+    const created = await this.customerRepository.fileInfos(id).create(newRecord);
+    await this.customerRepository.fileInfos('aaaaaaaa-bbbb-aaaa-aaaa-aaaaaaaaaaaa').delete({id: fileId});
+    return created.id || -1;
+  }
+
+
+  @authenticate('jwt')
+  @get('/customers/{id}/files/{fileId}', {
+    responses: {
+      '200': {
+        description: 'Get a file',
+        content: {
+          'application/json': {
+            schema: { type: 'array', items: getModelSchemaRef(FileInfo) },
+          },
+        },
+      },
+    },
+  })
+  async getById(
+    @param.path.string('id') id: typeof Customer.prototype.id,
+    @param.path.number('fileId') fileId: number,
+  ): Promise<FileInfo> {
+    const filesInfos = await this.customerRepository.fileInfos(id).find({ where: { id: fileId } });
+    return filesInfos[0];
+  }
+
+  @get('/guest/files/{fileId}', {
+    responses: {
+      '200': {
+        description: 'Get a file',
+        content: {
+          'application/json': {
+            schema: { type: 'array', items: getModelSchemaRef(FileInfo) },
+          },
+        },
+      },
+    },
+  })
+  async guestGetById(
+    @param.path.number('fileId') fileId: number,
+  ): Promise<FileInfo> {
+    const filesInfos = await this.customerRepository.fileInfos('aaaaaaaa-bbbb-aaaa-aaaa-aaaaaaaaaaaa').find({ where: { id: fileId } });
+    return filesInfos[0];
+  }
+
+  @authenticate('jwt')
   @oas.response.file()
-  @get('/customers/{id}/downloadFile', {
+  @get('/customers/{id}/files/{fileId}/download', {
     responses: {
       '200': {
         description: 'Download a file',
@@ -112,21 +195,13 @@ export class CustomerFileInfoController {
   })
   async downloadFile(
     @param.path.string('id') id: typeof Customer.prototype.id,
-    @param.query.number('fileId') fileId: number,
+    @param.path.number('fileId') fileId: number,
     @inject(RestBindings.Http.RESPONSE) response: Response,
   ): Promise<Response> {
-    const filename = await this.customerRepository
-      .fileInfos(id)
-      .find({ where: { id: fileId } })
-      .then(files => {
-        return files[0].containerFileName;
-      });
-    return process.env.NODE_ENV !== 'production'
-      ? this.fileRepository.downloadDisk(filename, response)
-      : this.fileRepository.downloadS3(filename, response);
+    return this.customerRepository.downloadById(id, fileId, response);
   }
 
-  @del('/customers/{id}/deleteFile', {
+  @del('/customers/{id}/files/{fileId}', {
     responses: {
       '200': {
         description: 'Customer.FileInfo DELETE success count',
@@ -136,10 +211,10 @@ export class CustomerFileInfoController {
   })
   async delete(
     @param.path.string('id') id: typeof Customer.prototype.id,
-    @param.query.number('fileId') fileId: number,
-  ): Promise<void> {
-    // Soft delete
-    this.customerRepository.fileInfos(id).delete({ id: fileId });
+    @param.path.number('fileId') fileId: number,
+  ): Promise<Count> {
+    // Should we soft delete?
     // Hard delete
+    return this.customerRepository.fileInfos(id).delete({ id: fileId });
   }
 }

@@ -1,19 +1,6 @@
 import {model, property} from '@loopback/repository';
 import {OrderItem} from './order-item.model';
 
-// @model({
-//   settings: {
-//     plural: 'orderProducts',
-//     remoting: {
-//       sharedMethods: {
-//         '*': false,
-//         deleteById: true,
-//         'prototype.patchAttributes': true,
-//         'prototype.replaceById': true,
-//       },
-//     },
-//   },
-// })
 @model({settings: {description: 'Product order information'}})
 export class OrderProduct extends OrderItem {
   // @property({

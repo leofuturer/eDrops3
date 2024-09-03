@@ -20,7 +20,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [16.15.x]
+        node-version: [18]
 
     steps:
     - uses: actions/checkout@v3
@@ -28,27 +28,33 @@ jobs:
       uses: actions/setup-node@v3
       with:
         node-version: ${{ matrix.node-version }}
+    - name: Install dependencies
+      run: |
+        npm i -g rimraf cross-env
+    - name: Build all local packages
+      run: |
+        npm ci
+        npm run packages:build
     - name: Frontend npm install, build, and copy to EC2
       run: |
-          cd client
-          npm install
-          npm run build
+        cd client
+        npm run build
 
-          mkdir -p ~/.ssh
-          echo "$SSH_KEY" > ~/.ssh/ec2.key
-          chmod 600 ~/.ssh/ec2.key
-          cat >> ~/.ssh/config <<END
-            Host edrop_v2_ec2
-            HostName $SSH_HOST
-            User $SSH_USER
-            IdentityFile ~/.ssh/ec2.key
-            StrictHostKeyChecking no
-          END
+        mkdir -p ~/.ssh
+        echo "$SSH_KEY" > ~/.ssh/ec2.key
+        chmod 600 ~/.ssh/ec2.key
+        cat >> ~/.ssh/config <<END
+          Host edroplets_aws
+          HostName $SSH_HOST
+          User $SSH_USER
+          IdentityFile ~/.ssh/ec2.key
+          StrictHostKeyChecking no
+        END
 
-          ssh edrop_v2_ec2 'cd ~/eDroplets3/client && rm -r dist && mkdir dist'
-          scp -i ~/.ssh/ec2.key -o StrictHostKeyChecking=no -r dist/* $SSH_USER@$SSH_HOST:~/eDroplets3/client/dist
-          echo 'Restarting Caddy to pick up new files'
-          ssh edrop_v2_ec2 'cd ~/eDroplets3/ && ls client/dist/ && docker restart edrop_caddy'
+        ssh edroplets_aws 'cd ~/eDroplets3/client && rm -r dist && mkdir dist'
+        scp -i ~/.ssh/ec2.key -o StrictHostKeyChecking=no -r dist/* $SSH_USER@$SSH_HOST:~/eDroplets3/client/dist
+        echo 'Restarting Caddy to pick up new files'
+        ssh edroplets_aws 'cd ~/eDroplets3/ && ls client/dist/ && docker restart edroplets_caddy'
       env:
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}

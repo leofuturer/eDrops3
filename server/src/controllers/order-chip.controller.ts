@@ -29,7 +29,7 @@ export class OrderChipController {
   ) {}
 
   @intercept(OrderChipUpdateInterceptor.BINDING_KEY)
-  @patch('/orderChips/{id}')
+  @patch('/order-chips/{id}')
   @response(204, {
     description: 'OrderChip PATCH success',
   })
@@ -47,22 +47,22 @@ export class OrderChipController {
     await this.orderChipRepository.updateById(id, orderChip);
   }
 
-  @put('/orderChips/{id}')
-  @response(204, {
-    description: 'OrderChip PUT success',
-  })
-  async replaceById(
-    @param.path.number('id') id: number,
-    @requestBody() orderChip: OrderChip,
-  ): Promise<void> {
-    await this.orderChipRepository.replaceById(id, orderChip);
-  }
+  // @put('/order-chips/{id}')
+  // @response(204, {
+  //   description: 'OrderChip PUT success',
+  // })
+  // async replaceById(
+  //   @param.path.number('id') id: number,
+  //   @requestBody() orderChip: OrderChip,
+  // ): Promise<void> {
+  //   await this.orderChipRepository.replaceById(id, orderChip);
+  // }
 
-  @del('/orderChips/{id}')
-  @response(204, {
-    description: 'OrderChip DELETE success',
-  })
-  async deleteById(@param.path.number('id') id: number): Promise<void> {
-    await this.orderChipRepository.deleteById(id);
-  }
+  // @del('/order-chips/{id}')
+  // @response(204, {
+  //   description: 'OrderChip DELETE success',
+  // })
+  // async deleteById(@param.path.number('id') id: number): Promise<void> {
+  //   await this.orderChipRepository.deleteById(id);
+  // }
 }

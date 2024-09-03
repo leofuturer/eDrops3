@@ -23,6 +23,14 @@ export class FileInfoRepository extends DefaultCrudRepository<
     super(FileInfo, dataSource);
   }
 
+  async downloadById(fileId: typeof FileInfo.prototype.id, response: Response): Promise<Response> {
+    const file = await this.findById(fileId);
+    if (!file) throw new HttpErrors.NotFound(`File not found: ${fileId}`);
+    return process.env.NODE_ENV !== 'production'
+      ? this.downloadDisk(file.containerFileName, response)
+      : this.downloadS3(file.containerFileName, response);
+  }
+
   async downloadDisk(filename: string, response: Response): Promise<Response> {
     const file = path.resolve(`${this.storageDirectory}/www/`, filename);
     if (!file.startsWith(this.storageDirectory))

@@ -1,0 +1,13 @@
+*.dxf
+*.jpg
+*.png
+
+# Don't ignore seed data
+!glass EWOD basic operations.dxf 
+!glass EWOD basic operations.jpg 
+!glass_EWOD_circle.jpg 
+!paper_EWOD_4_reagents.dxf 
+!paper_EWOD_4_reagents.jpg 
+!paper_EWOD_transport.jpg 
+!PCB_EWOD_4layers.jpg 
+!radiochem_chip.jpg

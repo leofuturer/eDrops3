@@ -1,6 +1,6 @@
-import {authenticate} from '@loopback/authentication';
-import {inject} from '@loopback/core';
-import {Filter, FilterExcludingWhere, repository} from '@loopback/repository';
+import { authenticate } from '@loopback/authentication';
+import { inject } from '@loopback/core';
+import { Filter, FilterExcludingWhere, repository } from '@loopback/repository';
 import {
   del,
   get,
@@ -9,14 +9,15 @@ import {
   param,
   patch,
   post,
+  Request,
   requestBody,
   Response,
   response,
   RestBindings,
   SchemaObject,
 } from '@loopback/rest';
-import {SecurityBindings, securityId, UserProfile} from '@loopback/security';
-import {compare, genSalt, hash} from 'bcryptjs';
+import { SecurityBindings, securityId, UserProfile } from '@loopback/security';
+import { compare, genSalt, hash } from 'bcryptjs';
 import {
   Credentials,
   JWTService,
@@ -24,8 +25,8 @@ import {
   TokenServiceBindings,
   UserServiceBindings,
 } from '../components/jwt-authentication';
-import {User} from '../models';
-import {UserRepository} from '../repositories';
+import { User } from '../models';
+import { UserRepository } from '../repositories';
 
 const CredentialsSchema: SchemaObject = {
   type: 'object',
@@ -34,16 +35,16 @@ const CredentialsSchema: SchemaObject = {
       type: 'object',
       required: ['username', 'password'],
       properties: {
-        username: {type: 'string', minLength: 4},
-        password: {type: 'string', minLength: 8},
+        username: { type: 'string', minLength: 4 },
+        password: { type: 'string', minLength: 8 },
       },
     },
     {
       type: 'object',
       required: ['email', 'password'],
       properties: {
-        email: {type: 'string', format: 'email'},
-        password: {type: 'string', minLength: 8},
+        email: { type: 'string', format: 'email' },
+        password: { type: 'string', minLength: 8 },
       },
     },
   ],
@@ -53,7 +54,7 @@ export const CredentialsRequestBody = {
   description: 'The input of login function',
   required: true,
   content: {
-    'application/json': {schema: CredentialsSchema},
+    'application/json': { schema: CredentialsSchema },
   },
 };
 
@@ -63,15 +64,16 @@ export class UserController {
     public jwtService: JWTService,
     @inject(UserServiceBindings.USER_SERVICE)
     public userService: MyUserService,
-    @inject(SecurityBindings.USER, {optional: true})
+    @inject(SecurityBindings.USER, { optional: true })
     public user: UserProfile,
     @repository(UserRepository) protected userRepository: UserRepository,
-  ) {}
+    @inject(RestBindings.Http.REQUEST) private request: Request,
+  ) { }
 
   @post('/users')
   @response(200, {
     description: 'User model instance',
-    content: {'application/json': {schema: getModelSchemaRef(User)}},
+    content: { 'application/json': { schema: getModelSchemaRef(User) } },
   })
   async signUp(
     @requestBody({
@@ -85,18 +87,7 @@ export class UserController {
     })
     newUser: User,
   ): Promise<User> {
-    const hashedPassword = await hash(newUser.password, await genSalt());
-
-    const savedUser = await this.userRepository.create({
-      username: newUser.username,
-      password: hashedPassword,
-      email: newUser.email,
-      emailVerified: newUser.emailVerified,
-      verificationToken: newUser.verificationToken,
-      userType: newUser.userType,
-    });
-
-    return savedUser;
+    return await this.userRepository.createUser(newUser, this.request.headers.origin);
   }
 
   @get('/users')
@@ -106,7 +97,7 @@ export class UserController {
       'application/json': {
         schema: {
           type: 'array',
-          items: getModelSchemaRef(User, {includeRelations: true}),
+          items: getModelSchemaRef(User, { includeRelations: true }),
         },
       },
     },
@@ -120,13 +111,13 @@ export class UserController {
     description: 'User model instance',
     content: {
       'application/json': {
-        schema: getModelSchemaRef(User, {includeRelations: true}),
+        schema: getModelSchemaRef(User, { includeRelations: true }),
       },
     },
   })
   async findById(
     @param.path.string('id') id: string,
-    @param.filter(User, {exclude: 'where'}) filter?: FilterExcludingWhere<User>,
+    @param.filter(User, { exclude: 'where' }) filter?: FilterExcludingWhere<User>,
   ): Promise<User> {
     return this.userRepository.findById(id, filter);
   }
@@ -148,7 +139,7 @@ export class UserController {
     @requestBody({
       content: {
         'application/json': {
-          schema: getModelSchemaRef(User, {partial: true}),
+          schema: getModelSchemaRef(User, { partial: true }),
         },
       },
     })
@@ -232,8 +223,38 @@ export class UserController {
     return;
     // return this.userBaseRepository.logout(userBase);
   }
-  
-  @post('/users/resendVerifyEmail')
+
+  @authenticate('jwt')
+  @get('/users/api-token')
+  @response(200, {
+    description: 'Get API key and domain',
+    content: {
+      'application/json': {
+        schema: {
+          properties: {
+            // token: {
+            //   type: 'string',
+            // },
+            // domain: {
+            //   type: 'string',
+            // },
+            key: {
+              type: 'string',
+            }
+          },
+        },
+      },
+    },
+  })
+  async getApiToken(): Promise<object> {
+    return {
+      // token: process.env.SHOPIFY_TOKEN as string,
+      // domain: process.env.SHOPIFY_DOMAIN as string,
+      key: process.env.APP_PUSHER_API_KEY as string,
+    }
+  }
+
+  @post('/users/verify-email')
   @response(200, {
     description: 'Resend verification email',
   })
@@ -269,10 +290,12 @@ export class UserController {
     else if (!user.emailVerified) {
       await this.userRepository.sendVerificationEmail(
         user as User,
+        this.request.headers.origin,
       );
     }
   }
 
+  // Only from email
   @get('/users/verify')
   @response(200, {
     description: 'User model instance',
@@ -296,14 +319,14 @@ export class UserController {
       throw new HttpErrors.NotFound('User not found');
     }
     if (user.emailVerified) {
-      response.redirect('/emailVerified');
+      response.redirect('/email-verified');
     } else {
-      response.redirect('/emailVerifyInvalid');
+      response.redirect('/email-unverified');
     }
     return user;
   }
 
-  @post('/users/reset')
+  @post('/users/forgot-password')
   @response(200, {
     description: 'User RESET success',
   })
@@ -314,7 +337,7 @@ export class UserController {
           type: 'object',
           schema: {
             properties: {
-              email: {type: 'string', format: 'email'},
+              email: { type: 'string', format: 'email' },
             },
           },
         },
@@ -339,14 +362,14 @@ export class UserController {
           type: 'object',
           schema: {
             properties: {
-              oldPassword: {type: 'string'},
-              newPassword: {type: 'string'},
+              oldPassword: { type: 'string' },
+              newPassword: { type: 'string' },
             },
           },
         },
       },
     })
-    data: {oldPassword: string; newPassword: string},
+    data: { oldPassword: string; newPassword: string },
     @inject(SecurityBindings.USER)
     userProfile: UserProfile,
   ): Promise<void> {
@@ -373,8 +396,8 @@ export class UserController {
           type: 'object',
           schema: {
             properties: {
-              newPassword: {type: 'string'},
-              accessToken: {type: 'string'},
+              newPassword: { type: 'string' },
+              accessToken: { type: 'string' },
             },
           },
         },
@@ -411,10 +434,10 @@ export class UserController {
     },
   })
   async checkCredsTaken(
-    @requestBody() body: {username: string; email: string},
-  ): Promise<{usernameTaken: boolean; emailTaken: boolean}> {
+    @requestBody() body: { username: string; email: string },
+  ): Promise<{ usernameTaken: boolean; emailTaken: boolean }> {
     if (!body.username && !body.email) {
-      throw new HttpErrors.NotFound('Missing username and/or email keys');
+      throw new HttpErrors.BadRequest('Missing username and/or email keys');
     }
 
     const usernameTaken = await this.userRepository
@@ -443,6 +466,6 @@ export class UserController {
         throw new HttpErrors.InternalServerError(err);
       });
 
-    return {usernameTaken, emailTaken};
+    return { usernameTaken, emailTaken };
   }
 }

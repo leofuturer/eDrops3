@@ -1,22 +1,18 @@
 
 import Pusher from 'pusher-js';
 import React, { useEffect, useState } from 'react';
-import { request, customerGetApiToken } from '../api';
+import { api } from '@edroplets/api';
 
 const usePusher = () => {
+  const [key, setKey] = useState<string>(''); // Note that key must be initialized before pusher for buildClient to work
   const [pusher, setPusher] = useState<Pusher>(buildClient());
-  const [key, setKey] = useState<string>('');
 
   useEffect(() => {
-    request(customerGetApiToken, 'GET', {}, false)
-      .then((res) => {
-        if (res.status === 200) {
-          setKey(res.data.info.key);
-        }
-      })
-      .catch((err) => {
-        // console.error(err);
-      });
+    api.user.getAPIToken().then((res) => {
+      setKey(res.key);
+    }).catch((err) => {
+      // console.error(err);
+    });
   }, [])
 
   function buildClient(): Pusher {
@@ -28,19 +24,18 @@ const usePusher = () => {
   }
 
   useEffect(() => {
-    setPusher(buildClient());
+    key && setPusher(buildClient());
   }, [key])
 
-  return pusher;
+  return pusher
 }
 
-export const PusherContext = React.createContext<ReturnType<typeof usePusher>>(null);
+export const PusherContext = React.createContext<ReturnType<typeof usePusher>>({} as ReturnType<typeof usePusher>);
 
-export function PusherContextProvider({ children }: { children: React.ReactNode }) {
+export function PusherContextProvider({ children }: { children?: React.ReactNode }) {
   return (
     <PusherContext.Provider value={usePusher()}>
       {children}
     </PusherContext.Provider>
   )
 }
-export default PusherContextProvider;

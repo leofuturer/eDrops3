@@ -27,7 +27,7 @@ export class PostPostCommentController {
     protected postComments: PostCommentRepository,
   ) {}
 
-  @get('/posts/{id}/postComments', {
+  @get('/posts/{id}/post-comments', {
     responses: {
       '200': {
         description: 'Array of Post has many PostComment',
@@ -63,7 +63,7 @@ export class PostPostCommentController {
   }
 
   @intercept(AuthorInterceptor.BINDING_KEY)
-  @post('/posts/{id}/postComments', {
+  @post('/posts/{id}/post-comments', {
     responses: {
       '200': {
         description: 'Post model instance',
@@ -97,7 +97,7 @@ export class PostPostCommentController {
       });
   }
 
-  @patch('/posts/{id}/postComments', {
+  @patch('/posts/{id}/post-comments', {
     responses: {
       '200': {
         description: 'Post.PostComment PATCH success count',
@@ -121,7 +121,7 @@ export class PostPostCommentController {
     return this.postRepository.postComments(id).patch(postComment, where);
   }
 
-  @del('/posts/{id}/postComments', {
+  @del('/posts/{id}/post-comments', {
     responses: {
       '200': {
         description: 'Post.PostComment DELETE success count',

@@ -28,7 +28,7 @@ export class ProjectProjectCommentController {
     protected projectComments: ProjectCommentRepository,
   ) {}
 
-  @get('/projects/{id}/projectComments', {
+  @get('/projects/{id}/project-comments', {
     responses: {
       '200': {
         description: 'Array of Project has many ProjectComment',
@@ -66,7 +66,7 @@ export class ProjectProjectCommentController {
   }
 
   @intercept(AuthorInterceptor.BINDING_KEY)
-  @post('/projects/{id}/projectComments', {
+  @post('/projects/{id}/project-comments', {
     responses: {
       '200': {
         description: 'Project model instance',
@@ -104,7 +104,7 @@ export class ProjectProjectCommentController {
       });
   }
 
-  @patch('/projects/{id}/projectComments', {
+  @patch('/projects/{id}/project-comments', {
     responses: {
       '200': {
         description: 'Project.ProjectComment PATCH success count',
@@ -130,7 +130,7 @@ export class ProjectProjectCommentController {
       .patch(projectComment, where);
   }
 
-  @del('/projects/{id}/projectComments', {
+  @del('/projects/{id}/project-comments', {
     responses: {
       '200': {
         description: 'Project.ProjectComment DELETE success count',

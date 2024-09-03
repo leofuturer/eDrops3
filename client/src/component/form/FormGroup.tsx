@@ -1,3 +1,4 @@
+import { EyeIcon, EyeSlashIcon } from '@heroicons/react/24/solid';
 import { Field, ErrorMessage, FieldProps } from 'formik';
 import _ from 'lodash';
 import { useState } from 'react';
@@ -31,7 +32,7 @@ function FormGroup({ name, displayName, required = false, type = "text", autoCom
                     setShowConfirmPassword(false);
                   }} 
                   disabled={disabled}/>
-                <i className={`fa ${showConfirmPassword ? 'fa-eye-slash' : 'fa-eye'} absolute right-1 text-gray-600 cursor-pointer`} onClick={() => setShowConfirmPassword(!showConfirmPassword)} />
+                {showConfirmPassword ? <EyeSlashIcon className="w-4 absolute right-1 text-gray-600 cursor-pointer" onClick={() => setShowConfirmPassword(!showConfirmPassword)} /> : <EyeIcon className="w-4 absolute right-1 text-gray-600 cursor-pointer" onClick={() => setShowConfirmPassword(!showConfirmPassword)} />}
               </div>
             ) : (
             <input

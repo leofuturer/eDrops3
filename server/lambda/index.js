@@ -8,7 +8,7 @@ const handOffOrderData = (rawbody) => {
   return new Promise((resolve, reject) => {
     const options = {
       host: 'edroplets.org',
-      path: '/api/orderInfos/newOrderCreated',
+      path: '/api/orders/order-comleted',
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'

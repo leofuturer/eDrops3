@@ -3,14 +3,20 @@ import {
   repository
 } from '@loopback/repository';
 import {
+  HttpErrors,
+  Response,
+  RestBindings,
   get,
-  getModelSchemaRef, HttpErrors, param, post,
+  getModelSchemaRef,
+  param, post,
   requestBody,
   response
 } from '@loopback/rest';
-import { ConfigurationServicePlaceholders } from 'aws-sdk/lib/config_service_placeholders';
-import { Customer, OrderChip, OrderInfo } from '../models';
+import { Address, Customer, OrderChip, OrderInfo } from '../models';
 import { CustomerRepository, OrderInfoRepository } from '../repositories';
+import { request } from 'http';
+import { inject } from '@loopback/core';
+import { DTO } from '../lib/types';
 
 export class CustomerOrderInfoController {
   constructor(
@@ -20,7 +26,7 @@ export class CustomerOrderInfoController {
     protected orderInfoRepository: OrderInfoRepository,
   ) {}
 
-  @get('/customers/{id}/orderChips', {
+  @get('/customers/{id}/order-chips', {
     responses: {
       '200': {
         description: 'Get all chip orders of a customer',
@@ -37,11 +43,11 @@ export class CustomerOrderInfoController {
   ): Promise<OrderChip[]> {
     const customerOrders = await this.customerRepository.orderInfos(id).find({include: [{relation : 'orderChips'}]});
     return customerOrders.reduce((all, orderInfo) => {
-      return all.concat(orderInfo.orderChips);
+      return all.concat(orderInfo.orderChips ?? []);
     }, [] as OrderChip[]);
   }
 
-  @get('/customers/{id}/customerOrders', {
+  @get('/customers/{id}/orders', {
     responses: {
       '200': {
         description: 'Get customer orders',
@@ -60,23 +66,60 @@ export class CustomerOrderInfoController {
     return this.customerRepository.orderInfos(id).find(filter);
   }
 
-  @post('/customers/{id}/customerOrders')
+  // @post('/customers/{id}/orders')
+  // @response(200, {
+  //   description: 'Create new order',
+  //   content: {
+  //     'application/json': {
+  //       schema: {type: 'object', items: getModelSchemaRef(OrderInfo)},
+  //     },
+  //   },
+  // })
+  // async addOrderToCustomerCart(
+  //   @param.path.string('id') id: typeof Customer.prototype.id,
+  // ): Promise<OrderInfo> {
+  //   return this.customerRepository.createCart(id);
+  // }
+
+  @get('/customers/{id}/cart')
   @response(200, {
-    description: 'Add order to customer cart',
+    description: 'Customer cart',
+    content: {
+      'application/json': {
+        schema: {},
+      },
+    },
+  })
+  async getCustomerCart(
+    @param.path.string('id') id: string,
+  ): Promise<OrderInfo>{
+    return this.customerRepository.getCart(id);
+  }
+
+  @post('/customers/{id}/orders/{orderId}/checkout')
+  @response(200, {
+    description: 'Create new order',
     content: {
       'application/json': {
         schema: {type: 'object', items: getModelSchemaRef(OrderInfo)},
       },
     },
   })
-  async addOrderToCustomerCart(
+  async checkoutCart(
     @param.path.string('id') id: typeof Customer.prototype.id,
-    @requestBody() orderInfo: OrderInfo,
+    @param.path.number('orderId') orderId: typeof OrderInfo.prototype.id,
+    @requestBody({
+      content: {
+        'application/json': {
+          schema: getModelSchemaRef(Address, {
+            title: 'NewAddress',
+            partial: true,
+          }),
+        },
+      },
+    })
+    address?: DTO<Address>,
   ): Promise<OrderInfo> {
-    const allOrders = await this.customerRepository.orderInfos(id).find();
-    if(allOrders.length == 0) {
-      return this.customerRepository.orderInfos(id).create(orderInfo);
-    }
-    throw new HttpErrors.BadRequest('Customer already has an active order');
+    return this.customerRepository.checkoutCart(id, orderId, address);
   }
 }

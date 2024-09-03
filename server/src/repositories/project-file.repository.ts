@@ -12,7 +12,7 @@ import { Project, ProjectFile, ProjectFileRelations } from '../models';
 import { STORAGE_DIRECTORY } from '../services';
 import { ProjectRepository } from './project.repository';
 
-const CONTAINER_NAME = process.env.S3_BUCKET_NAME ?? 'edrop-v2-files';
+const CONTAINER_NAME = process.env.S3_BUCKET_NAME ?? 'edroplets-files';
 
 export class ProjectFileRepository extends DefaultCrudRepository<
   ProjectFile,
@@ -55,6 +55,7 @@ export class ProjectFileRepository extends DefaultCrudRepository<
     response: Response,
     username: string,
     userId: string,
+    fileType: "attachment" | "image" = "attachment",
   ): Promise<object> {
     const mapper = (f: Express.Multer.File) => ({
       fieldname: f.fieldname,
@@ -86,7 +87,7 @@ export class ProjectFileRepository extends DefaultCrudRepository<
           container: CONTAINER_NAME, // need fix
           isDeleted: false,
           isPublic: request.body.isPublic === 'public',
-          fileType: 'attachment',
+          fileType: fileType,
           fileSize: calculate.formatBytes(f.size as number, 1),
           uploader: username,
           userId: userId,
@@ -104,6 +105,7 @@ export class ProjectFileRepository extends DefaultCrudRepository<
     response: Response,
     username: string,
     userId: string,
+    fileType: "attachment" | "image" = "attachment",
   ): Promise<object> {
     const mapper = (f: Express.MulterS3.File) => ({
       fieldname: f.fieldname,
@@ -138,7 +140,7 @@ export class ProjectFileRepository extends DefaultCrudRepository<
           container: CONTAINER_NAME, // need fix
           isDeleted: false,
           isPublic: request.body.isPublic === 'public',
-          fileType: 'attachment',
+          fileType: fileType,
           fileSize: calculate.formatBytes(f.size as number, 1),
           uploader: username,
           userId: userId,
@@ -156,7 +158,8 @@ export class ProjectFileRepository extends DefaultCrudRepository<
     filename: string,
     response: Response,
   ): Promise<Response> {
-    const file = path.resolve(this.storageDirectory, filename);
+
+    const file = path.resolve(`${this.storageDirectory}`, filename);
     if (!file.startsWith(this.storageDirectory))
       throw new HttpErrors.BadRequest(`Invalid file id: ${filename}`);
     response.download(file, filename);

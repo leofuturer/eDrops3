@@ -1,0 +1,16 @@
+{
+  "files": [],
+  "compilerOptions": {
+    "outDir": "dist",
+    "forceConsistentCasingInFileNames": true,
+    "strict": true
+  },
+  "references": [
+    {
+      "path": "./src/tsconfig.build.json",
+    },
+    {
+      "path": "../../server/src/tsconfig.build.json",
+    }
+  ]
+}
