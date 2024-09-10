@@ -127,7 +127,7 @@ export class CustomerFileInfoController {
     const user = await this.userRepository.findById(id);
     const username = user.username;
     const existingRecord = await this.customerRepository.fileInfos('aaaaaaaa-bbbb-aaaa-aaaa-aaaaaaaaaaaa').find({where: {id: fileId}});
-    if (existingRecord.length==0) return 'no file found';
+    if (existingRecord.length==0) return 'error transferring';
 
     const newRecord = existingRecord[0];
     if (Date.now()-Date.parse(newRecord.uploadTime)>300000) return 'Guest file expired. You must log in within 5 minutes to transfer files.';
@@ -136,7 +136,7 @@ export class CustomerFileInfoController {
     delete newRecord["id"];
     const created = await this.customerRepository.fileInfos(id).create(newRecord);
     await this.customerRepository.fileInfos('aaaaaaaa-bbbb-aaaa-aaaa-aaaaaaaaaaaa').delete({id: fileId});
-    return created.id || 'file not transferred';
+    return created.id || 'error transferring';
   }
 
 

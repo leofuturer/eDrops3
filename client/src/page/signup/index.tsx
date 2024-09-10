@@ -9,6 +9,7 @@ import { CustomerSchema, CustomerSubmitSchema } from '@edroplets/schemas';
 import { metadata } from './metadata';
 import { ROUTES } from '@/router/routes';
 
+
 export function Register() {
   const [initialInfo, setInitialInfo] = useState({
     street: '',
@@ -32,15 +33,14 @@ export function Register() {
   const [errorMessage, setErrorMessage] = useState('');
   const navigate = useNavigate();
   console.log("signup page");
+
+  async function signupHelper(customerData: DTO<Customer & User & Address>, fileTransfer: string | null) {
+    if (fileTransfer) api.customer.create(customerData, fileTransfer);
+    else api.customer.create(customerData);
+  }
   function handleRegister(customerData: DTO<Customer & User & Address>) {
-    api.customer.create(customerData).then((data) => {
-      const fileTransfer = searchParams.get('guestFile');
-      if (fileTransfer) {
-        api.customer.guestTransferFile(data.userId, fileTransfer).then((res) => {
-          console.log(res);
-          return;
-        })
-      }
+    const fileTransfer = searchParams.get('guestFile');
+    signupHelper(customerData, fileTransfer).then(() => {
       navigate(ROUTES.CheckEmail);
       setErrorMessage('');
     }).catch((error) => {

@@ -28,8 +28,9 @@ class CustomerResource extends Resource<Customer> {
   /*
     @override Resource.create
   */
-  async create(data: DTO<Customer & User & Address>): Promise<DTO<Customer>> {
-    return request<DTO<Customer>>(this.baseURL, 'POST', data).then((res) => {
+  async create(data: DTO<Customer & User & Address>, query?: string): Promise<DTO<Customer>> {
+    const url = query ? `${this.baseURL}?fileTransfer=${query}` : this.baseURL;
+    return request<DTO<Customer>>(url, 'POST', data).then((res) => {
       return res.data;
     });
   }
@@ -136,8 +137,8 @@ class CustomerResource extends Resource<Customer> {
     });
   }
 
-  async guestTransferFile(id: typeof Customer.prototype.id, fileId: typeof FileInfo.prototype.id): Promise<number> {
-    return request<number>(`${this.baseURL}/${id}/guestTransfer/${fileId}`, 'PATCH', {}, {
+  async guestTransferFile(id: typeof Customer.prototype.id, fileId: typeof FileInfo.prototype.id): Promise<string> {
+    return request<string>(`${this.baseURL}/${id}/guestTransfer/${fileId}`, 'PATCH', {}, {
       'Content-Type': 'multipart/form-data'
     }).then((res) => {
       return res.data;

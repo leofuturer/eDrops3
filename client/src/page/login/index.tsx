@@ -29,7 +29,7 @@ export function Login() {
       const fileTransfer = searchParams.get('guestFile');
       if (fileTransfer) {
         api.customer.guestTransferFile(data.userId, fileTransfer).then((res) => {
-          if (res>0) {
+          if (res!='error transferring') {
             navigate(`/chip-fab/${res}`)
             setError(false);
             return;
