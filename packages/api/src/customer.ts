@@ -121,7 +121,7 @@ class CustomerResource extends Resource<Customer> {
   }
 
   async guestUploadFile(formData: FormData): Promise<DTO<FileInfo>> {
-    const url = this.baseURL.replace('customers', '');
+    const url = this.baseURL.replace('/customers', '');
     return request<DTO<FileInfo>>(`${url}/guest/files`, 'POST', formData, {
       'Content-Type': 'multipart/form-data'
     }).then((res) => {
@@ -130,7 +130,7 @@ class CustomerResource extends Resource<Customer> {
   }
 
   async guestGetFile(fileId: typeof FileInfo.prototype.id): Promise<DTO<FileInfo>> {
-    const url = this.baseURL.replace('customers', '');
+    const url = this.baseURL.replace('/customers', '');
     return request<DTO<FileInfo>>(`${url}/guest/files/${fileId}`, 'GET', {}).then((res) => {
       return res.data;
     });
