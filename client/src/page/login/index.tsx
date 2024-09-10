@@ -28,7 +28,7 @@ export function Login() {
 
       const fileTransfer = searchParams.get('guestFile');
       if (fileTransfer) {
-        api.customer.guestTransferFile(data.userId, parseInt(fileTransfer)).then((res) => {
+        api.customer.guestTransferFile(data.userId, fileTransfer).then((res) => {
           if (res>0) {
             navigate(`/chip-fab/${res}`)
             setError(false);

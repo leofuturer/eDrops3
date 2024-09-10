@@ -36,7 +36,7 @@ export function Register() {
     api.customer.create(customerData).then((data) => {
       const fileTransfer = searchParams.get('guestFile');
       if (fileTransfer) {
-        api.customer.guestTransferFile(data.userId, parseInt(fileTransfer)).then((res) => {
+        api.customer.guestTransferFile(data.userId, fileTransfer).then((res) => {
           console.log(res);
           return;
         })

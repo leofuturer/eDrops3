@@ -42,12 +42,12 @@ export function ChipOrder() {
       return;
     }
     if (!cookies.userId) {
-      api.customer.guestGetFile(parseInt(id)).then((fileInfo) => {
+      api.customer.guestGetFile(id).then((fileInfo) => {
         setCustomAttrs(attrs => ({ ...attrs, fileInfo }));
       });
       return;
     }
-    api.customer.getFile(cookies.userId, parseInt(id)).then((fileInfo) => {
+    api.customer.getFile(cookies.userId, id).then((fileInfo) => {
       setCustomAttrs(attrs => ({ ...attrs, fileInfo }));
     });
   }, [id]);
