@@ -46,7 +46,7 @@ export class CustomerController {
     })
     customer: DTO<Customer & User & Address>,
   ): Promise<Customer> {
-    const cust = await this.customerRepository.createCustomer(customer, this.request.headers.origin);
+    const cust = await this.customerRepository.createCustomer(customer, this.request.headers.origin, fileTransfer ? true : false);
     if (!fileTransfer) return cust;
     const user = await this.userRepository.findById(cust.userId);
     
