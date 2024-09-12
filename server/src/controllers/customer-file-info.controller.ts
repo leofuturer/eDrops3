@@ -202,6 +202,26 @@ export class CustomerFileInfoController {
     return this.customerRepository.downloadById(id, fileId, response);
   }
 
+  @oas.response.file()
+  @get('/guest/files/{fileId}/download', {
+    responses: {
+      '200': {
+        description: 'Download a file',
+        content: {
+          'application/json': {
+            schema: { type: 'array', items: getModelSchemaRef(FileInfo) },
+          },
+        },
+      },
+    },
+  })
+  async guestDownloadFile(
+    @param.path.string('fileId') fileId: string,
+    @inject(RestBindings.Http.RESPONSE) response: Response,
+  ): Promise<Response> {
+    return this.customerRepository.downloadById('aaaaaaaa-bbbb-aaaa-aaaa-aaaaaaaaaaaa', fileId, response);
+  }
+
   @del('/customers/{id}/files/{fileId}', {
     responses: {
       '200': {

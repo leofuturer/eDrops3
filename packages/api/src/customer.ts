@@ -145,8 +145,20 @@ class CustomerResource extends Resource<Customer> {
     });
   }
 
-  async downloadFile(id: typeof Customer.prototype.id, fileId: number, save: boolean = false): Promise<string> {
+  async downloadFile(id: typeof Customer.prototype.id, fileId: typeof FileInfo.prototype.id, save: boolean = false): Promise<string> {
     return request<string>(`${this.baseURL}/${id}/files/${fileId}/download`, 'GET', {}).then(async (res) => {
+      const data = res.data as string;
+      // console.log(res);
+      if (save) {
+        download(res);
+      }
+      return data;
+    });
+  }
+
+  async guestDownloadFile(fileId: typeof FileInfo.prototype.id, save: boolean = false): Promise<string> {
+    const url = this.baseURL.replace('/customers', '');
+    return request<string>(`${url}/guest/files/${fileId}/download`, 'GET', {}).then(async (res) => {
       const data = res.data as string;
       // console.log(res);
       if (save) {

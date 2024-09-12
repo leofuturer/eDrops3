@@ -45,11 +45,13 @@ export function ChipOrder() {
       api.customer.guestGetFile(id).then((fileInfo) => {
         setCustomAttrs(attrs => ({ ...attrs, fileInfo }));
       });
-      return;
     }
-    api.customer.getFile(cookies.userId, id).then((fileInfo) => {
-      setCustomAttrs(attrs => ({ ...attrs, fileInfo }));
-    });
+    else {
+      api.customer.getFile(cookies.userId, id).then((fileInfo) => {
+        setCustomAttrs(attrs => ({ ...attrs, fileInfo }));
+      });
+    }
+    
   }, [id]);
 
   useEffect(() => {
