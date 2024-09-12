@@ -8,14 +8,14 @@ import { api, DTO, FileInfo } from '@edroplets/api';
 import DeleteModal from '../modal/DeleteModal';
 import { ArrowDownTrayIcon, ShoppingCartIcon, TrashIcon } from '@heroicons/react/24/solid';
 
-export function FileList({ fileList, handleDelete }: { fileList: DTO<FileInfo>[], handleDelete: (deleteId: number) => void }) {
+export function FileList({ fileList, handleDelete }: { fileList: DTO<FileInfo>[], handleDelete: (deleteId: string) => void }) {
   const [cookies] = useCookies(['userType', 'userId'])
   const [showDelete, setShowDelete] = useState(false);
-  const [deleteId, setDeleteId] = useState(0);
+  const [deleteId, setDeleteId] = useState('');
 
   const navigate = useNavigate();
 
-  function handleDownload(fileId: number) {
+  function handleDownload(fileId: string) {
     switch (cookies.userType) {
       case ROLES.Customer:
         // for customer, `id` is file ID
@@ -32,7 +32,7 @@ export function FileList({ fileList, handleDelete }: { fileList: DTO<FileInfo>[]
   }
 
   // Customer only
-  function handleShop(fileId: number) {
+  function handleShop(fileId: string) {
     navigate(idRoute(ROUTES.ChipFab, fileId));
   }
 
@@ -66,15 +66,15 @@ export function FileList({ fileList, handleDelete }: { fileList: DTO<FileInfo>[]
               {cookies.userType !== ROLES.Customer && <td className="">{file.uploader}</td>}
               <td className="">{file.fileSize}</td>
               <td className="">
-                <ArrowDownTrayIcon className="w-5 cursor-pointer mx-auto" onClick={() => handleDownload(file.id as number)} />
+                <ArrowDownTrayIcon className="w-5 cursor-pointer mx-auto" onClick={() => handleDownload(file.id as string)} />
               </td>
               {cookies.userType === ROLES.Customer &&
                 <>
                   <td className="">
-                    <ShoppingCartIcon className="w-5 cursor-pointer mx-auto" onClick={() => handleShop(file.id as number)} />
+                    <ShoppingCartIcon className="w-5 cursor-pointer mx-auto" onClick={() => handleShop(file.id as string)} />
                   </td>
                   <td className="">
-                    <TrashIcon className="w-5 cursor-pointer mx-auto" onClick={() => { setDeleteId(file.id as number); setShowDelete(true) }} />
+                    <TrashIcon className="w-5 cursor-pointer mx-auto" onClick={() => { setDeleteId(file.id as string); setShowDelete(true) }} />
                   </td>
                 </>}
             </tr>

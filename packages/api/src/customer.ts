@@ -168,7 +168,7 @@ class CustomerResource extends Resource<Customer> {
     });
   }
 
-  async deleteFile(id: typeof Customer.prototype.id, fileId: number): Promise<Count> {
+  async deleteFile(id: typeof Customer.prototype.id, fileId: typeof FileInfo.prototype.id): Promise<Count> {
     return request<Count>(`${this.baseURL}/${id}/files/${fileId}`, 'DELETE', {}).then((res) => {
       return res.data;
     });
