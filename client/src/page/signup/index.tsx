@@ -1,6 +1,6 @@
 import { ErrorMessage, Field, Form, Formik, FormikConfig } from 'formik';
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { ValidationError } from 'yup';
 import { api, Address, Customer, User, DTO } from '@edroplets/api';
 import FormGroup from '@/component/form/FormGroup';
@@ -8,6 +8,7 @@ import SEO from '@/component/header/seo';
 import { CustomerSchema, CustomerSubmitSchema } from '@edroplets/schemas';
 import { metadata } from './metadata';
 import { ROUTES } from '@/router/routes';
+
 
 export function Register() {
   const [initialInfo, setInitialInfo] = useState({
@@ -27,13 +28,19 @@ export function Register() {
     confirmPassword: '',
     isDefault: true,
   });
-
+  const [searchParams, setSearchParams] = useSearchParams();
   const [requestInProgress, setRequestInProgress] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const navigate = useNavigate();
+  console.log("signup page");
 
+  async function signupHelper(customerData: DTO<Customer & User & Address>, fileTransfer: string | null) {
+    if (fileTransfer) api.customer.create(customerData, fileTransfer);
+    else api.customer.create(customerData);
+  }
   function handleRegister(customerData: DTO<Customer & User & Address>) {
-    api.customer.create(customerData).then(() => {
+    const fileTransfer = searchParams.get('guestFile');
+    signupHelper(customerData, fileTransfer).then(() => {
       navigate(ROUTES.CheckEmail);
       setErrorMessage('');
     }).catch((error) => {

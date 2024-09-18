@@ -44,7 +44,7 @@ export class OrderChip extends OrderItem {
   status: string;
 
   @belongsTo(() => FileInfo)
-  fileInfoId: number;
+  fileInfoId: string;
 
   @belongsTo(() => FoundryWorker)
   workerId: string;

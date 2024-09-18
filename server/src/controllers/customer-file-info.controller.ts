@@ -12,10 +12,11 @@ import {
   oas,
   param,
   post,
+  patch,
   requestBody
 } from '@loopback/rest';
 import { Customer, FileInfo } from '../models';
-import { CustomerRepository, FileInfoRepository } from '../repositories';
+import { CustomerRepository, FileInfoRepository, UserRepository } from '../repositories';
 import { FILE_UPLOAD_SERVICE, STORAGE_DIRECTORY } from '../services';
 
 export class CustomerFileInfoController {
@@ -24,6 +25,8 @@ export class CustomerFileInfoController {
    * @param handler - Inject an Express request handler to deal with the request
    */
   constructor(
+    @repository(UserRepository)
+    protected userRepository: UserRepository,
     @repository(CustomerRepository)
     protected customerRepository: CustomerRepository,
     @repository(FileInfoRepository)
@@ -78,6 +81,65 @@ export class CustomerFileInfoController {
     });
   }
 
+  @post('/guest/files', {
+    responses: {
+      '200': {
+        description: 'Upload a file without logging in',
+        content: { 'application/json': { schema: { type: 'object' } } },
+      },
+    },
+  })
+  async guestFileUpload(
+    @requestBody.file() request: Request,
+    @inject(RestBindings.Http.RESPONSE) response: Response,
+  ): Promise<FileInfo> {
+    return new Promise<FileInfo>((resolve, reject) => {
+      this.handler(request, response, async (err: unknown) => {
+        if (err) reject(err);
+        else {
+          // console.log(request.files);
+          resolve(
+            await this.customerRepository.uploadFile(request, response, 'aaaaaaaa-bbbb-aaaa-aaaa-aaaaaaaaaaaa')
+          );
+        }
+      });
+    });
+  }
+
+  @authenticate('jwt')
+  @patch('/customers/{id}/guestTransfer/{fileId}', {
+    responses: {
+      '200': {
+        description: 'Transfer ownership of a file',
+        content: {
+          'application/json': {
+            schema: { type: 'array', items: getModelSchemaRef(FileInfo) },
+          },
+        },
+      },
+    },
+  })
+  async transferFile(
+    @param.path.string('id') id: typeof Customer.prototype.id,
+    @param.path.string('fileId') fileId: string,
+  ): Promise<string> {
+    // find the file, change the fields 'uploader' and 'customerID' to match the currently logged in user
+    const user = await this.userRepository.findById(id);
+    const username = user.username;
+    const existingRecord = await this.customerRepository.fileInfos('aaaaaaaa-bbbb-aaaa-aaaa-aaaaaaaaaaaa').find({where: {id: fileId}});
+    if (existingRecord.length==0) return 'error transferring';
+
+    const newRecord = existingRecord[0];
+    if (Date.now()-Date.parse(newRecord.uploadTime)>300000) return 'Guest file expired. You must log in within 5 minutes to transfer files.';
+    newRecord.customerId = id;
+    newRecord.uploader = username;
+    delete newRecord["id"];
+    const created = await this.customerRepository.fileInfos(id).create(newRecord);
+    await this.customerRepository.fileInfos('aaaaaaaa-bbbb-aaaa-aaaa-aaaaaaaaaaaa').delete({id: fileId});
+    return created.id || 'error transferring';
+  }
+
+
   @authenticate('jwt')
   @get('/customers/{id}/files/{fileId}', {
     responses: {
@@ -93,9 +155,28 @@ export class CustomerFileInfoController {
   })
   async getById(
     @param.path.string('id') id: typeof Customer.prototype.id,
-    @param.path.number('fileId') fileId: number,
+    @param.path.string('fileId') fileId: string,
   ): Promise<FileInfo> {
     const filesInfos = await this.customerRepository.fileInfos(id).find({ where: { id: fileId } });
+    return filesInfos[0];
+  }
+
+  @get('/guest/files/{fileId}', {
+    responses: {
+      '200': {
+        description: 'Get a file',
+        content: {
+          'application/json': {
+            schema: { type: 'array', items: getModelSchemaRef(FileInfo) },
+          },
+        },
+      },
+    },
+  })
+  async guestGetById(
+    @param.path.string('fileId') fileId: string,
+  ): Promise<FileInfo> {
+    const filesInfos = await this.customerRepository.fileInfos('aaaaaaaa-bbbb-aaaa-aaaa-aaaaaaaaaaaa').find({ where: { id: fileId } });
     return filesInfos[0];
   }
 
@@ -115,10 +196,30 @@ export class CustomerFileInfoController {
   })
   async downloadFile(
     @param.path.string('id') id: typeof Customer.prototype.id,
-    @param.path.number('fileId') fileId: number,
+    @param.path.string('fileId') fileId: string,
     @inject(RestBindings.Http.RESPONSE) response: Response,
   ): Promise<Response> {
     return this.customerRepository.downloadById(id, fileId, response);
+  }
+
+  @oas.response.file()
+  @get('/guest/files/{fileId}/download', {
+    responses: {
+      '200': {
+        description: 'Download a file',
+        content: {
+          'application/json': {
+            schema: { type: 'array', items: getModelSchemaRef(FileInfo) },
+          },
+        },
+      },
+    },
+  })
+  async guestDownloadFile(
+    @param.path.string('fileId') fileId: string,
+    @inject(RestBindings.Http.RESPONSE) response: Response,
+  ): Promise<Response> {
+    return this.customerRepository.downloadById('aaaaaaaa-bbbb-aaaa-aaaa-aaaaaaaaaaaa', fileId, response);
   }
 
   @del('/customers/{id}/files/{fileId}', {
@@ -131,7 +232,7 @@ export class CustomerFileInfoController {
   })
   async delete(
     @param.path.string('id') id: typeof Customer.prototype.id,
-    @param.path.number('fileId') fileId: number,
+    @param.path.string('fileId') fileId: string,
   ): Promise<Count> {
     // Should we soft delete?
     // Hard delete

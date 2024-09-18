@@ -11,7 +11,7 @@ export function Files() {
 
   const [cookies] = useCookies(['userId', 'userType', 'access_token']);
 
-  function handleDelete(deleteId: number) {
+  function handleDelete(deleteId: string) {
     return api.customer.deleteFile(cookies.userId, deleteId).then((res) => {
       setFileList(fileList.filter((file) => file.id !== deleteId));
     }).catch((err) => {

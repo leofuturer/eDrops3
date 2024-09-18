@@ -198,7 +198,7 @@ export class UserRepository extends DefaultCrudRepository<
     };
     const userInstance = await this.create(userData);
     if (!user.emailVerified) {
-      await this.sendVerificationEmail(userInstance, baseURL);
+      await this.sendVerificationEmail(userInstance, baseURL, false);
     }
     return userInstance;
   }
@@ -213,11 +213,11 @@ export class UserRepository extends DefaultCrudRepository<
     }).then(() => verificationTokenHash);
   }
 
-  async sendVerificationEmail(user: User, baseURL: string = process.env.EMAIL_HOST as string): Promise<void> {
+  async sendVerificationEmail(user: User, baseURL: string = process.env.EMAIL_HOST as string, fileUploaded?: boolean): Promise<void> {
     const verificationTokenHash = await this.createVerificationToken(
       user.id as string,
     );
-
+    const fileUploadText = fileUploaded ? 'You uploaded a file for fabrication before signing up. You can find this file at Profile > Your files. ' : '';
     // uncomment the next two lines to skip email verification
     // this.verifyEmail(user.id as string, verificationTokenHash);
     // exit(0);
@@ -244,7 +244,7 @@ export class UserRepository extends DefaultCrudRepository<
             username: user.username,
             // firstName: user.firstName,
             // lastName: user.lastName,
-            text: "Thanks for registering to use eDroplets. Please verify your email by clicking on the following link:",
+            text: `Thanks for registering to use eDroplets. ${fileUploadText}Please verify your email by clicking on the following link:`,
             verifyLink: `${baseURL}/api/users/verify?userId=${user.id}&token=${verificationTokenHash}`,
           }
         },

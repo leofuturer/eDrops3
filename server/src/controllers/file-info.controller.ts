@@ -50,7 +50,7 @@ export class FileInfoController {
     },
   })
   async findById(
-    @param.path.number('id') id: number,
+    @param.path.string('id') id: string,
     @param.filter(FileInfo, {exclude: 'where'}) filter?: FilterExcludingWhere<FileInfo>
   ): Promise<FileInfo> {
     return this.fileInfoRepository.findById(id, filter);
@@ -67,7 +67,7 @@ export class FileInfoController {
     },
   })
   async downloadById(
-    @param.path.number('id') id: number,
+    @param.path.string('id') id: string,
     @inject(RestBindings.Http.RESPONSE) response: Response,
   ): Promise<Response> {
     return this.fileInfoRepository.downloadById(id, response);
