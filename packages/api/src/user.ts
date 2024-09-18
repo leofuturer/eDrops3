@@ -1,4 +1,4 @@
-import { DTO, FileInfo, Post, Project, ProjectFile, User } from "./lib/types";
+import { DTO, FileInfo, Post, Project, ProjectFile, User, Comment} from "./lib/types";
 import request from "./lib/api";
 import { Resource } from "./lib/resource";
 import { download } from "./lib/download";
@@ -194,6 +194,23 @@ class UserResource extends Resource<User> {
     });
   }
 
+  async getLikedComment(id: typeof User.prototype.id, commentId: typeof Comment.prototype.id): Promise<DTO<Comment>> {
+    return request<DTO<Comment>>(`${this.baseURL}/${id}/liked-comments/${commentId}`, 'GET', {}).then((res) => {
+      return res.data;
+    });
+  }
+
+  async likeComment(id: typeof User.prototype.id, commentId: typeof Comment.prototype.id): Promise<boolean> {
+    return request<Comment>(`${this.baseURL}/${id}/liked-comments/${commentId}`, 'GET', {}).then((res) => {
+      if (res.data) {
+        return request(`${this.baseURL}/${id}/liked-comments/${commentId}`, 'DELETE', {}).then(() => false);
+      }
+      else {
+        return request(`${this.baseURL}/${id}/liked-comments/${commentId}`, 'POST', {}).then(() => true);
+      }
+    });
+  }
+
   async getSavedProjects(id: typeof User.prototype.id): Promise<DTO<Project>[]> {
     return request<DTO<Project>[]>(`${this.baseURL}/${id}/saved-projects`, 'GET', {}).then((res) => {
       return res.data;
@@ -207,7 +224,7 @@ class UserResource extends Resource<User> {
   }
 
   async saveProject(id: typeof User.prototype.id, projectId: typeof Project.prototype.id): Promise<boolean> {
-    return request<Project>(`${this.baseURL}/${id}/saved-projects/${projectId}`, 'POST', {}).then((res) => {
+    return request<Project>(`${this.baseURL}/${id}/saved-projects/${projectId}`, 'GET', {}).then((res) => {
       if (res.data) {
         return request(`${this.baseURL}/${id}/saved-projects/${projectId}`, 'DELETE', {}).then(() => false);
       }

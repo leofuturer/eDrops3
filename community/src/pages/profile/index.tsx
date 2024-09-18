@@ -15,9 +15,18 @@ import ProfileEdit from '@/components/profile/ProfileEdit';
 import ProfileInfo from '@/components/profile/ProfileInfo';
 import ProjectPreview from '@/components/project/ProjectPreview';
 
+type ProjectPrev = Project & {
+  liked?: boolean;
+  saved?: boolean;
+}
+type PostPrev = Post & {
+  liked?: boolean;
+  saved?: boolean;
+}
+
 export function Profile(): JSX.Element {
   const [user, setUser] = useState<User>({} as User);
-  const [feedData, setFeedData] = useState<Post[] | Project[]>([]);
+  const [feedData, setFeedData] = useState<PostPrev[] | ProjectPrev[]>([]);
   const [feed, setFeed] = useState<'Projects' | 'Posts'>('Projects');
   const [feedType, setFeedType] = useState<'Activity' | 'Saved'>('Activity');
   const [dropdown, setDropdown] = useState<boolean>(false);
@@ -157,16 +166,22 @@ export function Profile(): JSX.Element {
         <div className="flex flex-col space-y-4">
           {feed === 'Projects'
 					  ? feedData.map((project) => (
-  <ProjectPreview
-    project={project}
-    key={project.id}
-  />
+              <ProjectPreview
+                project={project}
+                key={project.id}
+                handleDelete={()=>{}}
+                setLiked={()=>{}}
+                setSaved={()=>{}}
+              />
 						  ))
 					  : feedData.map((post) => (
-  <PostPreview
-    post={post}
-    key={post.id}
-  />
+              <PostPreview
+                post={post}
+                key={post.id}
+                handleDelete={()=>{}}
+                setLiked={()=>{}}
+                setSaved={()=>{}}
+              />
 						  ))}
         </div>
       </div>

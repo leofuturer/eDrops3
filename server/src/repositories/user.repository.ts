@@ -17,8 +17,7 @@ import {
   LikedPost,
   LikedProject, Post,
   Project, SavedPost,
-  SavedProject, User, UserFollower, UserProfile, UserRelations
-} from '../models';
+  SavedProject, User, UserFollower, UserProfile, UserRelations, Comment, LikedComment} from '../models';
 import SendGrid from '../services/send-grid.service';
 import { LikedPostRepository } from './liked-post.repository';
 import { LikedProjectRepository } from './liked-project.repository';
@@ -28,6 +27,8 @@ import { SavedPostRepository } from './saved-post.repository';
 import { SavedProjectRepository } from './saved-project.repository';
 import { UserFollowerRepository } from './user-follower.repository';
 import { UserProfileRepository } from './user-profile.repository';
+import {LikedCommentRepository} from './liked-comment.repository';
+import {CommentRepository} from './comment.repository';
 
 export class UserRepository extends DefaultCrudRepository<
   User,
@@ -84,6 +85,11 @@ export class UserRepository extends DefaultCrudRepository<
     typeof User.prototype.id
   >;
 
+  public readonly likedComments: HasManyThroughRepositoryFactory<Comment, typeof Comment.prototype.id,
+          LikedComment,
+          typeof User.prototype.id
+        >;
+
   constructor(
     @inject('datasources.mysqlDS') dataSource: MysqlDsDataSource,
     @repository.getter('SavedPostRepository')
@@ -103,9 +109,17 @@ export class UserRepository extends DefaultCrudRepository<
     @repository.getter('UserFollowerRepository')
     protected userFollowerRepositoryGetter: Getter<UserFollowerRepository>,
     @inject('services.SendGrid')
-    public sendGrid: SendGrid,
+    public sendGrid: SendGrid, @repository.getter('LikedCommentRepository') protected likedCommentRepositoryGetter: Getter<LikedCommentRepository>, @repository.getter('CommentRepository') protected commentRepositoryGetter: Getter<CommentRepository>,
   ) {
     super(User, dataSource);
+    this.likedComments = this.createHasManyThroughRepositoryFactoryFor(
+      'likedComments', 
+      commentRepositoryGetter, 
+      likedCommentRepositoryGetter,
+    );
+    this.registerInclusionResolver('likedComments',
+       this.likedComments.inclusionResolver
+    );
     this.followers = this.createHasManyThroughRepositoryFactoryFor(
       'followers',
       Getter.fromValue(this),

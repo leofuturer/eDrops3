@@ -14,11 +14,11 @@ import {
   Link, NavLink, useNavigate, useParams,
 } from 'react-router-dom';
 import {
-  api, Post as PostType, PostComment as CommentType, request,
+  api, Post as PostType, Comment as CommentType, request,
 } from '@edroplets/api';
 import { useCookies } from 'react-cookie';
 import { timeAgo } from '@/lib/time';
-import PostComment from '@/components/forum/PostComment';
+import Comment from '@/components/comment/Comment';
 import { DeleteModal } from '@/components/ui/DeleteModal';
 
 export function Post() {
@@ -30,6 +30,7 @@ export function Post() {
   const [saved, setSaved] = useState<boolean>(false);
   const [liked, setLiked] = useState<boolean>(false);
   const [expanded, setExpanded] = useState<boolean>(false);
+  const [requestComments, setRequestComments] = useState<number>(0);
 
   const [newComment, setNewComment] = useState<string>('');
   const [comments, setComments] = useState<CommentType[]>([]);
@@ -37,7 +38,6 @@ export function Post() {
   const [dropdownVisible, setDropdownVisible] = useState<boolean>(false);
   const [deleteModalVisible, setDeleteModalVisible] = useState<boolean>(false);
   const [cookies] = useCookies(['userId']);
-
   // Fetch current post and set loading to false after fetch
   useEffect(() => {
     if (id) {
@@ -59,7 +59,7 @@ export function Post() {
         setComments(sortedComments);
       });
     }
-  }, [id, newComment]);
+  }, [id, requestComments]);
 
   // Check if post is saved initially
   useEffect(() => {
@@ -118,12 +118,14 @@ export function Post() {
       datetime: new Date(),
       likes: 0,
       userId: cookies.userId,
+      parentType: 'post',
       top: true,
     };
     api.post.addPostComment(parseInt(id), newPostComment)
       .then((res) => {
         setNewComment('');
         currentPost.comments += 1;
+        setRequestComments(requestComments+1);
       })
       .catch((err: AxiosError) => {
         if (err.response?.status === 401) {
@@ -173,7 +175,7 @@ export function Post() {
           <>
             <div className="flex flex-col">
               <div className="flex flex-row w-full h-15 resize-none justify-between">
-                <h1 className="text-3xl">
+                <h1 className="text-3xl" data-cy="postTitle">
                   {currentPost?.title}
                 </h1>
                 <div className="flex flex-row">
@@ -222,7 +224,7 @@ export function Post() {
                 </div>
               </div>
               <p className="text-md">
-                <Link to={`/profile/${currentPost?.userId}`}>
+                <Link to={`/profile/${currentPost?.userId}`} data-cy="postAuthor">
                   {currentPost?.author}
                 </Link>
                 {' '}
@@ -231,7 +233,7 @@ export function Post() {
                 {timeAgo(new Date(currentPost.datetime))}
               </p>
             </div>
-            <div>{currentPost?.content}</div>
+            <div data-cy="postContent">{currentPost?.content}</div>
             <div className="flex flex-row space-x-4">
               <div
                 className="flex flex-row space-x-2 cursor-pointer"
@@ -252,6 +254,7 @@ export function Post() {
               <div
                 className="flex flex-row space-x-2 cursor-pointer"
                 onClick={() => needAuth(() => setExpanded(!expanded))}
+                data-cy="writeComment"
               >
                 <ChatBubbleBottomCenterTextIcon className="w-6 h-6" />
                 <p className="text-md">Comment</p>
@@ -275,6 +278,7 @@ export function Post() {
                     setNewComment(e.target.value);
                   }}
                   placeholder="Reply"
+                  data-cy="commentArea"
                 />
                 <div className="flex flex-row justify-end">
                   <button
@@ -282,6 +286,7 @@ export function Post() {
                     title="Send"
                     className="bg-sky-800 rounded-md p-2"
                     onClick={handleComment}
+                    data-cy="submitComment"
                   >
                     <ChevronRightIcon className="w-4 h-4 text-white" />
                   </button>
@@ -290,7 +295,8 @@ export function Post() {
             )}
             <div className="flex flex-col space-y-2">
               {comments.map((comment: CommentType) => (
-                <PostComment
+                <Comment
+                  currentPost={currentPost}
                   comment={comment}
                   key={comment.id}
                 />

@@ -68,7 +68,7 @@ export function BeforeCheckout() {
               <div className="flex flex-row space-x-4">
                 <button type="button" className="bg-primary_light hover:bg-primary text-white rounded-md px-4 py-2 text-lg"
                   onClick={() => navigate(ROUTES.ManageCart)}>Return to Cart</button>
-                <button type="button" className="bg-primary_light hover:bg-primary text-white rounded-md px-4 py-2 text-lg"
+                <button id="payment" type="button" className="bg-primary_light hover:bg-primary text-white rounded-md px-4 py-2 text-lg"
                   onClick={handlePayment}>Proceed to Payment</button>
               </div>}
           </div>

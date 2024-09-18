@@ -15,9 +15,9 @@ import { useEffect, useState } from 'react';
 import {
   Link, NavLink, useNavigate, useParams,
 } from 'react-router-dom';
-import { api, ProjectComment as CommentType, Project as ProjectType } from '@edroplets/api';
+import { api, Comment as CommentType, Project as ProjectType } from '@edroplets/api';
 import { timeAgo } from '@/lib/time';
-import ProjectComment from '@/components/project/ProjectComment';
+import Comment from '@/components/comment/Comment';
 import { DeleteModal } from '@/components/ui/DeleteModal';
 
 export function Project() {
@@ -130,15 +130,16 @@ export function Project() {
 
   function handleComment() {
     if (!cookies.userId) { navigate('/login'); return; }
-    const newPostComment = {
+    const newProjectComment = {
       content: newComment,
       author: '',
       datetime: new Date(),
       likes: 0,
       userId: cookies.userId,
       top: true,
+      parentType: 'project'
     };
-    api.project.addProjectComment(cookies.userId, newPostComment)
+    api.project.addProjectComment(currentProject.id as number, newProjectComment)
       .then((res) => {
         setNewComment('');
         currentProject.comments += 1;
@@ -320,6 +321,7 @@ export function Project() {
 								</p>
 							</div> */}
             <div
+              data-cy="writeComment"
               className="flex flex-row space-x-2 cursor-pointer"
               onClick={() => needAuth(() => setExpanded(!expanded))}
             >
@@ -340,6 +342,7 @@ export function Project() {
             } ease-in-out duration-500`}
           >
             <textarea
+              data-cy="commentArea"
               title="reply"
               className="w-full rounded-md resize-none border-black/25 border-2 p-2"
               value={newComment}
@@ -350,6 +353,7 @@ export function Project() {
             />
             <div className="flex flex-row justify-end">
               <button
+                data-cy="submitComment"
                 type="button"
                 title="Send"
                 className="bg-sky-800 rounded-md p-2"
@@ -362,7 +366,7 @@ export function Project() {
           )}
           <div className="flex flex-col space-y-2">
             {comments.map((comment: CommentType) => (
-              <ProjectComment comment={comment} key={comment.id} />
+              <Comment comment={comment} key={comment.id} currentPost={currentProject}/>
             ))}
           </div>
         </>

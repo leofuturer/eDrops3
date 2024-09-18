@@ -6,9 +6,13 @@ import { useCookies } from 'react-cookie';
 import { AxiosError } from 'axios';
 import { UserCircleIcon } from '@heroicons/react/24/solid';
 
-function ProjectPreview({ project, handleDelete }: { project: ProjectType, handleDelete: Function }) {
+type ProjectPrev = ProjectType & {
+  liked?: boolean;
+  saved?: boolean;
+}
+
+function ProjectPreview({ project, handleDelete, setSaved, setLiked}: { project: ProjectPrev, handleDelete: Function, setSaved: Function, setLiked: Function}) {
   const [coverImageId, setCoverImageId] = useState(-1);
-  const [saved, setSaved] = useState<boolean>(false);
   const [cookies] = useCookies(['userId']);
   const [dropdownVisible, setDropdownVisible] = useState<boolean>(false);
   const navigate = useNavigate();
@@ -24,25 +28,15 @@ function ProjectPreview({ project, handleDelete }: { project: ProjectType, handl
     });
   }, [project.id]);
 
-  useEffect(() => {
-    if (project.id && cookies.userId) {
-      api.user.getSavedProject(cookies.userId, project.id).then((res) => {
-        setSaved(!!res);
-      });
-    }
-  }, [project, cookies.userId]);
 
   function handleSave(e: React.MouseEvent) {
     e.preventDefault();
-    if (!cookies.userId) { navigate('/login'); return; }
-    api.user.saveProject(cookies.userId, project.id as number)
-      .then((res) => setSaved(res))
-      .catch((err: AxiosError) => {
-        if (err.message === 'No access token found') {
-          navigate('/login');
-        }
-        // console.log(err);
-      });
+    setSaved(project.id);
+  }
+
+  function handleLike(e: React.MouseEvent) {
+    e.preventDefault();
+    setLiked(project.id);
   }
 
   return (
@@ -55,7 +49,7 @@ function ProjectPreview({ project, handleDelete }: { project: ProjectType, handl
         <div className="flex flex-row justify-between items-center">
           <h3 className="text-xl">{project.title}</h3>
           <BookmarkIcon
-            className={`w-8 h-8 cursor-default ${saved ? 'fill-black' : ''
+            className={`w-8 h-8 cursor-default ${project.saved ? 'fill-black' : ''
             }`}
             onClick={(e) => handleSave(e)}
           />
@@ -78,8 +72,10 @@ function ProjectPreview({ project, handleDelete }: { project: ProjectType, handl
 
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-4">
-            <div className="flex items-center space-x-2">
-              <HandThumbUpIcon className="h-6" />
+            <div className="flex items-center space-x-2"
+              onClick={handleLike}
+            >
+              <HandThumbUpIcon className="h-6" fill={project.liked ? 'black' : 'none'}/>
               <p>{project.likes}</p>
             </div>
             <div className="flex items-center space-x-2">
