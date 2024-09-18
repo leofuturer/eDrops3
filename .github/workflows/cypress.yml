@@ -36,7 +36,7 @@ jobs:
                   # initialize server
                   cd .. 
                   touch deploy/test/backend_pwds.env
-                  MIGRATE_DATABASE=Yes RESET_DATABASE=Yes docker-compose -f docker-compose.yml -f docker-compose.test.yml up -d
+                  MIGRATE_DATABASE=Yes RESET_DATABASE=Yes docker-compose -f docker-compose.yml -f docker-compose.test.yml up -d > reset.log 2>&1
 
                   echo "Waiting for database to start"
                   wait-on tcp:3306 --timeout 25000
@@ -56,6 +56,7 @@ jobs:
 
                   if [[ $retries -eq 0 ]]; then
                     echo "Test failure: failed to reset database"
+                    cat reset.log
                     exit 1
                   else
                     echo "Database has been reset"
