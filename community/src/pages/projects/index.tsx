@@ -11,15 +11,21 @@ import { useCookies } from 'react-cookie';
 import { AxiosError } from 'axios';
 import { useNavigate } from 'react-router-dom';
 
+type ProjectPrev = ProjectType & {
+  liked?: boolean;
+  saved?: boolean;
+}
+
 export function Projects() {
   const navigate = useNavigate();
-  const [projectList, setProjectList] = useState<ProjectType[]>([]);
-  const [sortedProjects, setSortedProjects] = useState<ProjectType[]>([]);
+  const [projectList, setProjectList] = useState<ProjectPrev[]>([]);
+  const [sortedProjects, setSortedProjects] = useState<ProjectPrev[]>([]);
   const [search, setSearch] = useState('');
   const [deleteModalVisible, setDeleteModalVisible] = useState<boolean>(false);
   const [currProj, setCurrProj] = useState<number | undefined>(undefined);
   const [feedType, setFeedType] = useState<'Featured' | 'New'>('Featured');
   const [cookies] = useCookies(['userId']);
+  const [likesChanged, setLikesChanged] = useState(false);
 
   // Return projects based on search query (debounced)
   useEffect(() => {
@@ -47,15 +53,17 @@ export function Projects() {
         },
       };
     }
-    api.project.getAll({ filter }).then((res) => {
+    api.project.getAll({ filter }).then(async (res) => {
+      await getLikedAndSaved(res);
       setProjectList(res);
     });
   }, [search]);
 
   // Sort projects based on feed type
   useEffect(() => {
-    const sortedProjects = ([] as ProjectType[]).concat(projectList);
+    const sortedProjects = ([] as ProjectPrev[]).concat(projectList);
     if (feedType === 'Featured') {
+      if (likesChanged) return;
       sortedProjects.sort((a, b) => (a.likes < b.likes ? 1 : -1));
     } else if (feedType === 'New') {
       sortedProjects.sort((a, b) => (a.datetime < b.datetime ? 1 : -1));
@@ -91,6 +99,62 @@ export function Projects() {
 
   useEffect(() => debounceSearch.cancel());
 
+  function setSaved(id: number) {
+    if (!cookies.userId) { navigate('/login'); return; }
+    api.user.saveProject(cookies.userId, id)
+      .then((res) => {
+        let temp = [...projectList];
+        let project = projectList.find((project) => project.id==id);
+        if (project) {
+          console.log(res);
+          project.saved = res;
+          setProjectList(temp);
+        }
+      })
+      .catch((err: AxiosError) => {
+        if (err.message === 'No access token found') {
+          navigate('/login');
+        }
+        // console.log(err);
+      });
+  }
+
+  function setLiked(id: number) {
+    if (!cookies.userId) { navigate('/login'); return; }
+    api.user.likeProject(cookies.userId, id)
+      .then((res) => {
+        let temp = [...projectList];
+        let project = projectList.find((project) => project.id==id);
+        if (project) {
+          console.log(res);
+          project.liked = res;
+          if (res) project.likes++;
+          else project.likes--;
+          setProjectList(temp);
+          setLikesChanged(true);
+        }
+      })
+      .catch((err: AxiosError) => {
+        if (err.message === 'No access token found') {
+          navigate('/login');
+        }
+        // console.log(err);
+      });
+  }
+
+  async function getLikedAndSaved(list: ProjectPrev[]) {
+    if (!cookies.userId) return;
+    const [likedProjects, savedProjects] = await Promise.all([
+      api.user.getLikedProjects(cookies.userId),
+      api.user.getSavedProjects(cookies.userId),
+    ]);
+  
+    for (const project of list) {
+      project.liked = likedProjects.some(element => element.id === project.id);
+      project.saved = savedProjects.some(element => element.id === project.id);
+    }
+  }
+
   return (
     <section className="min-h-full bg-slate-200 grid grid-cols-4 px-20">
        <DeleteModal
@@ -98,7 +162,7 @@ export function Projects() {
         deleteModalVisible={deleteModalVisible}
         setDeleteModalVisible={setDeleteModalVisible}
         handleDelete={()=>{
-          handleDelete(currProj);
+          if (currProj) handleDelete(currProj);
         }}
       />
       <ProfilePreview />
@@ -133,12 +197,16 @@ export function Projects() {
         </div>
         <div id="projectList">
           {sortedProjects.map((project) => (
-            <ProjectPreview project={project} 
+            <ProjectPreview 
+              project={project} 
               key={project.id} 
               handleDelete={() => {
                 setCurrProj(project.id);
                 setDeleteModalVisible(true);
-            }}/>
+              }}
+              setLiked={setLiked}
+              setSaved={setSaved}
+            />
           ))}
         </div>
       </div>

@@ -10,7 +10,8 @@ import {
   patch,
   post,
   requestBody,
-  response
+  response,
+  HttpErrors
 } from '@loopback/rest';
 import { CustomerCreateInterceptor } from '../interceptors';
 import { DTO } from '../lib/types/model';
@@ -33,6 +34,7 @@ export class CustomerController {
     content: { 'application/json': { schema: getModelSchemaRef(Customer) } },
   })
   async create(
+    @param.query.string('fileTransfer', {required: false}) fileTransfer: string,
     @requestBody({
       content: {
         'application/json': {
@@ -44,7 +46,22 @@ export class CustomerController {
     })
     customer: DTO<Customer & User & Address>,
   ): Promise<Customer> {
-    return this.customerRepository.createCustomer(customer, this.request.headers.origin);
+    const cust = await this.customerRepository.createCustomer(customer, this.request.headers.origin, fileTransfer ? true : false);
+    if (!fileTransfer) return cust;
+    const user = await this.userRepository.findById(cust.userId);
+    
+    // below code handles if user uploaded a file before signing up, then was redirected to sign up page.
+    const existingRecord = await this.customerRepository.fileInfos('aaaaaaaa-bbbb-aaaa-aaaa-aaaaaaaaaaaa').find({where: {id: fileTransfer}});
+    if (existingRecord.length==0) throw new HttpErrors.BadRequest("file not found");
+
+    const newRecord = existingRecord[0];
+    if (Date.now()-Date.parse(newRecord.uploadTime)>300000) throw new HttpErrors.Forbidden("guest file expired. must transfer to user account within 5 minutes");
+    newRecord.customerId = user.id;
+    newRecord.uploader = user.username;
+    delete newRecord["id"];
+    await this.customerRepository.fileInfos(user.id).create(newRecord);
+    await this.customerRepository.fileInfos('aaaaaaaa-bbbb-aaaa-aaaa-aaaaaaaaaaaa').delete({id: fileTransfer});
+    return cust;
   }
 
   @get('/customers')

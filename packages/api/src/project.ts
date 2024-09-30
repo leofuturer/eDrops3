@@ -1,5 +1,5 @@
 import request from "./lib/api";
-import type { Project, ProjectComment, ProjectFile, ProjectLink, User } from "./lib/types";
+import type { Project, Comment, ProjectFile, ProjectLink, User } from "./lib/types";
 import { Resource } from "./lib/resource";
 
 class ProjectResource extends Resource<Project> {
@@ -52,13 +52,15 @@ class ProjectResource extends Resource<Project> {
   }
 
   async getProjectComments(id: typeof Project.prototype.id) {
-    return request<ProjectComment[]>(`${this.baseURL}/${id}/project-comments`, "GET", {}).then((res) => {
+    const url = this.baseURL.replace("/projects", "");
+    return request<Comment[]>(`${url}/comments/project/${id}`, "GET", {}).then((res) => {
       return res.data;
     });
   }
 
-  async addProjectComment(id: typeof Project.prototype.id, comment: ProjectComment) {
-    return request<ProjectComment>(`${this.baseURL}/${id}/project-comments`, "POST", comment).then((res) => {
+  async addProjectComment(id: typeof Project.prototype.id, comment: Comment) {
+    const url = this.baseURL.replace("/projects", "");
+    return request<Comment>(`${url}/comments/project/${id}`, "POST", comment).then((res) => {
       return res.data;
     });
   }

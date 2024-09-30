@@ -3,11 +3,10 @@ import { customer } from "./customer";
 import { file } from "./file";
 import { order } from "./order";
 import { post } from "./post";
-import { postComment } from "./post-comment";
+import { comment } from "./comment";
 import { product } from "./product";
 import { project } from "./project";
 import { projectFile } from "./project-file";
-import { projectComment } from "./project-comment";
 import { user } from "./user";
 import { worker } from "./worker";
 export { request } from "./lib/api";
@@ -24,14 +23,12 @@ type APIEndpoints = {
   user: typeof user;
   order: typeof order;
   post: typeof post;
-  postComment: typeof postComment;
-  projectComment: typeof projectComment;
+  comment: typeof comment;
 }
 
 export const api: APIEndpoints = {
   product,
   project,
-  projectComment,
   projectFile,
   customer,
   admin,
@@ -40,5 +37,5 @@ export const api: APIEndpoints = {
   user,
   order,
   post,
-  postComment,
+  comment,
 };

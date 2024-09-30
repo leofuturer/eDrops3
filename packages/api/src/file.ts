@@ -8,7 +8,7 @@ class FileResource extends Resource<FileInfo>{
     super('/files');
   }
 
-  async download(id: number): Promise<void> {
+  async download(id: string): Promise<void> {
     request<string>(`${this.baseURL}/${id}/download`, 'GET', {}).then((res) => {
       download(res);
     })

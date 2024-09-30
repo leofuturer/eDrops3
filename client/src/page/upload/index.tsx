@@ -89,6 +89,7 @@ function Upload() {
     formData.append('www', file as File);
     formData.append('fields', JSON.stringify(extraFields));
     if (!cookies.userId) {
+      console.log("no user id, will try a guest upload");
       api.customer.guestUploadFile(formData).then((fileInfo) => {
         // console.log(res);
         setShowConfirm(false);
@@ -110,6 +111,7 @@ function Upload() {
       });
       return;
     }
+    console.log("userID is " + cookies.userId);
     api.customer.uploadFile(cookies.userId, formData).then((fileInfo) => {
       // console.log(res);
       setShowConfirm(false);
@@ -130,9 +132,9 @@ function Upload() {
     });
   }
 
-  function handleShopping(fileID?: number) {
+  function handleShopping(fileID?: string) {
     setShowUpload(false);
-    navigate(idRoute(ROUTES.ChipFab, fileID ? fileID : fileInfo.id as number));
+    navigate(idRoute(ROUTES.ChipFab, fileID ? fileID : fileInfo.id as string));
   }
 
   function handleLibrary() {
@@ -229,7 +231,7 @@ function Upload() {
             )}
         </div>
         {file !== undefined &&
-          <button type="button" className="bg-secondary rounded-md py-4 px-8 text-white text-xl w-max" onClick={onFileUpload} >
+          <button id="uploadFile" type="button" className="bg-secondary rounded-md py-4 px-8 text-white text-xl w-max" onClick={onFileUpload} >
             Upload File
           </button>}
       </div>

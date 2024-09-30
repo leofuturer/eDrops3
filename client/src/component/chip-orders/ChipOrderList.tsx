@@ -18,7 +18,7 @@ function ChipOrderList({ chipOrderList }: { chipOrderList: DTO<OrderChip>[] }) {
     });
   }, [])
 
-  function handleDownload(fileId: number) {
+  function handleDownload(fileId: string, orderId?: number) {
     switch (cookies.userType) {
       case ROLES.Customer:
         // for customer, `id` is file ID
@@ -26,7 +26,7 @@ function ChipOrderList({ chipOrderList }: { chipOrderList: DTO<OrderChip>[] }) {
         break;
       case ROLES.Worker:
         // for worker, `id` is chipOrder ID (associated with that file)
-        // api.worker.downloadFile(cookies.userId, fileId);
+        // api.worker.downloadFile(cookies.userId, orderId);
         break;
       case ROLES.Admin:
         // for admin, `id` is file ID
@@ -115,7 +115,7 @@ function ChipOrderList({ chipOrderList }: { chipOrderList: DTO<OrderChip>[] }) {
             <td className="">{item?.quantity}</td>
             <td className="">
               {cookies.userType === ROLES.Worker
-                ? <ArrowDownTrayIcon className="w-5 cursor-pointer mx-auto" onClick={() => handleDownload(item?.id as number)} />
+                ? <ArrowDownTrayIcon className="w-5 cursor-pointer mx-auto" onClick={() => handleDownload('', item?.id)} />
                 : <ArrowDownTrayIcon className="w-5 cursor-pointer mx-auto" onClick={() => handleDownload(item?.fileInfoId)} />
               }
             </td>

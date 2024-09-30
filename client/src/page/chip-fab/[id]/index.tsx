@@ -42,14 +42,16 @@ export function ChipOrder() {
       return;
     }
     if (!cookies.userId) {
-      api.customer.guestGetFile(parseInt(id)).then((fileInfo) => {
+      api.customer.guestGetFile(id).then((fileInfo) => {
         setCustomAttrs(attrs => ({ ...attrs, fileInfo }));
       });
-      return;
     }
-    api.customer.getFile(cookies.userId, parseInt(id)).then((fileInfo) => {
-      setCustomAttrs(attrs => ({ ...attrs, fileInfo }));
-    });
+    else {
+      api.customer.getFile(cookies.userId, id).then((fileInfo) => {
+        setCustomAttrs(attrs => ({ ...attrs, fileInfo }));
+      });
+    }
+    
   }, [id]);
 
   useEffect(() => {
@@ -158,6 +160,7 @@ export function ChipOrder() {
           <div className="flex justify-center items-center">
             {addingToCart ? <Loading /> :
               <button
+                id="addToCart"
                 type="button"
                 className="bg-primary_light text-white px-4 py-2 rounded w-full"
                 onClick={() => cart.enabled && handleAddToCart()}
