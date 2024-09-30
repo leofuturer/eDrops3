@@ -25,6 +25,7 @@ export function Projects() {
   const [currProj, setCurrProj] = useState<number | undefined>(undefined);
   const [feedType, setFeedType] = useState<'Featured' | 'New'>('Featured');
   const [cookies] = useCookies(['userId']);
+  const [likesChanged, setLikesChanged] = useState(false);
 
   // Return projects based on search query (debounced)
   useEffect(() => {
@@ -62,6 +63,7 @@ export function Projects() {
   useEffect(() => {
     const sortedProjects = ([] as ProjectPrev[]).concat(projectList);
     if (feedType === 'Featured') {
+      if (likesChanged) return;
       sortedProjects.sort((a, b) => (a.likes < b.likes ? 1 : -1));
     } else if (feedType === 'New') {
       sortedProjects.sort((a, b) => (a.datetime < b.datetime ? 1 : -1));
@@ -129,6 +131,7 @@ export function Projects() {
           if (res) project.likes++;
           else project.likes--;
           setProjectList(temp);
+          setLikesChanged(true);
         }
       })
       .catch((err: AxiosError) => {
@@ -140,6 +143,7 @@ export function Projects() {
   }
 
   async function getLikedAndSaved(list: ProjectPrev[]) {
+    if (!cookies.userId) return;
     const [likedProjects, savedProjects] = await Promise.all([
       api.user.getLikedProjects(cookies.userId),
       api.user.getSavedProjects(cookies.userId),

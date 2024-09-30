@@ -23,6 +23,7 @@ export function Forum() {
   const [deleteModalVisible, setDeleteModalVisible] = useState<boolean>(false);
   const [currPost, setCurrPost] = useState<number | undefined>(undefined);
   const [cookies] = useCookies(['userId']);
+  const [likesChanged, setLikesChanged] = useState(false);
 
   useEffect(() => {
     let filter = {};
@@ -58,6 +59,7 @@ export function Forum() {
   useEffect(() => {
     const sortedPosts = ([] as PostPrev[]).concat(postList);
     if (feedType === 'Featured') {
+      if (likesChanged) return;
       sortedPosts.sort((a, b) => (a.likes < b.likes ? 1 : -1));
     } else if (feedType === 'New') {
       sortedPosts.sort((a, b) => (a.datetime < b.datetime ? 1 : -1));
@@ -125,6 +127,7 @@ export function Forum() {
           if (res) post.likes++;
           else post.likes--;
           setPostList(temp);
+          setLikesChanged(true);
         }
       })
       .catch((err: AxiosError) => {
@@ -136,6 +139,7 @@ export function Forum() {
   }
 
   async function getLikedAndSaved(list: PostPrev[]) {
+    if (!cookies.userId) return;
     const [likedPosts, savedPosts] = await Promise.all([
       api.user.getLikedPosts(cookies.userId),
       api.user.getSavedPosts(cookies.userId),
