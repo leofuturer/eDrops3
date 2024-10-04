@@ -5,12 +5,12 @@ require('dotenv').config()
 const config = {
   name: 'mysqlDS',
   connector: 'mysql',
-  debug: true,
-  database: 'edroplets',
-  host: 'edroplets_db',
+  debug: false,
+  database: process.env.APP_MYSQL_DATABASE,
+  host: process.env.APP_MYSQL_HOST,
   port: 3306,
-  user: 'edroplets',
-  password: 'password123',
+  user: process.env.APP_MYSQL_USERNAME,
+  password: process.env.APP_MYSQL_PASSWORD,
   allowExtendedOperators: true,
 };
 
