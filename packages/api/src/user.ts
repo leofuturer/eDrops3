@@ -153,7 +153,7 @@ class UserResource extends Resource<User> {
     });
   }
 
-  async createProject(id: typeof User.prototype.id, project: Project): Promise<DTO<Project>> {
+  async createProject(id: typeof User.prototype.id, project: Partial<Project>): Promise<DTO<Project>> {
     return request<DTO<Project>>(`${this.baseURL}/${id}/projects`, 'POST', project).then((res) => {
       return res.data;
     });
@@ -165,7 +165,7 @@ class UserResource extends Resource<User> {
     });
   }
 
-  async editProject(id: typeof User.prototype.id, project: Project, projectId: typeof Project.prototype.id): Promise<DTO<Project>> {
+  async editProject(id: typeof User.prototype.id, project: Partial<Project>, projectId: typeof Project.prototype.id): Promise<DTO<Project>> {
     return request<DTO<Project>>(`${this.baseURL}/${id}/projects/${projectId}`, 'PATCH', project).then((res) => {
       return res.data;
     });
