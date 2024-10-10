@@ -52,6 +52,7 @@ jobs:
                     echo "$retries retries left"
                     sleep 5
                     retries=$(( $retries - 1 ))
+                    docker-compose -f docker-compose.yml -f docker-compose.test.yml logs
                     docker-compose -f docker-compose.yml -f docker-compose.test.yml logs | grep 'Container edroplets_db  Healthy'
                   done
 
