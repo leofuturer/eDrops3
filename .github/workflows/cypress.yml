@@ -48,14 +48,14 @@ jobs:
                   set +e
                   retries=5
                   docker-compose -f docker-compose.yml -f docker-compose.test.yml logs
-                  docker-compose -f docker-compose.yml -f docker-compose.test.yml logs | grep 'Container edroplets_db  Healthy'
+                  docker-compose -f docker-compose.yml -f docker-compose.test.yml logs | grep 'Done resetting database'
                   while [[ $? -ne 0 && $retries -ne 0 ]]; do
                     echo "Waiting for database reset to occur, will try again in 5 seconds"
                     echo "$retries retries left"
                     sleep 5
                     retries=$(( $retries - 1 ))
                     docker-compose -f docker-compose.yml -f docker-compose.test.yml logs
-                    docker-compose -f docker-compose.yml -f docker-compose.test.yml logs | grep 'Container edroplets_db  Healthy'
+                    docker-compose -f docker-compose.yml -f docker-compose.test.yml logs | grep 'Done resetting database'
                   done
 
                   if [[ $retries -eq 0 ]]; then
