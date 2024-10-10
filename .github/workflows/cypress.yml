@@ -4,6 +4,8 @@ on:
         # Triggers on push to stage or master
         branches: [stage, master]
     workflow_dispatch:
+env:
+    APP_MYSQL_HOST: edroplets_db
 jobs:
     cypress-run:
         runs-on: ubuntu-latest
