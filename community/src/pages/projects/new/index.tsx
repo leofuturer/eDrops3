@@ -18,7 +18,7 @@ export function NewProject() {
   const [title, setTitle] = useState('');
   const [projId, setProjId] = useState(-1);
   const [content, setContent] = useState('');
-  const [modalType, setModalType] = useState<typeof ProjectFile.prototype.fileType | 'link'>('attachment');
+  const [modalType, setModalType] = useState<'video' | 'image' | 'attachment-dxf' | 'attachment-ewds' | 'link'>('attachment-dxf');
   const [showModal, setShowModal] = useState(false);
   const [existingFiles, setExistingFiles] = useState<ProjectFile[]>([]);
   const [deletedFiles, setDeletedFiles] = useState<ProjectFile[]>([]);
@@ -133,8 +133,13 @@ export function NewProject() {
   function handleVideo() { }
 
   // Since the project hasn't been created yet, we should upload the files, then link them to the project after creation?
-  function handleFile() {
-    setModalType('attachment');
+  function handleFile(fileType: string) {
+    if (fileType=='dxf') {
+      setModalType('attachment-dxf');
+    }
+   else if (fileType=='ewds') {
+    setModalType('attachment-ewds');
+   }
     setShowModal(true);
   }
 
@@ -289,10 +294,18 @@ export function NewProject() {
           <button
             type="button"
             className="bg-slate-400 text-black rounded-lg shadow-lg flex flex-row space-x-2 justify-center items-center p-4"
-            onClick={handleFile}
+            onClick={() => handleFile('dxf')}
           >
             <PaperClipIcon className="h-6 w-6" />
-            <p>File</p>
+            <p>DXF File</p>
+          </button>
+          <button
+            type="button"
+            className="bg-slate-400 text-black rounded-lg shadow-lg flex flex-row space-x-2 justify-center items-center p-4"
+            onClick={() => handleFile('ewds')}
+          >
+            <PaperClipIcon className="h-6 w-6" />
+            <p>EWDS File</p>
           </button>
           <button
             type="button"
@@ -318,8 +331,16 @@ export function NewProject() {
         onClick={() => setShowModal(false)}
       >
         <div className="z-50 min-h-1/2 w-1/2 bg-slate-200 rounded-xl flex flex-col space-y-2 p-4 text-slate-400" onClick={(e) => e.stopPropagation()}>
-          {modalType === 'attachment' && (
+          {modalType === 'attachment-dxf' && (
           <FileUpload
+            fileType='.dxf'
+            handleClose={() => setShowModal(false)}
+            addFiles={(files) => handleAddFiles(files)}
+          />
+          )}
+          {modalType === 'attachment-ewds' && (
+          <FileUpload
+            fileType='.ewds'
             handleClose={() => setShowModal(false)}
             addFiles={(files) => handleAddFiles(files)}
           />
