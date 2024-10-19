@@ -1,3 +1,45 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer components {
+    /* Button styling */
+    .button {
+        @apply bg-secondary rounded-md flex justify-center items-center text-white
+    }
+
+    /* Form input styling */
+    .input {
+        /* Field styles */
+        & .field {
+            /* Positioning and size */
+            @apply w-full h-14 min-h-min;
+            /* Outline */
+            @apply outline outline-1 outline-gray-400 px-2 shadow-md rounded-md bg-transparent py-2;
+            /* */
+            @apply focus:transition-all focus:duration-300 focus:pt-4 focus:pb-0 focus:placeholder-transparent; 
+            /* Autofill text */
+            @apply autofill:pt-4 autofill:pb-0 autofill:bg-transparent;
+            /* Valid input */ 
+            @apply valid:focus:shadow-primary-light valid:focus:outline-primary-light;
+            /* Disabled input */
+            @apply disabled:bg-gray-200;
+        }
+        /* Only allow invalid once the input has been "dirtied" */
+        & .is-dirty {
+            /* Invalid input */
+            @apply invalid:outline-red-700 invalid:focus:shadow-red-700;
+        }
+    }
+    /* Needs to be its own class for peer variants to work */
+    .input-label {
+        /* Text */
+        @apply text-gray-500 text-sm opacity-0;
+        /* Positioning */
+        @apply absolute w-max h-min left-2 top-4 -z-10 select-none;
+        /* Show when corresponding input field is selected */
+        @apply peer-focus:opacity-100 peer-focus:-translate-y-3 peer-focus:transition-all peer-focus:duration-300;
+        @apply peer-autofill:opacity-100 peer-autofill:-translate-y-3 peer-autofill:transition-all peer-autofill:duration-100;
+        @apply peer-focus:z-10 peer-autofill:z-10;
+    }
+}
