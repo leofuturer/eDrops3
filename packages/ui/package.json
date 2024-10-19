@@ -1,15 +1,42 @@
 {
   "name": "@edroplets/ui",
+  "private": true,
+  "type": "module",
   "version": "1.0.0",
   "description": "",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "clean": "rimraf dist",
     "prebuild": "npm run clean && npm ci",
-    "build": "tsc",
-    "clean": "rimraf dist"
+    "build": "vite build && npm run build:css",
+    "build:css": "tailwindcss -m -i ./src/tailwind-entry.css -o ./dist/styles.css",
+    "storybook": "storybook dev -p 6006",
+    "storybook:css": "tailwindcss -w -i ./src/tailwind-entry.css -o ./src/index.css",
+    "build-storybook": "storybook build",
+    "build-storybook:css": "tailwindcss -m -i ./src/tailwind-entry.css -o ./src/index.css",
+    "lint": "eslint ."
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "@heroicons/react": "^2.1.5",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@chromatic-com/storybook": "^2.0.2",
+    "@storybook/addon-essentials": "^8.3.4",
+    "@storybook/addon-interactions": "^8.3.4",
+    "@storybook/addon-links": "^8.3.4",
+    "@storybook/addon-onboarding": "^8.3.4",
+    "@storybook/addon-themes": "^8.3.4",
+    "@storybook/blocks": "^8.3.4",
+    "@storybook/react": "^8.3.4",
+    "@storybook/react-vite": "^8.3.4",
+    "@storybook/test": "^8.3.4",
+    "@vitejs/plugin-react-swc": "^3.7.1",
+    "prop-types": "^15.8.1",
+    "storybook": "^8.3.4"
+  }
 }
