@@ -1,6 +1,6 @@
 import type { Preview } from "@storybook/react";
-import { withThemeByClassName } from '@storybook/addon-themes';
-import '../src/tailwind.css';
+import { withThemeByClassName } from "@storybook/addon-themes";
+import "../src/tailwind.css";
 
 const preview: Preview = {
   parameters: {
@@ -10,16 +10,17 @@ const preview: Preview = {
         date: /Date$/i,
       },
     },
+    layout: "fullscreen",
   },
   decorators: [
     withThemeByClassName({
       themes: {
-        light: 'light',
-        dark: 'dark',
+        light: "light",
+        dark: "dark",
       },
-      defaultTheme: 'light',
+      defaultTheme: "light",
     }),
-  ]
+  ],
 };
 
 export default preview;
