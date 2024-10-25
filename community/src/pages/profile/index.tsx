@@ -62,8 +62,10 @@ export function Profile(): JSX.Element {
     if (feed === 'Projects') {
       if (feedType === 'My') {
         api.user.getProjects(user.id).then((res) => {
-          setFeedData(res);
-          console.log(res);
+          getLikedAndSaved(res).then(() => {
+            setFeedData(res);
+            console.log(res);
+          })
         });
       } else if (feedType === 'Saved') {
         api.user.getSavedProjects(user.id).then((res) => {
@@ -90,6 +92,20 @@ export function Profile(): JSX.Element {
 
   function handleFeed(type: 'Projects' | 'Posts') {
     setFeed(type);
+  }
+
+  async function getLikedAndSaved(list: PostPrev[] | ProjectPrev[]) {
+    if (!cookies.userId) return;
+    const requests = feed=='Projects' ? [api.user.getLikedPosts(cookies.userId), api.user.getSavedPosts(cookies.userId)] : [api.user.getLikedProjects(cookies.userId), api.user.getSavedProjects(cookies.userId)];
+    const [likedPosts, savedPosts] = await Promise.all(requests);
+    console.log(savedPosts);
+    console.log(likedPosts);
+    for (const post of list) {
+      post.liked = likedPosts.some(element => element.id == post.id);
+      post.saved = savedPosts.some(element => element.id == post.id);
+    }
+    console.log(feedData.length+" "+list.length);
+    console.log(list);
   }
 
   function setSaved(id: number | undefined) {
@@ -119,7 +135,8 @@ export function Profile(): JSX.Element {
       });
   }
 
-  function setLiked(id: number) {
+  function setLiked(id: number | undefined) {
+    if (!id) return;
     if (!cookies.userId) { navigate('/login'); return; }
     const apiCall = async() => {
       if (feed=='Projects') return api.user.saveProject(cookies.userId, id);
@@ -227,7 +244,7 @@ export function Profile(): JSX.Element {
                     // setDeleteModalVisible(true);
                   }}
                   setSaved={()=>{setSaved(project.id)}}
-                  setLiked={setLiked}
+                  setLiked={()=>{setLiked(project.id)}}
                 />
 						    )):
                 <p className='text-center text-lg bg-white rounded-md p-2 h-32 flex items-center justify-center'>{"You don't have any "+(feedType=='Saved' ? 'saved' : '' )+" projects yet!"}</p>
@@ -238,8 +255,8 @@ export function Profile(): JSX.Element {
                 post={post}
                 key={post.id}
                 handleDelete={()=>{}}
-                setLiked={()=>{}}
-                setSaved={()=>{}}
+                setSaved={()=>{setSaved(post.id)}}
+                setLiked={()=>{setLiked(post.id)}}
               />
 						  )) :
               <p className="text-center text-lg bg-white rounded-md p-2 h-32 flex items-center justify-center">{"You don't have any "+(feedType=='Saved' ? 'saved' : '' )+" posts yet!"}</p>
