@@ -14,7 +14,7 @@ import PostPreview from '@/components/forum/PostPreview';
 import ProfileEdit from '@/components/profile/ProfileEdit';
 import ProfileInfo from '@/components/profile/ProfileInfo';
 import ProjectPreview from '@/components/project/ProjectPreview';
-
+import { AxiosError } from 'axios';
 type ProjectPrev = Project & {
   liked?: boolean;
   saved?: boolean;
@@ -28,7 +28,7 @@ export function Profile(): JSX.Element {
   const [user, setUser] = useState<User>({} as User);
   const [feedData, setFeedData] = useState<PostPrev[] | ProjectPrev[]>([]);
   const [feed, setFeed] = useState<'Projects' | 'Posts'>('Projects');
-  const [feedType, setFeedType] = useState<'Activity' | 'Saved'>('Activity');
+  const [feedType, setFeedType] = useState<'My' | 'Saved'>('My');
   const [dropdown, setDropdown] = useState<boolean>(false);
   const [edit, setEdit] = useState<boolean>(false);
 
@@ -60,9 +60,10 @@ export function Profile(): JSX.Element {
   useEffect(() => {
     if (!cookies.userId) navigate('/login');
     if (feed === 'Projects') {
-      if (feedType === 'Activity') {
+      if (feedType === 'My') {
         api.user.getProjects(user.id).then((res) => {
           setFeedData(res);
+          console.log(res);
         });
       } else if (feedType === 'Saved') {
         api.user.getSavedProjects(user.id).then((res) => {
@@ -70,7 +71,7 @@ export function Profile(): JSX.Element {
         });
       }
     } else if (feed === 'Posts') {
-      if (feedType === 'Activity') {
+      if (feedType === 'My') {
         api.user.getPosts(user.id).then((res) => {
           setFeedData(res);
         });
@@ -80,15 +81,66 @@ export function Profile(): JSX.Element {
         });
       }
     }
-  }, [feedType, feed]);
+  }, [feedType, feed, user]);
 
-  function handleFeedType(feedType: 'Activity' | 'Saved') {
+  function handleFeedType(feedType: 'My' | 'Saved') {
     setFeedType(feedType);
     setDropdown(false);
   }
 
   function handleFeed(type: 'Projects' | 'Posts') {
     setFeed(type);
+  }
+
+  function setSaved(id: number | undefined) {
+    console.log("saving");
+    if (!id) return;
+    if (!cookies.userId) { navigate('/login'); return; }
+
+    const apiCall = async() => {
+      if (feed=='Projects') return api.user.saveProject(cookies.userId, id);
+      else return api.user.savePost(cookies.userId, id);
+    }
+    apiCall()
+      .then((res) => {
+        let temp = [...feedData];
+        let post = feedData.find((post) => post.id==id);
+        if (post) {
+          console.log(res);
+          post.saved = res;
+          setFeedData(temp);
+        }
+      })
+      .catch((err: AxiosError) => {
+        if (err.message === 'No access token found') {
+          navigate('/login');
+        }
+        // console.log(err);
+      });
+  }
+
+  function setLiked(id: number) {
+    if (!cookies.userId) { navigate('/login'); return; }
+    const apiCall = async() => {
+      if (feed=='Projects') return api.user.saveProject(cookies.userId, id);
+      else return api.user.savePost(cookies.userId, id);
+    }
+    apiCall()
+      .then((res) => {
+        let temp = [...feedData];
+        let post = feedData.find((post) => post.id==id);
+        if (post) {
+          console.log(res);
+          post.liked = res;
+          setFeedData(temp);
+        }
+      })
+      .catch((err: AxiosError) => {
+        if (err.message === 'No access token found') {
+          navigate('/login');
+        }
+        // console.log(err);
+      });
   }
 
   return (
@@ -115,11 +167,11 @@ export function Profile(): JSX.Element {
       <div className="col-span-2 flex flex-col px-10">
         <div className="relative flex flex-row p-10 justify-around">
           <div
-            className="relative w-32 flex flex-row bg-white shadow-2xl hover:bg-gray-300 justify-center items-center"
+            className="relative flex flex-row bg-white shadow-2xl justify-center items-center pl-2 pr-2"
             onClick={() => setDropdown(!dropdown)}
           >
-            <p className="py-2 text-xl">{feedType}</p>
-            <ChevronDownIcon className="absolute right-2 h-4 w-4" />
+            <p className="py-2 text-xl">{feedType=='My' ? 'My '+feed : feedType}</p>
+            <ChevronDownIcon className="h-4 w-4" />
             <div
               className={`absolute top-0 w-32 flex flex-col bg-white shadow-2xl ${
 							  dropdown ? 'visible' : 'invisible'
@@ -127,9 +179,9 @@ export function Profile(): JSX.Element {
             >
               <p
                 className="py-2 w-full text-xl text-center hover:bg-gray-300"
-                onClick={() => handleFeedType('Activity')}
+                onClick={() => handleFeedType('My')}
               >
-                Activity
+                {'My '+feed}
               </p>
               <p
                 className="py-2 w-full text-xl text-center hover:bg-gray-300"
@@ -165,16 +217,23 @@ export function Profile(): JSX.Element {
         </div>
         <div className="flex flex-col space-y-4">
           {feed === 'Projects'
-					  ? feedData.map((project) => (
-              <ProjectPreview
-                project={project}
-                key={project.id}
-                handleDelete={()=>{}}
-                setLiked={()=>{}}
-                setSaved={()=>{}}
-              />
-						  ))
-					  : feedData.map((post) => (
+					  ? (feedData.length > 0 ?
+                feedData.map((project) => (
+                <ProjectPreview
+                  project={project}
+                  key={project.id}
+                  handleDelete={() => {
+                    // setCurrPost(post.id);
+                    // setDeleteModalVisible(true);
+                  }}
+                  setSaved={()=>{setSaved(project.id)}}
+                  setLiked={setLiked}
+                />
+						    )):
+                <p className='text-center text-lg bg-white rounded-md p-2 h-32 flex items-center justify-center'>{"You don't have any "+(feedType=='Saved' ? 'saved' : '' )+" projects yet!"}</p>
+              )
+					  : (feedData.length > 0 ?
+              feedData.map((post) => (
               <PostPreview
                 post={post}
                 key={post.id}
@@ -182,7 +241,9 @@ export function Profile(): JSX.Element {
                 setLiked={()=>{}}
                 setSaved={()=>{}}
               />
-						  ))}
+						  )) :
+              <p className="text-center text-lg bg-white rounded-md p-2 h-32 flex items-center justify-center">{"You don't have any "+(feedType=='Saved' ? 'saved' : '' )+" posts yet!"}</p>
+              )}
         </div>
       </div>
     </section>
