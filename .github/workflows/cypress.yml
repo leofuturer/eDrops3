@@ -81,13 +81,20 @@ jobs:
               env:
                   APP_EMAIL_API_KEY: ${{ secrets.APP_EMAIL_API_KEY }}
                   SHOPIFY_TOKEN: ${{ secrets.SHOPIFY_TOKEN }}
-            - name: Frontend Cypress E2E tests
+            - name: Main Site E2E tests
               uses: cypress-io/github-action@v4
               with:
                 browser: chrome
                 start: npm run dev
                 wait-on: http://localhost:8086
                 working-directory: ./client
+            - name: Community Site E2E tests
+              uses: cypress-io/github-action@v4
+              with:
+                browser: chrome
+                start: npm run dev
+                wait-on: http://localhost:8087
+                working-directory: ./community
             - name: Stop backend
               run: |
                   # Shut down the testing backend
