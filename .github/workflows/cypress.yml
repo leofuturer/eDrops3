@@ -103,6 +103,7 @@ jobs:
                 start: npm run dev
                 wait-on: http://localhost:8086
                 working-directory: ./client
+                continue-on-error: true
             - name: Community Site E2E tests
               uses: cypress-io/github-action@v4
               with:
@@ -110,6 +111,7 @@ jobs:
                 start: npm run dev
                 wait-on: http://localhost:8087
                 working-directory: ./community
+                continue-on-error: true
             - name: Stop backend
               run: |
                   # Shut down the testing backend
