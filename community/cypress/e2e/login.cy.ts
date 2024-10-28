@@ -46,7 +46,7 @@ describe('Login/Signup page tests', () => {
     it('Signup with invalid email', () => {
       cy.get('a[href*="/signup"]').click();
       const username = crypto.randomUUID().substring(0, 8);
-      cy.signup(username, "cdevadhar@gmail.com", "edropTest123");
+      cy.signup(username, "edropswebsite+customerA@gmail.com", "edropTest123");
       cy.get('button[type=submit]').click();
       // check for error (for now just check no redirect)
       cy.url().should('include', '/signup');
