@@ -83,9 +83,13 @@ jobs:
                   SHOPIFY_TOKEN: ${{ secrets.SHOPIFY_TOKEN }}
             - name: Install rimraf
               run: npm install -g rimraf
-            - name: Build middleware
-              run: npm run build
-              working-directory: ./packages/api
+            - name: Build middleware packages
+              run: |
+                  cd api
+                  npm run build
+                  cd ../schemas
+                  npm run build
+              working-directory: ./packages
             - name: Install client dependencies
               run: npm install
               working-directory: ./client
