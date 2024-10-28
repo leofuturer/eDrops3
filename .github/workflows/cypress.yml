@@ -81,6 +81,12 @@ jobs:
               env:
                   APP_EMAIL_API_KEY: ${{ secrets.APP_EMAIL_API_KEY }}
                   SHOPIFY_TOKEN: ${{ secrets.SHOPIFY_TOKEN }}
+            - name: Install client dependencies
+              run: npm install
+              working-directory: ./client
+            - name: Install community dependencies
+              run: npm install
+              working-directory: ./community
             - name: Main Site E2E tests
               uses: cypress-io/github-action@v4
               with:
