@@ -18,7 +18,7 @@ describe("Placing order tests", () => {
         cy.get('a[href*="/fab"]').filter(':visible').first().click();
         cy.url().should('include', '/fab');
 
-        cy.get('input[type=file]').selectFile('./cypress/blahblah66.dxf', {force: true});
+        cy.get('input[type=file]').selectFile('./cypress/test.dxf', {force: true});
         cy.get('button[id="uploadFile"]').click();
         cy.wait(2000);
         clickConfirmation();
