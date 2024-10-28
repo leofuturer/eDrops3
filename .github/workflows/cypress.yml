@@ -81,6 +81,8 @@ jobs:
               env:
                   APP_EMAIL_API_KEY: ${{ secrets.APP_EMAIL_API_KEY }}
                   SHOPIFY_TOKEN: ${{ secrets.SHOPIFY_TOKEN }}
+            - name: Install rimraf
+              run: npm install -g rimraf
             - name: Build middleware
               run: npm run build
               working-directory: ./packages/api
