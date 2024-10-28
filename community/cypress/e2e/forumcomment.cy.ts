@@ -35,7 +35,7 @@ describe('Forum comment tests', () => {
         cy.get('*[data-cy=likeComment]').first().click();
         cy.wait("@response").then(intercepted => {
             // 204 is no content, I'll change this in the api later
-            assert.isTrue(intercepted.response?.statusCode==204);
+            assert.isTrue(intercepted.response?.statusCode==200);
         });
         cy.get('p[data-cy=commentLikes]').first().should('contain', 1);
     })
@@ -47,7 +47,7 @@ describe('Forum comment tests', () => {
         cy.get('button[data-cy=editButton]').first().click();
         cy.wait("@response").then(intercepted => {
             // 204 is no content, I'll change this in the api later
-            assert.isTrue(intercepted.response?.statusCode==204);
+            assert.isTrue(intercepted.response?.statusCode==200);
         })
         cy.get('*[data-cy=commentContent]').first().should('contain', 'Test Cypress Comment (edited)');
     })
@@ -57,7 +57,7 @@ describe('Forum comment tests', () => {
         cy.get('button[data-cy=deleteButton]').first().click();
         cy.wait("@response").then(intercepted => {
             // 204 is no content, I'll change this in the api later
-            assert.isTrue(intercepted.response?.statusCode==204);
+            assert.isTrue(intercepted.response?.statusCode==200);
         })
         cy.get('*[data-cy=commentAuthor]').first().should('contain', 'DELETED')
         cy.get('*[data-cy=commentContent]').first().should('contain', 'DELETED');

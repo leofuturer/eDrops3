@@ -1,4 +1,4 @@
-describe('Forum comment tests', () => {
+describe('Project comment tests', () => {
     beforeEach(() => {
         cy.login("customerA", "edropTest123");
         cy.wait(1000);

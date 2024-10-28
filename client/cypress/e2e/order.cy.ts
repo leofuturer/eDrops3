@@ -6,13 +6,15 @@ describe("Placing order tests", () => {
     })
     it('Place an order', () => {
        
-        cy.get('a[href*="/upload"]').filter(':visible').first().click();
-        cy.url().should('include', '/upload');
+        cy.get('a[href*="/fab"]').filter(':visible').first().click();
+        cy.url().should('include', '/fab');
 
         cy.get('input[type=file]').selectFile('./cypress/test.dxf', {force: true});
         cy.get('button[id="uploadFile"]').click();
+        cy.wait(2000);
         const confirmation = cy.get('button[id="affirmative"]');
         if (confirmation) confirmation.click();
+        cy.wait(3000);
         cy.get('button[id="affirmative"]').click();
 
         cy.wait(2000);
