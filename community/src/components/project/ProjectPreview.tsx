@@ -16,7 +16,7 @@ function ProjectPreview({ project, handleDelete, setSaved, setLiked}: { project:
   const [cookies] = useCookies(['userId']);
   const [dropdownVisible, setDropdownVisible] = useState<boolean>(false);
   const navigate = useNavigate();
-
+  console.log(project.saved);
   useEffect(() => {
     api.project.getProjectFiles(project.id).then((files) => {
       const images = files.filter((file) => file.fileType === 'image');

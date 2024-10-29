@@ -4,6 +4,7 @@
   "engines": {
     "node": ">=18.0.0"
   },
+  "type": "module",
   "scripts": {
     "packages:build": "npm run build --workspaces",
     "docker:build": "docker build -t edroplets_backend server/",
@@ -22,11 +23,15 @@
     "community:build": "npm run build --prefix community",
     "dev:all": "concurrently -n server,client,community \"npm run docker:dev\" \"npm run client:dev\" \"npm run community:dev\"",
     "dev:client": "concurrently -n server,client \"npm run docker:dev\" \"npm run client:dev\"",
-    "dev:community": "concurrently -n server,community \"npm run docker:dev\" \"npm run community:dev\""
+    "dev:community": "concurrently -n server,community \"npm run docker:dev\" \"npm run community:dev\"",
+    "prepare": "husky"
   },
   "devDependencies": {
+    "@commitlint/cli": "^19.5.0",
+    "@commitlint/config-conventional": "^19.5.0",
     "concurrently": "^7.6.0",
     "cross-env": "^7.0.3",
+    "husky": "^9.1.6",
     "rimraf": "^5.0.1",
     "typescript": "^5.2.2"
   },

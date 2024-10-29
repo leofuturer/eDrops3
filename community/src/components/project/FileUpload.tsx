@@ -10,9 +10,11 @@ import { useNavigate } from 'react-router-dom';
 function FileUpload({
   handleClose,
   addFiles,
+  fileType
 }: {
 	handleClose: () => void;
 	addFiles: (files: ProjectFile[]) => void;
+  fileType: string
 }) {
   const navigate = useNavigate();
   const [cookies] = useCookies(['userId']);
@@ -22,7 +24,7 @@ function FileUpload({
     acceptedFiles, fileRejections, getRootProps, getInputProps,
   } =		useDropzone({
 		  accept: {
-		    'application/octet-stream': ['.dxf'],
+		    'application/octet-stream': [fileType],
 		    // Note: need to determine MIME type for actual DXF files
 		    // Currently using generic 'application/octet-stream' for all files
 		  },

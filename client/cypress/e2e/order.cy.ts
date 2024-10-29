@@ -1,3 +1,12 @@
+// click the confirmation button if it exists, otherwise do nothing (prevents cypress from throwing an error)
+function clickConfirmation() {
+    cy.get("body").then($body => {
+        const button = $body.find("button[id='affirmative']");
+        if (button.length > 0) {   
+            button.click();
+        }
+    });
+}
 
 describe("Placing order tests", () => {
     beforeEach(() => {
@@ -6,15 +15,15 @@ describe("Placing order tests", () => {
     })
     it('Place an order', () => {
        
-        cy.get('a[href*="/upload"]').filter(':visible').first().click();
-        cy.url().should('include', '/upload');
+        cy.get('a[href*="/fab"]').filter(':visible').first().click();
+        cy.url().should('include', '/fab');
 
         cy.get('input[type=file]').selectFile('./cypress/test.dxf', {force: true});
         cy.get('button[id="uploadFile"]').click();
-        const confirmation = cy.get('button[id="affirmative"]');
-        if (confirmation) confirmation.click();
-        cy.get('button[id="affirmative"]').click();
-
+        cy.wait(2000);
+        clickConfirmation();
+        cy.wait(2000);
+        clickConfirmation();
         cy.wait(2000);
         cy.url().should('include', '/chip-fab');
         cy.get('button[id="addToCart"]').click();
