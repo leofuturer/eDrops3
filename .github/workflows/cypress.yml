@@ -4,10 +4,6 @@ on:
         # Triggers on push to stage or master
         branches: [stage, master]
     workflow_dispatch:
-env:
-    APP_MYSQL_HOST: edroplets_db
-    APP_PUSHER_API_KEY: ${{ secrets.APP_PUSHER_API_KEY }}
-    APP_PUSHER_API_SECRET: ${{ secrets.APP_PUSHER_API_SECRET }}
 jobs:
     cypress-run:
         runs-on: ubuntu-latest
@@ -16,6 +12,10 @@ jobs:
                 node-version: [18]
 
         steps:
+            - name: Write env variables
+              run: |
+                  echo "APP_PUSHER_API_KEY=${{ secrets.APP_PUSHER_API_KEY }}" >> ./deploy/test/backend.env
+                  echo "APP_PUSHER_API_SECRET=${{ secrets.APP_PUSHER_API_SECRET }}" >> ./deploy/test/backend.env
             - name: Checkout
               uses: actions/checkout@v3
             # Install NPM dependencies, cache them correctly
@@ -105,7 +105,7 @@ jobs:
                 start: npm run dev
                 wait-on: http://localhost:8086
                 working-directory: ./client
-                continue-on-error: true
+              continue-on-error: true
             - name: Community Site E2E tests
               uses: cypress-io/github-action@v4
               with:
@@ -113,7 +113,7 @@ jobs:
                 start: npm run dev
                 wait-on: http://localhost:8087
                 working-directory: ./community
-                continue-on-error: true
+              continue-on-error: true
             - name: Stop backend
               run: |
                   # Shut down the testing backend
