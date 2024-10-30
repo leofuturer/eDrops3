@@ -1,9 +1,9 @@
 import {
+  Client,
   createRestAppClient,
   givenHttpServerConfig,
-  Client,
 } from '@loopback/testlab';
-import {EdropsBackendApplication} from '../..';
+import { EdropsBackendApplication } from '../..';
 
 export async function setupApplication(): Promise<AppWithClient> {
   const restConfig = givenHttpServerConfig({

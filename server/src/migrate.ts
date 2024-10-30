@@ -1,5 +1,4 @@
-import {juggler} from '@loopback/repository';
-import {MysqlDsDataSource} from './datasources/mysql-ds.datasource';
+import { MysqlDsDataSource } from './datasources/mysql-ds.datasource';
 
 async function migrate() {
   const ds = new MysqlDsDataSource();

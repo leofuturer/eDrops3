@@ -1,5 +1,4 @@
 export * from '../../models';
-
 import type { Address, Admin, Customer, FoundryWorker, User } from '../../models';
 
 export type DTO<T> = T;

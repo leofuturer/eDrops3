@@ -5,8 +5,6 @@ module.exports = {
     node: true,
   },
   extends: [
-    'airbnb-base',
-    'airbnb-typescript/base',
     '@loopback/eslint-config'
   ],
   parserOptions: {

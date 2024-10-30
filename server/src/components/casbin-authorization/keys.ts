@@ -2,7 +2,6 @@
 // Node module: @loopback/example-access-control-migration
 // This file is licensed under the MIT License.
 // License text available at https://opensource.org/licenses/MIT
-
-import {BindingKey} from '@loopback/core';
+import { BindingKey } from '@loopback/core';
 
 export const RESOURCE_ID = BindingKey.create<string>('resourceId');

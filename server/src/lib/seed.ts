@@ -1,14 +1,16 @@
 import { EdropsBackendApplication } from '../application';
 import {
-  Admin,
-  Customer,
   Address,
+  Admin,
+  Comment,
+  Customer,
   Post,
-  Comment, User
+  User
 } from '../models';
 import {
-  AdminRepository,
   AddressRepository,
+  AdminRepository,
+  CommentRepository,
   CustomerRepository,
   FileInfoRepository,
   FoundryWorkerRepository,
@@ -17,8 +19,6 @@ import {
   OrderItemRepository,
   OrderMessageRepository,
   OrderProductRepository,
-  CommentLinkRepository,
-  CommentRepository,
   PostRepository,
   ProjectFileRepository,
   ProjectLinkRepository,
@@ -26,19 +26,17 @@ import {
   UserRepository
 } from '../repositories';
 import {
-  defaultAdmins,
   defaultAddresses,
+  defaultAdmins,
+  defaultComments,
   defaultCustomers,
   defaultFoundryWorkers,
-  defaultComments,
   defaultPosts,
   defaultProjects,
   defaultUsers
 } from './data/index';
 import { defaultProjectFiles } from './data/projectFile';
 import { defaultProjectLinks } from './data/projectLink';
-import fs from 'fs';
-import path from 'path';
 
 export async function clearDb(this: EdropsBackendApplication): Promise<void> {
   /* Clear Admin table */

@@ -3,6 +3,6 @@ import type { Count, Entity, Filter, FilterExcludingWhere, Where } from "@loopba
 
 export type DTO<T extends Entity> = Omit<T, keyof Entity>;
 
-export type { Entity, Count, Filter, Where, FilterExcludingWhere };
+export type { Count, Entity, Filter, FilterExcludingWhere, Where };
 
-export * from '../../models';
+  export * from '../../models';

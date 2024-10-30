@@ -1,12 +1,12 @@
 import {
-  injectable,
-  /* inject, */ BindingScope,
+  BindingKey,
+    /* inject, */ BindingScope,
+  ContextTags,
   Provider,
   config,
-  BindingKey,
-  ContextTags,
+  injectable,
 } from '@loopback/core';
-import {RequestHandler} from 'express';
+import { RequestHandler } from 'express';
 import multer from 'multer';
 
 /*

@@ -1,5 +1,5 @@
-import {ApplicationConfig} from '@loopback/core';
-import {EdropsBackendApplication} from './application';
+import { ApplicationConfig } from '@loopback/core';
+import { EdropsBackendApplication } from './application';
 
 /**
  * Export the OpenAPI spec from the application

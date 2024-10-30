@@ -2,13 +2,12 @@
 // Node module: @loopback/example-access-control-migration
 // This file is licensed under the MIT License.
 // License text available at https://opensource.org/licenses/MIT
-
-import {TokenService, UserService} from '@loopback/authentication';
-import {BindingKey} from '@loopback/core';
+import { TokenService, UserService } from '@loopback/authentication';
+import { BindingKey } from '@loopback/core';
 // The User model is imported from the application,
 // which makes the component not entirely independent
-import {User} from '../../models/user.model';
-import {Credentials} from './services/user.service';
+import { User } from '../../models/user.model';
+import { Credentials } from './services/user.service';
 
 export namespace TokenServiceConstants {
   export const TOKEN_SECRET_VALUE = process.env.JWT_SECRET ?? 't3stS3cr3teDroplets123';

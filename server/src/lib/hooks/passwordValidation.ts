@@ -1,4 +1,4 @@
-import {errors, ErrorWithStatus} from '../toolbox/errors';
+import { errors, ErrorWithStatus } from '../toolbox/errors';
 
 // function testPassword(password) {
 //   let lenCheck = password.length >= 8;

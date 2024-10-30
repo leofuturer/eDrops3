@@ -1,4 +1,4 @@
-import {Admin, User} from '../../models';
+import { Admin, User } from '../../models';
 import { DTO } from '../types/model';
 
 export const defaultAdmins: DTO<Admin & User>[] = [

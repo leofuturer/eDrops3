@@ -2,14 +2,13 @@
 // Node module: @loopback/example-access-control-migration
 // This file is licensed under the MIT License.
 // License text available at https://opensource.org/licenses/MIT
-
-import {UserService} from '@loopback/authentication';
-import {repository} from '@loopback/repository';
-import {HttpErrors} from '@loopback/rest';
-import {securityId, UserProfile} from '@loopback/security';
-import {compare} from 'bcryptjs';
-import {User} from '../../../models/user.model';
-import {UserRepository} from '../../../repositories/user.repository';
+import { UserService } from '@loopback/authentication';
+import { repository } from '@loopback/repository';
+import { HttpErrors } from '@loopback/rest';
+import { securityId, UserProfile } from '@loopback/security';
+import { compare } from 'bcryptjs';
+import { User } from '../../../models/user.model';
+import { UserRepository } from '../../../repositories/user.repository';
 
 /**
  * A pre-defined type for user credentials. It assumes a user logs in

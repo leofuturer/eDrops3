@@ -2,8 +2,7 @@
 // Node module: @loopback/example-access-control-migration
 // This file is licensed under the MIT License.
 // License text available at https://opensource.org/licenses/MIT
-
-import {ReferenceObject, SecuritySchemeObject} from '@loopback/rest';
+import { ReferenceObject, SecuritySchemeObject } from '@loopback/rest';
 
 export const OPERATION_SECURITY_SPEC = [{jwt: []}];
 export type SecuritySchemeObjects = {

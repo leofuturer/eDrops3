@@ -1,4 +1,4 @@
-import {User} from '../../models';
+import { User } from '../../models';
 import { DTO } from '../types/model';
 
 export const defaultUsers: DTO<User>[] = [

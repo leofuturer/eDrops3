@@ -1,6 +1,6 @@
-import {Client, expect} from '@loopback/testlab';
-import {EdropsBackendApplication} from '../..';
-import {setupApplication} from './test-helper';
+import { Client } from '@loopback/testlab';
+import { EdropsBackendApplication } from '../..';
+import { setupApplication } from './test-helper';
 
 describe('CustomerController', () => {
   let app: EdropsBackendApplication;

@@ -2,10 +2,9 @@
 // Node module: @loopback/example-access-control-migration
 // This file is licensed under the MIT License.
 // License text available at https://opensource.org/licenses/MIT
-
-import {AuthorizationTags} from '@loopback/authorization';
-import {Binding, Component} from '@loopback/core';
-import {CasbinAuthorizationProvider, getCasbinEnforcerByName} from './services';
+import { AuthorizationTags } from '@loopback/authorization';
+import { Binding, Component } from '@loopback/core';
+import { CasbinAuthorizationProvider, getCasbinEnforcerByName } from './services';
 
 export class CasbinAuthorizationComponent implements Component {
   bindings: Binding[] = [

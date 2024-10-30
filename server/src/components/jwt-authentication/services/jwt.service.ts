@@ -2,14 +2,12 @@
 // Node module: @loopback/example-access-control-migration
 // This file is licensed under the MIT License.
 // License text available at https://opensource.org/licenses/MIT
-
-import {TokenService} from '@loopback/authentication';
-import {inject} from '@loopback/core';
-import {HttpErrors} from '@loopback/rest';
-import {securityId, UserProfile} from '@loopback/security';
-import {promisify} from 'util';
-import jwt, {JwtPayload} from 'jsonwebtoken';
-import {TokenServiceBindings} from '../keys';
+import { TokenService } from '@loopback/authentication';
+import { inject } from '@loopback/core';
+import { HttpErrors } from '@loopback/rest';
+import { securityId, UserProfile } from '@loopback/security';
+import jwt, { JwtPayload } from 'jsonwebtoken';
+import { TokenServiceBindings } from '../keys';
 
 // const signAsync = promisify(jwt.sign);
 // const verifyAsync = promisify(jwt.verify);

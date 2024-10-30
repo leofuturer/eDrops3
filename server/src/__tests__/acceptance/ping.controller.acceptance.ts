@@ -1,6 +1,6 @@
-import {Client, expect} from '@loopback/testlab';
-import {EdropsBackendApplication} from '../..';
-import {setupApplication} from './test-helper';
+import { Client, expect } from '@loopback/testlab';
+import { EdropsBackendApplication } from '../..';
+import { setupApplication } from './test-helper';
 
 describe('PingController', () => {
   let app: EdropsBackendApplication;

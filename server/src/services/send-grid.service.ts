@@ -1,6 +1,6 @@
-import {inject, Provider} from '@loopback/core';
-import {getService} from '@loopback/service-proxy';
-import {SendGridDataSource} from '../datasources';
+import { inject, Provider } from '@loopback/core';
+import { getService } from '@loopback/service-proxy';
+import { SendGridDataSource } from '../datasources';
 
 export default interface SendGrid {
   // this is where you define the Node.js methods that will be
