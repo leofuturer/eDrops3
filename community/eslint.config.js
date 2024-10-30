@@ -8,7 +8,6 @@ import tseslint from "typescript-eslint";
 
 export default [
   { files: ["**/*.{js,mjs,cjs,ts,jsx,tsx}"]},
-  { rules: { "@typescript-eslint/no-unused-vars": "off" } },
   { ignores: ["**/dist/*", "**/node_modules/*"]},
   { languageOptions: { globals: globals.browser }},
   pluginJs.configs.recommended,           // JavaScript plugin 
