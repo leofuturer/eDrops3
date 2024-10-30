@@ -1,9 +1,9 @@
-import { api, DTO, FoundryWorker, IncludeUser, OrderChip } from '@edroplets/api';
 import { CartContext } from '@/context';
 import { ROLES } from '@/lib/constants/roles';
-import { ROUTES, idRoute } from '@/router/routes';
+import { idRoute, ROUTES } from '@/router/routes';
+import { api, DTO, FoundryWorker, IncludeUser, OrderChip } from '@edroplets/api';
 import { ArrowDownTrayIcon, ChatBubbleOvalLeftEllipsisIcon, UsersIcon } from '@heroicons/react/24/solid';
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react';
 import { useCookies } from 'react-cookie';
 
 function ChipOrderList({ chipOrderList }: { chipOrderList: DTO<OrderChip>[] }) {

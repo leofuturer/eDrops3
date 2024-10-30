@@ -7,13 +7,13 @@ export function ManageCustomer() {
   const { id: customerId } = useParams();
 
   if (!customerId) {
-    return <Navigate to={ROUTES.ManageCustomers} />
+    return <Navigate to={ROUTES.ManageCustomers} />;
   }
   return (
-    <ManageRightLayout title='Edit Customer'>
+    <ManageRightLayout title="Edit Customer">
       <CustomerProfile customerId={customerId} />
     </ManageRightLayout>
-  )
+  );
 }
 
-export default ManageCustomer
+export default ManageCustomer;

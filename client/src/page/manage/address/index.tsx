@@ -1,12 +1,12 @@
-import { useEffect, useState } from 'react';
-import { useCookies } from 'react-cookie';
-import { useNavigate } from 'react-router-dom';
-import { api, Address as AddressType, DTO  } from '@edroplets/api';
 import ManageRightLayout from '@/component/layout/ManageRightLayout';
 import DeleteModal from '@/component/modal/DeleteModal';
 import Loading from '@/component/ui/Loading';
-import AddressTemplate from './AddressTemplate';
 import { ROUTES } from '@/router/routes';
+import { Address as AddressType, api, DTO } from '@edroplets/api';
+import { useEffect, useState } from 'react';
+import { useCookies } from 'react-cookie';
+import { useNavigate } from 'react-router-dom';
+import AddressTemplate from './AddressTemplate';
 
 export function Address() {
   const [addressList, setAddressList] = useState<DTO<AddressType>[]>([]);

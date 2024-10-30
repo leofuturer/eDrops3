@@ -1,12 +1,12 @@
-import { api, Address, Customer, DTO, User } from '@edroplets/api';
 import FormGroup from '@/component/form/FormGroup';
 import ManageRightLayout from '@/component/layout/ManageRightLayout';
 import { formatPhoneNumber } from '@/lib/phone';
 import { ROUTES } from '@/router/routes';
+import { Address, api, Customer, DTO, User } from '@edroplets/api';
 import { UserSchema, UserSubmitSchema } from '@edroplets/schemas';
 import { Form, Formik } from 'formik';
 import { useState } from 'react';
-import { NavLink, useLocation, useNavigate } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import { ValidationError } from 'yup';
 
 export function AddCustomer() {

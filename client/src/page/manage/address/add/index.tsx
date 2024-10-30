@@ -6,11 +6,11 @@ import { useNavigate } from 'react-router-dom';
 
 export function AddNewAddress() {
   const navigate = useNavigate();
-  const [cookies] = useCookies(['userId'])
+  const [cookies] = useCookies(['userId']);
 
   return (
     <ManageRightLayout title="Add New Address">
-      <AddAddress userId={cookies.userId} onAdd={(addr) => { navigate(ROUTES.ManageAddress) }} />
+      <AddAddress userId={cookies.userId} onAdd={(addr) => { navigate(ROUTES.ManageAddress); }} />
     </ManageRightLayout>
   );
 }

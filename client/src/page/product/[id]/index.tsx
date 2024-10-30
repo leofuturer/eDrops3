@@ -1,4 +1,3 @@
-import { api } from '@edroplets/api';
 import Loading from '@/component/ui/Loading';
 import { CartContext } from '@/context/CartContext';
 import {
@@ -6,6 +5,7 @@ import {
 } from '@/lib/constants/products';
 import { ROLES } from '@/lib/constants/roles';
 import { ROUTES, idRoute } from '@/router/routes';
+import { api } from '@edroplets/api';
 import { useContext, useEffect, useState } from 'react';
 import { useCookies } from 'react-cookie';
 import { NavLink, useNavigate, useParams } from 'react-router-dom';

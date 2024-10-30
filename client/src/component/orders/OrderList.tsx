@@ -1,11 +1,10 @@
-import { ROUTES, idRoute } from '@/router/routes';
-import { useContext } from 'react';
 import { CartContext } from '@/context/CartContext';
-import { DTO, OrderInfo } from '@edroplets/api';
-import { SERVICE_EMAIL } from '@/lib/constants/misc';
-import { useCookies } from 'react-cookie';
 import { ROLES } from '@/lib/constants/roles';
+import { ROUTES, idRoute } from '@/router/routes';
+import { DTO, OrderInfo } from '@edroplets/api';
 import { ChatBubbleOvalLeftEllipsisIcon } from '@heroicons/react/24/solid';
+import { useContext } from 'react';
+import { useCookies } from 'react-cookie';
 
 /*
  The order list page for both customer and worker

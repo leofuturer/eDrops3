@@ -1,9 +1,9 @@
-import { useCookies } from 'react-cookie';
 import SEO from '@/component/header/seo';
 import ManageRightLayout from '@/component/layout/ManageRightLayout';
-import { metadata } from './metadata';
-import { AdminProfile, WorkerProfile, CustomerProfile } from '@/component/users';
+import { AdminProfile, CustomerProfile, WorkerProfile } from '@/component/users';
 import { ROLES } from '@/lib/constants/roles';
+import { useCookies } from 'react-cookie';
+import { metadata } from './metadata';
 
 export function Profile() {
   const [cookies] = useCookies(['userType', 'userId']);

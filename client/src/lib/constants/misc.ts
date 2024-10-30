@@ -1,1 +1,1 @@
-export const SERVICE_EMAIL='info@edroplets.org';
+export const SERVICE_EMAIL = 'info@edroplets.org';

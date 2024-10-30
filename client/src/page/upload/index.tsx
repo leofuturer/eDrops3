@@ -5,7 +5,7 @@ import { DTO, FileInfo, api } from '@edroplets/api';
 import { useEffect, useState } from 'react';
 import { useCookies } from 'react-cookie';
 import { FileRejection, useDropzone } from 'react-dropzone';
-import { redirect, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { metadata } from './metadata';
 
 function Upload() {

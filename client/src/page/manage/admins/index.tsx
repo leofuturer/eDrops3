@@ -1,10 +1,10 @@
-import { useEffect, useState } from 'react';
-import { useCookies } from 'react-cookie';
-import { useNavigate } from 'react-router-dom';
-import { api, Admin, DTO, IncludeUser } from '@edroplets/api';
 import ManageRightLayout from '@/component/layout/ManageRightLayout';
 import DeleteModal from '@/component/modal/DeleteModal';
 import { ROUTES, idRoute } from '@/router/routes';
+import { Admin, DTO, IncludeUser, api } from '@edroplets/api';
+import { useEffect, useState } from 'react';
+import { useCookies } from 'react-cookie';
+import { useNavigate } from 'react-router-dom';
 
 export function Admins() {
   const [adminList, setAdminList] = useState<DTO<IncludeUser<Admin>>[]>([]);

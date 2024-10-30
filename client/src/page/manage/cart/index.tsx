@@ -1,12 +1,12 @@
-import { Suspense, useContext, useEffect } from 'react';
-import { Await, NavLink, useNavigate } from 'react-router-dom';
 import SEO from '@/component/header/seo';
 import ManageRightLayout from '@/component/layout/ManageRightLayout';
 import { CartContext } from '@/context/CartContext';
+import { ROUTES } from '@/router/routes';
+import { useContext, useEffect } from 'react';
+import { NavLink, useNavigate } from 'react-router-dom';
 import CartChip from './CartChip';
 import CartProduct from './CartProduct';
 import { metadata } from './metadata';
-import { ROUTES } from '@/router/routes';
 
 export function Cart() {
   useEffect(() => {
@@ -30,7 +30,7 @@ export function Cart() {
             <button id="checkout" type="button" className="bg-primary rounded-lg text-white px-4 py-2" onClick={() => navigate(ROUTES.BeforeCheckout)}>Checkout</button>
           </div>
           <div className="flex flex-col space-y-4">
-            {cart.cart?.orderProducts?.length && cart.cart.orderProducts.map((product, index) =>
+            {cart.cart?.orderProducts?.length && cart.cart.orderProducts.map((product) =>
               <CartProduct
                 key={product.id}
                 product={product}

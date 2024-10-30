@@ -1,10 +1,10 @@
-import _ from 'lodash';
-import { useCallback, useContext, useEffect, useState } from 'react';
-import { NavLink } from 'react-router-dom';
 import Loading from '@/component/ui/Loading';
-import { DTO, OrderProduct } from '@edroplets/api';
-import { ROUTES, idRoute } from '@/router/routes';
 import { CartContext } from '@/context';
+import { ROUTES, idRoute } from '@/router/routes';
+import { DTO, OrderProduct } from '@edroplets/api';
+import _ from 'lodash';
+import { useContext, useEffect, useState } from 'react';
+import { NavLink } from 'react-router-dom';
 
 export function CartProduct({ product }: { product: DTO<OrderProduct> }) {
   const [qty, setQty] = useState(product.quantity);

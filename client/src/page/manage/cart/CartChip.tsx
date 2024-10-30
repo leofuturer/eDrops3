@@ -1,10 +1,10 @@
-import _ from 'lodash';
-import { useCallback, useContext, useEffect, useState } from 'react';
-import { NavLink } from 'react-router-dom';
 import Loading from '@/component/ui/Loading';
-import { DTO, OrderChip } from '@edroplets/api';
-import { ROUTES, idRoute } from '@/router/routes';
 import { CartContext } from '@/context';
+import { ROUTES, idRoute } from '@/router/routes';
+import { DTO, OrderChip } from '@edroplets/api';
+import _ from 'lodash';
+import { useContext, useEffect, useState } from 'react';
+import { NavLink } from 'react-router-dom';
 
 export function CartChip({ chip }: { chip: DTO<OrderChip> }) {
   const [qty, setQty] = useState(chip.quantity);

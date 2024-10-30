@@ -1,5 +1,4 @@
 // @ts-nocheck // TODO: figure out where lineitem.tsx is used and fix line item type
-import React from 'react';
 import './lineitem.css';
 
 export function LineItem({ line_item, updateQuantityInCart, removeLineItemInCart }: { line_item: ShopifyBuy.LineItem, updateQuantityInCart: any, removeLineItemInCart: any }) {

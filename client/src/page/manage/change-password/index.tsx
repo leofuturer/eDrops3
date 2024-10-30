@@ -1,13 +1,13 @@
+import FormGroup from '@/component/form/FormGroup';
+import ManageRightLayout from '@/component/layout/ManageRightLayout';
+import Loading from '@/component/ui/Loading';
+import { ROUTES } from '@/router/routes';
+import { api } from '@edroplets/api';
+import { ChangePasswordSchema } from '@edroplets/schemas';
 import { Form, Formik } from 'formik';
 import { useState } from 'react';
 import { useCookies } from 'react-cookie';
 import { useNavigate } from 'react-router-dom';
-import { api } from '@edroplets/api';
-import FormGroup from '@/component/form/FormGroup';
-import ManageRightLayout from '@/component/layout/ManageRightLayout';
-import Loading from '@/component/ui/Loading';
-import { ChangePasswordSchema } from '@edroplets/schemas';
-import { ROUTES } from '@/router/routes';
 
 export function ChangePassword() {
   const [isLoading, setIsLoading] = useState(false);

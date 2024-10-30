@@ -11,11 +11,11 @@
 //
 // -- This is a parent command --
 Cypress.Commands.add('login', (username, password) => {
-    cy.visit('localhost:8086/login');
-    cy.get('input[name=usernameOrEmail]').type(username);
-    cy.get('input[name=password]').type(password);
-    cy.get('button[type=submit]').click();
-})
+  cy.visit('localhost:8086/login');
+  cy.get('input[name=usernameOrEmail]').type(username);
+  cy.get('input[name=password]').type(password);
+  cy.get('button[type=submit]').click();
+});
 
 //
 // -- This is a child command --

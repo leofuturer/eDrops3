@@ -1,9 +1,9 @@
+import MessageLayout from '@/component/layout/MessageLayout';
 import OrderItem from '@/component/orders/OrderItem';
 import { ROUTES } from '@/router/routes';
+import { api, DTO, OrderChip, OrderInfo, OrderProduct } from '@edroplets/api';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { api, Address, DTO, OrderChip, OrderInfo, OrderProduct } from '@edroplets/api';
-import MessageLayout from '@/component/layout/MessageLayout';
 
 
 export function OrderDetail() {

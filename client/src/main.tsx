@@ -1,6 +1,5 @@
 import { ChatContextProvider, PusherContextProvider } from '@/context';
 import { FlattenedRouteMap } from '@/router/map';
-import React from 'react';
 import { CookiesProvider } from 'react-cookie';
 import ReactDOM from 'react-dom/client';
 import { HelmetProvider } from 'react-helmet-async';

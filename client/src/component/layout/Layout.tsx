@@ -1,5 +1,5 @@
-import { Outlet } from 'react-router-dom';
 import { CartContextProvider } from '@/context/CartContext';
+import { Outlet } from 'react-router-dom';
 import Footer from '../footer/Footer';
 import NavTop from '../nav/NavTop';
 

@@ -1,2 +1,2 @@
+# Ignore build artifacts
 dist
-*.json

@@ -1,5 +1,5 @@
-import React, { useCallback } from 'react'
-import ModalBackground from './ModalBackground'
+import React, { useCallback } from 'react';
+import ModalBackground from './ModalBackground';
 
 function TwoChoiceModal({ title = "eDroplets", content, affirmativeText, negativeText, handleAffirmative, handleNegative }: { title?: string, content: string | React.ReactNode, affirmativeText: string, negativeText: string, handleAffirmative: () => void, handleNegative: () => void }) {
 

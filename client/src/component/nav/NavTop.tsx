@@ -1,10 +1,10 @@
+import { CartContext } from '@/context/CartContext';
+import { ROUTES } from '@/router/routes';
+import { ArrowUpTrayIcon, Bars3BottomRightIcon, Bars3Icon, CircleStackIcon, ShoppingCartIcon } from '@heroicons/react/24/solid';
 import { useContext, useState } from 'react';
 import { useCookies } from 'react-cookie';
 import { NavLink } from 'react-router-dom';
-import { CartContext } from '@/context/CartContext';
 import UserMenu from './UserMenu';
-import { ROUTES } from '@/router/routes';
-import { ArrowUpTrayIcon, Bars3BottomRightIcon, Bars3Icon, CircleStackIcon, ShoppingCartIcon } from '@heroicons/react/24/solid';
 
 function Dropdown({open, setOpen}: {open:boolean, setOpen: Function}) {
   return (
@@ -44,7 +44,7 @@ function NavTop() {
           </NavLink>
           <NavLink to={ROUTES.Home} className="hover:text-accent hidden xl:flex pt-2 ml-8">Home</NavLink>
           <Dropdown open={showMenu} setOpen={setShowMenu}/>
-          <a href="https://community.edroplets.org" target='_blank' rel='noopener' className="hover:text-accent hidden md:flex pt-2 ml-8">Community</a>
+          <a href="https://community.edroplets.org" target='_blank' rel="noopener noreferrer" className="hover:text-accent hidden md:flex pt-2 ml-8">Community</a>
           
         </div>
         <div className="hidden md:flex flex-row items-center h-full space-x-8 text-xl pt-2">

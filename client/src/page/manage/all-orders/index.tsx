@@ -1,12 +1,11 @@
-import { useContext, useEffect, useState } from 'react';
-import { api, DTO, OrderInfo  } from '@edroplets/api';
 import ManageRightLayout from '@/component/layout/ManageRightLayout';
-import Loading from '@/component/ui/Loading';
-import { CartContext } from '@/context/CartContext';
 import OrderList from '@/component/orders/OrderList';
+import { CartContext } from '@/context/CartContext';
+import { api, DTO, OrderInfo } from '@edroplets/api';
+import { useContext, useEffect, useState } from 'react';
 
 export function AllOrders() {
-  const [orderList, setOrderList] = useState<DTO<OrderInfo>[]>([]);
+  const [orderList, setOrderList] = useState < DTO < OrderInfo > [] > ([]);
   const [isLoading, setIsLoading] = useState(false);
 
   const cart = useContext(CartContext);

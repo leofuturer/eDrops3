@@ -1,10 +1,9 @@
-import React, { Fragment } from 'react'
-import { Menu, Transition } from '@headlessui/react';
-import { useCookies } from 'react-cookie';
-import { NavLink } from 'react-router-dom';
-import { ChevronUpIcon, ChevronDownIcon } from '@heroicons/react/20/solid';
 import { ROUTES } from '@/router/routes';
+import { Menu, Transition } from '@headlessui/react';
+import { ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/20/solid';
 import { AdjustmentsHorizontalIcon, ArrowRightOnRectangleIcon, ArrowUpTrayIcon, CircleStackIcon, UserCircleIcon } from '@heroicons/react/24/solid';
+import { Fragment } from 'react';
+import { NavLink } from 'react-router-dom';
 
 function UserMenu({ username, onSignout }: { username: string, onSignout: () => void }) {
 

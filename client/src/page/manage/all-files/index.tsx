@@ -1,8 +1,7 @@
+import ManageRightLayout from '@/component/layout/ManageRightLayout';
+import { api, DTO, FileInfo } from '@edroplets/api';
 import { useEffect, useState } from 'react';
 import { useCookies } from 'react-cookie';
-import { api, DTO, FileInfo} from '@edroplets/api';
-import ManageRightLayout from '@/component/layout/ManageRightLayout';
-import { idRoute } from '@/router/routes';
 
 export function AllFiles() {
   const [fileList, setFileList] = useState<DTO<FileInfo>[]>([]);

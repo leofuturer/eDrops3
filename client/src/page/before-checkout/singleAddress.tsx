@@ -1,4 +1,3 @@
-import React from 'react';
 import { Address, DTO } from '@edroplets/api';
 import { CreditCardIcon, CubeIcon } from '@heroicons/react/24/solid';
 

@@ -1,5 +1,5 @@
-import React, { useCallback } from 'react'
-import ModalBackground from './ModalBackground'
+import React, { useCallback } from 'react';
+import ModalBackground from './ModalBackground';
 
 function DeleteModal({ title = "Confirm Delete", content = "Are you sure you want to delete this item?", handleHide, handleDelete }: { title?: string, content?: string | React.ReactNode, handleHide: () => void, handleDelete: () => void }) {
 

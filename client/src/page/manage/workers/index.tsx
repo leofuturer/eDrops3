@@ -1,10 +1,10 @@
-import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { api, DTO, FoundryWorker, IncludeUser } from '@edroplets/api';
 import ManageRightLayout from '@/component/layout/ManageRightLayout';
 import DeleteModal from '@/component/modal/DeleteModal';
-import { ROUTES, idRoute } from '@/router/routes';
+import { idRoute, ROUTES } from '@/router/routes';
+import { api, DTO, FoundryWorker, IncludeUser } from '@edroplets/api';
 import { CpuChipIcon, PencilSquareIcon, TrashIcon } from '@heroicons/react/24/solid';
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 export function FoundryWorkers() {
   const [workerList, setWorkerList] = useState<DTO<IncludeUser<FoundryWorker>>[]>([]);

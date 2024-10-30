@@ -1,4 +1,3 @@
-import React from 'react'
 import CenterLayout from './CenterLayout'
 
 function MessageLayout({children, title, message}: {children: React.ReactNode, title: string, message: string}) {

@@ -1,8 +1,8 @@
+import { CartContext } from '@/context/CartContext';
+import { ROUTES, idRoute } from '@/router/routes';
 import { useContext } from 'react';
 import { NavLink } from 'react-router-dom';
 import { Product } from 'shopify-buy';
-import { CartContext } from '@/context/CartContext';
-import { ROUTES, idRoute } from '@/router/routes';
 
 function ItemCard({ product }: { product: Product }) {
   const cart = useContext(CartContext);

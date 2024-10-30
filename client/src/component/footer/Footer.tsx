@@ -1,6 +1,6 @@
-import { NavLink } from 'react-router-dom';
 import { controlSysId, pcbChipId } from '@/lib/constants/products';
 import { ROUTES, idRoute } from '@/router/routes';
+import { NavLink } from 'react-router-dom';
 
 function FooterPage() {
   return (
@@ -28,7 +28,7 @@ function FooterPage() {
         <h3 className="pt-[6px] text-[18px] font-bold">About Us</h3>
         <p className="px-8 break-words">
           This is a portal site for the EWOD cybermanufacturing ecosystem,
-          which is still under construction. We're working hard to
+          which is still under construction. We&apos;re working hard to
           build a fully-functional site that can help grow
           the field of digital microfluidics.
         </p>

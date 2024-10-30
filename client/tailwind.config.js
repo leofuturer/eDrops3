@@ -1,7 +1,7 @@
-const _ = require('lodash');
+import _ from 'lodash';
 
 /** @type {import('tailwindcss').Config} */
-module.exports = {
+export default {
   content: ['src/**/*.{html,css,js,jsx,ts,tsx}'],
   theme: {
     extend: {

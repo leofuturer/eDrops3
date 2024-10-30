@@ -1,7 +1,6 @@
-import React from 'react';
-import AuthNavLink from './AuthNavLink';
 import { ROUTES } from '@/router/routes';
-import { BanknotesIcon, BookOpenIcon, CircleStackIcon, CpuChipIcon, CurrencyDollarIcon, KeyIcon, ShoppingCartIcon, UserCircleIcon, UserGroupIcon, UserIcon, UsersIcon } from '@heroicons/react/24/solid';
+import { BanknotesIcon, BookOpenIcon, CircleStackIcon, CpuChipIcon, KeyIcon, ShoppingCartIcon, UserCircleIcon, UserGroupIcon, UserIcon, UsersIcon } from '@heroicons/react/24/solid';
+import AuthNavLink from './AuthNavLink';
 
 function NavLeft() {
   return (

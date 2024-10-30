@@ -1,12 +1,12 @@
-import { useState } from 'react';
-import { NavLink, useLocation, useNavigate, useSearchParams} from 'react-router-dom';
-import { useCookies } from 'react-cookie';
-import { Field, Formik, Form, FieldProps } from 'formik';
-import { api } from '@edroplets/api';
 import SEO from '@/component/header/seo';
-import { metadata } from './metadata';
-import { LoginSchema } from '@edroplets/schemas';
 import { ROUTES } from '@/router/routes';
+import { api } from '@edroplets/api';
+import { LoginSchema } from '@edroplets/schemas';
+import { Field, FieldProps, Form, Formik } from 'formik';
+import { useState } from 'react';
+import { useCookies } from 'react-cookie';
+import { NavLink, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
+import { metadata } from './metadata';
 
 export function Login() {
   const [showPassword, setShowPassword] = useState(false);
@@ -58,7 +58,7 @@ export function Login() {
       />
       <div className="flex flex-col shadow-box-sm rounded-lg py-4 px-20 space-y-2">
         <h3 className="text-secondary text-2xl text-center font-bold border-b-2 pb-2 border-secondary">Login</h3>
-        <p className="text-sm text-center">Don't have an account? <button onClick={() => {
+        <p className="text-sm text-center">Don&apos;t have an account? <button onClick={() => {
           console.log("clicked");
           const fileTransfer = searchParams.get('guestFile');
           console.log(fileTransfer);

@@ -1,7 +1,7 @@
-import { Tab } from '@headlessui/react';
-import { useContext } from 'react';
 import { ChatContext } from '@/context/ChatContext';
 import { ChatBox } from '@/page/subpage/order-chat/[id]';
+import { Tab } from '@headlessui/react';
+import { useContext } from 'react';
 
 function ChatModal() {
   const chat = useContext(ChatContext);
@@ -12,7 +12,11 @@ function ChatModal() {
           <Tab.Group>
             <Tab.List className="flex space-x-1 rounded-lg p-1 bg-white">
               {chat.chats.map((id) => (
-                <Tab key={id} className="shadow-box rounded-lg px-2 py-1">{id} <button type="button" onClick={() => chat.removeChat(id)}>x</button></Tab>
+                <Tab key={id} className="shadow-box rounded-lg px-2 py-1">
+                  {id}
+                  {' '}
+                  <button type="button" onClick={() => chat.removeChat(id)}>x</button>
+                </Tab>
               ))}
             </Tab.List>
             <Tab.Panels className="">
@@ -26,7 +30,7 @@ function ChatModal() {
         </div>
       )}
     </div>
-  )
+  );
 }
 
-export default ChatModal
+export default ChatModal;

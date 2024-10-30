@@ -7,13 +7,13 @@ export function ManageWorker() {
   const { id: workerId } = useParams();
 
   if (!workerId) {
-    return <Navigate to={ROUTES.ManageCustomers} />
+    return <Navigate to={ROUTES.ManageCustomers} />;
   }
   return (
-    <ManageRightLayout title='Edit Worker'>
+    <ManageRightLayout title="Edit Worker">
       <WorkerProfile workerId={workerId} />
     </ManageRightLayout>
-  )
+  );
 }
 
-export default ManageWorker
+export default ManageWorker;

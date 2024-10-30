@@ -1,10 +1,10 @@
-import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { api, Customer, IncludeUser, DTO } from '@edroplets/api';
 import ManageRightLayout from '@/component/layout/ManageRightLayout';
 import DeleteModal from '@/component/modal/DeleteModal';
-import { ROUTES, idRoute } from '@/router/routes';
-import { BanknotesIcon, CircleStackIcon, CurrencyDollarIcon, PencilSquareIcon, TrashIcon } from '@heroicons/react/24/solid';
+import { idRoute, ROUTES } from '@/router/routes';
+import { api, Customer, DTO, IncludeUser } from '@edroplets/api';
+import { BanknotesIcon, CircleStackIcon, PencilSquareIcon, TrashIcon } from '@heroicons/react/24/solid';
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 export function Customers() {
   const [customerList, setCustomerList] = useState<DTO<IncludeUser<Customer>>[]>([]);

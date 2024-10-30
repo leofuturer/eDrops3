@@ -7,13 +7,13 @@ export function ManageAdmin() {
   const { id: adminId } = useParams();
 
   if (!adminId) {
-    return <Navigate to={ROUTES.ManageAdmins} />
+    return <Navigate to={ROUTES.ManageAdmins} />;
   }
   return (
-    <ManageRightLayout title='Edit Admin'>
+    <ManageRightLayout title="Edit Admin">
       <AdminProfile adminId={adminId} />
     </ManageRightLayout>
-  )
+  );
 }
 
-export default ManageAdmin
+export default ManageAdmin;

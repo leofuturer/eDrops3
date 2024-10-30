@@ -1,16 +1,16 @@
-import { Form, Formik } from 'formik';
-import { useEffect, useState } from 'react';
-import { NavLink, useLocation, useNavigate } from 'react-router-dom';
-import { api, Admin, User, DTO } from '@edroplets/api';
 import FormGroup from '@/component/form/FormGroup';
 import ManageRightLayout from '@/component/layout/ManageRightLayout';
-import { AdminEditSchema, AdminSchema, AdminSubmitSchema } from '@edroplets/schemas';
 import { formatPhoneNumber } from '@/lib/phone';
-import { ValidationError } from 'yup';
 import { ROUTES } from '@/router/routes';
+import { Admin, api, DTO, User } from '@edroplets/api';
+import { AdminSchema, AdminSubmitSchema } from '@edroplets/schemas';
+import { Form, Formik } from 'formik';
+import { useState } from 'react';
+import { NavLink, useNavigate } from 'react-router-dom';
+import { ValidationError } from 'yup';
 
 export function AddAdmin() {
-  const [initialInfo, setInitialInfo] = useState<DTO<Admin & User> & {
+  const [initialInfo] = useState<DTO<Admin & User> & {
     confirmPassword: string;
   }>({
     phoneNumber: '',

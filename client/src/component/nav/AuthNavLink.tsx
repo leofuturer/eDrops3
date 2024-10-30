@@ -1,5 +1,4 @@
 import { ROUTES } from '@/router/routes'
-import React from 'react'
 import { useCookies } from 'react-cookie'
 import { NavLink } from 'react-router-dom'
 

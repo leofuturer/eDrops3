@@ -1,13 +1,13 @@
-import { ErrorMessage, Field, Form, Formik, FormikConfig } from 'formik';
+import FormGroup from '@/component/form/FormGroup';
+import SEO from '@/component/header/seo';
+import { ROUTES } from '@/router/routes';
+import { Address, api, Customer, DTO, User } from '@edroplets/api';
+import { CustomerSchema, CustomerSubmitSchema } from '@edroplets/schemas';
+import { ErrorMessage, Field, Form, Formik } from 'formik';
 import { useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { ValidationError } from 'yup';
-import { api, Address, Customer, User, DTO } from '@edroplets/api';
-import FormGroup from '@/component/form/FormGroup';
-import SEO from '@/component/header/seo';
-import { CustomerSchema, CustomerSubmitSchema } from '@edroplets/schemas';
 import { metadata } from './metadata';
-import { ROUTES } from '@/router/routes';
 
 
 export function Register() {

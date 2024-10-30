@@ -1,11 +1,11 @@
-import { Formik, Form } from 'formik';
-import { useEffect, useState } from 'react';
-import { NavLink, useNavigate, useSearchParams } from 'react-router-dom';
-import { api } from '@edroplets/api';
 import FormGroup from '@/component/form/FormGroup';
 import MessageLayout from '@/component/layout/MessageLayout';
-import { ResetPasswordSchema } from '@edroplets/schemas';
 import { ROUTES } from '@/router/routes';
+import { api } from '@edroplets/api';
+import { ResetPasswordSchema } from '@edroplets/schemas';
+import { Form, Formik } from 'formik';
+import { useEffect, useState } from 'react';
+import { NavLink, useNavigate, useSearchParams } from 'react-router-dom';
 
 export function ResetPassword() {
   const [errorDetected, setErrorDetected] = useState(false);
