@@ -7,4 +7,4 @@ export function Signup({...props}) {
     </LabelledIcon>
   )
 }
-export default Signup
+export default Signup 

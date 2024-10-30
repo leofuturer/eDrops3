@@ -1,10 +1,10 @@
 import type { Meta, StoryObj } from '@storybook/react';
 
-import { Login } from '../../components/icons/Login';
+import { Project } from '../../components/icons/Project';
 
 const meta = {
-  component: Login,
-} satisfies Meta<typeof Login>;
+  component: Project,
+} satisfies Meta<typeof Project>;
 
 export default meta;
 
@@ -14,7 +14,6 @@ export const Default: Story = {
   args: {
     className: 'size-6',
     active: false,
-    label: 'Login'
+    label: 'Projects'
   }
-}
-
+};

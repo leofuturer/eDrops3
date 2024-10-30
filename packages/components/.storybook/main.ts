@@ -18,7 +18,10 @@ const config: StorybookConfig = {
     getAbsolutePath("@chromatic-com/storybook"),
     getAbsolutePath("@storybook/addon-interactions"),
     getAbsolutePath("@storybook/addon-themes"),
-    getAbsolutePath("@storybook/addon-a11y")
+    getAbsolutePath("@storybook/addon-a11y"),
+    getAbsolutePath("@storybook/test-runner"),
+    getAbsolutePath("storybook-addon-remix-react-router"),  // React Router simulation
+    // getAbsolutePath("@bbbtech/storybook-formik")            // Formik simulation
   ],
   framework: {
     name: getAbsolutePath("@storybook/react-vite"),
