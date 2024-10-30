@@ -1,5 +1,5 @@
-import { NavLink } from 'react-router-dom';
 import { Post } from '@edroplets/api';
+import { NavLink } from 'react-router-dom';
 
 function PostCard({ post }: { post: Post }) {
   return (

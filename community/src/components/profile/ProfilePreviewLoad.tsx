@@ -1,4 +1,3 @@
-import React, { useEffect, useState } from 'react';
 import { UserCircleIcon } from '@heroicons/react/24/solid';
 
 function ProfilePreviewLoad() {

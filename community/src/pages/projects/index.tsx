@@ -1,15 +1,14 @@
+import ProfilePreview from '@/components/profile/ProfilePreview';
+import ProjectPreview from '@/components/project/ProjectPreview';
+import { DeleteModal } from '@/components/ui/DeleteModal';
+import { api, Project as ProjectType } from '@edroplets/api';
 import { MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 import { PlusIcon } from '@heroicons/react/24/solid';
+import { AxiosError } from 'axios';
 import { debounce } from 'lodash';
 import React, { useEffect, useMemo, useState } from 'react';
-import { NavLink } from 'react-router-dom';
-import { api, Project as ProjectType } from '@edroplets/api';
-import ProjectPreview from '@/components/project/ProjectPreview';
-import ProfilePreview from '@/components/profile/ProfilePreview';
-import { DeleteModal } from '@/components/ui/DeleteModal';
 import { useCookies } from 'react-cookie';
-import { AxiosError } from 'axios';
-import { useNavigate } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 
 type ProjectPrev = ProjectType & {
   liked?: boolean;
@@ -103,8 +102,8 @@ export function Projects() {
     if (!cookies.userId) { navigate('/login'); return; }
     api.user.saveProject(cookies.userId, id)
       .then((res) => {
-        let temp = [...projectList];
-        let project = projectList.find((project) => project.id==id);
+        const temp = [...projectList];
+        const project = projectList.find((project) => project.id==id);
         if (project) {
           console.log(res);
           project.saved = res;
@@ -123,8 +122,8 @@ export function Projects() {
     if (!cookies.userId) { navigate('/login'); return; }
     api.user.likeProject(cookies.userId, id)
       .then((res) => {
-        let temp = [...projectList];
-        let project = projectList.find((project) => project.id==id);
+        const temp = [...projectList];
+        const project = projectList.find((project) => project.id==id);
         if (project) {
           console.log(res);
           project.liked = res;

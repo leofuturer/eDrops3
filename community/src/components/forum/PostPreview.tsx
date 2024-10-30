@@ -1,12 +1,13 @@
-import React, { useEffect, useState } from 'react';
-import { NavLink, useNavigate } from 'react-router-dom';
-import { Post, Project, api } from '@edroplets/api';
-import { UserCircleIcon } from '@heroicons/react/24/solid';
+import { Post } from '@edroplets/api';
 import {
-  BookmarkIcon, ChatBubbleBottomCenterTextIcon, ChatBubbleLeftIcon, HandThumbUpIcon, EllipsisHorizontalIcon,
+  BookmarkIcon, ChatBubbleBottomCenterTextIcon,
+  EllipsisHorizontalIcon,
+  HandThumbUpIcon
 } from '@heroicons/react/24/outline';
+import { UserCircleIcon } from '@heroicons/react/24/solid';
+import React, { useState } from 'react';
 import { useCookies } from 'react-cookie';
-import { AxiosError } from 'axios';
+import { NavLink, useNavigate } from 'react-router-dom';
 
 type PostPrev = Post & {
   liked?: boolean;

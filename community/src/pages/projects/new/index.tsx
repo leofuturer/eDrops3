@@ -1,3 +1,6 @@
+import AddLink from '@/components/project/AddLink';
+import FileUpload from '@/components/project/FileUpload';
+import ImageUpload from '@/components/project/ImageUpload';
 import { Project, ProjectFile, api } from '@edroplets/api';
 import {
   LinkIcon,
@@ -6,13 +9,9 @@ import {
   XMarkIcon,
 } from '@heroicons/react/24/solid';
 import { AxiosError } from 'axios';
-import Cookies from 'js-cookie';
 import { useEffect, useState } from 'react';
 import { useCookies } from 'react-cookie';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import ImageUpload from '@/components/project/ImageUpload';
-import FileUpload from '@/components/project/FileUpload';
-import AddLink from '@/components/project/AddLink';
 
 export function NewProject() {
   const [title, setTitle] = useState('');
@@ -199,7 +198,7 @@ export function NewProject() {
                 className="h-6 w-6 cursor-pointer"
                 onClick={() => {
                   setExistingFiles(existingFiles.filter((f) => f !== file));
-                  let deletedTemp = [...deletedFiles];
+                  const deletedTemp = [...deletedFiles];
                   deletedTemp.push(file);
                   setDeletedFiles(deletedTemp);
                 }}
@@ -244,7 +243,7 @@ export function NewProject() {
                 className="h-6 w-6 cursor-pointer"
                 onClick={() => {
                   setExistingLinks(existingLinks.filter((l) => l !== link));
-                  let deleted = [...deletedLinks];
+                  const deleted = [...deletedLinks];
                   deleted.push(link);
                   setDeletedLinks(deleted);
                 }}

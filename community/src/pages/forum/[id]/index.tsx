@@ -1,25 +1,26 @@
+import Comment from '@/components/comment/Comment';
+import { DeleteModal } from '@/components/ui/DeleteModal';
+import { timeAgo } from '@/lib/time';
 import {
-  ChatBubbleBottomCenterTextIcon,
+  api,
+  Comment as CommentType,
+  Post as PostType
+} from '@edroplets/api';
+import {
   BookmarkIcon,
+  ChatBubbleBottomCenterTextIcon,
   ChatBubbleLeftRightIcon,
   ChevronLeftIcon,
   ChevronRightIcon,
-  HandThumbUpIcon,
   EllipsisHorizontalIcon,
+  HandThumbUpIcon,
 } from '@heroicons/react/24/outline';
 import { AxiosError } from 'axios';
-import Cookies from 'js-cookie';
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useCookies } from 'react-cookie';
 import {
   Link, NavLink, useNavigate, useParams,
 } from 'react-router-dom';
-import {
-  api, Post as PostType, Comment as CommentType, request,
-} from '@edroplets/api';
-import { useCookies } from 'react-cookie';
-import { timeAgo } from '@/lib/time';
-import Comment from '@/components/comment/Comment';
-import { DeleteModal } from '@/components/ui/DeleteModal';
 
 export function Post() {
   const { id } = useParams();

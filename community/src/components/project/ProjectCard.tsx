@@ -1,6 +1,6 @@
-import { NavLink } from 'react-router-dom';
 import { Project as ProjectType, api } from '@edroplets/api';
 import { useEffect, useState } from 'react';
+import { NavLink } from 'react-router-dom';
 
 function ProjectCard({ project }: { project: ProjectType }) {
   const [coverImageId, setCoverImageId] = useState(-1);

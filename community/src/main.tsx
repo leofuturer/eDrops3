@@ -1,17 +1,27 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import './index.css';
 import {
-  BrowserRouter as Router,
-  Routes,
-  Route,
-  Navigate,
-} from 'react-router-dom';
-import {
-  Home, Projects, NewProject, Project, Profile, Forum, NewForum, Post, Login, Signup, CheckEmail, EmailVerified, EmailUnverified,
+  CheckEmail,
+  EmailUnverified,
+  EmailVerified,
+  Forum,
+  Home,
+  Login,
+  NewForum,
+  NewProject,
+  Post,
+  Profile,
+  Project,
+  Projects,
+  Signup,
 } from '@/pages/index';
-import Layout from './components/Layout';
+import ReactDOM from 'react-dom/client';
+import {
+  Route,
+  BrowserRouter as Router,
+  Routes
+} from 'react-router-dom';
 import { AuthLayout } from './components/AuthLayout';
+import Layout from './components/Layout';
+import './index.css';
 import { ROUTES } from './router/routes';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(

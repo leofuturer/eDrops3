@@ -13,11 +13,9 @@ import {
   UserIcon,
   UserPlusIcon,
 } from '@heroicons/react/24/solid';
-import Cookies from 'js-cookie';
 import { useEffect, useState } from 'react';
-import { NavLink, useLocation, useNavigate } from 'react-router-dom';
-import { api } from '@edroplets/api';
 import { useCookies } from 'react-cookie';
+import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 
 export function NavTop() {
   const navigate = useNavigate();

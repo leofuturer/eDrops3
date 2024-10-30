@@ -1,5 +1,5 @@
+import { DTO, User } from '@edroplets/api';
 import { PencilIcon, UserCircleIcon } from '@heroicons/react/24/solid';
-import { api, DTO, User } from '@edroplets/api';
 
 function ProfileEdit({ user }: { user: DTO<User> }) {
   return (

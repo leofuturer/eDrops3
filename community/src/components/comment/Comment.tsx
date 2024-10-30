@@ -1,13 +1,11 @@
-
+import { api, Comment as CommentType, Post as PostType } from "@edroplets/api";
 import { ChevronRightIcon, HandThumbUpIcon } from "@heroicons/react/24/outline";
-import { XMarkIcon, ArrowUturnLeftIcon, PencilIcon, CheckIcon} from "@heroicons/react/24/solid";
+import { ArrowUturnLeftIcon, CheckIcon, PencilIcon, XMarkIcon } from "@heroicons/react/24/solid";
 import { AxiosError } from "axios";
 import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { api } from "@edroplets/api";
-import { timeAgo } from "../../lib/time";
-import { Comment as CommentType, Post as PostType} from "@edroplets/api";
 import { useCookies } from "react-cookie";
+import { Link, useNavigate } from "react-router-dom";
+import { timeAgo } from "../../lib/time";
 
 function Comment({ comment, currentPost} : {comment: CommentType, currentPost: PostType}) {
 	const navigate = useNavigate();

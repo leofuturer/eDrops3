@@ -1,4 +1,7 @@
-
+import Comment from '@/components/comment/Comment';
+import { DeleteModal } from '@/components/ui/DeleteModal';
+import { timeAgo } from '@/lib/time';
+import { api, Comment as CommentType, Project as ProjectType } from '@edroplets/api';
 import {
   ArrowDownIcon,
   BookmarkIcon,
@@ -6,19 +9,15 @@ import {
   ChatBubbleLeftRightIcon,
   ChevronLeftIcon,
   ChevronRightIcon,
-  HandThumbUpIcon,
-  EllipsisHorizontalIcon
+  EllipsisHorizontalIcon,
+  HandThumbUpIcon
 } from '@heroicons/react/24/outline';
 import { AxiosError } from 'axios';
-import { useCookies } from 'react-cookie';
 import { useEffect, useState } from 'react';
+import { useCookies } from 'react-cookie';
 import {
   Link, NavLink, useNavigate, useParams,
 } from 'react-router-dom';
-import { api, Comment as CommentType, Project as ProjectType } from '@edroplets/api';
-import { timeAgo } from '@/lib/time';
-import Comment from '@/components/comment/Comment';
-import { DeleteModal } from '@/components/ui/DeleteModal';
 
 export function Project() {
   const { id } = useParams();

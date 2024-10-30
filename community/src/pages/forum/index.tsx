@@ -1,13 +1,13 @@
+import PostPreview from '@/components/forum/PostPreview';
+import ProfilePreview from '@/components/profile/ProfilePreview';
+import { DeleteModal } from '@/components/ui/DeleteModal';
+import { api, Post } from '@edroplets/api';
 import { MagnifyingGlassIcon, PlusIcon } from '@heroicons/react/24/solid';
+import { AxiosError } from 'axios';
 import { debounce } from 'lodash';
 import React, { useEffect, useMemo, useState } from 'react';
-import { NavLink, useNavigate } from 'react-router-dom';
-import { api, Post } from '@edroplets/api';
 import { useCookies } from 'react-cookie';
-import { AxiosError } from 'axios';
-import { DeleteModal } from '@/components/ui/DeleteModal';
-import ProfilePreview from '@/components/profile/ProfilePreview';
-import PostPreview from '@/components/forum/PostPreview';
+import { NavLink, useNavigate } from 'react-router-dom';
 
 type PostPrev = Post & {
   liked?: boolean;
@@ -99,8 +99,8 @@ export function Forum() {
     if (!cookies.userId) { navigate('/login'); return; }
     api.user.savePost(cookies.userId, id)
       .then((res) => {
-        let temp = [...postList];
-        let post = postList.find((post) => post.id==id);
+        const temp = [...postList];
+        const post = postList.find((post) => post.id==id);
         if (post) {
           console.log(res);
           post.saved = res;
@@ -119,8 +119,8 @@ export function Forum() {
     if (!cookies.userId) { navigate('/login'); return; }
     api.user.likePost(cookies.userId, id)
       .then((res) => {
-        let temp = [...postList];
-        let post = postList.find((post) => post.id==id);
+        const temp = [...postList];
+        const post = postList.find((post) => post.id==id);
         if (post) {
           console.log(res);
           post.liked = res;

@@ -1,6 +1,5 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
 import { Project as ProjectType } from '@edroplets/api';
+import { useNavigate } from 'react-router-dom';
 
 function ProjectPreviewCompact({ project } : { project: ProjectType }) {
   const navigate = useNavigate();

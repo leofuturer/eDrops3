@@ -1,20 +1,20 @@
-import {
-  ChevronDownIcon,
-  PencilIcon,
-  ArrowDownOnSquareIcon,
-} from '@heroicons/react/24/solid';
-import Cookies from 'js-cookie';
-import { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
-import {
-  Post, Project, User, UserProfile, api,
-} from '@edroplets/api';
-import { useCookies } from 'react-cookie';
 import PostPreview from '@/components/forum/PostPreview';
 import ProfileEdit from '@/components/profile/ProfileEdit';
 import ProfileInfo from '@/components/profile/ProfileInfo';
 import ProjectPreview from '@/components/project/ProjectPreview';
+import {
+  Post, Project, User,
+  api
+} from '@edroplets/api';
+import {
+  ArrowDownOnSquareIcon,
+  ChevronDownIcon,
+  PencilIcon,
+} from '@heroicons/react/24/solid';
 import { AxiosError } from 'axios';
+import { useEffect, useState } from 'react';
+import { useCookies } from 'react-cookie';
+import { useNavigate, useParams } from 'react-router-dom';
 type ProjectPrev = Project & {
   liked?: boolean;
   saved?: boolean;
@@ -119,8 +119,8 @@ export function Profile(): JSX.Element {
     }
     apiCall()
       .then((res) => {
-        let temp = [...feedData];
-        let post = feedData.find((post) => post.id==id);
+        const temp = [...feedData];
+        const post = feedData.find((post) => post.id==id);
         if (post) {
           console.log(res);
           post.saved = res;
@@ -144,8 +144,8 @@ export function Profile(): JSX.Element {
     }
     apiCall()
       .then((res) => {
-        let temp = [...feedData];
-        let post = feedData.find((post) => post.id==id);
+        const temp = [...feedData];
+        const post = feedData.find((post) => post.id==id);
         if (post) {
           console.log(res);
           post.liked = res;

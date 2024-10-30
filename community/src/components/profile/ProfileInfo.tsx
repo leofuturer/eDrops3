@@ -1,8 +1,7 @@
 import {
-  api, DTO, User, UserProfile,
+  api, DTO, User
 } from '@edroplets/api';
 import { UserCircleIcon } from '@heroicons/react/24/solid';
-import Cookies from 'js-cookie';
 import _ from 'lodash';
 import { useState } from 'react';
 import { useCookies } from 'react-cookie';

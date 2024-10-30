@@ -1,7 +1,7 @@
-import { useEffect, useState } from 'react';
-import { Post, Project, api } from '@edroplets/api';
 import PostCard from '@/components/forum/PostCard';
 import ProjectCard from '@/components/project/ProjectCard';
+import { Post, Project, api } from '@edroplets/api';
+import { useEffect, useState } from 'react';
 
 export function Home() {
   const [featuredProjectList, setFeaturedProjectList] = useState<Project[]>([]);

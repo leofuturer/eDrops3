@@ -1,12 +1,12 @@
-import React, { useState } from 'react';
-import { api } from '@edroplets/api';
-import { LoginSchema, UserSubmitSchema } from '@edroplets/schemas';
-import { useLocation, useNavigate } from 'react-router-dom';
-import {
-  ErrorMessage, Field, FieldProps, Form, Formik, validateYupSchema,
-} from 'formik';
-import { useCookies } from 'react-cookie';
 import FormInput from '@/components/ui/FormInput';
+import { api } from '@edroplets/api';
+import { LoginSchema } from '@edroplets/schemas';
+import {
+  Form, Formik
+} from 'formik';
+import { useState } from 'react';
+import { useCookies } from 'react-cookie';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 export function Login() {
   const navigate = useNavigate();

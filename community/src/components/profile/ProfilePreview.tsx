@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react';
-import { api, User, UserProfile } from '@edroplets/api';
+import { api, User } from '@edroplets/api';
 import { UserCircleIcon } from '@heroicons/react/24/solid';
 import _ from 'lodash';
-import { NavLink } from 'react-router-dom';
+import { useEffect, useState } from 'react';
 import { useCookies } from 'react-cookie';
+import { NavLink } from 'react-router-dom';
 import ProfilePreviewLoad from './ProfilePreviewLoad';
 
 function ProfilePreview() {

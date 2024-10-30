@@ -1,17 +1,10 @@
 import {
-  LinkIcon,
-  PaperClipIcon,
-  PhotoIcon,
-  VideoCameraIcon,
-} from '@heroicons/react/24/solid';
-import { AxiosError } from 'axios';
-import Cookies from 'js-cookie';
-import React, { useEffect, useState } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
-import {
-  api, Post as PostType, Project as ProjectType, request,
+  api, Post as PostType
 } from '@edroplets/api';
+import { AxiosError } from 'axios';
+import { useEffect, useState } from 'react';
 import { useCookies } from 'react-cookie';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 
 export function NewForum() {
   const [title, setTitle] = useState('');

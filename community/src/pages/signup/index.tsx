@@ -1,16 +1,17 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { api } from '@edroplets/api';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 // import { SignupInfo } from "../lib/types";
-import {
-  Address, Customer, DTO, User,
-} from '@edroplets/api';
-import {
-  Formik, Form, Field, FieldProps,
-} from 'formik';
-import { UserSchema, UserSubmitSchema } from '@edroplets/schemas';
-import { ValidationError } from 'yup';
 import { FormInput } from '@/components/ui/FormInput';
+import {
+  DTO, User
+} from '@edroplets/api';
+import { UserSchema, UserSubmitSchema } from '@edroplets/schemas';
+import {
+  Form,
+  Formik
+} from 'formik';
+import { ValidationError } from 'yup';
 
 export function Signup() {
   const navigate = useNavigate();

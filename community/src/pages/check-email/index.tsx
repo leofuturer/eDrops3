@@ -1,5 +1,5 @@
-import { NavLink } from 'react-router-dom';
 import { ROUTES } from '@/router/routes';
+import { NavLink } from 'react-router-dom';
 
 export function CheckEmail() {
   return (

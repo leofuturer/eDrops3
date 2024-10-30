@@ -1,10 +1,9 @@
-import React, { useEffect, useState } from 'react';
-import { NavLink, useNavigate } from 'react-router-dom';
 import { Project as ProjectType, api } from '@edroplets/api';
-import { BookmarkIcon, ChatBubbleBottomCenterTextIcon, HandThumbUpIcon, EllipsisHorizontalIcon } from '@heroicons/react/24/outline';
-import { useCookies } from 'react-cookie';
-import { AxiosError } from 'axios';
+import { BookmarkIcon, ChatBubbleBottomCenterTextIcon, EllipsisHorizontalIcon, HandThumbUpIcon } from '@heroicons/react/24/outline';
 import { UserCircleIcon } from '@heroicons/react/24/solid';
+import React, { useEffect, useState } from 'react';
+import { useCookies } from 'react-cookie';
+import { NavLink, useNavigate } from 'react-router-dom';
 
 type ProjectPrev = ProjectType & {
   liked?: boolean;

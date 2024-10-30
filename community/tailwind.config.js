@@ -1,5 +1,6 @@
-module.exports = {
+import edroplets from "@edroplets/ui"
+export default {
   presets: [
-    require('@edroplets/ui'),
+    edroplets,
   ]
 };
