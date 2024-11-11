@@ -28,8 +28,9 @@ class CustomerResource extends Resource<Customer> {
   /*
     @override Resource.create
   */
-  async create(data: DTO<Customer & User & Address>): Promise<DTO<Customer>> {
-    return request<DTO<Customer>>(this.baseURL, 'POST', data).then((res) => {
+  async create(data: DTO<Customer & User & Address>, query?: string): Promise<DTO<Customer>> {
+    const url = query ? `${this.baseURL}?fileTransfer=${query}` : this.baseURL;
+    return request<DTO<Customer>>(url, 'POST', data).then((res) => {
       return res.data;
     });
   }
@@ -120,7 +121,31 @@ class CustomerResource extends Resource<Customer> {
     });
   }
 
-  async downloadFile(id: typeof Customer.prototype.id, fileId: number, save: boolean = false): Promise<string> {
+  async guestUploadFile(formData: FormData): Promise<DTO<FileInfo>> {
+    const url = this.baseURL.replace('/customers', '');
+    return request<DTO<FileInfo>>(`${url}/guest/files`, 'POST', formData, {
+      'Content-Type': 'multipart/form-data'
+    }).then((res) => {
+      return res.data;
+    });
+  }
+
+  async guestGetFile(fileId: typeof FileInfo.prototype.id): Promise<DTO<FileInfo>> {
+    const url = this.baseURL.replace('/customers', '');
+    return request<DTO<FileInfo>>(`${url}/guest/files/${fileId}`, 'GET', {}).then((res) => {
+      return res.data;
+    });
+  }
+
+  async guestTransferFile(id: typeof Customer.prototype.id, fileId: typeof FileInfo.prototype.id): Promise<string> {
+    return request<string>(`${this.baseURL}/${id}/guestTransfer/${fileId}`, 'PATCH', {}, {
+      'Content-Type': 'multipart/form-data'
+    }).then((res) => {
+      return res.data;
+    });
+  }
+
+  async downloadFile(id: typeof Customer.prototype.id, fileId: typeof FileInfo.prototype.id, save: boolean = false): Promise<string> {
     return request<string>(`${this.baseURL}/${id}/files/${fileId}/download`, 'GET', {}).then(async (res) => {
       const data = res.data as string;
       // console.log(res);
@@ -131,7 +156,19 @@ class CustomerResource extends Resource<Customer> {
     });
   }
 
-  async deleteFile(id: typeof Customer.prototype.id, fileId: number): Promise<Count> {
+  async guestDownloadFile(fileId: typeof FileInfo.prototype.id, save: boolean = false): Promise<string> {
+    const url = this.baseURL.replace('/customers', '');
+    return request<string>(`${url}/guest/files/${fileId}/download`, 'GET', {}).then(async (res) => {
+      const data = res.data as string;
+      // console.log(res);
+      if (save) {
+        download(res);
+      }
+      return data;
+    });
+  }
+
+  async deleteFile(id: typeof Customer.prototype.id, fileId: typeof FileInfo.prototype.id): Promise<Count> {
     return request<Count>(`${this.baseURL}/${id}/files/${fileId}`, 'DELETE', {}).then((res) => {
       return res.data;
     });

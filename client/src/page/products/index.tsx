@@ -17,7 +17,7 @@ export function Products() {
         description=""
         metadata={metadata}
       />
-      <h3 className="border-b-2 border-secondary text-secondary w-1/3 min-w-min text-4xl font-bold text-center py-8">Products</h3>
+      <h3 className="border-b-2 border-secondary text-secondary w-1/3 min-w-min text-4xl font-bold text-center py-8">Available Products</h3>
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-10 w-full px-8 lg:px-0 lg:w-3/4">
         <Suspense fallback={<><ItemLoad /><ItemLoad /><ItemLoad /></>}>
           <Await

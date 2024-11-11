@@ -56,6 +56,7 @@ export class ProjectProjectFileController {
     return this.projectRepository.projectFiles(id).find(filter);
   }
 
+  // requested when you add an image (before you create the post)
   @authenticate('jwt')
   @post('/users/{id}/project-images', {
     responses: {
@@ -100,6 +101,7 @@ export class ProjectProjectFileController {
     });
   }
 
+  // same as /project-images but for dxfs
   @authenticate('jwt')
   @post('/users/{id}/project-files', {
     responses: {
@@ -232,6 +234,6 @@ export class ProjectProjectFileController {
     @param.path.string('id') id: typeof User.prototype.id,
     @param.path.number('fileId') fileId: typeof ProjectFile.prototype.id,
   ): Promise<void> {
-    return this.projectFileRepository.updateById(fileId, { isDeleted: true });
+    return this.projectFileRepository.deleteById(fileId);
   }
 }

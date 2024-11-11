@@ -1,4 +1,4 @@
-import { Post, PostComment } from "./lib/types";
+import { Post, Comment } from "./lib/types";
 import { Resource } from "./lib/resource";
 import { request } from "./lib/api";
 
@@ -14,13 +14,15 @@ class PostResource extends Resource<Post> {
   }
 
   async getPostComments(id: typeof Post.prototype.id) {
-    return request<PostComment[]>(`${this.baseURL}/${id}/post-comments`, "GET", {}).then((res) => {
+    const url = this.baseURL.replace("/posts", "");
+    return request<Comment[]>(`${url}/comments/post/${id}`, "GET", {}).then((res) => {
       return res.data;
     });
   }
 
-  async addPostComment(id: typeof Post.prototype.id, comment: PostComment) {
-    return request<PostComment>(`${this.baseURL}/${id}/post-comments`, "POST", comment).then((res) => {
+  async addPostComment(id: typeof Post.prototype.id, comment: Comment) {
+    const url = this.baseURL.replace("/posts", "");
+    return request<Comment>(`${url}/comments/post/${id}`, "POST", comment).then((res) => {
       return res.data;
     });
   }

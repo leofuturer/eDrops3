@@ -27,7 +27,7 @@ export function Cart() {
       {cart.cart?.orderProducts && cart.cart?.orderProducts?.length !== 0 || cart.cart?.orderChips && cart.cart?.orderChips?.length !== 0 ?
         (<div className="flex flex-col w-full space-y-4 -mt-4">
           <div className="flex flex-row justify-end items-center">
-            <button type="button" className="bg-primary rounded-lg text-white px-4 py-2" onClick={() => navigate(ROUTES.BeforeCheckout)}>Checkout</button>
+            <button id="checkout" type="button" className="bg-primary rounded-lg text-white px-4 py-2" onClick={() => navigate(ROUTES.BeforeCheckout)}>Checkout</button>
           </div>
           <div className="flex flex-col space-y-4">
             {cart.cart?.orderProducts?.length && cart.cart.orderProducts.map((product, index) =>
@@ -50,7 +50,7 @@ export function Cart() {
             </p>
           </div>
         </div>)
-        : (<p className="text-center">Your cart is currently empty. You can either <NavLink to={ROUTES.Upload} className="text-primary_light hover:text-primary">upload a file</NavLink> for a custom chip order or <NavLink to={ROUTES.Products} className="text-primary_light hover:text-primary">view our products</NavLink>.</p>)}
+        : (<p data-cy="emptyMessage" className="text-center">Your cart is currently empty. You can either <NavLink to={ROUTES.Upload} className="text-primary_light hover:text-primary">upload a file</NavLink> for a custom chip order or <NavLink to={ROUTES.Products} className="text-primary_light hover:text-primary">view our products</NavLink>.</p>)}
     </ManageRightLayout>
   );
 }

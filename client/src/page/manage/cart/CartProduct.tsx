@@ -38,6 +38,7 @@ export function CartProduct({ product }: { product: DTO<OrderProduct> }) {
         <div className="flex items-center">
           {deleting ? <Loading /> :
             <button
+              data-cy="deleteButton"
               type="button"
               className="bg-red-700 px-4 py-2 text-white rounded-lg"
               onClick={handleDelete}>

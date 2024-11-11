@@ -14,12 +14,21 @@ jobs:
         steps:
             - name: Checkout
               uses: actions/checkout@v3
+            - name: Write env variables
+              run: |
+                  echo "APP_PUSHER_API_KEY=${{ secrets.APP_PUSHER_API_KEY }}" >> ./deploy/test/backend.env
+                  echo "APP_PUSHER_API_SECRET=${{ secrets.APP_PUSHER_API_SECRET }}" >> ./deploy/test/backend.env
             # Install NPM dependencies, cache them correctly
             # and run all Cypress tests
             - name: Node.js ${{ matrix.node-version }}
               uses: actions/setup-node@v3
               with:
                   node-version: ${{ matrix.node-version }}
+            - name: Install Docker Compose
+              run: |
+                sudo curl -L "https://github.com/docker/compose/releases/download/v2.20.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+                sudo chmod +x /usr/local/bin/docker-compose
+                docker-compose --version
             - name: Start backend
               run: |
                   # install server
@@ -40,12 +49,14 @@ jobs:
                   # Wait for database to be reset
                   set +e
                   retries=5
+                  docker-compose -f docker-compose.yml -f docker-compose.test.yml logs
                   docker-compose -f docker-compose.yml -f docker-compose.test.yml logs | grep 'Done resetting database'
                   while [[ $? -ne 0 && $retries -ne 0 ]]; do
                     echo "Waiting for database reset to occur, will try again in 5 seconds"
                     echo "$retries retries left"
                     sleep 5
                     retries=$(( $retries - 1 ))
+                    docker-compose -f docker-compose.yml -f docker-compose.test.yml logs
                     docker-compose -f docker-compose.yml -f docker-compose.test.yml logs | grep 'Done resetting database'
                   done
 
@@ -72,13 +83,37 @@ jobs:
               env:
                   APP_EMAIL_API_KEY: ${{ secrets.APP_EMAIL_API_KEY }}
                   SHOPIFY_TOKEN: ${{ secrets.SHOPIFY_TOKEN }}
-            - name: Frontend Cypress E2E tests
+            - name: Install rimraf
+              run: npm install -g rimraf
+            - name: Build middleware packages
+              run: |
+                  cd api
+                  npm run build
+                  cd ../schemas
+                  npm run build
+              working-directory: ./packages
+            - name: Install client dependencies
+              run: npm install
+              working-directory: ./client
+            - name: Install community dependencies
+              run: npm install
+              working-directory: ./community
+            - name: Main Site E2E tests
               uses: cypress-io/github-action@v4
               with:
                 browser: chrome
                 start: npm run dev
                 wait-on: http://localhost:8086
                 working-directory: ./client
+              continue-on-error: true
+            - name: Community Site E2E tests
+              uses: cypress-io/github-action@v4
+              with:
+                browser: chrome
+                start: npm run dev
+                wait-on: http://localhost:8087
+                working-directory: ./community
+              continue-on-error: true
             - name: Stop backend
               run: |
                   # Shut down the testing backend

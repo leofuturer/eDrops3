@@ -1,5 +1,5 @@
 import {Entity, model, property, hasMany} from '@loopback/repository';
-import {PostComment} from './post-comment.model';
+import {Comment} from './comment.model';
 
 @model({
   settings: {
@@ -73,8 +73,8 @@ export class Post extends Entity {
   })
   userId?: string;
 
-  @hasMany(() => PostComment)
-  postComments?: PostComment[];
+  @hasMany(() => Comment, {keyTo: "parentId"})
+  postComments?: Comment[];
 
   constructor(data?: Partial<Post>) {
     super(data);

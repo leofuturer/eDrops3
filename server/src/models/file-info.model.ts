@@ -8,12 +8,12 @@ import {Entity, model, property} from '@loopback/repository';
 })
 export class FileInfo extends Entity {
   @property({
-    type: 'number',
+    type: 'string',
     id: 1,
-    generated: true,
-    updateOnly: true,
+    defaultFn: 'uuidv4',
+    limit: 36,
   })
-  id?: number;
+  id?: string;
 
   @property({
     type: 'string',

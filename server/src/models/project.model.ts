@@ -1,5 +1,5 @@
 import {Entity, model, property, hasMany} from '@loopback/repository';
-import { ProjectComment } from './project-comment.model';
+import { Comment } from './comment.model';
 import {ProjectFile} from './project-file.model';
 import {ProjectLink} from './project-link.model';
 
@@ -80,8 +80,8 @@ export class Project extends Entity {
   @hasMany(() => ProjectLink)
   projectLinks?: ProjectLink[];
 
-  @hasMany(() => ProjectComment)
-  projectComments?: ProjectComment[];
+  @hasMany(() => Comment, {keyTo: "parentId"})
+  projectComments?: Comment[];
 
   constructor(data?: Partial<Project>) {
     super(data);

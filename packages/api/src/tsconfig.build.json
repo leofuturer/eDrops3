@@ -17,6 +17,9 @@
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "baseUrl": ".",
+    "skipLibCheck": true,
+    "incremental": true,
+    "tsBuildInfoFile": "dist/api.tsbuildinfo"
   },
   "references": [
     {

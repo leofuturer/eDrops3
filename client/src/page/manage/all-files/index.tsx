@@ -10,7 +10,7 @@ export function AllFiles() {
   const [cookies] = useCookies(['access_token']);
 
   function handleDownload(file: DTO<FileInfo>) {
-    api.file.download(file.id as number);
+    api.file.download(file.id as string);
     // console.log(url);
     // window.location.href = url;
   }

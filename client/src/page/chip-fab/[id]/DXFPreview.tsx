@@ -10,16 +10,30 @@ function DXFPreview({ fileInfo }: { fileInfo: any }) {
 
   useEffect(() => {
     if (fileInfo.id) {
-      api.customer.downloadFile(cookies.userId, fileInfo.id).then((data) => {
-        // config.verbose = true //for debugging purposes
-        const helper = new Helper(data);
-        // console.log(`Number of entities: ${helper.denormalised?.length}`);
-        const svg = helper.toSVG();
-        setSvg(svg);
-        // rescaleSvg(svg);
-      }).catch((err) => {
-        console.error(err);
-      });
+      if (cookies.userId) {
+        api.customer.downloadFile(cookies.userId, fileInfo.id).then((data) => {
+          // config.verbose = true //for debugging purposes
+          const helper = new Helper(data);
+          // console.log(`Number of entities: ${helper.denormalised?.length}`);
+          const svg = helper.toSVG();
+          setSvg(svg);
+          // rescaleSvg(svg);
+        }).catch((err) => {
+          console.error(err);
+        });
+      }
+      else {
+        api.customer.guestDownloadFile(fileInfo.id).then((data) => {
+          // config.verbose = true //for debugging purposes
+          const helper = new Helper(data);
+          // console.log(`Number of entities: ${helper.denormalised?.length}`);
+          const svg = helper.toSVG();
+          setSvg(svg);
+          // rescaleSvg(svg);
+        }).catch((err) => {
+          console.error(err);
+        });
+      }
     }
   }, [fileInfo.id]);
 

@@ -1,12 +1,13 @@
 import { inject, lifeCycleObserver, LifeCycleObserver } from '@loopback/core';
 import { juggler } from '@loopback/repository';
+require('dotenv').config()
 
 const config = {
   name: 'mysqlDS',
   connector: 'mysql',
   debug: false,
-  database: process.env.APP_MYSQL_DATABASE ?? 'edroplets_db',
-  host: process.env.APP_MYSQL_HOST ?? 'localhost',
+  database: process.env.APP_MYSQL_DATABASE,
+  host: process.env.APP_MYSQL_HOST,
   port: 3306,
   user: process.env.APP_MYSQL_USERNAME,
   password: process.env.APP_MYSQL_PASSWORD,

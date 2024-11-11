@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { NavLink, useLocation, useNavigate } from 'react-router-dom';
+import { NavLink, useLocation, useNavigate, useSearchParams} from 'react-router-dom';
 import { useCookies } from 'react-cookie';
 import { Field, Formik, Form, FieldProps } from 'formik';
 import { api } from '@edroplets/api';
@@ -14,7 +14,7 @@ export function Login() {
 
   const navigate = useNavigate();
   const location = useLocation();
-
+  const [searchParams, setSearchParams] = useSearchParams();
   const [cookies, setCookie] = useCookies(['userId', 'userType', 'username', 'base_access_token', 'access_token']);
 
   function handleLogin({ usernameOrEmail, password }: { usernameOrEmail: string, password: string }) {
@@ -25,6 +25,20 @@ export function Login() {
       setCookie('userId', data.userId, { path: '/' });
       setCookie('userType', data.userType, { path: '/' });
       setCookie('username', data.username, { path: '/' });
+
+      const fileTransfer = searchParams.get('guestFile');
+      if (fileTransfer) {
+        api.customer.guestTransferFile(data.userId, fileTransfer).then((res) => {
+          if (res!='error transferring') {
+            navigate(`/chip-fab/${res}`)
+            setError(false);
+            return;
+          } 
+          navigate('/');
+          setError(false);
+          return;
+        })
+      }
       navigate(location.state?.path || ROUTES.Home);
       setError(false);
     }).catch((err) => {
@@ -44,7 +58,12 @@ export function Login() {
       />
       <div className="flex flex-col shadow-box-sm rounded-lg py-4 px-20 space-y-2">
         <h3 className="text-secondary text-2xl text-center font-bold border-b-2 pb-2 border-secondary">Login</h3>
-        <p className="text-sm text-center">Don't have an account? <NavLink to={ROUTES.Signup} className="text-primary_light hover:text-primary">Register now</NavLink></p>
+        <p className="text-sm text-center">Don't have an account? <button onClick={() => {
+          console.log("clicked");
+          const fileTransfer = searchParams.get('guestFile');
+          console.log(fileTransfer);
+          navigate(`/signup/?guestFile=${fileTransfer}`);
+        }} className="text-primary_light hover:text-primary">Register now</button></p>
         <Formik
           initialValues={{
             usernameOrEmail: '',

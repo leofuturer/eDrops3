@@ -24,8 +24,9 @@ import {ProjectRepository} from '../repositories';
 export class ProjectProjectLinkController {
   constructor(
     @repository(ProjectRepository) protected projectRepository: ProjectRepository,
-  ) { }
+  ) {}
 
+  // is this even used??
   @get('/projects/{id}/project-links', {
     responses: {
       '200': {
@@ -45,6 +46,7 @@ export class ProjectProjectLinkController {
     return this.projectRepository.projectLinks(id).find(filter);
   }
 
+  // this creates links when the project is created
   @post('/projects/{id}/project-links', {
     responses: {
       '200': {
@@ -70,6 +72,7 @@ export class ProjectProjectLinkController {
     return this.projectRepository.projectLinks(id).create(projectLink);
   }
 
+  // this isn't really necessary (unless we want to edit links, but that's not a priority if you have add/delete)
   @patch('/projects/{id}/project-links', {
     responses: {
       '200': {
@@ -93,7 +96,7 @@ export class ProjectProjectLinkController {
     return this.projectRepository.projectLinks(id).patch(projectLink, where);
   }
 
-  @del('/projects/{id}/project-links', {
+  @post('/projects/{id}/project-links/delete', {
     responses: {
       '200': {
         description: 'Project.ProjectLink DELETE success count',
@@ -103,8 +106,16 @@ export class ProjectProjectLinkController {
   })
   async delete(
     @param.path.number('id') id: number,
-    @param.query.object('where', getWhereSchemaFor(ProjectLink)) where?: Where<ProjectLink>,
+    @requestBody({
+      content: {
+        'application/json': {
+          schema: {
+            type: "object"
+          }
+        },
+      },
+    }) projectLink: {"link": string}
   ): Promise<Count> {
-    return this.projectRepository.projectLinks(id).delete(where);
+    return this.projectRepository.projectLinks(id).delete({link: projectLink.link});
   }
 }

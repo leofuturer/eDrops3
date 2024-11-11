@@ -72,7 +72,7 @@ export class UserProjectController {
     return this.userRepository.projects(id).create(project);
   }
 
-  @patch('/users/{id}/projects', {
+  @patch('/users/{id}/projects/{projectId}', {
     responses: {
       '200': {
         description: 'User.Project PATCH success count',
@@ -82,6 +82,7 @@ export class UserProjectController {
   })
   async patch(
     @param.path.string('id') id: string,
+    @param.path.number('projectId') projectId: typeof Project.prototype.id,
     @requestBody({
       content: {
         'application/json': {
@@ -90,12 +91,11 @@ export class UserProjectController {
       },
     })
     project: Partial<Project>,
-    @param.query.object('where', getWhereSchemaFor(Project)) where?: Where<Project>,
   ): Promise<Count> {
-    return this.userRepository.projects(id).patch(project, where);
+    return this.userRepository.projects(id).patch(project, {id: projectId});
   }
 
-  @del('/users/{id}/projects', {
+  @del('/users/{id}/projects/{projectId}', {
     responses: {
       '200': {
         description: 'User.Project DELETE success count',
@@ -105,8 +105,8 @@ export class UserProjectController {
   })
   async delete(
     @param.path.string('id') id: string,
-    @param.query.object('where', getWhereSchemaFor(Project)) where?: Where<Project>,
+    @param.path.number('projectId') projectId: typeof Project.prototype.id,
   ): Promise<Count> {
-    return this.userRepository.projects(id).delete(where);
+    return this.userRepository.projects(id).delete({id: projectId});
   }
 }
