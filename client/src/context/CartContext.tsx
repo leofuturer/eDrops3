@@ -99,6 +99,7 @@ const useCart = () => {
   }
 
   async function addChip(chip: Product, quantity: number, customAttrs: { material: Material, wcpa: string, fileInfo: DTO<FileInfo> }): Promise<void> {
+    console.log(chip);
     if (!cart.id) fetchCart();
     const data: Product & CheckoutLineItemInput = {
       ...chip,
