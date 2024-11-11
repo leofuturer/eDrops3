@@ -27,8 +27,6 @@ export function NavTop() {
 
   const [cookies, setCookie, removeCookie] = useCookies(['userId', 'userType', 'username', 'access_token']);
 
-	const [cookies, setCookie, removeCookie] = useCookies(["userId", "userType", "username", "access_token"]);
-
   useEffect(() => {
     setPath(location.pathname);
   }, [location]);
