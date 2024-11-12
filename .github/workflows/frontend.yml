@@ -1,8 +1,5 @@
-name: End-to-end tests
+name: Client Deploy
 on:
-    push:
-        # Triggers on push to stage or master
-        branches: [stage, master]
     workflow_dispatch:
 jobs:
     cypress-run:
@@ -14,10 +11,6 @@ jobs:
         steps:
             - name: Checkout
               uses: actions/checkout@v3
-            - name: Write env variables
-              run: |
-                  echo "APP_PUSHER_API_KEY=${{ secrets.APP_PUSHER_API_KEY }}" >> ./deploy/test/backend.env
-                  echo "APP_PUSHER_API_SECRET=${{ secrets.APP_PUSHER_API_SECRET }}" >> ./deploy/test/backend.env
             # Install NPM dependencies, cache them correctly
             # and run all Cypress tests
             - name: Node.js ${{ matrix.node-version }}
