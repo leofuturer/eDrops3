@@ -4,7 +4,8 @@
     "outDir": "dist",
     "forceConsistentCasingInFileNames": true,
     "strict": true,
-    "types": ["node"]
+    "types": ["node"],
+    "typeRoots": ["node_modules/@types"]
   },
   "references": [
     {
