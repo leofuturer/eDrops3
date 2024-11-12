@@ -3,7 +3,8 @@
   "compilerOptions": {
     "outDir": "dist",
     "forceConsistentCasingInFileNames": true,
-    "strict": true
+    "strict": true,
+    "types": ["node"]
   },
   "references": [
     {
