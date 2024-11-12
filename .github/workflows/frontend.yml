@@ -34,9 +34,11 @@ jobs:
       run: |
         cd api
         npm install --dev
+        ls node_modules/@types
         npm run build
         cd ../schemas
         npm install --dev
+        ls node_modules/@types
         npm run build
       working-directory: ./packages
     - name: Install client dependencies
