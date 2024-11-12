@@ -11,8 +11,6 @@ jobs:
         steps:
             - name: Checkout
               uses: actions/checkout@v3
-            # Install NPM dependencies, cache them correctly
-            # and run all Cypress tests
             - name: Node.js ${{ matrix.node-version }}
               uses: actions/setup-node@v3
               with:
@@ -22,8 +20,10 @@ jobs:
             - name: Build middleware packages
               run: |
                   cd api
+                  npm install --include=dev
                   npm run build
                   cd ../schemas
+                  npm install --include=dev
                   npm run build
               working-directory: ./packages
             - name: Install client dependencies
