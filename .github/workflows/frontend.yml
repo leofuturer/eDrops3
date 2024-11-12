@@ -21,11 +21,11 @@ jobs:
               run: |
                   cd api
                   npm install --include=dev
-                  ls -l node_modules
+                  ls -l node_modules/@types
                   npm run build
                   cd ../schemas
                   npm install --include=dev
-                  ls -l node_modules
+                  ls -l node_modules/@types
                   npm run build
               working-directory: ./packages
             - name: Install client dependencies
