@@ -28,14 +28,21 @@ jobs:
       uses: actions/setup-node@v3
       with:
         node-version: ${{ matrix.node-version }}
-    - name: Install dependencies
+    - name: Install rimraf
+      run: npm install -g rimraf
+    - name: Build middleware packages
       run: |
-        npm i -g rimraf cross-env
-    - name: Build all local packages
-      run: |
-        npm ci
-        npm install @types/node --save-dev
-        npm run packages:build
+        cd api
+        npm run build
+        cd ../schemas
+        npm run build
+      working-directory: ./packages
+    - name: Install client dependencies
+      run: npm install
+      working-directory: ./client
+    - name: Install community dependencies
+      run: npm install
+      working-directory: ./community
     - name: Frontend npm install, build, and copy to EC2
       run: |
         cd client
