@@ -1,77 +1,42 @@
-name: Frontend Deploy
-
-on: 
-  # note: workflow_displatch will only work on master branch
-  workflow_dispatch: 
-
-  # Only run workflow on push to master (via a PR being approved)
-  # push:
-  #   branches:
-  #     - master
-  #   paths:
-  #   # run if anything changed in client, toplevel, or deploy-related folders
-  #   - '.github/workflows/frontend.yml'
-  #   - 'deploy/**' 
-  #   - 'client/**'
-  #   - '*'
-
+name: End-to-end tests
+on:
+    push:
+        # Triggers on push to stage or master
+        branches: [stage, master]
+    workflow_dispatch:
 jobs:
-  build:
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [20]
+    cypress-run:
+        runs-on: ubuntu-latest
+        strategy:
+            matrix:
+                node-version: [18]
 
-    steps:
-    - uses: actions/checkout@v3
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v3
-      with:
-        node-version: ${{ matrix.node-version }}
-    - name: Install rimraf
-      run: npm install -g rimraf
-    - name: Build middleware packages
-      run: |
-        cd api
-        npm install --include=dev
-        npm install @types/node --save-dev
-        npm run build
-        cd ../schemas
-        npm install --include=dev
-        npm install @types/node --save-dev
-        npm run build
-      working-directory: ./packages
-    - name: Install client dependencies
-      run: npm install
-      working-directory: ./client
-    - name: Install community dependencies
-      run: npm install
-      working-directory: ./community
-    - name: Frontend npm install, build, and copy to EC2
-      run: |
-        cd client
-        npm run build
-        
-        mkdir -p ~/.ssh
-        echo "$SSH_KEY" > ~/.ssh/ec2.key
-        chmod 600 ~/.ssh/ec2.key
-        cat >> ~/.ssh/config <<END
-          Host edroplets_aws
-          HostName $SSH_HOST
-          User $SSH_USER
-          IdentityFile ~/.ssh/ec2.key
-          StrictHostKeyChecking no
-        END
-
-        ssh edroplets_aws 'cd ~/eDroplets3/client && rm -r dist && mkdir dist'
-        scp -i ~/.ssh/ec2.key -o StrictHostKeyChecking=no -r dist/* $SSH_USER@$SSH_HOST:~/eDroplets3/client/dist
-        echo 'Restarting Caddy to pick up new files'
-        ssh edroplets_aws 'cd ~/eDroplets3/ && ls client/dist/ && docker restart edroplets_caddy'
-      env:
-        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
-        SSH_USER: ${{ secrets.SSH_USER }}
-        SSH_HOST: ${{ secrets.SSH_HOST }}
-        SSH_KEY: ${{ secrets.SSH_KEY }}
-
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v3
+            - name: Write env variables
+              run: |
+                  echo "APP_PUSHER_API_KEY=${{ secrets.APP_PUSHER_API_KEY }}" >> ./deploy/test/backend.env
+                  echo "APP_PUSHER_API_SECRET=${{ secrets.APP_PUSHER_API_SECRET }}" >> ./deploy/test/backend.env
+            # Install NPM dependencies, cache them correctly
+            # and run all Cypress tests
+            - name: Node.js ${{ matrix.node-version }}
+              uses: actions/setup-node@v3
+              with:
+                  node-version: ${{ matrix.node-version }}
+            - name: Install rimraf
+              run: npm install -g rimraf
+            - name: Build middleware packages
+              run: |
+                  cd api
+                  npm run build
+                  cd ../schemas
+                  npm run build
+              working-directory: ./packages
+            - name: Install client dependencies
+              run: npm install
+              working-directory: ./client
+            - name: Install community dependencies
+              run: npm install
+              working-directory: ./community
+              
