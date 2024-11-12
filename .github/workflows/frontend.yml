@@ -33,8 +33,10 @@ jobs:
     - name: Build middleware packages
       run: |
         cd api
+        npm install
         npm run build
         cd ../schemas
+        npm install
         npm run build
       working-directory: ./packages
     - name: Install client dependencies
