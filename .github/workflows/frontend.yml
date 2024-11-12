@@ -17,6 +17,9 @@ jobs:
                   node-version: ${{ matrix.node-version }}
             - name: Install rimraf
               run: npm install -g rimraf
+            - name: Debug TypeScript type resolution
+              run: npx tsc --traceResolution --project ./tsconfig.json
+              working-directory: ./packages/api
             - name: Build middleware packages
               run: |   
                   cd api
