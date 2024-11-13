@@ -187,7 +187,7 @@ export function OrderChat() {
   }
   if (customerName === null) {
     customerName = "Customer";
-
+  }
   return (
     console.log(orderId),
     <div className="w-screen h-screen flex justify-center">
