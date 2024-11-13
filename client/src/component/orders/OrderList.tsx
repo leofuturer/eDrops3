@@ -15,15 +15,16 @@ export function OrderList({ orderList }: { orderList: DTO<OrderInfo>[] }) {
   const [cookies] = useCookies(['userType']);
   const cart = useContext(CartContext);
 
-  function handleDetail(orderId: number) {
+  function handleDetail(orderId: number, order: DTO<OrderInfo>) {
     // Using the window.open() method to open a new window
     // and display the page based on the passed in redirectUrl
+    console.log("order details: ", order);
     const redirectUrl = idRoute(ROUTES.SubpageOrderDetail, orderId.toString());
     const strWindowFeatures = 'width=1200px, height=900px';
     window.open(redirectUrl, '_blank', strWindowFeatures);
   }
 
-  function handleChat(orderId: number) {
+  function handleChat(orderId: number, customerId: string) {
     const redirectUrl = idRoute(ROUTES.SubpageOrderChat, orderId.toString());
     const strWindowFeatures = 'width=1200px, height=900px';
     window.open(redirectUrl, '_blank', strWindowFeatures);
@@ -52,7 +53,7 @@ export function OrderList({ orderList }: { orderList: DTO<OrderInfo>[] }) {
               ${order.total_cost ? parseFloat(order.total_cost).toFixed(2) : 0}
             </td>
             <td className="">
-              <ChatBubbleOvalLeftEllipsisIcon className="w-5 cursor-pointer" onClick={() => order.id && handleDetail(order.id)} />
+              <ChatBubbleOvalLeftEllipsisIcon className="w-5 cursor-pointer" onClick={() => order.id && handleDetail(order.id, order)} />
             </td>
           </tr>
         )) : (

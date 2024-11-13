@@ -9,7 +9,6 @@ import { CustomerSchema, CustomerSubmitSchema } from '@edroplets/schemas';
 import { metadata } from './metadata';
 import { ROUTES } from '@/router/routes';
 
-
 export function Register() {
   const [initialInfo, setInitialInfo] = useState({
     street: '',

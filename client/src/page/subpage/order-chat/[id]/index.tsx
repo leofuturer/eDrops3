@@ -5,8 +5,11 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { PusherContext } from '@/context/PusherContext';
 import { api, DTO, OrderMessage  } from '@edroplets/api';
 import { ROLES } from '@/lib/constants/roles';
+import edropLogo from './edrop_logo.png';
+import { useLocation } from 'react-router-dom';
+import { set } from 'lodash';
 
-export function ChatBox({ orderId }: { orderId: number }) {
+export function ChatBox({ orderId, workerName, customerName }: { orderId: number , workerName: string, customerName: string}) {
   const pusher = useContext(PusherContext);
 
   const [typed, setTyped] = useState('');
@@ -114,21 +117,22 @@ export function ChatBox({ orderId }: { orderId: number }) {
 
   return (
     <div className="flex flex-col flex-grow w-full max-w-xl bg-white shadow-xl overflow-hidden">
-      <div className="flex justify-center h-20 px-4 py-2 bg-gray-100">
-        <span className="flex-shrink-0 h-10 w-10 rounded-full bg-gray-300"></span>
-        <p></p>
+      <div className="flex justify-center items-center h-20 px-4 py-2 bg-gray-100">
+        <p className="text-lg font-medium">
+          {(cookies.userType === ROLES.Worker || cookies.userType === ROLES.Admin) ? customerName : workerName}
+        </p>
       </div>
       <div className="flex flex-col flex-grow h-[50vh] px-4 py-8 space-y-2 overflow-auto">
         {Object.keys(filteredMessages).sort((a, b) => parseInt(a) - parseInt(b)).map((time, i) =>
           <>
             <small className="text-center">{convertEpoch(time)}</small>
             {filteredMessages[parseInt(time)].map((msg, j) =>
-              <ChatMessage key={parseInt(time) + j} msg={msg} />
+              <ChatMessage key={parseInt(time) + j} msg={msg} cookies={cookies} customerId={""}/>
             )}
           </>
         )}
       </div>
-      {cookies.userType !== ROLES.Admin &&
+      {
         <div className="bg-gray-300 p-4 w-full flex items-center">
           <input
             className="flex items-center h-10 w-full rounded-l px-3 text-sm focus:outline-none"
@@ -155,6 +159,12 @@ export function OrderChat() {
   const [orderId, setOrderId] = useState(0);
   const navigate = useNavigate()
   const { id } = useParams();
+  const [order, setOrder] = useState<any>(null);
+
+  const location = useLocation();
+  const params = new URLSearchParams(location.search);
+  var workerName = params.get('workerName');
+  var customerName = params.get('customerName');
 
   useEffect(() => {
     if (!id) {
@@ -164,29 +174,99 @@ export function OrderChat() {
     setOrderId(parseInt(id));
   }, [id]);
 
+  useEffect(() => {
+    if (!orderId) {
+      api.order.get(orderId).then((order) => {
+        setOrder(order);
+      });
+      console.log(order);
+    }
+  });
+  if (workerName === null) {
+    workerName = "Worker";
+  }
+  if (customerName === null) {
+    customerName = "Customer";
+  }
   return (
+    console.log(orderId),
     <div className="w-screen h-screen flex justify-center">
-      <ChatBox orderId={orderId} />
+      <ChatBox orderId={orderId} workerName = {workerName} customerName = {customerName}/>
     </div>
   );
 }
 
 export default OrderChat;
 
-function ChatMessage({ msg }: { msg: DTO<OrderMessage> }) {
-  const [cookies] = useCookies(['userId']);
+function ChatMessage({ msg, cookies, customerId }: { msg: DTO<OrderMessage>, cookies: any, customerId: string }) {
+  const [workerIDs, setWorkerIDs] = useState<string[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const self: boolean = msg.userId === cookies.userId;
+  useEffect(() => {
+    const fetchWorkers = async () => {
+      try {
+        const workers = await api.worker.getAll();
+        const workerIds = workers.map((worker) => worker.user.id).filter((id) => id !== undefined) as string[]; 
+        setWorkerIDs(workerIds);
+      } catch (error) {
+        console.error("Error fetching workers:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchWorkers();
+  }, []);
+
+  const workerTrue = workerIDs.includes(msg.userId);
+  const self = msg.userId === cookies.userId || (cookies.userType === ROLES.Admin && workerTrue);
+  const name = workerTrue ? 'Worker' : 'Customer';
+
+  console.log(workerIDs, workerTrue);
+  console.log(msg.userId, cookies.userId, self, workerTrue);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
   return (
-    <div className={`flex flex-row space-x-4 w-full ${self ? 'justify-end' : 'justify-start'} `}>
-      {!self && <span className="flex-shrink-0 h-10 w-10 rounded-full bg-gray-300"></span>}
+    <div className={`flex flex-row space-x-4 w-full ${self ? 'justify-end' : 'justify-start'}`}>
+      {!self && (
+        <span className="flex-shrink-0 h-10 w-10 rounded-full bg-gray-300 flex items-center justify-center">
+          {cookies.userType === 'customer' ? (
+            <img
+              src={edropLogo}
+              alt="Logo"
+              className="h-[70%] w-[70%] object-contain"
+            />
+          ) : (
+            <span className="text-black text-lg">C</span>
+          )}
+        </span>
+      )}
+
       <div className={`${self ? 'bg-blue-600 text-white p-3 rounded-l-lg rounded-br-lg' : 'bg-gray-300 p-3 rounded-r-lg rounded-bl-lg'}`}>
         <p className="text-sm">
           {msg.message}
         </p>
       </div>
-      {self && <span className="flex-shrink-0 h-10 w-10 rounded-full bg-gray-300"></span>}
+
+      {self && (
+        <span className="flex-shrink-0 h-10 w-10 rounded-full bg-gray-300 flex items-center justify-center">
+          {cookies.userType === 'customer' ? (
+            <span className="text-black text-sm">You</span>
+          ) : (
+            <img
+              src={edropLogo}
+              alt="Logo"
+              className="h-[70%] w-[70%] object-contain"
+            />
+          )}
+        </span>
+      )}
     </div>
   );
+  
 }
+
 
