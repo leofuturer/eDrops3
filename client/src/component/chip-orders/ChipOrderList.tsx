@@ -23,17 +23,32 @@ function ChipOrderList({ cookies, chipOrderList }: { cookies: any, chipOrderList
 
   const statusRefs = useRef<{ [key: number]: HTMLSelectElement }>({});
 
-  function handleStatus(e: React.FormEvent<HTMLFormElement>, chipOrderId: number) {
+  function handleStatus(e: React.FormEvent<HTMLFormElement>, chipOrderId: number, item: OrderChipType) {
     e.preventDefault();
 
     const selectedStatus = statusRefs.current[chipOrderId]?.value;
     console.log(selectedStatus);
+    var order;
     if (selectedStatus) {
-      //new order with the updated status
-      const order = chipOrderList.find(item => item.id === chipOrderId);
-      console.log(order);
-      const orders = api.order.getChipOrders(chipOrderId);
-      console.log(orders);
+      console.log("Item: ", item);
+      //get all the chip orders for the worker, and set order to be the one with the chipOrderId
+      api.worker.getChipOrders(item.workerId).then((res) => {
+        console.log(res);
+        var order = res.find((o) => o.id === chipOrderId);
+        if (order) {
+          order.status = selectedStatus;
+          api.worker.updateChip(item.workerId, chipOrderId, order).then((res) => {
+            console.log(res);
+          });
+        }
+      });
+      console.log("Order: ", order);
+      if (order) {
+        (order as OrderChipType).status = selectedStatus;
+        api.worker.updateChip(item.workerId, chipOrderId, order).then((res) => {
+          console.log("Result was: ", res);
+        });
+      }
     }
   }
   
@@ -89,7 +104,7 @@ function ChipOrderList({ cookies, chipOrderList }: { cookies: any, chipOrderList
               ? <td>{item.status}</td>
               : (
                 <td>
-                  <form onSubmit={(e) => handleStatus(e, item.id as number)}>
+                  <form onSubmit={(e) => handleStatus(e, item.id as number, item)}>
                     <select
                       title="status"
                       className="order-status"
