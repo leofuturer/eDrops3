@@ -123,12 +123,12 @@ export function ChatBox({ orderId }: { orderId: number }) {
           <>
             <small className="text-center">{convertEpoch(time)}</small>
             {filteredMessages[parseInt(time)].map((msg, j) =>
-              <ChatMessage key={parseInt(time) + j} msg={msg} />
+              <ChatMessage key={parseInt(time) + j} msg={msg} cookies={cookies} customerId={""}/>
             )}
           </>
         )}
       </div>
-      {cookies.userType !== ROLES.Admin &&
+      {
         <div className="bg-gray-300 p-4 w-full flex items-center">
           <input
             className="flex items-center h-10 w-full rounded-l px-3 text-sm focus:outline-none"
@@ -155,6 +155,7 @@ export function OrderChat() {
   const [orderId, setOrderId] = useState(0);
   const navigate = useNavigate()
   const { id } = useParams();
+  const [order, setOrder] = useState<any>(null);
 
   useEffect(() => {
     if (!id) {
@@ -164,7 +165,17 @@ export function OrderChat() {
     setOrderId(parseInt(id));
   }, [id]);
 
+  useEffect(() => {
+    if (!orderId) {
+      api.order.get(orderId).then((order) => {
+        setOrder(order);
+      });
+      console.log(order);
+    }
+  });
+
   return (
+    console.log(orderId),
     <div className="w-screen h-screen flex justify-center">
       <ChatBox orderId={orderId} />
     </div>
@@ -173,10 +184,39 @@ export function OrderChat() {
 
 export default OrderChat;
 
-function ChatMessage({ msg }: { msg: DTO<OrderMessage> }) {
-  const [cookies] = useCookies(['userId']);
+function ChatMessage({ msg, cookies, customerId }: { msg: DTO<OrderMessage>, cookies: any, customerId: string }) {
+  const [workerIDs, setWorkerIDs] = useState<string[]>([]); // State to hold worker IDs
+  const [loading, setLoading] = useState(true); // Loading state to indicate when data is fetched
 
-  const self: boolean = msg.userId === cookies.userId;
+  // Fetch the worker IDs asynchronously
+  useEffect(() => {
+    const fetchWorkers = async () => {
+      try {
+        const workers = await api.worker.getAll();
+        const workerIds = workers.map((worker) => worker.user.id).filter((id) => id !== undefined) as string[]; // Filter out undefined values and cast to string[]
+        setWorkerIDs(workerIds); // Update the state with the worker IDs
+      } catch (error) {
+        console.error("Error fetching workers:", error);
+      } finally {
+        setLoading(false); // Mark as loaded
+      }
+    };
+
+    fetchWorkers();
+  }, []); // Empty dependency array means this runs once on component mount
+
+  // Now that the workerIDs state is updated, you can check if the worker is true
+  const workerTrue = workerIDs.includes(msg.userId);
+  const self = msg.userId === cookies.userId || (cookies.userType === ROLES.Admin && workerTrue);
+
+  console.log(workerIDs, workerTrue);
+  console.log(msg.userId, cookies.userId, self, workerTrue);
+
+  // You can return a loading spinner or similar until the data is loaded
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
   return (
     <div className={`flex flex-row space-x-4 w-full ${self ? 'justify-end' : 'justify-start'} `}>
       {!self && <span className="flex-shrink-0 h-10 w-10 rounded-full bg-gray-300"></span>}
@@ -189,4 +229,5 @@ function ChatMessage({ msg }: { msg: DTO<OrderMessage> }) {
     </div>
   );
 }
+
 
