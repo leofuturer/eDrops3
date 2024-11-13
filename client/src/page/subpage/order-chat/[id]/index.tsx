@@ -5,6 +5,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { PusherContext } from '@/context/PusherContext';
 import { api, DTO, OrderMessage  } from '@edroplets/api';
 import { ROLES } from '@/lib/constants/roles';
+import edropLogo from './edrop_logo.png';
 
 export function ChatBox({ orderId }: { orderId: number }) {
   const pusher = useContext(PusherContext);
@@ -208,6 +209,7 @@ function ChatMessage({ msg, cookies, customerId }: { msg: DTO<OrderMessage>, coo
   // Now that the workerIDs state is updated, you can check if the worker is true
   const workerTrue = workerIDs.includes(msg.userId);
   const self = msg.userId === cookies.userId || (cookies.userType === ROLES.Admin && workerTrue);
+  const name = workerTrue ? 'Worker' : 'Customer';
 
   console.log(workerIDs, workerTrue);
   console.log(msg.userId, cookies.userId, self, workerTrue);
@@ -218,16 +220,46 @@ function ChatMessage({ msg, cookies, customerId }: { msg: DTO<OrderMessage>, coo
   }
 
   return (
-    <div className={`flex flex-row space-x-4 w-full ${self ? 'justify-end' : 'justify-start'} `}>
-      {!self && <span className="flex-shrink-0 h-10 w-10 rounded-full bg-gray-300"></span>}
+    <div className={`flex flex-row space-x-4 w-full ${self ? 'justify-end' : 'justify-start'}`}>
+      {/* When it's not the self message */}
+      {!self && (
+        <span className="flex-shrink-0 h-10 w-10 rounded-full bg-gray-300 flex items-center justify-center">
+          {cookies.userType === 'customer' ? (
+            <img
+              src={edropLogo}
+              alt="Logo"
+              className="h-[70%] w-[70%] object-contain"
+            />
+          ) : (
+            <span className="text-black text-lg">C</span>
+          )}
+        </span>
+      )}
+
+      {/* Message content */}
       <div className={`${self ? 'bg-blue-600 text-white p-3 rounded-l-lg rounded-br-lg' : 'bg-gray-300 p-3 rounded-r-lg rounded-bl-lg'}`}>
         <p className="text-sm">
           {msg.message}
         </p>
       </div>
-      {self && <span className="flex-shrink-0 h-10 w-10 rounded-full bg-gray-300"></span>}
+
+      {/* When it's the self message */}
+      {self && (
+        <span className="flex-shrink-0 h-10 w-10 rounded-full bg-gray-300 flex items-center justify-center">
+          {cookies.userType === 'customer' ? (
+            <span className="text-black text-sm">You</span>
+          ) : (
+            <img
+              src={edropLogo}
+              alt="Logo"
+              className="h-[70%] w-[70%] object-contain"
+            />
+          )}
+        </span>
+      )}
     </div>
   );
+  
 }
 
 
