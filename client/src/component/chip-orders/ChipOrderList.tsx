@@ -52,8 +52,9 @@ function ChipOrderList({ cookies, chipOrderList }: { cookies: any, chipOrderList
     }
   }
 
-  function handleChat(orderId: number) {
-    const redirectUrl = idRoute(ROUTES.SubpageOrderChat, orderId);
+  function handleChat(orderId: number, item: OrderChipType) {
+    console.log("order details: ", item);
+    const redirectUrl = idRoute(ROUTES.SubpageOrderChat, orderId) + `?workerName=${encodeURIComponent(item.workerName)}&customerName=${encodeURIComponent(item.customerName)}`;
     const strWindowFeatures = 'width=1200px, height=900px';
     const WindowForOrderChat = window.open(redirectUrl, '_blank', strWindowFeatures);
     // @ts-expect-error
@@ -113,7 +114,7 @@ function ChipOrderList({ cookies, chipOrderList }: { cookies: any, chipOrderList
               }
             </td>
             <td>
-              <ChatBubbleOvalLeftEllipsisIcon className="w-5 cursor-pointer mx-auto" onClick={() => handleChat(item.orderInfoId as number)} />
+              <ChatBubbleOvalLeftEllipsisIcon className="w-5 cursor-pointer mx-auto" onClick={() => handleChat(item.orderInfoId as number, item)} />
             </td>
             {cookies.userType === ROLES.Admin &&
               <td>

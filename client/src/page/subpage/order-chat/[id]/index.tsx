@@ -6,8 +6,10 @@ import { PusherContext } from '@/context/PusherContext';
 import { api, DTO, OrderMessage  } from '@edroplets/api';
 import { ROLES } from '@/lib/constants/roles';
 import edropLogo from './edrop_logo.png';
+import { useLocation } from 'react-router-dom';
+import { set } from 'lodash';
 
-export function ChatBox({ orderId }: { orderId: number }) {
+export function ChatBox({ orderId, workerName, customerName }: { orderId: number , workerName: string, customerName: string}) {
   const pusher = useContext(PusherContext);
 
   const [typed, setTyped] = useState('');
@@ -115,9 +117,10 @@ export function ChatBox({ orderId }: { orderId: number }) {
 
   return (
     <div className="flex flex-col flex-grow w-full max-w-xl bg-white shadow-xl overflow-hidden">
-      <div className="flex justify-center h-20 px-4 py-2 bg-gray-100">
-        <span className="flex-shrink-0 h-10 w-10 rounded-full bg-gray-300"></span>
-        <p></p>
+      <div className="flex justify-center items-center h-20 px-4 py-2 bg-gray-100">
+        <p className="text-lg font-medium">
+          {(cookies.userType === ROLES.Worker || cookies.userType === ROLES.Admin) ? customerName : workerName}
+        </p>
       </div>
       <div className="flex flex-col flex-grow h-[50vh] px-4 py-8 space-y-2 overflow-auto">
         {Object.keys(filteredMessages).sort((a, b) => parseInt(a) - parseInt(b)).map((time, i) =>
@@ -158,6 +161,11 @@ export function OrderChat() {
   const { id } = useParams();
   const [order, setOrder] = useState<any>(null);
 
+  const location = useLocation();
+  const params = new URLSearchParams(location.search);
+  var workerName = params.get('workerName');
+  var customerName = params.get('customerName');
+
   useEffect(() => {
     if (!id) {
       navigate(ROUTES.ManageOrders);
@@ -174,11 +182,16 @@ export function OrderChat() {
       console.log(order);
     }
   });
+  if (workerName === null) {
+    workerName = "Worker";
+  }
+  if (customerName === null) {
+    customerName = "Customer";
 
   return (
     console.log(orderId),
     <div className="w-screen h-screen flex justify-center">
-      <ChatBox orderId={orderId} />
+      <ChatBox orderId={orderId} workerName = {workerName} customerName = {customerName}/>
     </div>
   );
 }
@@ -186,27 +199,25 @@ export function OrderChat() {
 export default OrderChat;
 
 function ChatMessage({ msg, cookies, customerId }: { msg: DTO<OrderMessage>, cookies: any, customerId: string }) {
-  const [workerIDs, setWorkerIDs] = useState<string[]>([]); // State to hold worker IDs
-  const [loading, setLoading] = useState(true); // Loading state to indicate when data is fetched
+  const [workerIDs, setWorkerIDs] = useState<string[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  // Fetch the worker IDs asynchronously
   useEffect(() => {
     const fetchWorkers = async () => {
       try {
         const workers = await api.worker.getAll();
-        const workerIds = workers.map((worker) => worker.user.id).filter((id) => id !== undefined) as string[]; // Filter out undefined values and cast to string[]
-        setWorkerIDs(workerIds); // Update the state with the worker IDs
+        const workerIds = workers.map((worker) => worker.user.id).filter((id) => id !== undefined) as string[]; 
+        setWorkerIDs(workerIds);
       } catch (error) {
         console.error("Error fetching workers:", error);
       } finally {
-        setLoading(false); // Mark as loaded
+        setLoading(false);
       }
     };
 
     fetchWorkers();
-  }, []); // Empty dependency array means this runs once on component mount
+  }, []);
 
-  // Now that the workerIDs state is updated, you can check if the worker is true
   const workerTrue = workerIDs.includes(msg.userId);
   const self = msg.userId === cookies.userId || (cookies.userType === ROLES.Admin && workerTrue);
   const name = workerTrue ? 'Worker' : 'Customer';
@@ -214,14 +225,12 @@ function ChatMessage({ msg, cookies, customerId }: { msg: DTO<OrderMessage>, coo
   console.log(workerIDs, workerTrue);
   console.log(msg.userId, cookies.userId, self, workerTrue);
 
-  // You can return a loading spinner or similar until the data is loaded
   if (loading) {
     return <div>Loading...</div>;
   }
 
   return (
     <div className={`flex flex-row space-x-4 w-full ${self ? 'justify-end' : 'justify-start'}`}>
-      {/* When it's not the self message */}
       {!self && (
         <span className="flex-shrink-0 h-10 w-10 rounded-full bg-gray-300 flex items-center justify-center">
           {cookies.userType === 'customer' ? (
@@ -236,14 +245,12 @@ function ChatMessage({ msg, cookies, customerId }: { msg: DTO<OrderMessage>, coo
         </span>
       )}
 
-      {/* Message content */}
       <div className={`${self ? 'bg-blue-600 text-white p-3 rounded-l-lg rounded-br-lg' : 'bg-gray-300 p-3 rounded-r-lg rounded-bl-lg'}`}>
         <p className="text-sm">
           {msg.message}
         </p>
       </div>
 
-      {/* When it's the self message */}
       {self && (
         <span className="flex-shrink-0 h-10 w-10 rounded-full bg-gray-300 flex items-center justify-center">
           {cookies.userType === 'customer' ? (
