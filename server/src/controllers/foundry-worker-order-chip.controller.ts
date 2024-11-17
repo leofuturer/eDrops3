@@ -71,7 +71,7 @@ export class FoundryWorkerOrderChipController {
       throw new HttpErrors.NotFound('Chip order not found');
     const chipOrder = chipOrders[0];
     // Check auth (need to probably move to interceptor in future)
-    if (chipOrder.foundryWorkerId !== this.user.id)
+    if (chipOrder.workerId !== this.user.id)
       throw new HttpErrors.Forbidden('Unauthorized access to chip order');
     // Update chip order
     await this.foundryWorkerRepository.orderChips(id).patch(orderChip, {
@@ -100,7 +100,7 @@ export class FoundryWorkerOrderChipController {
       })
       .then(chipOrder => {
         if (!chipOrder) throw new HttpErrors.NotFound('chipOrder not found');
-        if (chipOrder[0].id !== this.user.id)
+        if (chipOrder[0].workerId !== this.user.id)
           throw new HttpErrors.Forbidden('Unauthorized access to file');
         return chipOrder[0].fileName;
       })
