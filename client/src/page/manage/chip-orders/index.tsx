@@ -41,7 +41,7 @@ export function ChipOrders() {
         description=""
         metadata={metadata}
       />
-      <ChipOrderList chipOrderList={chipOrderList} />
+      <ChipOrderList chipOrderList={chipOrderList} cookies={cookies} />
     </ManageRightLayout>
   );
 }
