@@ -1,4 +1,4 @@
-/*import React from 'react'
+import React from 'react'
 
 export function SignupForm() {
   return (
@@ -7,4 +7,3 @@ export function SignupForm() {
 }
 
 export default SignupForm
-*/
