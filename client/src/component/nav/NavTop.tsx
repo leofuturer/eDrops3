@@ -50,20 +50,20 @@ function NavTop() {
         <div className="hidden md:flex flex-row items-center h-full space-x-8 text-xl pt-2">
           {cookies.access_token ? <>
             {cookies.userType === "customer" && <>
-              <NavLink to={ROUTES.ManageCart} className="hover:text-accent hidden lg:flex"><ShoppingCartIcon className="w-6" />
+              <NavLink to={ROUTES.ManageCart} className="hover:text-accent hidden lg:flex" aria-label="Cart"><ShoppingCartIcon className="w-6" />
                 {cart.numItems > 0 &&
                   <div className="relative">
                     <span className="absolute -top-4 -right-4 h-5 w-5 text-sm text-white flex items-center justify-center bg-red-600 rounded-xl">{cart.numItems}</span>
                   </div>}
               </NavLink>
-              <NavLink to={ROUTES.Upload} className="hover:text-accent hidden lg:flex"><ArrowUpTrayIcon className="w-6" /></NavLink>
-              <NavLink to={ROUTES.ManageFiles} className="hover:text-accent hidden lg:flex"><CircleStackIcon className="w-6" /></NavLink>
+              <NavLink to={ROUTES.Upload} className="hover:text-accent hidden lg:flex" aria-label="Upload file"><ArrowUpTrayIcon className="w-6" /></NavLink>
+              <NavLink to={ROUTES.ManageFiles} className="hover:text-accent hidden lg:flex" aria-label="Dashboard"><CircleStackIcon className="w-6" /></NavLink>
             </>}
             {cookies.userType === "admin" && <>
-              <NavLink to={ROUTES.ManageFiles} className="hover:text-accent hidden lg:flex"><CircleStackIcon className="w-6" /></NavLink>
+              <NavLink to={ROUTES.ManageFiles} className="hover:text-accent hidden lg:flex" aria-label="Dashboard"><CircleStackIcon className="w-6" /></NavLink>
             </>}
             {cookies.userType === "worker" && <>
-              <NavLink to={ROUTES.ManageOrders} className="hover:text-accent hidden lg:flex"><CircleStackIcon className="w-6" /></NavLink>
+              <NavLink to={ROUTES.ManageOrders} className="hover:text-accent hidden lg:flex" aria-label="Dashboard"><CircleStackIcon className="w-6" /></NavLink>
             </>}
             <UserMenu username={cookies.username} onSignout={signout} />
           </> :
