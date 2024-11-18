@@ -233,7 +233,7 @@ function ChatMessage({ msg, cookies, displayName }: { msg: DTO<OrderMessage>, co
         <span className="flex-shrink-0 h-10 w-10 rounded-full bg-gray-300 flex items-center justify-center">
           {cookies.userType === 'customer' ? (
             <img
-              src="/img/edrop_logo.png"
+              src="/img/edrop_logo.avif"
               alt="Logo"
               className="h-[70%] w-[70%] object-contain"
             />
@@ -255,7 +255,7 @@ function ChatMessage({ msg, cookies, displayName }: { msg: DTO<OrderMessage>, co
             <span className="text-black text-lg">{displayName[0].toUpperCase()}</span>
           ) : (
             <img
-              src="/img/edrop_logo.png"
+              src="/img/edrop_logo.avif"
               alt="Logo"
               className="h-[70%] w-[70%] object-contain"
             />

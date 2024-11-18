@@ -6,7 +6,7 @@ function FooterPage() {
   return (
     <footer className="grid grid-cols-3 md:grid-cols-4 justify-items-center mx-4 md:mx-[16%] text-[12px] border-t py-10 gap-2 md:gap-8">
       <div className="flex flex-col items-center space-y-2">
-        <img className="max-h-[50px] mr-[10px]" src="/img/edrop_logo.png" alt="" />
+        <img className="max-h-[50px] mr-[10px] aspect-auto" src="/img/edrop_logo.avif" alt=""/>
         <h3 className="text-[26px] font-bold">eDroplets</h3>
         <p>
           &copy; eDroplets 2018-2023

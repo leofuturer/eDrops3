@@ -9,7 +9,7 @@ export const metadata = [
   },
   {
     name: 'og:image',
-    content: 'https://edroplets.org/resource/edrop_logo.png',
+    content: 'https://edroplets.org/resource/edrop_logo.avif',
   },
   {
     name: 'og:type',

@@ -39,7 +39,7 @@ function NavTop() {
       <div className="h-[80px] w-full flex flex-row justify-between items-center px-4 md:px-6 lg:px-24 xl:px-48 text-xl lg:text-2xl font-medium text-white">
         <div className="flex flex-row items-center py-4 h-full">
           <NavLink to={ROUTES.Home} className="flex-none flex flex-row items-end h-full">
-            <img className="h-full flex-none" src="/img/edrop_logo_inverted.png" alt="" />
+            <img className="h-full flex-none" src="/img/edrop_logo_inverted.avif" alt="" />
             <h1 className="text-4xl hover:text-accent hidden lg:flex">Droplets</h1>
           </NavLink>
           <NavLink to={ROUTES.Home} className="hover:text-accent hidden xl:flex pt-2 ml-8">Home</NavLink>

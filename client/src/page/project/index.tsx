@@ -30,57 +30,57 @@ export function Project() {
         </div>
         <Tab id="uploads" active={activeTab === 'uploads'} className="grid grid-cols-3 gap-4">
           <NavLink to="" className="flex flex-col items-center">
-            <img className="w-full aspect-square scale-95 hover:scale-100 transition-transform" src="/img/controlsystem.jpg" alt="" />
+            <img className="w-full aspect-square scale-95 hover:scale-100 transition-transform" src="/img/controlsystem.avif" alt="" />
             <h4 className="text-lg text-primary_light">EWOD Control System</h4>
           </NavLink>
           <NavLink to="" className="flex flex-col items-center">
-            <img className="w-full aspect-square scale-95 hover:scale-100 transition-transform" src="/img/chipv1.jpg" alt="" />
+            <img className="w-full aspect-square scale-95 hover:scale-100 transition-transform" src="/img/chipv1.avif" alt="" />
             <h4 className="text-lg text-primary_light">EWOD Chip v1</h4>
           </NavLink>
           <NavLink to="" className="flex flex-col items-center">
-            <img className="w-full aspect-square scale-95 hover:scale-100 transition-transform" src="/img/chipv2.jpg" alt="" />
+            <img className="w-full aspect-square scale-95 hover:scale-100 transition-transform" src="/img/chipv2.avif" alt="" />
             <h4 className="text-lg text-primary_light">EWOD Chip v2</h4>
           </NavLink>
         </Tab>
         <Tab id="designer" active={activeTab === 'designer'} className="grid grid-cols-3 gap-4">
           <NavLink to="" className="flex flex-col items-center">
-            <img className="w-full aspect-square scale-95 hover:scale-100 transition-transform" src="/img/controlsystem.jpg" alt="" />
+            <img className="w-full aspect-square scale-95 hover:scale-100 transition-transform" src="/img/controlsystem.avif" alt="" />
             <h4 className="text-lg text-primary_light">EWOD Control System</h4>
           </NavLink>
           <NavLink to="" className="flex flex-col items-center">
-            <img className="w-full aspect-square scale-95 hover:scale-100 transition-transform" src="/img/chipv1.jpg" alt="" />
+            <img className="w-full aspect-square scale-95 hover:scale-100 transition-transform" src="/img/chipv1.avif" alt="" />
             <h4 className="text-lg text-primary_light">EWOD Chip v1</h4>
           </NavLink>
           <NavLink to="" className="flex flex-col items-center">
-            <img className="w-full aspect-square scale-95 hover:scale-100 transition-transform" src="/img/chipv2.jpg" alt="" />
+            <img className="w-full aspect-square scale-95 hover:scale-100 transition-transform" src="/img/chipv2.avif" alt="" />
             <h4 className="text-lg text-primary_light">EWOD Chip v2</h4>
           </NavLink>
         </Tab>
         <Tab id="favorites" active={activeTab === 'favorites'} className="grid grid-cols-3 gap-4">
           <NavLink to="" className="flex flex-col items-center">
-            <img className="w-full aspect-square scale-95 hover:scale-100 transition-transform" src="/img/controlsystem.jpg" alt="" />
+            <img className="w-full aspect-square scale-95 hover:scale-100 transition-transform" src="/img/controlsystem.avif" alt="" />
             <h4 className="text-lg text-primary_light">EWOD Control System</h4>
           </NavLink>
           <NavLink to="" className="flex flex-col items-center">
-            <img className="w-full aspect-square scale-95 hover:scale-100 transition-transform" src="/img/chipv1.jpg" alt="" />
+            <img className="w-full aspect-square scale-95 hover:scale-100 transition-transform" src="/img/chipv1.avif" alt="" />
             <h4 className="text-lg text-primary_light">EWOD Chip v1</h4>
           </NavLink>
           <NavLink to="" className="flex flex-col items-center">
-            <img className="w-full aspect-square scale-95 hover:scale-100 transition-transform" src="/img/chipv2.jpg" alt="" />
+            <img className="w-full aspect-square scale-95 hover:scale-100 transition-transform" src="/img/chipv2.avif" alt="" />
             <h4 className="text-lg text-primary_light">EWOD Chip v2</h4>
           </NavLink>
         </Tab>
         <Tab id="ordered" active={activeTab === 'ordered'} className="grid grid-cols-3 gap-4">
           <NavLink to="" className="flex flex-col items-center">
-            <img className="w-full aspect-square scale-95 hover:scale-100 transition-transform" src="/img/controlsystem.jpg" alt="" />
+            <img className="w-full aspect-square scale-95 hover:scale-100 transition-transform" src="/img/controlsystem.avif" alt="" />
             <h4 className="text-lg text-primary_light">EWOD Control System</h4>
           </NavLink>
           <NavLink to="" className="flex flex-col items-center">
-            <img className="w-full aspect-square scale-95 hover:scale-100 transition-transform" src="/img/chipv1.jpg" alt="" />
+            <img className="w-full aspect-square scale-95 hover:scale-100 transition-transform" src="/img/chipv1.avif" alt="" />
             <h4 className="text-lg text-primary_light">EWOD Chip v1</h4>
           </NavLink>
           <NavLink to="" className="flex flex-col items-center">
-            <img className="w-full aspect-square scale-95 hover:scale-100 transition-transform" src="/img/chipv2.jpg" alt="" />
+            <img className="w-full aspect-square scale-95 hover:scale-100 transition-transform" src="/img/chipv2.avif" alt="" />
             <h4 className="text-lg text-primary_light">EWOD Chip v2</h4>
           </NavLink>
         </Tab>
