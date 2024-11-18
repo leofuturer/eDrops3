@@ -5,7 +5,7 @@ import { DTO, OrderInfo } from '@edroplets/api';
 import { SERVICE_EMAIL } from '@/lib/constants/misc';
 import { useCookies } from 'react-cookie';
 import { ROLES } from '@/lib/constants/roles';
-import { ChatBubbleOvalLeftEllipsisIcon } from '@heroicons/react/24/solid';
+import { ChatBubbleOvalLeftEllipsisIcon } from '@heroicons/react/24/outline';
 
 /*
  The order list page for both customer and worker

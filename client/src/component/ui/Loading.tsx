@@ -1,11 +1,12 @@
-import React from 'react'
+import React from 'react';
+import { ArrowPathIcon } from '@heroicons/react/24/outline';
 
 function Loading() {
   return (
     <div className="flex justify-center items-center mx-auto">
-      <i className="fa fa-circle-notch animate-spin"/>
+      <ArrowPathIcon />
     </div>
-  )
+  );
 }
 
-export default Loading
+export default Loading;

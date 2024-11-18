@@ -1,4 +1,4 @@
-import { EyeIcon, EyeSlashIcon } from '@heroicons/react/24/solid';
+import { EyeIcon, EyeSlashIcon } from '@heroicons/react/24/outline';
 import { Field, ErrorMessage, FieldProps } from 'formik';
 import _ from 'lodash';
 import { useState } from 'react';

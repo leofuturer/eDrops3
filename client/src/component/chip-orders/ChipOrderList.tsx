@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState, useRef } from 'react'
 import { useCookies } from 'react-cookie';
 import { api, DTO, FoundryWorker, IncludeUser, OrderChip } from '@edroplets/api';
 import { ROLES } from '@/lib/constants/roles';
-import { ArrowDownTrayIcon, ChatBubbleOvalLeftEllipsisIcon, UsersIcon } from '@heroicons/react/24/solid';
+import { ArrowDownTrayIcon, ChatBubbleOvalLeftEllipsisIcon, UsersIcon } from '@heroicons/react/24/outline';
 import { CartContext } from '@/context';
 import { ROUTES, idRoute } from '@/router/routes';
 import { OrderChip as OrderChipType } from '@edroplets/api';

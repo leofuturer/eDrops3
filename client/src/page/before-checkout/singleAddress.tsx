@@ -1,6 +1,6 @@
 import React from 'react';
 import { Address, DTO } from '@edroplets/api';
-import { CreditCardIcon, CubeIcon } from '@heroicons/react/24/solid';
+import { CreditCardIcon, CubeIcon } from '@heroicons/react/24/outline';
 
 function SingleAddress({ address, addressNum, selected, onClick }: { address: DTO<Address>, addressNum: number, selected: boolean, onClick: () => void }) {
   return (

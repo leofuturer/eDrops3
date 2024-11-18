@@ -5,6 +5,7 @@ import { api, Admin, DTO, IncludeUser } from '@edroplets/api';
 import ManageRightLayout from '@/component/layout/ManageRightLayout';
 import DeleteModal from '@/component/modal/DeleteModal';
 import { ROUTES, idRoute } from '@/router/routes';
+import { PencilSquareIcon, PlusIcon, TrashIcon } from '@heroicons/react/24/outline';
 
 export function Admins() {
   const [adminList, setAdminList] = useState<DTO<IncludeUser<Admin>>[]>([]);
@@ -44,7 +45,7 @@ export function Admins() {
     <ManageRightLayout title="All Admins">
       <div className="flex justify-end mb-4 -mt-4">
         <button type="button" className="bg-green-500 text-white px-4 py-2 w-max rounded-lg flex items-center space-x-2" onClick={handleAddAdmin}>
-          <i className="fa fa-plus" />
+          <PlusIcon />
           <p>Add New Admin</p>
         </button>
       </div>
@@ -67,11 +68,11 @@ export function Admins() {
               <td>{admin.user.username}</td>
               <td>{admin.user.email}</td>
               <td>
-                <i className="fa fa-edit cursor-pointer" onClick={() => handleEditAdmin(admin)} />
+                <PencilSquareIcon className="cursor-pointer" onClick={() => handleEditAdmin(admin)} />
               </td>
               {admin.id !== cookies.userId && (
                 <td>
-                  <i className="fa fa-trash cursor-pointer" onClick={() => handleDeleteAdmin(admin)} />
+                  <TrashIcon className="cursor-pointer" onClick={() => handleDeleteAdmin(admin)} />
                 </td>
               )}
             </tr>

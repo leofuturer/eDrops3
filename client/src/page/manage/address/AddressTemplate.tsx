@@ -1,7 +1,7 @@
 import { USState, stateAbbreviation } from '@/lib/address';
 import { ROUTES, idRoute } from '@/router/routes';
 import { Address, DTO } from '@edroplets/api';
-import { CubeIcon } from '@heroicons/react/24/solid';
+import { CubeIcon } from '@heroicons/react/24/outline';
 import { NavLink, useNavigate } from 'react-router-dom';
 
 function AddressTemplate({ address, handleDelete, handleSetDefault}: { address: DTO<Address>, handleDelete: () => void, handleSetDefault: () => void }) {

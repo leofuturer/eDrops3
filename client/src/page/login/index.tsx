@@ -7,6 +7,7 @@ import SEO from '@/component/header/seo';
 import { metadata } from './metadata';
 import { LoginSchema } from '@edroplets/schemas';
 import { ROUTES } from '@/router/routes';
+import { EyeIcon, EyeSlashIcon } from '@heroicons/react/24/outline';
 
 export function Login() {
   const [showPassword, setShowPassword] = useState(false);
@@ -102,7 +103,9 @@ export function Login() {
                     autoComplete="current-password"
                     {...field}
                   />
-                  <i className={`fa ${showPassword ? 'fa-eye-slash' : 'fa-eye'} absolute right-2 cursor-pointer text-gray-600`} onClick={() => setShowPassword(!showPassword)} />
+                  {showPassword ?  ( <EyeSlashIcon className="absolute w-4 right-2 cursor-pointer text-gray-600" onClick={() => setShowPassword(!showPassword)} />) : (
+                    <EyeIcon className="absolute w-4 right-2 cursor-pointer text-gray-600" onClick={() => setShowPassword(!showPassword)} />
+                  )}
                 </div>
               )}
             </Field>

@@ -6,6 +6,7 @@ import { PusherContext } from '@/context/PusherContext';
 import { api, DTO, OrderMessage  } from '@edroplets/api';
 import { ROLES } from '@/lib/constants/roles';
 import { useLocation } from 'react-router-dom';
+import { PaperAirplaneIcon } from '@heroicons/react/24/outline';
 
 export function ChatBox({ orderId, workerName, customerName }: { orderId: number , workerName: string, customerName: string}) {
   const pusher = useContext(PusherContext);
@@ -145,7 +146,7 @@ export function ChatBox({ orderId, workerName, customerName }: { orderId: number
             }}
           />
           <div className="bg-blue-600 h-10 w-10 flex items-center justify-center rounded-r cursor-pointer" onClick={handleSend}>
-            <i className="fa fa-paper-plane text-white"></i>
+            <PaperAirplaneIcon className="text-white"/>
           </div>
         </div>
       }
