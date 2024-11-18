@@ -5,7 +5,7 @@ import { ROLES } from '@/lib/constants/roles';
 import { ArrowDownTrayIcon, ChatBubbleOvalLeftEllipsisIcon, UsersIcon } from '@heroicons/react/24/solid';
 import { CartContext } from '@/context';
 import { ROUTES, idRoute } from '@/router/routes';
-import { OrderChip as OrderChipType } from '@edroplets/api/lib/types';
+import { OrderChip as OrderChipType } from '@edroplets/api';
 
 function ChipOrderList({ cookies, chipOrderList }: { cookies: any, chipOrderList: DTO<OrderChip>[] }) {
   const [workerList, setWorkerList] = useState<DTO<IncludeUser<FoundryWorker>>[]>([]);
@@ -76,6 +76,10 @@ function ChipOrderList({ cookies, chipOrderList }: { cookies: any, chipOrderList
     WindowForOrderChat._orderItemId = orderId;
   }
 
+  function handleAssign(workerId: string, item: OrderChipType) {
+    api.order.updateChipOrder(item.orderInfoId as number, item.id as number, { ...item, workerId: workerId } );
+  }
+
   return (
     <table className="table-info">
       <thead>
@@ -135,7 +139,7 @@ function ChipOrderList({ cookies, chipOrderList }: { cookies: any, chipOrderList
               <td>
                 <div className="flex flex-row space-x-2">
                   <UsersIcon className="w-5 cursor-pointer mx-auto" />
-                  <select title="workers" onChange={(e) => handleAssign(e)}>
+                    <select title="workers" onChange={(e) => handleAssign(e.target.value, item)}>
                     {workerList.map((worker) => (
                       <option key={worker.id} value={worker.id}>{worker.user.username}</option>
                     ))}

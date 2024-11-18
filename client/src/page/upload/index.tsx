@@ -134,7 +134,7 @@ function Upload() {
 
   function handleShopping(fileID?: string) {
     setShowUpload(false);
-    navigate(idRoute(ROUTES.ChipFab, fileID ? fileID : fileInfo.id as string));
+    navigate(idRoute(ROUTES.ChipFab, fileID ? fileID : fileInfo.id as number));
   }
 
   function handleLibrary() {
