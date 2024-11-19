@@ -106,7 +106,7 @@ export function ChipOrder() {
                   <button
                     type="button"
                     key={i}
-                    className={`${material == customAttrs.material ? 'bg-primary_light text-white' : 'hover:bg-gray-200 text-primary_light hover:text-primary'} rounded-md px-4 py-2 `}
+                    className={`${material == customAttrs.material ? 'bg-primary-light text-white' : 'hover:bg-gray-200 text-primary-light hover:text-primary'} rounded-md px-4 py-2 `}
                     onClick={() => setMaterial(material)}
                   >
                     <a>
@@ -162,7 +162,7 @@ export function ChipOrder() {
               <button
                 id="addToCart"
                 type="button"
-                className="bg-primary_light text-white px-4 py-2 rounded w-full"
+                className="bg-primary-light text-white px-4 py-2 rounded w-full"
                 onClick={() => cart.enabled && handleAddToCart()}
               >
                 {cart.enabled ? 'Add to Cart' : 'Coming soon'}

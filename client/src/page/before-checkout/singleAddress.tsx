@@ -4,7 +4,7 @@ import { CreditCardIcon, CubeIcon } from '@heroicons/react/24/outline';
 
 function SingleAddress({ address, addressNum, selected, onClick }: { address: DTO<Address>, addressNum: number, selected: boolean, onClick: () => void }) {
   return (
-    <div className={`flex flex-col bg-white rounded-lg p-4 shadow-box space-y-2 ${selected ? 'outline outline-primary_light' : ''}`} onClick={onClick}>
+    <div className={`flex flex-col bg-white rounded-lg p-4 shadow-box space-y-2 ${selected ? 'outline outline-primary-light' : ''}`} onClick={onClick}>
       <div className="flex flex-row justify-between items-center">
         <h3 className="text-xl">Address {addressNum}</h3>
         {address.isDefault && (

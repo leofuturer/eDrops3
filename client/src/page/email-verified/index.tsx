@@ -8,8 +8,8 @@ export function EmailVerified() {
       title="Email Verified!"
       message="Thanks for verifying your email! Your account has been activated."
     >
-      <NavLink to={ROUTES.Login} className="text-primary_light hover:text-primary">Log In</NavLink>
-      <NavLink to={ROUTES.Home} className="text-primary_light hover:text-primary">Home Page</NavLink>
+      <NavLink to={ROUTES.Login} className="text-primary-light hover:text-primary">Log In</NavLink>
+      <NavLink to={ROUTES.Home} className="text-primary-light hover:text-primary">Home Page</NavLink>
     </MessageLayout>
   );
 }

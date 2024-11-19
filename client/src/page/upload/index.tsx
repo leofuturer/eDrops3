@@ -134,7 +134,7 @@ function Upload() {
 
   function handleShopping(fileID?: string) {
     setShowUpload(false);
-    navigate(idRoute(ROUTES.ChipFab, fileID ? fileID : fileInfo.id as number));
+    navigate(idRoute(ROUTES.ChipFab, fileID ? fileID : fileInfo.id as string));
   }
 
   function handleLibrary() {
@@ -161,7 +161,7 @@ function Upload() {
     return (
       <div
         key={i}
-        className={`${pType === p && 'bg-primary_light text-white'} border py-2 w-full text-center cursor-pointer`}
+        className={`${pType === p && 'bg-primary-light text-white'} border py-2 w-full text-center cursor-pointer`}
         onClick={() => setPType(p)}
       >
         {p}
@@ -173,7 +173,7 @@ function Upload() {
     return (
       <div
         key={i}
-        className={`${uType === u && 'bg-primary_light text-white'} border py-2 w-full text-center cursor-pointer`}
+        className={`${uType === u && 'bg-primary-light text-white'} border py-2 w-full text-center cursor-pointer`}
         onClick={() => setUType(u)}
       >
         {u}

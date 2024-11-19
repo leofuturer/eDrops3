@@ -11,7 +11,7 @@ function ItemCard({ product }: { product: Product }) {
   return (
     <div className="border-md shadow-box p-4 flex flex-col items-center space-y-2">
       <NavLink to={productLink} className="text-center w-2/3">
-        <h4 className="text-lg text-primary_light hover:text-primary">{product?.title}</h4>
+        <h4 className="text-lg text-primary-light hover:text-primary">{product?.title}</h4>
       </NavLink>
       <NavLink to={productLink}>
         <img
@@ -20,7 +20,7 @@ function ItemCard({ product }: { product: Product }) {
           src={product?.variants && product?.variants[0].image.src}
         />
       </NavLink>
-      <p className="line-clamp-4 text-sm">
+      <p className="line-clamp-4 h-full text-sm">
         {product?.description}
       </p>
       {cart.enabled &&
@@ -29,7 +29,7 @@ function ItemCard({ product }: { product: Product }) {
         </p>
       }
       <NavLink to={productLink}>
-        <button type="button" className="bg-primary_light text-white px-4 py-2 rounded-md hover:bg-primary">Details</button>
+        <button type="button" className="bg-primary-light text-white px-4 py-2 rounded-md hover:bg-primary">Details</button>
       </NavLink>
     </div>
   );

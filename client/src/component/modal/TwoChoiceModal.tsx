@@ -21,7 +21,7 @@ function TwoChoiceModal({ title = "eDroplets", content, affirmativeText, negativ
           {content}
         </div>
         <div className="p-4 flex justify-end space-x-4">
-          <button id="affirmative" type="button" className="bg-primary_light hover:bg-primary rounded-md px-4 py-2 text-white" onClick={affirmative}>{affirmativeText}</button>
+          <button id="affirmative" type="button" className="bg-primary-light hover:bg-primary rounded-md px-4 py-2 text-white" onClick={affirmative}>{affirmativeText}</button>
           <button id="negative" type="button" className="rounded-md px-4 py-2 bg-gray-200" onClick={negative}>{negativeText}</button>
         </div>
       </div>

@@ -84,7 +84,7 @@ export function Register() {
             <FormGroup name="lastName" required autoComplete="family-name" />
             <div className="grid grid-cols-4 gap-4 items-center">
               <label htmlFor="customerType" className="text-sm font-bold">User Type*</label>
-              <Field id="customerType" name="customerType" as="select" className="outline outline-1 shadow-inner focus:shadow-box-sm  rounded px-1 py-1 col-span-2 outline-gray-400 focus:shadow-primary_light focus:outline-primary_light">
+              <Field id="customerType" name="customerType" as="select" className="outline outline-1 shadow-inner focus:shadow-box-sm  rounded px-1 py-1 col-span-2 outline-gray-400 focus:shadow-primary-light focus:outline-primary-light">
                 <option value="person">Person</option>
                 <option value="business">Company</option>
               </Field>

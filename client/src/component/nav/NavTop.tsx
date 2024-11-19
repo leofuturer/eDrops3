@@ -5,6 +5,7 @@ import { CartContext } from '@/context/CartContext';
 import UserMenu from './UserMenu';
 import { ROUTES } from '@/router/routes';
 import { ArrowUpTrayIcon, Bars3BottomRightIcon, Bars3Icon, CircleStackIcon, ShoppingCartIcon } from '@heroicons/react/24/solid';
+import IMG from '@/lib/constants/images';
 
 function Dropdown({open, setOpen}: {open:boolean, setOpen: Function}) {
   return (
@@ -39,7 +40,7 @@ function NavTop() {
       <div className="h-[80px] w-full flex flex-row justify-between items-center px-4 md:px-6 lg:px-24 xl:px-48 text-xl lg:text-2xl font-medium text-white">
         <div className="flex flex-row items-center py-4 h-full">
           <NavLink to={ROUTES.Home} className="flex-none flex flex-row items-end h-full">
-            <img className="h-full flex-none" src="/img/edrop_logo_inverted.avif" alt="" />
+            <img className="h-full flex-none" src={IMG.logo_inverted} alt="" />
             <h1 className="text-4xl hover:text-accent hidden lg:flex">Droplets</h1>
           </NavLink>
           <NavLink to={ROUTES.Home} className="hover:text-accent hidden xl:flex pt-2 ml-8">Home</NavLink>

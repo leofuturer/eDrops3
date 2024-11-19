@@ -32,7 +32,7 @@ function UserMenu({ username, onSignout }: { username: string, onSignout: () => 
             <Menu.Item>
               {({ active }) => (
                 <NavLink to={ROUTES.ManageProfile}>
-                  <div className={`flex space-x-2 items-center py-1 px-2 rounded-md ${active ? 'bg-primary_light text-white' : ''}`}>
+                  <div className={`flex space-x-2 items-center py-1 px-2 rounded-md ${active ? 'bg-primary-light text-white' : ''}`}>
                     <AdjustmentsHorizontalIcon className="w-6" />
                     <p>Your Dashboard</p>
                   </div>
@@ -42,7 +42,7 @@ function UserMenu({ username, onSignout }: { username: string, onSignout: () => 
             <Menu.Item>
               {({ active }) => (
                 <NavLink to={ROUTES.Upload}>
-                  <div className={`flex space-x-2 items-center py-1 px-2 rounded-md ${active ? 'bg-primary_light text-white' : ''}`}>
+                  <div className={`flex space-x-2 items-center py-1 px-2 rounded-md ${active ? 'bg-primary-light text-white' : ''}`}>
                     <ArrowUpTrayIcon className="w-6" />
                     <p>Upload a file</p>
                   </div>
@@ -52,7 +52,7 @@ function UserMenu({ username, onSignout }: { username: string, onSignout: () => 
             <Menu.Item>
               {({ active }) => (
                 <NavLink to={ROUTES.ManageFiles}>
-                  <div className={`flex space-x-2 items-center py-1 px-2 rounded-md ${active ? 'bg-primary_light text-white' : ''}`}>
+                  <div className={`flex space-x-2 items-center py-1 px-2 rounded-md ${active ? 'bg-primary-light text-white' : ''}`}>
                     <CircleStackIcon className="w-6" />
                     <p>Your Files</p>
                   </div>
@@ -62,7 +62,7 @@ function UserMenu({ username, onSignout }: { username: string, onSignout: () => 
             <Menu.Item>
               {({ active }) => (
                 <NavLink to={ROUTES.Login} onClick={onSignout}>
-                  <div className={`flex space-x-2 items-center py-1 px-2 rounded-md ${active ? 'bg-primary_light text-white' : ''}`}>
+                  <div className={`flex space-x-2 items-center py-1 px-2 rounded-md ${active ? 'bg-primary-light text-white' : ''}`}>
                     <ArrowRightOnRectangleIcon className="w-6"/>
                     <p>Sign out</p>
                   </div>

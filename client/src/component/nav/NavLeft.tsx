@@ -65,7 +65,7 @@ export default NavLeft;
 function AuthNavLeftLink({ to, children, userTypes }: { to: ROUTES, children: React.ReactNode, userTypes: string[] }) {
   return <AuthNavLink
     to={to}
-    activeClassName="border-primary_light text-primary_light"
+    activeClassName="border-primary-light text-primary-light"
     className="flex flex-row space-x-4 px-4 border-l-4 items-center"
     userTypes={userTypes}>
     {children}

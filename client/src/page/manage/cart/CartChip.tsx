@@ -38,7 +38,7 @@ export function CartChip({ chip }: { chip: DTO<OrderChip> }) {
   return (
     <div className="bg-white rounded-md shadow-box p-4 flex flex-row justify-between">
       <div className="flex flex-col">
-        <NavLink to={idRoute(ROUTES.ChipFab, chip.fileInfoId)} className="text-primary_light hover:text-primary">
+        <NavLink to={idRoute(ROUTES.ChipFab, chip.fileInfoId)} className="text-primary-light hover:text-primary">
           <h3>{chip.name}</h3>
         </NavLink>
         <div className="">

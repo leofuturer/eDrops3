@@ -1,12 +1,13 @@
 import { NavLink } from 'react-router-dom';
 import { controlSysId, pcbChipId } from '@/lib/constants/products';
 import { ROUTES, idRoute } from '@/router/routes';
+import IMG from '@/lib/constants/images';
 
 function FooterPage() {
   return (
     <footer className="grid grid-cols-3 md:grid-cols-4 justify-items-center mx-4 md:mx-[16%] text-[12px] border-t py-10 gap-2 md:gap-8">
       <div className="flex flex-col items-center space-y-2">
-        <img className="max-h-[50px] mr-[10px] aspect-auto" src="/img/edrop_logo.avif" alt=""/>
+        <img className="max-h-[50px] mr-[10px] aspect-auto" src={IMG.logo} alt=""/>
         <h2 className="text-[26px] font-bold">eDroplets</h2>
         <p>
           &copy; eDroplets 2018-2023
@@ -40,7 +41,7 @@ function FooterPage() {
             <p className="text-primary">Digital Microfluidics Control System</p>
             <img
               className="h-10 w-10 aspect-square"
-              src="/img/control-system.webp"
+              src={IMG.control_system_chip}
               alt="Digital Microfluidics Control System"
             />
           </NavLink>
@@ -48,7 +49,7 @@ function FooterPage() {
             <p className="text-primary">PCB-based Digital Microfluidics Chip</p>
             <img
               className="h-10 w-10 aspect-square"
-              src="/img/pcb_chip.webp"
+              src={IMG.pcb_chip}
               alt="PCB-based Digital Microfluidics Chip"
             />
           </NavLink>

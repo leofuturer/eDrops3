@@ -69,7 +69,7 @@ function ChipOrderList({ cookies, chipOrderList }: { cookies: any, chipOrderList
 
   function handleChat(orderId: number, item: OrderChipType) {
     console.log("order details: ", item);
-    const redirectUrl = idRoute(ROUTES.SubpageOrderChat, orderId) + `?workerName=${encodeURIComponent(item.workerName)}&customerName=${encodeURIComponent(item.customerName)}`;
+    const redirectUrl = idRoute(ROUTES.SubpageOrderChat, orderId) + `?workerName=${encodeURIComponent(item.workerName as string)}&customerName=${encodeURIComponent(item.customerName as string)}`;
     const strWindowFeatures = 'width=1200px, height=900px';
     const WindowForOrderChat = window.open(redirectUrl, '_blank', strWindowFeatures);
     // @ts-expect-error

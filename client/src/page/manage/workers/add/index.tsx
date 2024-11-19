@@ -64,7 +64,7 @@ export function AddWorker() {
           <FormGroup name="zipCode" displayName="Zip or Postal Code" type="text" required autoComplete="postal-code" />
           <FormGroup name="country" type="text" required autoComplete="country-name" />
           <div className="flex items-center space-x-4">
-            <NavLink to={ROUTES.ManageWorkers} className="bg-primary_light text-white px-4 py-2 w-max rounded-lg">Cancel</NavLink>
+            <NavLink to={ROUTES.ManageWorkers} className="bg-primary-light text-white px-4 py-2 w-max rounded-lg">Cancel</NavLink>
             <button type="submit" className="bg-green-500 text-white px-4 py-2 rounded-lg w-max">Add</button>
           </div>
         </Form>

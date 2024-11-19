@@ -8,22 +8,22 @@ export function Project() {
       <div className="w-2/3 flex flex-col space-y-4 py-10">
         <div className="flex flex-row border-b space-x-2 text-lg">
           <p
-            className={`${activeTab === 'uploads' ? 'border border-b-white -m-[1px]' : 'text-primary_light hover:bg-gray-200'} rounded-t p-2 cursor-pointer`}
+            className={`${activeTab === 'uploads' ? 'border border-b-white -m-[1px]' : 'text-primary-light hover:bg-gray-200'} rounded-t p-2 cursor-pointer`}
             onClick={() => setActiveTab('uploads')}>
             My Uploads
           </p>
           <p
-            className={`${activeTab === 'designer' ? 'border border-b-white -m-[1px]' : 'text-primary_light hover:bg-gray-200'} rounded-t p-2 cursor-pointer`}
+            className={`${activeTab === 'designer' ? 'border border-b-white -m-[1px]' : 'text-primary-light hover:bg-gray-200'} rounded-t p-2 cursor-pointer`}
             onClick={() => setActiveTab('designer')}>
             My Public Designer
           </p>
           <p
-            className={`${activeTab === 'favorites' ? 'border border-b-white -m-[1px]' : 'text-primary_light hover:bg-gray-200'} rounded-t p-2 cursor-pointer`}
+            className={`${activeTab === 'favorites' ? 'border border-b-white -m-[1px]' : 'text-primary-light hover:bg-gray-200'} rounded-t p-2 cursor-pointer`}
             onClick={() => setActiveTab('favorites')}>
             Favorites
           </p>
           <p
-            className={`${activeTab === 'ordered' ? 'border border-b-white -m-[1px]' : 'text-primary_light hover:bg-gray-200'} rounded-t p-2 cursor-pointer`}
+            className={`${activeTab === 'ordered' ? 'border border-b-white -m-[1px]' : 'text-primary-light hover:bg-gray-200'} rounded-t p-2 cursor-pointer`}
             onClick={() => setActiveTab('ordered')}>
             Ordered
           </p>
@@ -31,57 +31,57 @@ export function Project() {
         <Tab id="uploads" active={activeTab === 'uploads'} className="grid grid-cols-3 gap-4">
           <NavLink to="" className="flex flex-col items-center">
             <img className="w-full aspect-square scale-95 hover:scale-100 transition-transform" src="/img/controlsystem.avif" alt="" />
-            <h4 className="text-lg text-primary_light">EWOD Control System</h4>
+            <h4 className="text-lg text-primary-light">EWOD Control System</h4>
           </NavLink>
           <NavLink to="" className="flex flex-col items-center">
             <img className="w-full aspect-square scale-95 hover:scale-100 transition-transform" src="/img/chipv1.avif" alt="" />
-            <h4 className="text-lg text-primary_light">EWOD Chip v1</h4>
+            <h4 className="text-lg text-primary-light">EWOD Chip v1</h4>
           </NavLink>
           <NavLink to="" className="flex flex-col items-center">
             <img className="w-full aspect-square scale-95 hover:scale-100 transition-transform" src="/img/chipv2.avif" alt="" />
-            <h4 className="text-lg text-primary_light">EWOD Chip v2</h4>
+            <h4 className="text-lg text-primary-light">EWOD Chip v2</h4>
           </NavLink>
         </Tab>
         <Tab id="designer" active={activeTab === 'designer'} className="grid grid-cols-3 gap-4">
           <NavLink to="" className="flex flex-col items-center">
             <img className="w-full aspect-square scale-95 hover:scale-100 transition-transform" src="/img/controlsystem.avif" alt="" />
-            <h4 className="text-lg text-primary_light">EWOD Control System</h4>
+            <h4 className="text-lg text-primary-light">EWOD Control System</h4>
           </NavLink>
           <NavLink to="" className="flex flex-col items-center">
             <img className="w-full aspect-square scale-95 hover:scale-100 transition-transform" src="/img/chipv1.avif" alt="" />
-            <h4 className="text-lg text-primary_light">EWOD Chip v1</h4>
+            <h4 className="text-lg text-primary-light">EWOD Chip v1</h4>
           </NavLink>
           <NavLink to="" className="flex flex-col items-center">
             <img className="w-full aspect-square scale-95 hover:scale-100 transition-transform" src="/img/chipv2.avif" alt="" />
-            <h4 className="text-lg text-primary_light">EWOD Chip v2</h4>
+            <h4 className="text-lg text-primary-light">EWOD Chip v2</h4>
           </NavLink>
         </Tab>
         <Tab id="favorites" active={activeTab === 'favorites'} className="grid grid-cols-3 gap-4">
           <NavLink to="" className="flex flex-col items-center">
             <img className="w-full aspect-square scale-95 hover:scale-100 transition-transform" src="/img/controlsystem.avif" alt="" />
-            <h4 className="text-lg text-primary_light">EWOD Control System</h4>
+            <h4 className="text-lg text-primary-light">EWOD Control System</h4>
           </NavLink>
           <NavLink to="" className="flex flex-col items-center">
             <img className="w-full aspect-square scale-95 hover:scale-100 transition-transform" src="/img/chipv1.avif" alt="" />
-            <h4 className="text-lg text-primary_light">EWOD Chip v1</h4>
+            <h4 className="text-lg text-primary-light">EWOD Chip v1</h4>
           </NavLink>
           <NavLink to="" className="flex flex-col items-center">
             <img className="w-full aspect-square scale-95 hover:scale-100 transition-transform" src="/img/chipv2.avif" alt="" />
-            <h4 className="text-lg text-primary_light">EWOD Chip v2</h4>
+            <h4 className="text-lg text-primary-light">EWOD Chip v2</h4>
           </NavLink>
         </Tab>
         <Tab id="ordered" active={activeTab === 'ordered'} className="grid grid-cols-3 gap-4">
           <NavLink to="" className="flex flex-col items-center">
             <img className="w-full aspect-square scale-95 hover:scale-100 transition-transform" src="/img/controlsystem.avif" alt="" />
-            <h4 className="text-lg text-primary_light">EWOD Control System</h4>
+            <h4 className="text-lg text-primary-light">EWOD Control System</h4>
           </NavLink>
           <NavLink to="" className="flex flex-col items-center">
             <img className="w-full aspect-square scale-95 hover:scale-100 transition-transform" src="/img/chipv1.avif" alt="" />
-            <h4 className="text-lg text-primary_light">EWOD Chip v1</h4>
+            <h4 className="text-lg text-primary-light">EWOD Chip v1</h4>
           </NavLink>
           <NavLink to="" className="flex flex-col items-center">
             <img className="w-full aspect-square scale-95 hover:scale-100 transition-transform" src="/img/chipv2.avif" alt="" />
-            <h4 className="text-lg text-primary_light">EWOD Chip v2</h4>
+            <h4 className="text-lg text-primary-light">EWOD Chip v2</h4>
           </NavLink>
         </Tab>
       </div>

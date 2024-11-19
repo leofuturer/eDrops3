@@ -50,7 +50,7 @@ export function Cart() {
             </p>
           </div>
         </div>)
-        : (<p data-cy="emptyMessage" className="text-center">Your cart is currently empty. You can either <NavLink to={ROUTES.Upload} className="text-primary_light hover:text-primary">upload a file</NavLink> for a custom chip order or <NavLink to={ROUTES.Products} className="text-primary_light hover:text-primary">view our products</NavLink>.</p>)}
+        : (<p data-cy="emptyMessage" className="text-center">Your cart is currently empty. You can either <NavLink to={ROUTES.Upload} className="text-primary-light hover:text-primary">upload a file</NavLink> for a custom chip order or <NavLink to={ROUTES.Products} className="text-primary-light hover:text-primary">view our products</NavLink>.</p>)}
     </ManageRightLayout>
   );
 }
