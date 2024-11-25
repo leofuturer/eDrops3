@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { ROUTES, idRoute } from '@/router/routes';
 import { api, DTO, FileInfo } from '@edroplets/api';
 import DeleteModal from '../modal/DeleteModal';
-import { ArrowDownTrayIcon, ShoppingCartIcon, TrashIcon } from '@heroicons/react/24/solid';
+import { ArrowDownTrayIcon, ShoppingCartIcon, TrashIcon } from '@heroicons/react/24/outline';
 
 export function FileList({ fileList, handleDelete }: { fileList: DTO<FileInfo>[], handleDelete: (deleteId: string) => void }) {
   const [cookies] = useCookies(['userType', 'userId'])

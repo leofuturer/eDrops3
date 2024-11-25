@@ -4,7 +4,8 @@ import { api, Customer, IncludeUser, DTO } from '@edroplets/api';
 import ManageRightLayout from '@/component/layout/ManageRightLayout';
 import DeleteModal from '@/component/modal/DeleteModal';
 import { ROUTES, idRoute } from '@/router/routes';
-import { BanknotesIcon, CircleStackIcon, CurrencyDollarIcon, PencilSquareIcon, TrashIcon } from '@heroicons/react/24/solid';
+import { BanknotesIcon, CircleStackIcon, CurrencyDollarIcon, PencilSquareIcon, TrashIcon } from '@heroicons/react/24/outline';
+import { PlusIcon } from '@heroicons/react/24/outline';
 
 export function Customers() {
   const [customerList, setCustomerList] = useState<DTO<IncludeUser<Customer>>[]>([]);
@@ -52,7 +53,7 @@ export function Customers() {
     <ManageRightLayout title="All Users">
       <div className="flex justify-end mb-4 -mt-4">
         <button type="button" className="bg-green-500 text-white px-4 py-2 w-max rounded-lg flex items-center space-x-2" onClick={handleAddUsers}>
-          <i className="fa fa-plus" />
+          <PlusIcon />
           <p>Add New User</p>
         </button>
       </div>

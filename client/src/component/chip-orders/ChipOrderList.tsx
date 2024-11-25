@@ -2,10 +2,10 @@ import React, { useContext, useEffect, useState, useRef } from 'react'
 import { useCookies } from 'react-cookie';
 import { api, DTO, FoundryWorker, IncludeUser, OrderChip } from '@edroplets/api';
 import { ROLES } from '@/lib/constants/roles';
-import { ArrowDownTrayIcon, ChatBubbleOvalLeftEllipsisIcon, UsersIcon } from '@heroicons/react/24/solid';
+import { ArrowDownTrayIcon, ChatBubbleOvalLeftEllipsisIcon, UsersIcon } from '@heroicons/react/24/outline';
 import { CartContext } from '@/context';
 import { ROUTES, idRoute } from '@/router/routes';
-import { OrderChip as OrderChipType } from '@edroplets/api/lib/types';
+import { OrderChip as OrderChipType } from '@edroplets/api';
 
 function ChipOrderList({ cookies, chipOrderList }: { cookies: any, chipOrderList: DTO<OrderChip>[] }) {
   const [workerList, setWorkerList] = useState<DTO<IncludeUser<FoundryWorker>>[]>([]);
@@ -69,11 +69,15 @@ function ChipOrderList({ cookies, chipOrderList }: { cookies: any, chipOrderList
 
   function handleChat(orderId: number, item: OrderChipType) {
     console.log("order details: ", item);
-    const redirectUrl = idRoute(ROUTES.SubpageOrderChat, orderId) + `?workerName=${encodeURIComponent(item.workerName)}&customerName=${encodeURIComponent(item.customerName)}`;
+    const redirectUrl = idRoute(ROUTES.SubpageOrderChat, orderId) + `?workerName=${encodeURIComponent(item.workerName as string)}&customerName=${encodeURIComponent(item.customerName as string)}`;
     const strWindowFeatures = 'width=1200px, height=900px';
     const WindowForOrderChat = window.open(redirectUrl, '_blank', strWindowFeatures);
     // @ts-expect-error
     WindowForOrderChat._orderItemId = orderId;
+  }
+
+  function handleAssign(workerId: string, item: OrderChipType) {
+    api.order.updateChipOrder(item.orderInfoId as number, item.id as number, { ...item, workerId: workerId } );
   }
 
   return (
@@ -135,7 +139,7 @@ function ChipOrderList({ cookies, chipOrderList }: { cookies: any, chipOrderList
               <td>
                 <div className="flex flex-row space-x-2">
                   <UsersIcon className="w-5 cursor-pointer mx-auto" />
-                  <select title="workers" onChange={(e) => handleAssign(e)}>
+                    <select title="workers" onChange={(e) => handleAssign(e.target.value, item)}>
                     {workerList.map((worker) => (
                       <option key={worker.id} value={worker.id}>{worker.user.username}</option>
                     ))}

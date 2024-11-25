@@ -10,8 +10,8 @@ export function CheckEmail() {
       provided during registration. Please check your email for
       further instructions."
     >
-      <NavLink to={ROUTES.Home} className="text-primary_light hover:text-primary">Home Page</NavLink>
-      <NavLink to={ROUTES.ForgotPassword} className="text-primary_light hover:text-primary">Resend Verification Email</NavLink>
+      <NavLink to={ROUTES.Home} className="text-primary-light hover:text-primary">Home Page</NavLink>
+      <NavLink to={ROUTES.ForgotPassword} className="text-primary-light hover:text-primary">Resend Verification Email</NavLink>
     </MessageLayout>
   );
 }

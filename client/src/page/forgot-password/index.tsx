@@ -63,7 +63,7 @@ export function ForgetPass() {
               }: FieldProps) => (
                 <input
                   type="text"
-                  className={`w-full outline outline-1 outline-gray-400 rounded shadow-inner focus:shadow-box-sm px-2 py-1 ${meta.touched ? meta.error ? 'outline-red-700 focus:shadow-red-700' : 'outline-green-600 focus:shadow-green-600' : 'outline-gray-400 focus:shadow-primary_light focus:outline-primary_light'}`}
+                  className={`w-full outline outline-1 outline-gray-400 rounded shadow-inner focus:shadow-box-sm px-2 py-1 ${meta.touched ? meta.error ? 'outline-red-700 focus:shadow-red-700' : 'outline-green-600 focus:shadow-green-600' : 'outline-gray-400 focus:shadow-primary-light focus:outline-primary-light'}`}
                   placeholder="Email"
                   autoComplete="email"
                   {...field}

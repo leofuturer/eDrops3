@@ -10,6 +10,7 @@ import { useContext, useEffect, useState } from 'react';
 import { useCookies } from 'react-cookie';
 import { NavLink, useNavigate, useParams } from 'react-router-dom';
 import type { Product as ShopifyProduct } from 'shopify-buy';
+import { ArrowDownLeftIcon } from '@heroicons/react/24/outline';
 
 export function Product() {
   const [product, setProduct] = useState<ShopifyProduct>({} as ShopifyProduct);
@@ -68,7 +69,7 @@ export function Product() {
         </div>
         <div className="col-span-1 flex flex-col justify-between">
           <div className="flex flex-col space-y-2">
-            <NavLink to={ROUTES.Products} className="text-primary_light hover:text-primary mb-4"><i className="fa fa-arrow-left" /> Return to all products</NavLink>
+            <NavLink to={ROUTES.Products} className="text-primary-light hover:text-primary mb-4"><ArrowDownLeftIcon/> Return to all products</NavLink>
             <h2 className="text-2xl">{product?.title}</h2>
             <p className="text-justify">
               {product?.description}
@@ -106,7 +107,7 @@ export function Product() {
               {addingToCart ? <Loading /> :
                 <button
                   type="button"
-                  className="bg-primary_light hover:bg-primary text-white rounded-lg w-full px-4 py-2"
+                  className="bg-primary-light hover:bg-primary text-white rounded-lg w-full px-4 py-2"
                   onClick={() => cart.enabled && handleAddToCart()}
                 >
                   {cart.enabled ? 'Add to Cart' : 'Coming soon'}

@@ -3,6 +3,7 @@ import { useCookies } from 'react-cookie';
 import { api, DTO, FileInfo} from '@edroplets/api';
 import ManageRightLayout from '@/component/layout/ManageRightLayout';
 import { idRoute } from '@/router/routes';
+import { ArrowDownTrayIcon } from '@heroicons/react/24/outline';
 
 export function AllFiles() {
   const [fileList, setFileList] = useState<DTO<FileInfo>[]>([]);
@@ -44,7 +45,7 @@ export function AllFiles() {
               <td>{file.uploader}</td>
               <td>{file.fileSize}</td>
               <td>
-                <i className="fa fa-download cursor-pointer" onClick={() => handleDownload(file)} />
+                <ArrowDownTrayIcon className="cursor-pointer" onClick={() => handleDownload(file)} />
               </td>
               <td>{file.isDeleted ? 'Yes' : 'No'}</td>
             </tr>

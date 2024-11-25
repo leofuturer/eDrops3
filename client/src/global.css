@@ -1,13 +1,8 @@
 /* @import url('https://fonts.googleapis.com/css2?family=Work+Sans&display=swap'); */
-@import url('https://fonts.googleapis.com/css2?family=Work+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-body {
-  font-family: 'Work Sans', sans-serif;
-}
 
 /* Disable Microsoft Edge's password reveal button */
 ::-ms-reveal {
@@ -43,6 +38,6 @@ body {
   }
 
   .animated-underline {
-    @apply after:h-0.5 after:max-w-0 after:bg-primary_light/75 after:block after:hover:max-w-full after:transition-all after:duration-100
+    @apply after:h-0.5 after:max-w-0 after:bg-primary-light/75 after:block after:hover:max-w-full after:transition-all after:duration-100
   }
 }

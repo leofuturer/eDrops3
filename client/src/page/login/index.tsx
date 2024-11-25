@@ -7,6 +7,7 @@ import SEO from '@/component/header/seo';
 import { metadata } from './metadata';
 import { LoginSchema } from '@edroplets/schemas';
 import { ROUTES } from '@/router/routes';
+import { EyeIcon, EyeSlashIcon } from '@heroicons/react/24/outline';
 
 export function Login() {
   const [showPassword, setShowPassword] = useState(false);
@@ -63,7 +64,7 @@ export function Login() {
           const fileTransfer = searchParams.get('guestFile');
           console.log(fileTransfer);
           navigate(`/signup/?guestFile=${fileTransfer}`);
-        }} className="text-primary_light hover:text-primary">Register now</button></p>
+        }} className="text-primary-light hover:text-primary">Register now</button></p>
         <Formik
           initialValues={{
             usernameOrEmail: '',
@@ -82,7 +83,7 @@ export function Login() {
               }: FieldProps) => (
                 <input
                   type="text"
-                  className={`w-full outline outline-1 outline-gray-400 rounded shadow-inner focus:shadow-box-sm px-2 py-1 ${meta.touched && meta.error ? 'outline-red-700 focus:shadow-red-700' : 'outline-gray-400 focus:shadow-primary_light focus:outline-primary_light'}`}
+                  className={`w-full outline outline-1 outline-gray-400 rounded shadow-inner focus:shadow-box-sm px-2 py-1 ${meta.touched && meta.error ? 'outline-red-700 focus:shadow-red-700' : 'outline-gray-400 focus:shadow-primary-light focus:outline-primary-light'}`}
                   placeholder="Username or Email"
                   autoComplete="username"
                   {...field}
@@ -97,12 +98,14 @@ export function Login() {
                 <div className="relative flex items-center">
                   <input
                     type={showPassword ? 'text' : 'password'}
-                    className={`w-full outline outline-1 outline-gray-400 rounded shadow-inner focus:shadow-box-sm px-2 py-1 ${meta.touched && meta.error ? 'outline-red-700 focus:shadow-red-700' : 'outline-gray-400 focus:shadow-primary_light focus:outline-primary_light'}`}
+                    className={`w-full outline outline-1 outline-gray-400 rounded shadow-inner focus:shadow-box-sm px-2 py-1 ${meta.touched && meta.error ? 'outline-red-700 focus:shadow-red-700' : 'outline-gray-400 focus:shadow-primary-light focus:outline-primary-light'}`}
                     placeholder="Password"
                     autoComplete="current-password"
                     {...field}
                   />
-                  <i className={`fa ${showPassword ? 'fa-eye-slash' : 'fa-eye'} absolute right-2 cursor-pointer text-gray-600`} onClick={() => setShowPassword(!showPassword)} />
+                  {showPassword ?  ( <EyeSlashIcon className="absolute w-4 right-2 cursor-pointer text-gray-600" onClick={() => setShowPassword(!showPassword)} />) : (
+                    <EyeIcon className="absolute w-4 right-2 cursor-pointer text-gray-600" onClick={() => setShowPassword(!showPassword)} />
+                  )}
                 </div>
               )}
             </Field>
@@ -110,7 +113,7 @@ export function Login() {
           </Form>
         </Formik>
         <p className="text-red-600 text-center">{error && "Login error. Please check login credentials and ensure email is verified."}</p>
-        <NavLink to={ROUTES.ForgotPassword} className="text-center text-primary_light hover:text-primary text-sm">Forgot Password?</NavLink>
+        <NavLink to={ROUTES.ForgotPassword} className="text-center text-primary-light hover:text-primary text-sm">Forgot Password?</NavLink>
         <p className="text-center text-sm">If you experience trouble logging in to your account, please <a href="mailto:info@edroplets.org">contact us.</a></p>
       </div>
     </div >

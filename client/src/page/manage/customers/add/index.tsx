@@ -73,7 +73,7 @@ export function AddCustomer() {
           <FormGroup name="zipCode" displayName="Zip or Postal Code" autoComplete="postal-code" />
           <FormGroup name="country" autoComplete="country" />
           <div className="flex items-center space-x-4">
-            <NavLink to={ROUTES.ManageCustomers} className="bg-primary_light text-white px-4 py-2 w-max rounded-lg">Cancel</NavLink>
+            <NavLink to={ROUTES.ManageCustomers} className="bg-primary-light text-white px-4 py-2 w-max rounded-lg">Cancel</NavLink>
             <button type="submit" className="bg-green-500 text-white px-4 py-2 w-max rounded-lg">Add</button>
           </div>
         </Form>

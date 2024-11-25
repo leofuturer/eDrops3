@@ -18,7 +18,7 @@ function ChatModal() {
             <Tab.Panels className="">
               {chat.chats.map((id) => (
                 <Tab.Panel key={id}>
-                  <ChatBox orderId={id} />
+                  {/* <ChatBox orderId={id} /> */}
                 </Tab.Panel>
               ))}
             </Tab.Panels>

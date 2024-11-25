@@ -76,7 +76,7 @@ export function ResetPassword() {
           <div className="text-center">
             Your password has successfully been reset.
           </div>
-          <div className="text-center text-primary_light">
+          <div className="text-center text-primary-light">
             <NavLink to={ROUTES.Login}>Login to Your Account</NavLink>
           </div>
         </div>

@@ -29,7 +29,7 @@ export function CartProduct({ product }: { product: DTO<OrderProduct> }) {
   return (
     <div className="bg-white rounded-md shadow-box p-4 flex flex-row justify-between">
       <div className="flex flex-col">
-        <NavLink to={idRoute(ROUTES.Product, product.productIdShopify)} className="text-primary_light hover:text-primary">
+        <NavLink to={idRoute(ROUTES.Product, product.productIdShopify)} className="text-primary-light hover:text-primary">
           <h3>{product.name}</h3>
         </NavLink>
         <div className="">

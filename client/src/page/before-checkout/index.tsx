@@ -9,6 +9,7 @@ import { useContext, useEffect, useState } from 'react';
 import { useCookies } from 'react-cookie';
 import { useNavigate } from 'react-router-dom';
 import SingleAddress from './singleAddress';
+import { PlusIcon, XMarkIcon } from '@heroicons/react/24/outline';
 
 export function BeforeCheckout() {
   const [addressList, setAddressList] = useState<DTO<Address>[]>([]);
@@ -62,13 +63,13 @@ export function BeforeCheckout() {
             <button type="button"
               className="bg-green-500 rounded-lg text-white px-4 py-2 text-lg flex space-x-2 items-center"
               onClick={() => setShowAdd(true)}>
-              <i className="fa fa-plus" /><p>Add New</p>
+              <PlusIcon/><p>Add New</p>
             </button>
             {preparingForCheckout ? <Loading /> :
               <div className="flex flex-row space-x-4">
-                <button type="button" className="bg-primary_light hover:bg-primary text-white rounded-md px-4 py-2 text-lg"
+                <button type="button" className="bg-primary-light hover:bg-primary text-white rounded-md px-4 py-2 text-lg"
                   onClick={() => navigate(ROUTES.ManageCart)}>Return to Cart</button>
-                <button id="payment" type="button" className="bg-primary_light hover:bg-primary text-white rounded-md px-4 py-2 text-lg"
+                <button id="payment" type="button" className="bg-primary-light hover:bg-primary text-white rounded-md px-4 py-2 text-lg"
                   onClick={handlePayment}>Proceed to Payment</button>
               </div>}
           </div>
@@ -89,7 +90,7 @@ export function BeforeCheckout() {
         <ModalBackground>
           <div className="flex flex-col bg-white rounded-lg shadow-box w-1/3 divide-y relative">
             <div className="p-4 flex justify-end">
-              <i className="fa fa-xmark cursor-pointer text-gray-400 hover:text-gray-600" onClick={() => setShowAdd(false)} />
+              <XMarkIcon className="cursor-pointer text-gray-400 hover:text-gray-600" onClick={() => setShowAdd(false)} />
             </div>
             <div className="px-8 py-4">
               <AddAddress userId={cookies.userId} onAdd={(addr) => {

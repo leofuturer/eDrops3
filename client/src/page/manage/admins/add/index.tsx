@@ -58,7 +58,7 @@ export function AddAdmin() {
           <FormGroup name="password" type="password" required autoComplete="new-password" />
           <FormGroup name="confirmPassword" type="password" required autoComplete="new-password" />
           <div className="flex items-center space-x-4">
-            <NavLink to={ROUTES.ManageAdmins} className="bg-primary_light text-white px-4 py-2 w-max rounded-lg">Cancel</NavLink><button
+            <NavLink to={ROUTES.ManageAdmins} className="bg-primary-light text-white px-4 py-2 w-max rounded-lg">Cancel</NavLink><button
               type="submit"
               className="bg-green-500 text-white px-4 py-2 rounded-lg w-max"
             >

@@ -6,6 +6,7 @@ import { PusherContext } from '@/context/PusherContext';
 import { api, DTO, OrderMessage  } from '@edroplets/api';
 import { ROLES } from '@/lib/constants/roles';
 import { useLocation } from 'react-router-dom';
+import { PaperAirplaneIcon } from '@heroicons/react/24/outline';
 
 export function ChatBox({ orderId, workerName, customerName }: { orderId: number , workerName: string, customerName: string}) {
   const pusher = useContext(PusherContext);
@@ -145,7 +146,7 @@ export function ChatBox({ orderId, workerName, customerName }: { orderId: number
             }}
           />
           <div className="bg-blue-600 h-10 w-10 flex items-center justify-center rounded-r cursor-pointer" onClick={handleSend}>
-            <i className="fa fa-paper-plane text-white"></i>
+            <PaperAirplaneIcon className="text-white"/>
           </div>
         </div>
       }
@@ -233,7 +234,7 @@ function ChatMessage({ msg, cookies, displayName }: { msg: DTO<OrderMessage>, co
         <span className="flex-shrink-0 h-10 w-10 rounded-full bg-gray-300 flex items-center justify-center">
           {cookies.userType === 'customer' ? (
             <img
-              src="/img/edrop_logo.png"
+              src="/img/edrop_logo.avif"
               alt="Logo"
               className="h-[70%] w-[70%] object-contain"
             />
@@ -255,7 +256,7 @@ function ChatMessage({ msg, cookies, displayName }: { msg: DTO<OrderMessage>, co
             <span className="text-black text-lg">{displayName[0].toUpperCase()}</span>
           ) : (
             <img
-              src="/img/edrop_logo.png"
+              src="/img/edrop_logo.avif"
               alt="Logo"
               className="h-[70%] w-[70%] object-contain"
             />
