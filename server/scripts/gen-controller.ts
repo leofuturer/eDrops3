@@ -89,7 +89,7 @@ function generateDocumentation(sourceFile: SourceFile) {
   const endpoints = getEndpoints(sourceFile);
   // console.log(endpoints);
   const controllerName = sourceFile.getBaseNameWithoutExtension().split('.')[0];
-
+  const controllerDisplayName = controllerName.toLowerCase().replace(/\b\w/g, l => l.toUpperCase()).split('-').join(' ');
   // Group by path
   interface GroupedEndpoints {
     [path: string]: Omit<Endpoint, 'path'>[]
@@ -103,7 +103,7 @@ function generateDocumentation(sourceFile: SourceFile) {
     return acc;
   }, {} as GroupedEndpoints);
 
-  const documentation = `# ${controllerName.toLowerCase().replace(/\b\w/g, l => l.toUpperCase())}
+  const documentation = `# ${controllerDisplayName}
 ${Object.keys(groupedEndpoints).map(path => {
     return `
 ## ${path}
@@ -119,11 +119,14 @@ ${endpoint.functionSignature}
 `;
 
   fs.writeFileSync(
-    path.resolve(__dirname, `./docs/${controllerName}.md`),
+    path.resolve(__dirname, `./docs/controllers/${controllerName}.md`),
     documentation,
   );
+  return `* [${controllerDisplayName}](development/rest-api/${controllerName}.md)`;
 }
 
-sourceFiles.forEach(sourceFile => {
-  generateDocumentation(sourceFile);
-});
+const index = sourceFiles.map(sourceFile => {
+  const entry = generateDocumentation(sourceFile);
+  return entry
+}).join('\n');
+console.log(index);

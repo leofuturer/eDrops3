@@ -59,8 +59,9 @@ function generateDocumentation(sourceFile: SourceFile) {
   const model = getModel(sourceFile);
   if (!model) return;
   const modelName = sourceFile.getBaseNameWithoutExtension().split('.')[0];
+  const modelDisplayName = modelName.toLowerCase().replace(/\b\w/g, l => l.toUpperCase()).split('-').join(' ');
 
-  const documentation = `# ${modelName.toLowerCase().replace(/\b\w/g, l => l.toUpperCase())}
+  const documentation = `# ${modelDisplayName}
 ${model.description ? model.description : ''}
 ${model.properties.map(property => {
     return `
@@ -74,8 +75,11 @@ Type: ${property.type}
     path.resolve(__dirname, `./docs/models/${modelName}.md`),
     documentation,
   );
+  return `* [${modelDisplayName}](development/database-models/${modelName}.md)`;
 }
 
-sourceFiles.forEach(sourceFile => {
-  generateDocumentation(sourceFile);
-});
+const index = sourceFiles.map(sourceFile => {
+  const entry = generateDocumentation(sourceFile);
+  return entry
+}).join('\n');
+console.log(index);
