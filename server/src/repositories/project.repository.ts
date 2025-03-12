@@ -74,11 +74,6 @@ export class ProjectRepository extends DefaultCrudRepository<
 
   async getFeaturedProjects(): Promise<Project[]> {
     return this.find({
-      where: {
-        datetime: {
-          gte: new Date(Date.now() - 1000 * 60 * 60 * 24 * 7),
-        },
-      },
       order: ['likes DESC'],
       limit: 4,
     });
